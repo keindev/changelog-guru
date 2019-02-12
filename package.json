@@ -1,0 +1,33 @@
+{
+    "name": "changelog-guru",
+    "version": "1.0.0",
+    "description": "GitHub changelog generator",
+    "license": "MIT",
+    "author": "Daniil Ryazanov <opensource@tagproject.ru>",
+    "keywords": [
+        "github",
+        "changelog",
+        "generator",
+        "cli"
+    ],
+    "main": "index.js",
+    "bin": {
+        "changelog-guru": "index.js"
+    },
+    "unpkg": "index.js",
+    "module": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/keindev/changelog-guru.git"
+    },
+    "bugs": {
+        "url": "https://github.com/keindev/changelog-guru/issues"
+    },
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "dependencies": {
+        "@octokit/rest": "^16.15.0",
+        "commander": "^2.19.0"
+    }
+}
