@@ -8,6 +8,9 @@ class State {
         this.commits = [];
     }
 
+    addCommit(commit) {
+
+    }
 }
 
 module.exports = State;

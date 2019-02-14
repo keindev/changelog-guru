@@ -30,6 +30,7 @@
         "@octokit/rest": "^16.15.0",
         "commander": "^2.19.0",
         "git-branch": "^2.0.1",
-        "semver": "^5.6.0"
+        "semver": "^5.6.0",
+        "winston": "^3.2.1"
     }
 }
