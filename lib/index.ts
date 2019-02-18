@@ -1,4 +1,5 @@
-const Reader = require('./src/reader');
+import Reader from './src/reader';
+
 const reader = new Reader();
 
 reader.init();
