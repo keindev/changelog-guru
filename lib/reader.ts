@@ -1,129 +1,114 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as semver from 'semver';
-import pckg from './../package.json';
-import program from 'commander';
+import findupSync from 'findup-sync';
 import State from './state';
-import Utils, { Errors } from './utils';
-import Octokit, { ReposListCommitsParams, ReposListReleasesParams } from '@octokit/rest';
+import Git from './git';
+import CLI from './cli';
+import Utils from './utils';
 
-const CONFIG_FILE_NAME: string = '.changelog';
-const TOKEN_ENV_NAME: string = 'CHANGELOG_GURU_TOKEN';
-const COMMITS_PAGING_PAGE_SIZE: number = 100;
-
-program
-    .version(pckg.version, '-v, --version')
-    .description(pckg.description)
-    .option('-c, --config <config>', `config file in JSON format (${CONFIG_FILE_NAME}).`)
-    .option('-t, --token <token>', `your GitHub token (process.env.${TOKEN_ENV_NAME} by default).`)
-    .parse(process.argv);
-
-export type Package = {
-    version?: string;
-    repository?: {
-        type?: string,
-        url?: string
+type Package = {
+    version: string;
+    repository: {
+        type: string,
+        url: string
     }
 }
 
-export type Config = {
-    test?: string
+type Config = {
+    sections: { [key: string]: string[] };
 }
 
-export class Reader {
-    private state: State = new State();
-    private token: string = program.token || process.env[TOKEN_ENV_NAME];
-    private repository: ReposListReleasesParams = { owner: '', repo: '' };
-    private package: Package = {};
-    private config: Config = {};
-    private octokit: Octokit;
-    private sha: string;
-    private packagePath: string;
-    private configPath: string;
+export default class Reader {
+    static GIT_EXTENSION: string = '.git';
 
-    constructor() {
-        this.configPath = path.resolve(process.cwd(), program.config || path.join(__dirname, `../${CONFIG_FILE_NAME}`));
-        this.packagePath = path.resolve(process.cwd(), 'package.json');
+    private state: State | null = null;
+    private git: Git | null = null;
 
-        if (!fs.existsSync(this.configPath)) Utils.error(Errors.CONFIG_NOT_FOUND);
-        if (!fs.existsSync(this.packagePath)) Utils.error(Errors.PACKAGE_NOT_FOUND);
-        if (!this.token) Utils.error(Errors.TOKEN_IS_NOT_PROVIDED);
+    static getSHA(cwd: string): string {
+        const pattern: string = '.git/HEAD';
+        const filepath: string = findupSync(pattern, { cwd: cwd });
+        let sha: string = '';
 
-        this.octokit = new Octokit({ auth: `token ${this.token}` });
-        this.sha = Utils.getSHA(process.cwd());
-    }
+        if (fs.existsSync(filepath)) {
+            const buffer: Buffer = fs.readFileSync(filepath);
+            const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
 
-    async init() {
-        this.package = await import(this.packagePath);
-        this.config = await import(this.configPath);
-
-        if (!this.package.version || !semver.valid(this.package.version)) {
-            Utils.error(Errors.PACKAGE_VERSION_IS_INVALID);
-        }
-
-        const repository = this.package.repository;
-
-        if (repository && repository.type === 'git' && repository.url && repository.url.length) {
-            const pathname = (new URL(repository.url)).pathname.split('/');
-
-            this.repository.repo = path.basename(pathname.pop() as string, '.git');
-            this.repository.owner = pathname.pop() as string;
-
-            Utils.info('Repository', this.repository.repo);
-            Utils.info('Owner', this.repository.owner);
-            Utils.info("SHA", this.sha);
-        } else {
-            Utils.error(Errors.TOKEN_IS_NOT_PROVIDED);
-        }
-    }
-
-    async getSince() {
-        const { data: { length } } = await this.octokit.repos.listReleases({ ...this.repository });
-        let since = (new Date(0)).toISOString();
-
-        if (length) {
-            const { data: release } = await this.octokit.repos.getLatestRelease({ ...this.repository });
-
-            since = release.created_at;
-        }
-
-        Utils.info('Get last commits since', since);
-
-        return since;
-    }
-
-
-
-    async parse() {
-        const since: string = await this.getSince();
-        const params: ReposListCommitsParams & {
-            page: number
-        } = {
-            ...this.repository,
-            sha: this.sha,
-            since: since,
-            ...{ per_page: COMMITS_PAGING_PAGE_SIZE, page: 1 }
-        };
-        let count: number = 0;
-
-        do {
-            const { data: commits } = await this.octokit.repos.listCommits(params);
-
-            if (count = commits.length) {
-                Utils.log(`${count} commits`, 'loaded');
-
-                commits.forEach((commit) => {
-                    this.state.addCommit(commit);
-                });
-
-                params.page++;
+            if (match) {
+                sha = match[1];
+            } else {
+                Utils.error(`{bold ${pattern}} - ref(s) SHA not found`);
             }
-        } while (count && count === COMMITS_PAGING_PAGE_SIZE);
+        } else {
+            Utils.error(`{bold ${pattern}} - does not exist`);
+        }
 
-        Utils.info('Read', `${this.state.commits.length} commits...`);
-        Utils.info('Current version', this.package.version);
-        Utils.info('Next version', this.state.version);
+        return sha;
+    }
 
-        return this.state;
+    public async read() {
+        const cli = new CLI(process.cwd());
+        const [configPath, packagePath, token] = cli.parse(process.argv);
+        const [repo, owner, version] = await this.getRepositoryInfo(packagePath);
+
+        this.git = new Git(repo, owner, token, Reader.getSHA(process.cwd()));
+        this.state = new State(version);
+
+        await this.readConfig(configPath);
+        await this.readCommits();
+    }
+
+    private async getRepositoryInfo(packagePath: string): Promise<string[]> {
+        const info: Package = await import(packagePath);
+
+        if (!info.version) Utils.error('<package.version> is not specified');
+        if (!semver.valid(info.version)) Utils.error('<package.version> is invalid (see https://semver.org/)');
+        if (!info.repository) Utils.error('<package.repository> is not specified');
+        if (info.repository.type !== Reader.GIT_EXTENSION) Utils.error('<package.repository.type> is not git repository type');
+        if (!info.repository.url) Utils.error('<package.repository.url> is not specified');
+
+        const pathname: string[] = (new URL(info.repository.url)).pathname.split('/');
+        const repo: string = path.basename(pathname.pop() as string, Reader.GIT_EXTENSION);
+        const owner: string = pathname.pop() as string;
+
+        return [repo, owner, info.version];
+    }
+
+    private async readConfig(configPath: string): Promise<void> {
+        const config: Config = await import(configPath);
+
+        if (this.state instanceof State) {
+            if (typeof config.sections === 'object') {
+                for (let name in config.sections) {
+                    this.state.addSection(name, config.sections[name]);
+                }
+            }
+        }
+    }
+
+    private async readCommits() {
+        if (this.git instanceof Git) {
+            const since: string = await this.git.getSince();
+            let pageNumber: number = 1;
+            let count: number = 0;
+
+            do {
+                const commits = await this.git.getCommits(since, pageNumber);
+
+                if (count = commits.length) {
+                    Utils.log(`${count} commits`, 'loaded');
+
+                    commits.forEach((commit) => {
+                        this.state.addCommit(commit);
+                    });
+
+                    pageNumber++;
+                }
+            } while (count && count === Git.COMMITS_PAGE_SIZE);
+
+            /* Utils.info('Read', `${this.state.commits.length} commits...`);
+            Utils.info('Current version', this.package.version);
+            Utils.info('Next version', this.state.version); */
+        }
     }
 }

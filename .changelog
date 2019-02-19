@@ -1,9 +1,11 @@
 {
-    "Features": [ "feat" ],
-    "Bugfixes": [ "fix" ],
-    "Internal changes": [ "types", "workflow", "test", "chore", "docs" ],
-    "Performance": [ "perf" ],
-    "Refactoring": [ "refactor" ],
-    "Breaking Changes": [ "break" ],
-    "Reverts": [ "revert" ]
+    "sections": {
+        "Features": [ "feat" ],
+        "Bugfixes": [ "fix" ],
+        "Internal changes": [ "types", "workflow", "test", "chore", "docs" ],
+        "Performance": [ "perf" ],
+        "Refactoring": [ "refactor" ],
+        "Breaking Changes": [ "break" ],
+        "Reverts": [ "revert" ]
+    }
 }
