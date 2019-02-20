@@ -1,34 +1,30 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as semver from 'semver';
 import findupSync from 'findup-sync';
-import State from './state';
-import Git from './git';
-import CLI from './cli';
-import Utils from './utils';
+import fs from 'fs';
+import path from 'path';
+import * as semver from 'semver';
+import { CLI } from './cli';
+import { Git } from './git';
+import { State } from './state';
+import { Utils } from './utils';
 
-type Package = {
+interface Package {
     version: string;
     repository: {
         type: string,
-        url: string
-    }
+        url: string,
+    };
 }
 
-type Config = {
+interface Config {
     sections: { [key: string]: string[] };
 }
 
 export default class Reader {
-    static GIT_EXTENSION: string = '.git';
-
-    private state: State | null = null;
-    private git: Git | null = null;
-
-    static getSHA(cwd: string): string {
-        const pattern: string = '.git/HEAD';
-        const filepath: string = findupSync(pattern, { cwd: cwd });
-        let sha: string = '';
+    private static GIT_EXTENSION: string = '.git';
+    private static getSHA(cwd: string): string {
+        const pattern = '.git/HEAD';
+        const filepath = findupSync(pattern, { cwd });
+        let sha = '';
 
         if (fs.existsSync(filepath)) {
             const buffer: Buffer = fs.readFileSync(filepath);
@@ -46,9 +42,12 @@ export default class Reader {
         return sha;
     }
 
-    public async read() {
-        const cli = new CLI(process.cwd());
-        const [configPath, packagePath, token] = cli.parse(process.argv);
+    private state: State | null = null;
+    private git: Git | null = null;
+
+    public async read(): void {
+        const cli = new CLI();
+        const [configPath, packagePath, token] = cli.parse(process.cwd(), process.argv);
         const [repo, owner, version] = await this.getRepositoryInfo(packagePath);
 
         this.git = new Git(repo, owner, token, Reader.getSHA(process.cwd()));
@@ -64,7 +63,9 @@ export default class Reader {
         if (!info.version) Utils.error('<package.version> is not specified');
         if (!semver.valid(info.version)) Utils.error('<package.version> is invalid (see https://semver.org/)');
         if (!info.repository) Utils.error('<package.repository> is not specified');
-        if (info.repository.type !== Reader.GIT_EXTENSION) Utils.error('<package.repository.type> is not git repository type');
+        if (info.repository.type !== Reader.GIT_EXTENSION) {
+            Utils.error('<package.repository.type> is not git repository type');
+        }
         if (!info.repository.url) Utils.error('<package.repository.url> is not specified');
 
         const pathname: string[] = (new URL(info.repository.url)).pathname.split('/');
@@ -79,30 +80,29 @@ export default class Reader {
 
         if (this.state instanceof State) {
             if (typeof config.sections === 'object') {
-                for (let name in config.sections) {
+                Object.keys(config.sections).forEach((name) => {
                     this.state.addSection(name, config.sections[name]);
-                }
+                });
             }
         }
     }
 
-    private async readCommits() {
+    private async readCommits(): void {
         if (this.git instanceof Git) {
             const since: string = await this.git.getSince();
-            let pageNumber: number = 1;
-            let count: number = 0;
+            let pageNumber = 1;
+            let count = 0;
 
             do {
-                const commits = await this.git.getCommits(since, pageNumber);
+                const commits = await this.git.getCommits(since, pageNumber++);
+                count = commits.length;
 
-                if (count = commits.length) {
+                if (count) {
                     Utils.log(`${count} commits`, 'loaded');
 
                     commits.forEach((commit) => {
                         this.state.addCommit(commit);
                     });
-
-                    pageNumber++;
                 }
             } while (count && count === Git.COMMITS_PAGE_SIZE);
 

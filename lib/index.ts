@@ -1,8 +1,7 @@
-import Reader from './src/reader';
+import { Reader } from './reader';
 
 const reader = new Reader();
 
-reader.init();
-reader.parse().then(() => {
+reader.read().then(() => {
     process.exit(0);
 });

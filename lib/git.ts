@@ -1,22 +1,20 @@
-import Utils from './utils';
-import Octokit from '@octokit/rest';
-import { ReposListCommitsResponseItem, ReposListReleasesParams } from '@octokit/rest';
+import rest, { ReposListCommitsResponseItem, ReposListReleasesParams } from '@octokit/rest';
+import Process from './process';
 
 export default class Git {
-    static COMMITS_PAGE_SIZE: number = 100;
-
-    private kit: Octokit;
+    public static COMMITS_PAGE_SIZE: number = 100;
+    private kit: rest;
     private repository: ReposListReleasesParams;
     private sha: string;
 
-    constructor(repo: string, owner: string, token: string, sha: string) {
-        this.repository = { repo: repo, owner: owner } as ReposListReleasesParams;
+    public constructor(repo: string, owner: string, token: string, sha: string) {
+        this.repository = { repo, owner } as ReposListReleasesParams;
         this.sha = sha;
-        this.kit = new Octokit({ auth: `token ${token}` });
+        this.kit = new rest({ auth: `token ${token}` });
 
-        Utils.info('Repository', this.repository.repo);
-        Utils.info('Owner', this.repository.owner);
-        Utils.info("SHA", this.sha);
+        Process.info('Repository', this.repository.repo);
+        Process.info('Owner', this.repository.owner);
+        Process.info('SHA', this.sha);
     }
 
     public async getSince(): Promise<string> {
@@ -29,17 +27,17 @@ export default class Git {
             since = release.created_at;
         }
 
-        Utils.info('Get last commits since', since);
+        Process.info('Get last commits since', since);
 
         return since;
     }
 
     public async getCommits(since: string, page: number): Promise<ReposListCommitsResponseItem[]> {
         const { data: commits } = await this.kit.repos.listCommits({
+            since,
             ...this.repository,
             sha: this.sha,
-            since: since,
-            ...{ per_page: Git.COMMITS_PAGE_SIZE, page: page }
+            ...{ page, per_page: Git.COMMITS_PAGE_SIZE },
         });
 
         return commits;
