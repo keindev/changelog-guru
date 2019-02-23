@@ -1,7 +1,8 @@
-import { Reader } from './reader';
+import Reader from './reader';
+import Process from './process';
 
 const reader = new Reader();
 
 reader.read().then(() => {
-    process.exit(0);
+    Process.exit(Process.EXIT_CODE_SUCCES);
 });
