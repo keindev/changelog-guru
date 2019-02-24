@@ -26,6 +26,16 @@ export default class Process {
         }
     }
 
+    public static getVersion(): string {
+        let version = '';
+
+        if (typeof process.env.npm_package_version === 'string') {
+            version = process.env.npm_package_version;
+        }
+
+        return version;
+    }
+
     public static getArguments(): string[] {
         return process.argv;
     }

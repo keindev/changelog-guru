@@ -1,7 +1,7 @@
 import Octokit, { ReposListCommitsResponseItem, ReposListReleasesParams } from '@octokit/rest';
 import findupSync from 'findup-sync';
 import fs from 'fs';
-import Process from './process';
+import Process from '../utils/process';
 
 export default class Git {
     public static COMMITS_PAGE_SIZE: number = 100;

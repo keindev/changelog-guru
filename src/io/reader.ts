@@ -1,8 +1,8 @@
 import path from 'path';
-import CLI from './cli';
-import Git from './git';
-import State from './state';
-import Process from './process';
+import CLI from '../middleware/cli';
+import Git from '../middleware/git';
+import Process from '../utils/process';
+import State from '../state';
 
 interface Package {
     version: string;

@@ -1,5 +1,5 @@
-import Reader from './reader';
-import Process from './process';
+import Reader from './io/reader';
+import Process from './utils/process';
 
 const reader = new Reader();
 

@@ -1,7 +1,7 @@
 import * as semver from 'semver';
 import { ReposListCommitsResponseItem } from '@octokit/rest';
 import Section from './section';
-import Process from './process';
+import Process from './utils/process';
 
 export default class State {
     public static DEFALUT_VERSION = '1.0.0';

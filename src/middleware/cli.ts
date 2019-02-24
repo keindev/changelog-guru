@@ -1,8 +1,7 @@
 import commander, { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
-import packageJson from '../package.json';
-import Process from './process';
+import Process from '../utils/process';
 
 export default class CLI {
     public static CONFIG_FILE_NAME: string = '.changelog';
@@ -33,8 +32,8 @@ export default class CLI {
     }
 }
 
-commander.version(packageJson.version, '-v, --version');
-commander.description(packageJson.description);
+commander.version(Process.getVersion(), '-v, --version');
+commander.description('GitHub changelog generator');
 commander.option('-c, --config <config>', `config file in JSON format (${CLI.CONFIG_FILE_NAME}).`);
 commander.option('-p, --package <package>', `path to package.json.`);
 commander.option('-t, --token <token>', `your GitHub access token (${CLI.ENV_TOKEN_NAME} by default).`);

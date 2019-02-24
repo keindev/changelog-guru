@@ -1,12 +1,18 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "module": "commonjs",
-        "declaration": true,
-        "outDir": "./dist",
-        "strict": true,
         "moduleResolution": "node",
+        "rootDir": "src",
+        "outDir": "dist",
+        "newLine": "lf",
+        "strict": true,
+        "declaration": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "removeComments": true,
         "resolveJsonModule": true,
-        "esModuleInterop": true,
-    }
+        "esModuleInterop": true
+    },
+    "exclude": ["node_modules", "dist"]
 }
