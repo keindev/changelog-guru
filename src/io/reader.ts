@@ -1,10 +1,11 @@
+import fs from 'fs';
 import path from 'path';
-import CLI from '../middleware/cli';
+import yaml from 'js-yaml'
 import Git from '../middleware/git';
 import Process from '../utils/process';
-import State from '../state';
+import State, { Options } from '../state';
 
-interface Package {
+export interface Package {
     version: string;
     repository: {
         type: string,
@@ -12,59 +13,47 @@ interface Package {
     };
 }
 
-interface Config {
+export interface Config extends Options {
     sections: { [key: string]: string[] };
 }
 
 export default class Reader {
     private state: State = new State();
-    private configPath: string;
-    private packagePath: string;
     private git: Git;
 
-    public constructor() {
-        const [configPath, packagePath, token] = CLI.parse();
-
-        this.configPath = configPath;
-        this.packagePath = packagePath;
+    public constructor(token: string) {
         this.git = new Git(token);
     }
 
-    public async read(): Promise<void> {
-        await this.readPackage();
-        await this.readConfig();
-        await this.readCommits();
-    }
+    public async readPackage(): Promise<void> {
+        const pkg: Package = await import(path.resolve(process.cwd(), 'package.json'));
 
-    private async readPackage(): Promise<void> {
-        const packageInfo: Package = await import(this.packagePath);
+        if (!pkg.version) Process.error('<package.version> is not specified');
+        if (!pkg.repository) Process.error('<package.repository> is not specified');
+        if (!pkg.repository.url) Process.error('<package.repository.url> is not specified');
+        if (!pkg.repository.type) Process.error('<package.repository> is not git repository type');
 
-        if (!packageInfo.version) Process.error('<package.version> is not specified');
-        if (!packageInfo.repository) Process.error('<package.repository> is not specified');
-        if (!packageInfo.repository.url) Process.error('<package.repository.url> is not specified');
-        if (packageInfo.repository.type !== Git.EXTENSION) {
-            Process.error('<package.repository> is not git repository type');
-        }
-
-        const pathname: string[] = (new URL(packageInfo.repository.url)).pathname.split('/');
+        const pathname: string[] = (new URL(pkg.repository.url)).pathname.split('/');
         const repo: string = path.basename(pathname.pop() as string, Git.EXTENSION);
         const owner: string = pathname.pop() as string;
 
-        this.git.init(repo, owner);
-        this.state.version = packageInfo.version;
+        await this.git.init(repo, owner);
+        this.state.version = pkg.version;
     }
 
-    private async readConfig(): Promise<void> {
-        const config: Config = await import(this.configPath);
+    public readConfig(configPath: string): void {
+        const config: Config = yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
 
         if (typeof config.sections === 'object') {
             Object.keys(config.sections).forEach((name) => {
                 this.state.addSection(name, config.sections[name]);
             });
         }
+
+        this.state.stats = config.stats;
     }
 
-    private async readCommits(pageNumber: number = 1): Promise<void> {
+    public async readCommits(pageNumber: number = 0): Promise<void> {
         const commits = await this.git.getCommits(pageNumber + 1);
         const { length } = commits;
 

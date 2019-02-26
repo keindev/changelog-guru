@@ -39,7 +39,7 @@ export default class Git {
 
     public constructor(token: string) {
         this.kit = new Octokit({ auth: `token ${token}` });
-        this.sha = Git.getSHA(Process.CWD);
+        this.sha = Git.getSHA(process.cwd());
     }
 
     public async init(repo: string, owner: string): Promise<void> {
