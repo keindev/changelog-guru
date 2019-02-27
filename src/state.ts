@@ -1,6 +1,8 @@
 import * as semver from 'semver';
 import { ReposListCommitsResponseItem } from '@octokit/rest';
-import Section from './section';
+import Section from './entities/section';
+import Commit from './entities/commit';
+import Author from './entities/author';
 import Process from './utils/process';
 
 export interface Options {
@@ -8,11 +10,10 @@ export interface Options {
 }
 
 export default class State implements Options {
-    public static DEFALUT_VERSION = '1.0.0';
-
-    private _version: string = State.DEFALUT_VERSION;
+    private _version: string = '1.0.0';
     private _stats: boolean = false;
-    private commits: ReposListCommitsResponseItem[] = [];
+    private commits: Commit[] = [];
+    private authors: { [id: number]: Author } = {};
     private sections: Section[] = [];
 
     public set version(version: string) {
@@ -33,7 +34,16 @@ export default class State implements Options {
         this.sections.push(new Section(name, patterns));
     }
 
-    public addCommit(commit: ReposListCommitsResponseItem): void {
+    public addCommit(commitResponseItem: ReposListCommitsResponseItem): void {
+        const { commit: { message, author: { date }, comment_count: count }, html_url: url } = commitResponseItem;
+        const { author: { id: authorId, html_url: authorUrl, avatar_url: avatarUrl } } = commitResponseItem;
+        const commit = new Commit(new Date(date).getTime(), message, url, count);
+
+        if (this.authors[authorId]) {
+            this.authors[authorId] = new Author(authorId, authorUrl, avatarUrl);
+        }
+
+        this.authors[authorId].addCommit(commit);
         this.commits.push(commit);
     }
 }

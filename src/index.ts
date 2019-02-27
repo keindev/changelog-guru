@@ -12,9 +12,9 @@ export default class Changelog {
 
     public constructor(options: Options) {
         if (!options.token) dotenv.config();
-        if (!process.env.CHANGELOG_GITHUB_TOKEN) Process.error('<token> option must be provided');
+        if (!process.env.GITHUB_TOKEN) Process.error('<token> option must be provided');
 
-        this.reader = new Reader(options.token || process.env.CHANGELOG_GITHUB_TOKEN || '');
+        this.reader = new Reader(options.token || process.env.GITHUB_TOKEN || '');
         this.reader.readConfig(options.configPath);
     }
 
