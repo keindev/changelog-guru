@@ -39,7 +39,7 @@ export default class State implements Options {
         const { author: { id: authorId, html_url: authorUrl, avatar_url: avatarUrl } } = commitResponseItem;
         const commit = new Commit(new Date(date).getTime(), message, url, count);
 
-        if (this.authors[authorId]) {
+        if (!this.authors[authorId]) {
             this.authors[authorId] = new Author(authorId, authorUrl, avatarUrl);
         }
 
