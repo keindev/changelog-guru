@@ -8,3 +8,7 @@ sections:
     Refactoring: [refactor]
     Breaking Changes: [break]
     Reverts: [revert]
+scopes:
+    - core:
+        - plugins
+    - theme

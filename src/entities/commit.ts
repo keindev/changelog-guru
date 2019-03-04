@@ -1,14 +1,33 @@
+import { ReposListCommitsResponseItemCommit } from '@octokit/rest';
+
+const REGEXP_TYPE_AND_SCOPE: string = "(?<type>[\\w, ]+) {0,1}(\\((?<scope>[\\w,]+)\\)){0,1}(?=:)";
+const REGEXP_SUBJECT: string = "(?<=:).*";
+const REGEXP_SUBJECT_TASK: string = "(?<=#)\\w+";
+const REGEXP_FLAG: string = "![\w]+";
+
+const footerTypes = [
+    task,
+    docs,
+    info,
+    design
+]
+
 export default class Commit {
     private timestamp: number;
     private url: string;
     private message: string;
     private commentsCount: number;
+    private weight: number = 0;
 
-    constructor(timestamp: number, message: string, url: string, commentsCount: number = 0) {
-        this.timestamp = timestamp;
-        this.message = message;
+    constructor(response: ReposListCommitsResponseItemCommit, url: string) {
+        this.timestamp = new Date(response.author.date).getTime();
+        this.message = response.message;
         this.url = url;
-        this.commentsCount = commentsCount;
+        this.commentsCount = response.comment_count; // TODO: increace weight?
+    }
+
+    public parse() {
+
     }
 
     /**
@@ -27,9 +46,10 @@ export default class Commit {
     <body>
     <footer> - task id, docs links:
         - task: #id, #id
-        - docs: link (or id?)
+        - docs: link (or id?) for links use [<LINK>] tpl
 
     */
+
 
 
     public isCommented(): boolean {

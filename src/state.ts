@@ -15,6 +15,7 @@ export default class State implements Options {
     private commits: Commit[] = [];
     private authors: { [id: number]: Author } = {};
     private sections: Section[] = [];
+    private patterns: Pattern[] = []
 
     public set version(version: string) {
         if (!semver.valid(version)) Process.error('<package.version> is invalid (see https://semver.org/)');
@@ -34,16 +35,17 @@ export default class State implements Options {
         this.sections.push(new Section(name, patterns));
     }
 
-    public addCommit(commitResponseItem: ReposListCommitsResponseItem): void {
-        const { commit: { message, author: { date }, comment_count: count }, html_url: url } = commitResponseItem;
-        const { author: { id: authorId, html_url: authorUrl, avatar_url: avatarUrl } } = commitResponseItem;
-        const commit = new Commit(new Date(date).getTime(), message, url, count);
+    public addCommit(response: ReposListCommitsResponseItem): void {
+        const { author, html_url: url } = response;
+        const commit = new Commit(response.commit, url);
 
-        if (!this.authors[authorId]) {
-            this.authors[authorId] = new Author(authorId, authorUrl, avatarUrl);
+        commit.parse();
+
+        if (!this.authors[author.id]) {
+            this.authors[author.id] = new Author(author.id, author.html_url, author.avatar_url);
         }
 
-        this.authors[authorId].addCommit(commit);
+        this.authors[author.id].addCommit(commit);
         this.commits.push(commit);
     }
 }
