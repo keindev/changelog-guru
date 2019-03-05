@@ -15,7 +15,7 @@ export default class State implements Options {
     private commits: Commit[] = [];
     private authors: { [id: number]: Author } = {};
     private sections: Section[] = [];
-    private patterns: Pattern[] = []
+    private patterns: Pattern[] = [];
 
     public set version(version: string) {
         if (!semver.valid(version)) Process.error('<package.version> is invalid (see https://semver.org/)');

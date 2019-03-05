@@ -1,14 +1,55 @@
 ---
-stats: true
-sections:
-    Features: [feat]
-    Bugfixes: [fix]
-    Internal changes: [types, workflow, test, chore, docs]
-    Performance: [perf]
-    Refactoring: [refactor]
-    Breaking Changes: [break]
-    Reverts: [revert]
+types:
+    - &tFeat feat
+    - &tFix fix
+    - &tChore chore
+    - &tRefactor refactor
+    - &tTest test
+    - &tDocs docs
+    - &tCI ci
+    - &tTypes types
+    - &tWorkflow workflow
+    - &tPerf perf
+    - &tBreak break
+    - &tRevert revert
+
+version: ?
+
 scopes:
-    - core:
-        - plugins
+    - common
+    - core
     - theme
+
+flags:
+    - important:
+        - *tFeat
+        - *tFix
+    - hide:
+        - *tBreak
+        - *tChore
+        - *tWorkflow
+        - *tTypes
+
+sections:
+    - features:
+        - *tFeat
+    - bugfixes:
+        - *tFix
+    - internalChanges:
+        - *tTypes
+        - *tWorkflow
+        - *tCI
+        - *tTest
+        - *tChore
+        - *tDocs
+    - breakingChanges:
+        - *tBreak
+    - performance:
+        - *tPerf
+    - refactoring:
+        - *tRefactor
+    - reverts:
+        - *tRevert
+
+
+stats: true

@@ -1,5 +1,6 @@
 import { ReposListCommitsResponseItemCommit } from '@octokit/rest';
 
+/*
 const REGEXP_TYPE_AND_SCOPE: string = "(?<type>[\\w, ]+) {0,1}(\\((?<scope>[\\w,]+)\\)){0,1}(?=:)";
 const REGEXP_SUBJECT: string = "(?<=:).*";
 const REGEXP_SUBJECT_TASK: string = "(?<=#)\\w+";
@@ -11,6 +12,7 @@ const footerTypes = [
     info,
     design
 ]
+*/
 
 export default class Commit {
     private timestamp: number;
@@ -19,15 +21,11 @@ export default class Commit {
     private commentsCount: number;
     private weight: number = 0;
 
-    constructor(response: ReposListCommitsResponseItemCommit, url: string) {
-        this.timestamp = new Date(response.author.date).getTime();
-        this.message = response.message;
+    constructor(commit: ReposListCommitsResponseItemCommit, url: string) {
+        this.timestamp = new Date(commit.author.date).getTime();
+        this.message = commit.message;
         this.url = url;
-        this.commentsCount = response.comment_count; // TODO: increace weight?
-    }
-
-    public parse() {
-
+        this.commentsCount = commit.comment_count; // TODO: increace weight?
     }
 
     /**
