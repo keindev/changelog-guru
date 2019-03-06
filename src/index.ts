@@ -3,7 +3,7 @@ import Reader from './io/reader';
 import Process from './utils/process';
 
 export interface Options {
-    configPath: string;
+    config?: string;
     token?: string
 }
 
@@ -15,7 +15,7 @@ export default class Changelog {
         if (!process.env.GITHUB_TOKEN) Process.error('<token> option must be provided');
 
         this.reader = new Reader(options.token || process.env.GITHUB_TOKEN || '');
-        this.reader.readConfig(options.configPath);
+        this.reader.readConfig(options.config);
     }
 
     public async generate(): Promise<void> {

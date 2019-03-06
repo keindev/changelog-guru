@@ -11,14 +11,12 @@ export interface Options {
 
 export default class State implements Options {
     private _version: string = '1.0.0';
-    private _stats: boolean = false;
     private commits: Commit[] = [];
     private authors: { [id: number]: Author } = {};
-    private sections: Section[] = [];
-    private patterns: Pattern[] = [];
+    private types: string[] = [];
 
     public set version(version: string) {
-        if (!semver.valid(version)) Process.error('<package.version> is invalid (see https://semver.org/)');
+        if (!semver.valid(version)) Process.error('<version> is invalid (see https://semver.org/)');
 
         this._version = version;
     }
@@ -27,12 +25,11 @@ export default class State implements Options {
         return this._version;
     }
 
-    public set stats(value: boolean | undefined) {
-        if (typeof value === 'boolean') this._stats = value;
-    }
+    public addType(type: string) {
+        if (typeof type !== 'string' || !type) Process.error(`incorrect or empty commit type name - "${type}"`);
+        if (this.types.indexOf(type) >= 0) Process.error(`commit type name is defined twice - ${type}`);
 
-    public addSection(name: string, patterns: string[]): void {
-        this.sections.push(new Section(name, patterns));
+        this.types.push(type);
     }
 
     public addCommit(response: ReposListCommitsResponseItem): void {

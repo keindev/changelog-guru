@@ -3,6 +3,7 @@ import path from 'path';
 import yaml from 'js-yaml'
 import Git from '../middleware/git';
 import Process from '../utils/process';
+import PluginManager from '../pluginManager';
 import State, { Options } from '../state';
 
 export interface Package {
@@ -14,7 +15,8 @@ export interface Package {
 }
 
 export interface Config extends Options {
-    sections: { [key: string]: string[] };
+    plugins: string[];
+    types: string[];
 }
 
 export default class Reader {
@@ -23,6 +25,7 @@ export default class Reader {
 
     public constructor(token: string) {
         this.git = new Git(token);
+        this.pluginManager = new PluginManager();
     }
 
     public async readPackage(): Promise<void> {
@@ -41,12 +44,22 @@ export default class Reader {
         this.state.version = pkg.version;
     }
 
-    public readConfig(configPath: string): void {
-        const config: Config = yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
+    public readConfig(userConfigPath?: string): void {
+        const load = (configPath: string): Config => yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
+        let config: Config = load(path.join(__dirname, '../.changelog.yaml'));
 
-        if (typeof config.sections === 'object') {
+        if (userConfigPath) {
+            config = Object.assign(config, load(userConfigPath))
+        }
+
+        config.types.forEach(this.state.addType, this.state);
+        config.plugins.forEach(this.pluginManager.load, this.pluginManager);
+
+
+        if (Array.isArray(config.sections)) {
             Object.keys(config.sections).forEach((name) => {
-                this.state.addSection(name, config.sections[name]);
+
+                this.state.addPlugin(name);
             });
         }
 

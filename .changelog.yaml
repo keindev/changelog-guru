@@ -1,55 +1,55 @@
 ---
+plugins: [flags, scopes, sections]
 types:
-    - &tFeat feat
-    - &tFix fix
-    - &tChore chore
-    - &tRefactor refactor
-    - &tTest test
-    - &tDocs docs
-    - &tCI ci
-    - &tTypes types
-    - &tWorkflow workflow
-    - &tPerf perf
-    - &tBreak break
-    - &tRevert revert
-
-version: ?
-
+    - feat
+    - fix
+    - chore
+    - refactor
+    - test
+    - docs
+    - ci
+    - types
+    - style
+    - workflow
+    - perf
+    - break
+    - revert
+flags:
+    # !important <comment> - place <comment> to special section on top of changelog
+    - important
+    # !hide - hide commit
+    - hide
+    # !group <name> - creates a group of commits with the <name>
+    - group
+    # !deprecated <comment> - place <comment> to special section with deprecated propertyes
+    - deprecated
+    # !break <comment> - indicates major changes breaking backward compatibility
+    - break
+# list of major scopes
 scopes:
     - common
     - core
     - theme
-
-flags:
-    - important:
-        - *tFeat
-        - *tFix
-    - hide:
-        - *tBreak
-        - *tChore
-        - *tWorkflow
-        - *tTypes
-
+    - api
+    - package
 sections:
-    - features:
-        - *tFeat
-    - bugfixes:
-        - *tFix
-    - internalChanges:
-        - *tTypes
-        - *tWorkflow
-        - *tCI
-        - *tTest
-        - *tChore
-        - *tDocs
-    - breakingChanges:
-        - *tBreak
-    - performance:
-        - *tPerf
-    - refactoring:
-        - *tRefactor
-    - reverts:
-        - *tRevert
-
-
+    - Features:
+        - feat
+    - Bugfixes:
+        - fix
+    - Internal сhanges:
+        - types
+        - workflow
+        - ci
+        - test
+        - chore
+        - docs
+    - Breaking сhanges:
+        - break
+    - Performance:
+        - perf
+    - Refactoring:
+        - refactor
+    - Reverts:
+        - revert
 stats: true
