@@ -14,14 +14,11 @@ export default class Changelog {
         if (!options.token) dotenv.config();
         if (!process.env.GITHUB_TOKEN) Process.error('<token> option must be provided');
 
-        this.reader = new Reader(options.token || process.env.GITHUB_TOKEN || '');
-        this.reader.readConfig(options.config);
+        this.reader = new Reader(options.token || process.env.GITHUB_TOKEN || '', options.config);
     }
 
     public async generate(): Promise<void> {
-
-        await this.reader.readPackage();
-        await this.reader.readCommits();
+        await this.reader.read();
 
         // TODO: plugins
 

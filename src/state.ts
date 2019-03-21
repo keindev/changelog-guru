@@ -1,15 +1,10 @@
 import * as semver from 'semver';
 import { ReposListCommitsResponseItem } from '@octokit/rest';
-import Section from './entities/section';
 import Commit from './entities/commit';
 import Author from './entities/author';
 import Process from './utils/process';
 
-export interface Options {
-    stats?: boolean;
-}
-
-export default class State implements Options {
+export default class State {
     private _version: string = '1.0.0';
     private commits: Commit[] = [];
     private authors: { [id: number]: Author } = {};
