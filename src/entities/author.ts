@@ -7,7 +7,8 @@ export default class Author {
     private id: number;
     private url: string;
     private avatar: string;
-    private commits: Commit[] = [];
+    private contribution: number = 0;
+    private bonus: number = 0;
 
     public constructor(id: number, url: string, avatarUrl: string) {
         let avatar = urlParse(avatarUrl, true);
@@ -19,7 +20,11 @@ export default class Author {
         this.avatar = avatar.toString();
     }
 
-    public addCommit(commit: Commit): void {
-        this.commits.push(commit);
+    public contribute(bonus?: number) {
+        if (bonus) {
+            this.bonus += bonus;
+        } else {
+            this.contribution++;
+        }
     }
 }

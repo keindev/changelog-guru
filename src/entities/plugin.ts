@@ -7,12 +7,11 @@ export default class Plugin {
         this.config = config;
     }
 
-    public async parse(): Promise<boolean> {
-
+    public async parse(): Promise<void> {
     }
 
     public async modify(): Promise<boolean> {
-
+        return true;
     }
 
     public async validate(): Promise<boolean> {

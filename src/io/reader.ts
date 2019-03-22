@@ -1,10 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml'
+import { ReposListCommitsResponseItem } from '@octokit/rest';
 import Git from '../middleware/git';
 import PluginManager from '../middleware/plugin';
+import State from '../middleware/state';
+import Commit from '../entities/commit';
+import Author from '../entities/author';
 import Process from '../utils/process';
-import State from '../state';
 
 export interface Package {
     version: string;
@@ -49,10 +52,12 @@ export default class Reader {
         this.plugins = new PluginManager(config);
     }
 
-    public async read() {
+    public async read(): Promise<[State, PluginManager]> {
         await this.plugins.load();
         await this.readPackage();
         await this.readCommits();
+
+        return [this.state, this.plugins];
     }
 
     private async readPackage(): Promise<void> {
@@ -78,13 +83,19 @@ export default class Reader {
         if (length) {
             Process.log(`${length} commits`, 'loaded');
 
-            commits.forEach(this.state.addCommit, this.state);
+            commits.forEach((response: ReposListCommitsResponseItem) => {
+                const { commit, html_url: url } = response;
+                const { author: { id: authorId, html_url: authorUrl, avatar_url: authorAvatar } } = response;
+                const timestamp = new Date(commit.author.date).getTime();
+                const message = commit.message;
+                const { state } = this;
+
+                state.addCommit(new Commit(timestamp, message, url, state.addAutor(authorId, authorUrl, authorAvatar)));
+            });
 
             if (length === Git.COMMITS_PAGE_SIZE) {
                 await this.readCommits(pageNumber);
             }
         }
     }
-
-
 }

@@ -1,4 +1,5 @@
-import { ReposListCommitsResponseItemCommit } from '@octokit/rest';
+import Author from './author';
+import Process from '../utils/process';
 
 /*
 const REGEXP_TYPE_AND_SCOPE: string = "(?<type>[\\w, ]+) {0,1}(\\((?<scope>[\\w,]+)\\)){0,1}(?=:)";
@@ -18,39 +19,34 @@ export default class Commit {
     private timestamp: number;
     private url: string;
     private message: string;
-    private commentsCount: number;
-    private weight: number = 0;
+    private author: Author;
 
-    constructor(commit: ReposListCommitsResponseItemCommit, url: string) {
-        this.timestamp = new Date(commit.author.date).getTime();
-        this.message = commit.message;
+    constructor(timestamp: number, message: string, url: string, author: Author) {
+        this.timestamp = timestamp;
+        this.message = message;
         this.url = url;
-        this.commentsCount = commit.comment_count; // TODO: increace weight?
+        this.author = author;
+        this.author.contribute();
     }
 
     /**
+        @see https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
 
-    @see https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
+        -----------------------commit-----------------------
+        <type>(<scope>): <subject>
+        [<flags>]
+        <body>
 
-    <type>(<scope>): <subject>
-    [<flags>]
-    <body>
-    <footer>
-
-    <type> - sections;
-    <scope> - The scope should be the name of the system/module part affected;
-    <subject> - The subject contains a succinct description of the change. (contains [#ISSUE])
-    <flags> - !break !important & etc (TODO)
-    <body>
-    <footer> - task id, docs links:
-        - task: #id, #id
-        - docs: link (or id?) for links use [<LINK>] tpl
-
+        <footer>
+        ----------------------------------------------------
     */
+    public parse() {
+        let rows: string[] = this.message.split('\n').reverse();
 
-
-
-    public isCommented(): boolean {
-        return !!this.commentsCount;
+        if (rows.length) {
+            let header: string = rows.pop();
+            // let footer: string =
+            // let body: string[] =
+        }
     }
 }

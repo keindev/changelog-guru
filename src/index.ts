@@ -18,7 +18,9 @@ export default class Changelog {
     }
 
     public async generate(): Promise<void> {
-        await this.reader.read();
+        const [state, plugins] = await this.reader.read();
+
+        await plugins.process(state);
 
         // TODO: plugins
 

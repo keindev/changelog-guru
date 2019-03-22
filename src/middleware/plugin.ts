@@ -1,6 +1,6 @@
 import path from 'path';
-import { Config } from '../io/reader';
 import Plugin from '../entities/plugin';
+import { Config } from '../io/reader';
 
 interface ConstructablePlugin<T> {
     new(config: Config) : T;
@@ -27,8 +27,16 @@ export default class PluginManager extends Plugin {
         }
     }
 
-    public async parse(): Promise<boolean> {
-        return true;
+    public async process(): Promise<void> {
+
+    }
+
+    public async parse(): Promise<void> {
+        for (const plugin of this.plugins) {
+            if (plugin instanceof Plugin) {
+                await plugin.parse();
+            }
+        }
     }
 
     public async modify(): Promise<boolean> {

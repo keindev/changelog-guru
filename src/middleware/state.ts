@@ -1,14 +1,13 @@
 import * as semver from 'semver';
-import { ReposListCommitsResponseItem } from '@octokit/rest';
-import Commit from './entities/commit';
-import Author from './entities/author';
-import Process from './utils/process';
+import Commit from '../entities/commit';
+import Author from '../entities/author';
+import Process from '../utils/process';
 
 export default class State {
     private _version: string = '1.0.0';
     private commits: Commit[] = [];
-    private authors: { [id: number]: Author } = {};
     private types: string[] = [];
+    private authors: { [key: number]: Author } = {};
 
     public set version(version: string) {
         if (!semver.valid(version)) Process.error('<version> is invalid (see https://semver.org/)');
@@ -27,17 +26,18 @@ export default class State {
         this.types.push(type);
     }
 
-    public addCommit(response: ReposListCommitsResponseItem): void {
-        const { author, html_url: url } = response;
-        const commit = new Commit(response.commit, url);
+    public addAutor(id: number, url: string, avatarUrl: string): Author {
+        const { authors } = this;
 
-        commit.parse();
-
-        if (!this.authors[author.id]) {
-            this.authors[author.id] = new Author(author.id, author.html_url, author.avatar_url);
+        if (!authors[id]) {
+            authors[id] = new Author(id, url, avatarUrl);
         }
 
-        this.authors[author.id].addCommit(commit);
+        return authors[id];
+    }
+
+    public addCommit(commit: Commit) {
+        commit.parse();
         this.commits.push(commit);
     }
 }
