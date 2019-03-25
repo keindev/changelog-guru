@@ -8,6 +8,7 @@ types:
     - test
     - docs
     - ci
+    - build
     - types
     - style
     - workflow
@@ -41,6 +42,7 @@ sections:
         - types
         - workflow
         - ci
+        - build
         - test
         - chore
         - docs
