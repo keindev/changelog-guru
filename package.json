@@ -27,7 +27,7 @@
     },
     "scripts": {
         "clean": "rm -rf dist",
-        "lint": "eslint **/*.ts",
+        "lint": "eslint src/**/*.ts",
         "test": "",
         "cover": "",
         "build:ts": "tsc",
