@@ -37,7 +37,10 @@ export default class State {
     }
 
     public addCommit(commit: Commit) {
-        commit.parse();
         this.commits.push(commit);
+    }
+
+    public getCommits(): Commit[] {
+        return this.commits;
     }
 }

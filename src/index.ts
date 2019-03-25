@@ -4,7 +4,7 @@ import Process from './utils/process';
 
 export interface Options {
     config?: string;
-    token?: string
+    token?: string;
 }
 
 export default class Changelog {
@@ -19,8 +19,13 @@ export default class Changelog {
 
     public async generate(): Promise<void> {
         const [state, plugins] = await this.reader.read();
+        const promises: Promise<void>[] = [];
 
-        await plugins.process(state);
+        state.getCommits().forEach((commit) => {
+            promises.push(plugins.process(state, commit));
+        });
+
+        await Promise.all(promises);
 
         // TODO: plugins
 

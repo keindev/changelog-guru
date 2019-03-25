@@ -18,12 +18,14 @@ const footerTypes = [
 export default class Commit {
     private timestamp: number;
     private url: string;
-    private message: string;
+    private header: string;
+    private body: string[];
     private author: Author;
 
     constructor(timestamp: number, message: string, url: string, author: Author) {
         this.timestamp = timestamp;
-        this.message = message;
+        this.body = message.split('\n');
+        this.header = this.body.shift() || "";
         this.url = url;
         this.author = author;
         this.author.contribute();
@@ -40,13 +42,4 @@ export default class Commit {
         <footer>
         ----------------------------------------------------
     */
-    public parse() {
-        let rows: string[] = this.message.split('\n').reverse();
-
-        if (rows.length) {
-            let header: string = rows.pop();
-            // let footer: string =
-            // let body: string[] =
-        }
-    }
 }

@@ -1,20 +1,16 @@
-import { Config } from "../io/reader";
+import { Config } from '../io/reader';
+import Commit from './commit';
+import State from '../middleware/state';
 
-export default class Plugin {
+export default interface Plugin {
+    parse(state: State, commit: Commit): void;
+    modify(): Promise<void>;
+}
+
+export default abstract class AbstractPlugin implements Plugin {
     protected config: Config;
 
     constructor(config: Config) {
         this.config = config;
-    }
-
-    public async parse(): Promise<void> {
-    }
-
-    public async modify(): Promise<boolean> {
-        return true;
-    }
-
-    public async validate(): Promise<boolean> {
-        return true;
     }
 }
