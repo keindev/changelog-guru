@@ -1,5 +1,5 @@
 ---
-plugins: [flag, scope, section]
+plugins: [sign, scope, section]
 types:
     - feat
     - fix
@@ -15,16 +15,17 @@ types:
     - perf
     - break
     - revert
-flags:
-    # !important <comment> - place <comment> to special section on top of changelog
+# List of avaliable signs
+signs:
+    # !important - place a commit title to special section on top of changelog
     - important
-    # !hide - hide commit
+    # !hide - hide a commit
     - hide
-    # !group <name> - creates a group of commits with the <name>
+    # !group(NAME) - creates a group of commits with the <NAME>
     - group
-    # !deprecated <comment> - place <comment> to special section with deprecated propertyes
+    # !deprecated- place a commit title to special section with deprecated propertyes
     - deprecated
-    # !break <comment> - indicates major changes breaking backward compatibility
+    # !break - indicates major changes breaking backward compatibility
     - break
 # list of major scopes
 scopes:

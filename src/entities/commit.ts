@@ -1,34 +1,41 @@
 import Author from './author';
 import Process from '../utils/process';
 
-/*
-const REGEXP_TYPE_AND_SCOPE: string = "(?<type>[\\w, ]+) {0,1}(\\((?<scope>[\\w,]+)\\)){0,1}(?=:)";
-const REGEXP_SUBJECT: string = "(?<=:).*";
-const REGEXP_SUBJECT_TASK: string = "(?<=#)\\w+";
-const REGEXP_FLAG: string = "![\w]+";
-
-const footerTypes = [
-    task,
-    docs,
-    info,
-    design
-]
-*/
-
 export default class Commit {
+    public readonly header: string;
+    public readonly body: string[];
+
     private timestamp: number;
     private url: string;
-    private header: string;
-    private body: string[];
     private author: Author;
+    private types: string[] = [];
+    private scope: string = '';
 
     constructor(timestamp: number, message: string, url: string, author: Author) {
         this.timestamp = timestamp;
-        this.body = message.split('\n');
-        this.header = this.body.shift() || "";
+
+        let lines = message.split('\n').map(line => line.trim());
+
+        this.header = lines.shift() || '';
+        this.body = lines;
         this.url = url;
         this.author = author;
         this.author.contribute();
+
+        const match = this.header.match(/(?<type>[a-z, ]+) {0,1}(\((?<scope>[a-z,]+)\)){0,1}(?=:)/i);
+        if (match && match.groups) {
+            if (match.groups.types) {
+                this.types = match.groups.types.split(',').map(type => type.trim());
+            }
+
+            if (match.groups.scope) {
+                this.scope = match.groups.scope;
+            }
+        }
+    }
+
+    public isValid(): boolean {
+        return !!this.header.length;
     }
 
     /**

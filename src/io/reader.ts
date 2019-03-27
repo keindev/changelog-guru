@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml'
 import { ReposListCommitsResponseItem } from '@octokit/rest';
+import Config from './config';
 import Git from '../middleware/git';
 import PluginManager from '../middleware/plugin';
 import State from '../middleware/state';
@@ -15,12 +16,6 @@ export interface Package {
         type: string,
         url: string,
     };
-}
-
-export interface Config {
-    [key: string]: any;
-    plugins: string[];
-    types: string[];
 }
 
 export default class Reader {
