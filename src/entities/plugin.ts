@@ -1,10 +1,10 @@
-import { Config } from '../io/reader';
+import Config from '../io/config';
 import Commit from './commit';
 import State from '../middleware/state';
 
 export default interface Plugin {
-    parse(state: State, commit: Commit): void;
-    modify(): Promise<void>;
+    parse(commit: Commit): void;
+    modify(state: State, commit: Commit): Promise<void>;
 }
 
 export default abstract class AbstractPlugin implements Plugin {

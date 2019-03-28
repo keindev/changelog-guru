@@ -1,9 +1,11 @@
 import Author from './author';
+import Modifier from './modifier';
 import Process from '../utils/process';
 
 export default class Commit {
     public readonly header: string;
     public readonly body: string[];
+    public readonly modifiers: Modifier[] = [];
 
     private timestamp: number;
     private url: string;

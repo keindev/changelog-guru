@@ -2,6 +2,7 @@ import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
+import Modifier from '../entities/modifier';
 
 enum SignName {
     // !break - indicates major changes breaking backward compatibility
@@ -29,56 +30,73 @@ interface SignConfig extends Config {
     signs: SignName[] | undefined;
 }
 
+export class SignModifier implements Modifier {
+    public type: SignType;
+    public name: string;
+    public value: string;
+
+    constructor(type: SignType, name: string, value: string) {
+        this.type = type;
+        this.name = name;
+        this.value = value;
+    }
+}
+
 // [<signs>] - list of commit signs: !break !group(New awesome feature)
 export default class Sign extends AbstractPlugin {
-    static REPLACER: string = '';
-    static BRACKET_LEFT: string = '(';
-    static BRACKET_RIGHT: string = ')';
-    static EXPRESSION: RegExp = /![a-z]+(\([\w ]+\)|)( |)/gi;
+    static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w ]+)\)|)( |)/gi;
 
-    private avaliable: SignType = SignType.None;
+    private types: SignType = SignType.None;
 
     constructor(config: SignConfig) {
         super(config);
 
         if (Array.isArray(config.signs)) {
-            const append = (type: SignType) => {
-                this.avaliable = this.avaliable | type;
-            };
-
-            config.signs.forEach((sign: SignName) => {
-                switch(sign) {
-                    case SignName.Break: append(SignType.Break); break;
-                    case SignName.Deprecated: append(SignType.Deprecated); break;
-                    case SignName.Group: append(SignType.Group); break;
-                    case SignName.Hide: append(SignType.Hide); break;
-                    case SignName.Important: append(SignType.Important); break;
-                }
+            config.signs.forEach((name: SignName) => {
+                this.types = this.types | this.getType(name);
             });
         }
     }
 
-    public parse(state: State, commit: Commit): void {
+    public parse(commit: Commit): void {
+        let match: RegExpExecArray | null;
+        let type: SignType;
+
         commit.body.forEach((line) => {
-            line.replace(Sign.EXPRESSION, (match: string) => {
-                let name: string = match.trim().slice(1);
-                let argument: string;
+            while (match = Sign.EXPRESSION.exec(line)) {
+                if (match.groups) {
+                    const { name, value } = match.groups;
 
-                if (name[name.length - 1] === Sign.BRACKET_RIGHT) {
-                    let split: [string, string] = name.slice(0, -1).split(Sign.BRACKET_LEFT) as [string, string];
+                    type = this.getType(name);
 
-                    name = split[0];
-                    argument = split[1];
+                    if (this.types & type) {
+                        commit.modifiers.push(new SignModifier(type, name, value));
+                    }
                 }
-
-                // TODO: check name & if is avaliable add to "section"
-
-                return Sign.REPLACER;
-            });
+            }
         });
     }
 
-    public async modify(): Promise<void> {
+    public async modify(state: State, commit: Commit): Promise<void> {
+        commit.modifiers.forEach((modifier: Modifier) => {
+            if (modifier instanceof SignModifier) {
+                // TODO: Modificate
+            }
+        });
+    }
 
+    private getType(name: string): SignType {
+        let result: SignType;
+
+        switch(name) {
+            case SignName.Break: result = SignType.Break; break;
+            case SignName.Deprecated: result = SignType.Deprecated; break;
+            case SignName.Group: result = SignType.Group; break;
+            case SignName.Hide: result = SignType.Hide; break;
+            case SignName.Important: result = SignType.Important; break;
+            default: result = SignType.None; break;
+        }
+
+        return result;
     }
 }

@@ -30,21 +30,21 @@ export default class PluginManager extends AbstractPlugin {
     }
 
     public async process(state: State, commit: Commit) {
-        this.parse(state, commit);
-        await this.modify();
+        this.parse(commit);
+        await this.modify(state, commit);
     }
 
-    public parse(state: State, commit: Commit) {
+    public parse(commit: Commit) {
         this.plugins.forEach((plugin) => {
-            plugin.parse(state, commit);
+            plugin.parse(commit);
         });
     }
 
-    public async modify(): Promise<void> {
+    public async modify(state: State, commit: Commit): Promise<void> {
         const promises: Promise<void>[] = [];
 
         this.plugins.forEach((plugin) => {
-            promises.push(plugin.modify());
+            promises.push(plugin.modify(state, commit));
         });
 
         await Promise.all(promises);
