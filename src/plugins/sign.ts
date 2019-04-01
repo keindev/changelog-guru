@@ -32,12 +32,10 @@ interface SignConfig extends Config {
 
 export class SignModifier implements Modifier {
     public type: SignType;
-    public name: string;
     public value: string;
 
-    constructor(type: SignType, name: string, value: string) {
+    constructor(type: SignType, value: string) {
         this.type = type;
-        this.name = name;
         this.value = value;
     }
 }
@@ -67,10 +65,8 @@ export default class Sign extends AbstractPlugin {
                 if (match.groups) {
                     const { name, value } = match.groups;
 
-                    type = this.getType(name);
-
-                    if (this.types & type) {
-                        commit.modifiers.push(new SignModifier(type, name, value));
+                    if (this.types & (type = this.getType(name))) {
+                        commit.modifiers.push(new SignModifier(type, value));
                     }
                 }
             }
@@ -80,7 +76,13 @@ export default class Sign extends AbstractPlugin {
     public async modify(state: State, commit: Commit): Promise<void> {
         commit.modifiers.forEach((modifier: Modifier) => {
             if (modifier instanceof SignModifier) {
-                // TODO: Modificate
+                const { value, type } = modifier;
+
+                if (type & SignType.Break) commit.break();
+                if (type & SignType.Deprecated) commit.deprecate();
+                if (type & SignType.Hide) commit.hide();
+                if (type & SignType.Important) commit.increasePriority();
+                if (type & SignType.Group) state.group(value, commit);
             }
         });
     }

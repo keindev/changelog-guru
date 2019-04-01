@@ -21,7 +21,7 @@ export default class Changelog {
         const [state, plugins] = await this.reader.read();
         const promises: Promise<void>[] = [];
 
-        state.getCommits().forEach((commit) => {
+        state.modify((commit) => {
             promises.push(plugins.process(state, commit));
         });
 

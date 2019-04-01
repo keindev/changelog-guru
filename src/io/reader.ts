@@ -57,18 +57,19 @@ export default class Reader {
 
     private async readPackage(): Promise<void> {
         const pkg: Package = await import(path.resolve(process.cwd(), 'package.json'));
+        const { version, repository } = pkg;
 
-        if (!pkg.version) Process.error('<package.version> is not specified');
-        if (!pkg.repository) Process.error('<package.repository> is not specified');
-        if (!pkg.repository.url) Process.error('<package.repository.url> is not specified');
-        if (!pkg.repository.type) Process.error('<package.repository> is not git repository type');
+        if (!version) Process.error('<package.version> is not specified');
+        if (!repository) Process.error('<package.repository> is not specified');
+        if (!repository.url) Process.error('<package.repository.url> is not specified');
+        if (!repository.type) Process.error('<package.repository> is not git repository type');
 
-        const pathname: string[] = (new URL(pkg.repository.url)).pathname.split('/');
+        const pathname: string[] = (new URL(repository.url)).pathname.split('/');
         const repo: string = path.basename(pathname.pop() as string, Git.EXTENSION);
         const owner: string = pathname.pop() as string;
 
         await this.git.init(repo, owner);
-        this.state.version = pkg.version;
+        this.state.setVersion(version);
     }
 
     private async readCommits(pageNumber: number = 0): Promise<void> {

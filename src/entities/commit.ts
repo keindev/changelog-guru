@@ -6,12 +6,16 @@ export default class Commit {
     public readonly header: string;
     public readonly body: string[];
     public readonly modifiers: Modifier[] = [];
+    public readonly timestamp: number;
 
-    private timestamp: number;
     private url: string;
     private author: Author;
     private types: string[] = [];
     private scope: string = '';
+    private priority: number = 0;
+    private breaking: boolean = false;
+    private deprecated: boolean = false;
+    private visible: boolean = true;
 
     constructor(timestamp: number, message: string, url: string, author: Author) {
         this.timestamp = timestamp;
@@ -34,6 +38,42 @@ export default class Commit {
                 this.scope = match.groups.scope;
             }
         }
+    }
+
+    public break() {
+        this.breaking = true;
+        this.increasePriority();
+    }
+
+    public deprecate() {
+        this.deprecated = true;
+        this.increasePriority();
+    }
+
+    public hide() {
+        if (!this.isImportant()) {
+            this.visible = false;
+        }
+    }
+
+    public increasePriority() {
+        this.priority++;
+    }
+
+    public isBreaking(): boolean {
+        return this.breaking;
+    }
+
+    public isDeprecated(): boolean {
+        return this.deprecated;
+    }
+
+    public isImportant(): boolean {
+        return this.isBreaking() && this.isDeprecated();
+    }
+
+    public isVisible(): boolean {
+        return this.visible
     }
 
     public isValid(): boolean {
