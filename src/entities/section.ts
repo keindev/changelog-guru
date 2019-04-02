@@ -1,8 +1,4 @@
 import Commit from './commit';
-/*
-Break = 'BREAKING CHANGES',
-Deprecated = 'Deprecations',
-*/
 
 export default class Section {
     private name: string;
@@ -12,7 +8,7 @@ export default class Section {
         this.name = name;
     }
 
-    public assign(commit: Commit) {
+    public assign(commit: Commit): void {
         if (commit.isValid() && commit.isVisible()) {
             this.commits.set(commit.timestamp, commit);
         }

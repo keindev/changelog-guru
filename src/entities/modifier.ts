@@ -1,4 +1,4 @@
 
 export default interface Modifier {
-    [key: string]: any;
+    readonly [key: string]: any;
 }

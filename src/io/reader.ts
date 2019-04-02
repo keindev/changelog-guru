@@ -7,7 +7,6 @@ import Git from '../middleware/git';
 import PluginManager from '../middleware/plugin';
 import State from '../middleware/state';
 import Commit from '../entities/commit';
-import Author from '../entities/author';
 import Process from '../utils/process';
 
 export interface Package {
@@ -83,10 +82,10 @@ export default class Reader {
                 const { commit, html_url: url } = response;
                 const { author: { id: authorId, html_url: authorUrl, avatar_url: authorAvatar } } = response;
                 const timestamp = new Date(commit.author.date).getTime();
-                const message = commit.message;
                 const { state } = this;
 
-                state.addCommit(new Commit(timestamp, message, url, state.addAutor(authorId, authorUrl, authorAvatar)));
+                state.addCommit(new Commit(timestamp, commit.message, url,
+                    state.addAutor(authorId, authorUrl, authorAvatar)));
             });
 
             if (length === Git.COMMITS_PAGE_SIZE) {

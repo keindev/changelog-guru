@@ -29,11 +29,9 @@ signs:
     - break
 # list of major scopes
 scopes:
-    - common
-    - core
-    - theme
-    - api
-    - package
+    core: Core
+    theme: Themes
+    api: API
 sections:
     - Features:
         - feat

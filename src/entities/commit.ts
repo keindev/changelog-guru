@@ -1,6 +1,5 @@
 import Author from './author';
 import Modifier from './modifier';
-import Process from '../utils/process';
 
 export default class Commit {
     public readonly header: string;
@@ -11,16 +10,16 @@ export default class Commit {
     private url: string;
     private author: Author;
     private types: string[] = [];
-    private scope: string = '';
+    private scope: string | undefined;
     private priority: number = 0;
     private breaking: boolean = false;
     private deprecated: boolean = false;
     private visible: boolean = true;
 
-    constructor(timestamp: number, message: string, url: string, author: Author) {
+    public constructor(timestamp: number, message: string, url: string, author: Author) {
         this.timestamp = timestamp;
 
-        let lines = message.split('\n').map(line => line.trim());
+        const lines = message.split('\n').map(line => line.trim());
 
         this.header = lines.shift() || '';
         this.body = lines;
@@ -40,23 +39,31 @@ export default class Commit {
         }
     }
 
-    public break() {
+    public getType(): string {
+        return this.types[0] || '';
+    }
+
+    public getScope(): string {
+        return this.scope || '';
+    }
+
+    public break(): void {
         this.breaking = true;
         this.increasePriority();
     }
 
-    public deprecate() {
+    public deprecate(): void {
         this.deprecated = true;
         this.increasePriority();
     }
 
-    public hide() {
+    public hide(): void {
         if (!this.isImportant()) {
             this.visible = false;
         }
     }
 
-    public increasePriority() {
+    public increasePriority(): void {
         this.priority++;
     }
 
@@ -77,18 +84,6 @@ export default class Commit {
     }
 
     public isValid(): boolean {
-        return !!this.header.length;
+        return !!this.header.length && !!this.types.length;
     }
-
-    /**
-        @see https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
-
-        -----------------------commit-----------------------
-        <type>(<scope>): <subject>
-        [<flags>]
-        <body>
-
-        <footer>
-        ----------------------------------------------------
-    */
 }

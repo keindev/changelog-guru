@@ -1,13 +1,51 @@
 import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/plugin';
 import State from '../middleware/state';
+import Config from '../io/config';
+import Modifier from '../entities/modifier';
+
+interface ScopeConfig extends Config {
+    scopes: { [key: string]: string } | undefined;
+}
+
+export class ScopeModifier implements Modifier {
+    public readonly index: number;
+
+    public constructor(index: number) {
+        this.index = index;
+    }
+}
 
 export default class Scope extends AbstractPlugin {
-    public parse(state: State, commit: Commit): void {
+    private titles: string[] = [];
+    private types: Map<string, number> = new Map();
 
+    public constructor(config: ScopeConfig) {
+        super(config);
+
+        const { scopes } = config;
+
+        if (Array.isArray(scopes)) {
+            Object.keys(scopes).forEach((type: string) => {
+                if (!this.types.has(type)) {
+                    this.types.set(type, this.titles.push(scopes[type]) - 1);
+                }
+            });
+        }
     }
 
-    public async modify(): Promise<void> {
+    public parse(commit: Commit): void {
+        const type: string = commit.getScope();
+        const { types } = this;
 
+        if (type.length && types.has(type)) {
+            this.addModifier(commit, new ScopeModifier(types.get(type) as number));
+        }
+    }
+
+    public async modify(state: State, commit: Commit, modifier?: Modifier): Promise<void> {
+        const { index } = modifier as ScopeModifier;
+
+        state.group(this.titles[index], commit);
     }
 }

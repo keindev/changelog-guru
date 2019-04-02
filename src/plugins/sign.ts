@@ -31,22 +31,21 @@ interface SignConfig extends Config {
 }
 
 export class SignModifier implements Modifier {
-    public type: SignType;
-    public value: string;
+    public readonly type: SignType;
+    public readonly value: string;
 
-    constructor(type: SignType, value: string) {
+    public constructor(type: SignType, value: string) {
         this.type = type;
         this.value = value;
     }
 }
 
-// [<signs>] - list of commit signs: !break !group(New awesome feature)
 export default class Sign extends AbstractPlugin {
-    static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w ]+)\)|)( |)/gi;
+    public static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w ]+)\)|)( |)/gi;
 
     private types: SignType = SignType.None;
 
-    constructor(config: SignConfig) {
+    public constructor(config: SignConfig) {
         super(config);
 
         if (Array.isArray(config.signs)) {
@@ -61,42 +60,42 @@ export default class Sign extends AbstractPlugin {
         let type: SignType;
 
         commit.body.forEach((line) => {
-            while (match = Sign.EXPRESSION.exec(line)) {
-                if (match.groups) {
+            do {
+                match = Sign.EXPRESSION.exec(line);
+
+                if (match && match.groups) {
                     const { name, value } = match.groups;
 
-                    if (this.types & (type = this.getType(name))) {
-                        commit.modifiers.push(new SignModifier(type, value));
+                    type = this.getType(name);
+
+                    if (this.types & type) {
+                        this.addModifier(commit, new SignModifier(type, value));
                     }
                 }
-            }
+            } while (match);
         });
     }
 
-    public async modify(state: State, commit: Commit): Promise<void> {
-        commit.modifiers.forEach((modifier: Modifier) => {
-            if (modifier instanceof SignModifier) {
-                const { value, type } = modifier;
+    public async modify(state: State, commit: Commit, modifier?: Modifier): Promise<void> {
+        const { value, type } = modifier as SignModifier;
 
-                if (type & SignType.Break) commit.break();
-                if (type & SignType.Deprecated) commit.deprecate();
-                if (type & SignType.Hide) commit.hide();
-                if (type & SignType.Important) commit.increasePriority();
-                if (type & SignType.Group) state.group(value, commit);
-            }
-        });
+        if (type & SignType.Break) commit.break();
+        if (type & SignType.Deprecated) commit.deprecate();
+        if (type & SignType.Hide) commit.hide();
+        if (type & SignType.Important) commit.increasePriority();
+        if (type & SignType.Group) state.group(value, commit);
     }
 
     private getType(name: string): SignType {
         let result: SignType;
 
         switch(name) {
-            case SignName.Break: result = SignType.Break; break;
-            case SignName.Deprecated: result = SignType.Deprecated; break;
-            case SignName.Group: result = SignType.Group; break;
-            case SignName.Hide: result = SignType.Hide; break;
-            case SignName.Important: result = SignType.Important; break;
-            default: result = SignType.None; break;
+        case SignName.Break: result = SignType.Break; break;
+        case SignName.Deprecated: result = SignType.Deprecated; break;
+        case SignName.Group: result = SignType.Group; break;
+        case SignName.Hide: result = SignType.Hide; break;
+        case SignName.Important: result = SignType.Important; break;
+        default: result = SignType.None; break;
         }
 
         return result;

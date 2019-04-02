@@ -1,5 +1,4 @@
 import urlParse from 'url-parse';
-import Commit from './commit';
 
 export default class Author {
     public static AVATAR_SIZE: number = 40;
@@ -11,7 +10,7 @@ export default class Author {
     private bonus: number = 0;
 
     public constructor(id: number, url: string, avatarUrl: string) {
-        let avatar = urlParse(avatarUrl, true);
+        const avatar = urlParse(avatarUrl, true);
 
         if (avatar.query) avatar.query.size = Author.AVATAR_SIZE.toString();
 
@@ -20,7 +19,7 @@ export default class Author {
         this.avatar = avatar.toString();
     }
 
-    public contribute(bonus?: number) {
+    public contribute(bonus?: number): void {
         if (bonus) {
             this.bonus += bonus;
         } else {

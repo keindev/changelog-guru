@@ -11,7 +11,7 @@ export default class State {
     private authors: Map<number, Author> = new Map();
     private sections: Map<string, Section> = new Map();
 
-    public setVersion(version: string) {
+    public setVersion(version: string): void {
         if (!semver.valid(version)) Process.error('<version> is invalid (see https://semver.org/)');
 
         this.version = version;
@@ -21,7 +21,7 @@ export default class State {
         return this.version;
     }
 
-    public addType(type: string) {
+    public addType(type: string): void {
         if (typeof type !== 'string' || !type) Process.error(`incorrect or empty commit type name - "${type}"`);
         if (this.types.indexOf(type) >= 0) Process.error(`commit type name is defined twice - ${type}`);
 
@@ -38,19 +38,19 @@ export default class State {
         return authors.get(id) as Author;
     }
 
-    public addCommit(commit: Commit) {
+    public addCommit(commit: Commit): void {
         if (commit.isValid() && !this.commits.has(commit.timestamp)) {
             this.commits.set(commit.timestamp, commit);
         }
     }
 
-    public removeCommit(commit: Commit, force: boolean = false) {
+    public removeCommit(commit: Commit, force: boolean = false): void {
         if (!commit.isImportant() || force) {
             this.commits.delete(commit.timestamp);
         }
     }
 
-    public group(name: string, commit: Commit) {
+    public group(name: string, commit: Commit): void {
         const { sections } = this;
         let section: Section;
 
@@ -65,7 +65,7 @@ export default class State {
         this.removeCommit(commit);
     }
 
-    public modify(callback: (commit: Commit) => void) {
+    public modify(callback: (commit: Commit) => void): void {
         this.commits.forEach((commit) => {
             callback(commit);
         });
