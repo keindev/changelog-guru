@@ -8,10 +8,12 @@ interface SectionConfig extends Config {
     sections: { [key: string]: string[] }[] | undefined;
 }
 
-export class SectionModifier implements Modifier {
+export class SectionModifier extends Modifier {
     public readonly index: number;
 
     public constructor(index: number) {
+        super();
+
         this.index = index;
     }
 }

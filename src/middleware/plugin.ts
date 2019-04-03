@@ -43,18 +43,19 @@ export default class PluginManager extends AbstractPlugin {
     }
 
     public async modify(state: State, commit: Commit): Promise<void> {
-        const promises: Promise<void>[] = [];
         let modifier: Modifier | undefined;
+        const promises: Promise<void>[] = [];
+        const modify = (plugin: AbstractPlugin): void => {
+            if (plugin.isCompatible(modifier as Modifier)) {
+                promises.push(plugin.modify(state, commit, modifier as Modifier));
+            }
+        };
 
         while (commit.modifiers.length) {
             modifier = commit.modifiers.pop();
 
             if (typeof modifier !== 'undefined') {
-                this.plugins.forEach((plugin) => {
-                    if (plugin.isCompatible(modifier as Modifier)) {
-                        promises.push(plugin.modify(state, commit, modifier as Modifier));
-                    }
-                });
+                this.plugins.forEach(modify);
             }
         }
 

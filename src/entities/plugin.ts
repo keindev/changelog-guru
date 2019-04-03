@@ -17,6 +17,10 @@ export default abstract class AbstractPlugin implements Plugin {
         this.config = config;
     }
 
+    public abstract parse(commit: Commit): void;
+    public abstract modify(state: State, commit: Commit): Promise<void>;
+    public abstract modify(state: State, commit: Commit, modifier: Modifier): Promise<void>;
+
     public addModifier(commit: Commit, modifier: Modifier): void {
         commit.modifiers.push(modifier);
 

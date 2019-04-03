@@ -1,4 +1,7 @@
+export default class Modifier {
+    public readonly name: string;
 
-export default interface Modifier {
-    readonly [key: string]: any;
+    public constructor() {
+        this.name = this.constructor.name;
+    }
 }
