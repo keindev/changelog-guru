@@ -26,13 +26,15 @@ export default class Section extends AbstractPlugin {
         super(config);
 
         if (Array.isArray(config.sections)) {
-            config.sections.forEach((section) => {
-                Object.keys(section).forEach((name: string) => {
-                    section[name].forEach((type: string) => {
-                        if (!this.types.has(type)) {
-                            this.types.set(type, this.titles.push(name) - 1);
-                        }
-                    });
+            config.sections.forEach((section): void => {
+                Object.keys(section).forEach((name: string): void => {
+                    if (Array.isArray(section[name])) {
+                        section[name].forEach((type: string): void => {
+                            if (!this.types.has(type)) {
+                                this.types.set(type, this.titles.push(name) - 1);
+                            }
+                        });
+                    }
                 });
             });
         }

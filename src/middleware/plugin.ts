@@ -21,10 +21,11 @@ export default class PluginManager extends AbstractPlugin {
     public async load(): Promise<void> {
         const { config } = this;
         const promises: Promise<ConstructablePlugin<AbstractPlugin>>[] =
-            config.plugins.map(name => import(path.resolve(__dirname, 'plugins', name)));
+            config.plugins.map((name): Promise<ConstructablePlugin<AbstractPlugin>> =>
+                import(path.resolve(__dirname, '../plugins', name)));
         const plugins: ConstructablePlugin<AbstractPlugin>[] = await Promise.all(promises);
 
-        plugins.forEach((PluginConstructor) => {
+        plugins.forEach((PluginConstructor): void => {
             if (PluginConstructor instanceof AbstractPlugin) {
                 this.plugins.push(new PluginConstructor(config))
             }
@@ -37,7 +38,7 @@ export default class PluginManager extends AbstractPlugin {
     }
 
     public parse(commit: Commit): void {
-        this.plugins.forEach((plugin) => {
+        this.plugins.forEach((plugin): void => {
             plugin.parse(commit);
         });
     }

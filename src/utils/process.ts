@@ -1,4 +1,8 @@
 import chalk from 'chalk';
+// eslint-disable-next-line import/no-duplicates
+import * as Debug from "debug";
+// eslint-disable-next-line import/no-duplicates
+import debug from "debug";
 
 export default class Process {
     public static EXIT_CODE_ERROR: number = 1;
@@ -14,6 +18,11 @@ export default class Process {
     public static info(label: string, msg: string): void {
         // eslint-disable-next-line no-console
         console.log(chalk`{bold ${label}}: {greenBright ${msg}}`);
+    }
+
+    public static warn(label: string): void {
+        // eslint-disable-next-line no-console
+        console.log(chalk`${chalk.hex('#FF8800').bold('warning')}: ${label}`);
     }
 
     public static error(error: string, exit: boolean = true): void {
@@ -37,5 +46,9 @@ export default class Process {
 
     public static exit(code: number = Process.EXIT_CODE_ERROR): void {
         process.exit(code);
+    }
+
+    public static getDebugger(context: string): Debug.Debugger {
+        return debug(context);
     }
 }

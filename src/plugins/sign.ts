@@ -66,7 +66,7 @@ export default class Sign extends AbstractPlugin {
         super(config);
 
         if (Array.isArray(config.signs)) {
-            config.signs.forEach((name: SignName) => {
+            config.signs.forEach((name: SignName): void => {
                 this.types = this.types | Sign.getType(name);
             });
         }
@@ -76,7 +76,7 @@ export default class Sign extends AbstractPlugin {
         let match: RegExpExecArray | null;
         let type: SignType;
 
-        commit.body.forEach((line) => {
+        commit.body.forEach((line): void => {
             do {
                 match = Sign.EXPRESSION.exec(line);
 

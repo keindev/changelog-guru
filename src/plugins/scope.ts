@@ -28,7 +28,7 @@ export default class Scope extends AbstractPlugin {
         const { scopes } = config;
 
         if (Array.isArray(scopes)) {
-            Object.keys(scopes).forEach((type: string) => {
+            Object.keys(scopes).forEach((type: string): void => {
                 if (!this.types.has(type)) {
                     this.types.set(type, this.titles.push(scopes[type]) - 1);
                 }

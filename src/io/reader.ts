@@ -9,6 +9,8 @@ import State from '../middleware/state';
 import Commit from '../entities/commit';
 import Process from '../utils/process';
 
+const debug = Process.getDebugger('io:reader');
+
 export interface Package {
     version: string;
     repository: {
@@ -24,9 +26,11 @@ export default class Reader {
 
     public constructor(token: string, userConfigPath?: string) {
         const load = (configPath: string): Config => yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
-        const config: Config = load(path.join(__dirname, '../.changelog.yaml'));
+        const config: Config = load(path.join(__dirname, '../../.changelog.yaml'));
 
         if (userConfigPath) {
+            debug('read external config');
+
             const userConfig = load(userConfigPath);
 
             config.plugins = config.plugins.concat(userConfig.plugins || []);
@@ -37,7 +41,7 @@ export default class Reader {
             delete userConfig.plugins;
             delete userConfig.types;
 
-            Object.keys(userConfig).forEach((name) => {
+            Object.keys(userConfig).forEach((name): void => {
                 config[name] = userConfig[name];
             });
         }
@@ -55,13 +59,16 @@ export default class Reader {
     }
 
     private async readPackage(): Promise<void> {
-        const pkg: Package = await import(path.resolve(process.cwd(), 'package.json'));
+        const pkgPath = path.resolve(process.cwd(), 'package.json');
+        const pkg: Package = await import(pkgPath);
         const { version, repository } = pkg;
 
         if (!version) Process.error('<package.version> is not specified');
         if (!repository) Process.error('<package.repository> is not specified');
         if (!repository.url) Process.error('<package.repository.url> is not specified');
         if (!repository.type) Process.error('<package.repository> is not git repository type');
+
+        debug(`parse repository field from ${pkgPath}`);
 
         const pathname: string[] = (new URL(repository.url)).pathname.split('/');
         const repo: string = path.basename(pathname.pop() as string, Git.EXTENSION);
@@ -78,7 +85,7 @@ export default class Reader {
         if (length) {
             Process.log(`${length} commits`, 'loaded');
 
-            commits.forEach((response: ReposListCommitsResponseItem) => {
+            commits.forEach((response: ReposListCommitsResponseItem): void => {
                 const { commit, html_url: url } = response;
                 const { author: { id: authorId, html_url: authorUrl, avatar_url: authorAvatar } } = response;
                 const timestamp = new Date(commit.author.date).getTime();

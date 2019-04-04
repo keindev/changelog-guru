@@ -1,8 +1,11 @@
-/test
-/src
+node_modules/*
+test/*
+src/*
+.env
 .editorconfig
 .gitattributes
 .eslintignore
 .eslintrc.yaml
 .travis.yml
+tsconfig.json
 yarn-error.log

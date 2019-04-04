@@ -3,6 +3,8 @@ import findupSync from 'findup-sync';
 import fs from 'fs';
 import Process from '../utils/process';
 
+const debug = Process.getDebugger('middleware:git');
+
 export default class Git {
     public static COMMITS_PAGE_SIZE: number = 100;
     public static EXTENSION: string = '.git';
@@ -53,6 +55,8 @@ export default class Git {
     }
 
     public async getCommits(page: number): Promise<ReposListCommitsResponseItem[]> {
+        debug(`load list of commits for page #${page.toString()}`);
+
         const { data: commits } = await this.kit.repos.listCommits({
             page,
             ...this.repository,
@@ -69,9 +73,13 @@ export default class Git {
         let since: string = (new Date(0)).toISOString();
 
         if (length) {
+            debug('get last release date');
+
             const { data: release } = await this.kit.repos.getLatestRelease({ ...this.repository });
 
             since = release.created_at;
+        } else {
+            debug('repository does not have releases');
         }
 
         Process.info('Get last commits since', since);
