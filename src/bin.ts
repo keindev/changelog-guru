@@ -1,9 +1,9 @@
 import commander, { Command } from 'commander';
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import Process from './utils/process';
 import Changelog, { Options } from './index';
+import * as Debug from "debug";
 
 commander.version(Process.getVersion(), '-v, --version')
     .description('GitHub changelog generator')
@@ -24,8 +24,8 @@ if (typeof command.config === 'string') {
     }
 }
 
-if (command.debug && typeof process.env.DEBUG === 'undefined') {
-    Process.warn(chalk`Use the {greenBright DEBUG=*} environment variable to enable these based on space or comma-delimited names.`);
+if (command.debug) {
+    Debug.enable([Process.DEBUG_NAMESPACE, '*'].join(':'));
 }
 
 const options: Options = { config, token: command.token };

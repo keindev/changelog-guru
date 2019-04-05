@@ -2,6 +2,9 @@ import Config from '../io/config';
 import Commit from './commit';
 import State from '../middleware/state';
 import Modifier from './modifier';
+import Process from '../utils/process';
+
+const debug = Process.getDebugger('entities:plugin');
 
 export interface Plugin {
     parse(commit: Commit): void;
@@ -14,6 +17,8 @@ export default abstract class AbstractPlugin implements Plugin {
     private modifier: string | undefined;
 
     public constructor(config: Config) {
+        debug('create [Plugin]: %s', this.constructor.name);
+
         this.config = config;
     }
 

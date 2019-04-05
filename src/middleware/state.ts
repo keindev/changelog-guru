@@ -9,12 +9,12 @@ const debug = Process.getDebugger('middleware:state');
 export default class State {
     private version: string = '1.0.0';
     private types: string[] = [];
-    private commits: Map<number, Commit> = new Map();
+    private commits: Map<string, Commit> = new Map();
     private authors: Map<number, Author> = new Map();
     private sections: Map<string, Section> = new Map();
 
     public setVersion(version: string): void {
-        debug(`set package version: ${version}`);
+        debug('set pkg version: %s', version);
 
         if (!semver.valid(version)) Process.error('<version> is invalid (see https://semver.org/)');
 
@@ -26,7 +26,7 @@ export default class State {
     }
 
     public addType(type: string): void {
-        debug(`add commit type: ${type}`);
+        debug('add [Commit] type: %', type);
 
         if (typeof type !== 'string' || !type) Process.error(`incorrect or empty commit type name - "${type}"`);
         if (this.types.indexOf(type) >= 0) Process.error(`commit type name is defined twice - ${type}`);
@@ -34,33 +34,27 @@ export default class State {
         this.types.push(type);
     }
 
-    public addAutor(id: number, url: string, avatarUrl: string): Author {
+    public addAutor(id: number, login: string, url: string, avatarUrl: string): Author {
         const { authors } = this;
 
         if (!authors.has(id)) {
-            debug(`added author: ${url}`);
-
-            authors.set(id, new Author(id, url, avatarUrl));
+            authors.set(id, new Author(id, login, url, avatarUrl));
         }
 
         return authors.get(id) as Author;
     }
 
     public addCommit(commit: Commit): void {
-        // TODO: replase timestamp to unique sha?!
-        if (commit.isValid() && !this.commits.has(commit.timestamp)) {
-            debug(`added commit: ${commit.url}`);
-
-            this.commits.set(commit.timestamp, commit);
+        if (commit.isValid() && !this.commits.has(commit.sha)) {
+            this.commits.set(commit.sha, commit);
         } else {
-            Process.warn(`invalid commit: ${commit.url}`);
-            debug(`invalid commit: %j`, commit);
+            Process.warn(`invalid commit: ${commit.sha}`);
         }
     }
 
     public removeCommit(commit: Commit, force: boolean = false): void {
         if (!commit.isImportant() || force) {
-            this.commits.delete(commit.timestamp);
+            this.commits.delete(commit.sha);
         }
     }
 

@@ -8,7 +8,7 @@ interface SectionConfig extends Config {
     sections: { [key: string]: string[] }[] | undefined;
 }
 
-export class SectionModifier extends Modifier {
+class SectionModifier extends Modifier {
     public readonly index: number;
 
     public constructor(index: number) {

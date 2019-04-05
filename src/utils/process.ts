@@ -7,6 +7,7 @@ import debug from "debug";
 export default class Process {
     public static EXIT_CODE_ERROR: number = 1;
     public static EXIT_CODE_SUCCES: number = 0;
+    public static DEBUG_NAMESPACE: string = 'changelog';
 
     public static log(label: string, msg: string): void {
         const date = (): string => new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
@@ -49,6 +50,6 @@ export default class Process {
     }
 
     public static getDebugger(context: string): Debug.Debugger {
-        return debug(context);
+        return debug([Process.DEBUG_NAMESPACE, context].join(':'));
     }
 }

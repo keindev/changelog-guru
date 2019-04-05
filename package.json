@@ -34,7 +34,7 @@
         "build": "npm-run-all clean lint build:*"
     },
     "engines": {
-        "node": ">=10.12.0"
+        "node": "^10.13.0"
     },
     "dependencies": {
         "@octokit/rest": "^16.15.0",

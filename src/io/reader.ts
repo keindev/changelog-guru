@@ -29,7 +29,7 @@ export default class Reader {
         const config: Config = load(path.join(__dirname, '../../.changelog.yaml'));
 
         if (userConfigPath) {
-            debug('read external config');
+            debug('read [Config]: %s', userConfigPath);
 
             const userConfig = load(userConfigPath);
 
@@ -68,7 +68,7 @@ export default class Reader {
         if (!repository.url) Process.error('<package.repository.url> is not specified');
         if (!repository.type) Process.error('<package.repository> is not git repository type');
 
-        debug(`parse repository field from ${pkgPath}`);
+        debug('parse <repository>: %s', pkgPath);
 
         const pathname: string[] = (new URL(repository.url)).pathname.split('/');
         const repo: string = path.basename(pathname.pop() as string, Git.EXTENSION);
@@ -86,13 +86,13 @@ export default class Reader {
             Process.log(`${length} commits`, 'loaded');
 
             commits.forEach((response: ReposListCommitsResponseItem): void => {
-                const { commit, html_url: url } = response;
-                const { author: { id: authorId, html_url: authorUrl, avatar_url: authorAvatar } } = response;
+                const { commit, html_url: url, sha } = response;
+                const { author: { id: authorId, html_url: authorUrl, avatar_url: authorAvatar, login } } = response;
                 const timestamp = new Date(commit.author.date).getTime();
                 const { state } = this;
 
-                state.addCommit(new Commit(timestamp, commit.message, url,
-                    state.addAutor(authorId, authorUrl, authorAvatar)));
+                state.addCommit(new Commit(sha, timestamp, commit.message, url,
+                    state.addAutor(authorId, login, authorUrl, authorAvatar)));
             });
 
             if (length === Git.COMMITS_PAGE_SIZE) {

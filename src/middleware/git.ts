@@ -55,7 +55,7 @@ export default class Git {
     }
 
     public async getCommits(page: number): Promise<ReposListCommitsResponseItem[]> {
-        debug(`load list of commits for page #${page.toString()}`);
+        debug(`load list of [GitHub] commits for page #${page.toString()}`);
 
         const { data: commits } = await this.kit.repos.listCommits({
             page,
@@ -73,13 +73,13 @@ export default class Git {
         let since: string = (new Date(0)).toISOString();
 
         if (length) {
-            debug('get last release date');
+            debug('get last [GitHub] repository release date');
 
             const { data: release } = await this.kit.repos.getLatestRelease({ ...this.repository });
 
             since = release.created_at;
         } else {
-            debug('repository does not have releases');
+            debug('[GitHub] repository does not have releases');
         }
 
         Process.info('Get last commits since', since);

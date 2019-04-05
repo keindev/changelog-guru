@@ -1,5 +1,8 @@
 import Author from './author';
 import Modifier from './modifier';
+import Process from '../utils/process';
+
+const debug = Process.getDebugger('entities:commit');
 
 export default class Commit {
     public readonly header: string;
@@ -7,6 +10,7 @@ export default class Commit {
     public readonly modifiers: Modifier[] = [];
     public readonly timestamp: number;
     public readonly url: string;
+    public readonly sha: string;
 
     private author: Author;
     private types: string[] = [];
@@ -16,7 +20,10 @@ export default class Commit {
     private deprecated: boolean = false;
     private visible: boolean = true;
 
-    public constructor(timestamp: number, message: string, url: string, author: Author) {
+    public constructor(sha: string, timestamp: number, message: string, url: string, author: Author) {
+        debug('create [Commit]: %s', sha);
+
+        this.sha = sha;
         this.timestamp = timestamp;
 
         const lines = message.split('\n').map((line): string => line.trim());

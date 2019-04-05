@@ -8,7 +8,7 @@ interface ScopeConfig extends Config {
     scopes: { [key: string]: string } | undefined;
 }
 
-export class ScopeModifier extends Modifier {
+class ScopeModifier extends Modifier {
     public readonly index: number;
 
     public constructor(index: number) {

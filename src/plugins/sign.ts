@@ -30,7 +30,7 @@ interface SignConfig extends Config {
     signs: SignName[] | undefined;
 }
 
-export class SignModifier extends Modifier {
+class SignModifier extends Modifier {
     public readonly type: SignType;
     public readonly value: string;
 
