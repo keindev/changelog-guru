@@ -2,13 +2,13 @@ import Octokit, { ReposListCommitsResponseItem, ReposListReleasesParams } from '
 import findupSync from 'findup-sync';
 import fs from 'fs';
 import Process from '../utils/process';
+import Entity from '../entities/entity';
 
-const debug = Process.getDebugger('middleware:git');
-
-export default class Git {
+export default class Git extends Entity {
     public static COMMITS_PAGE_SIZE: number = 100;
     public static EXTENSION: string = '.git';
 
+    // TODO: rename
     private _lastReleaseDate: string = '';
     private kit: Octokit;
     private repository: ReposListReleasesParams = { repo: '', owner: '' };
@@ -40,6 +40,8 @@ export default class Git {
     }
 
     public constructor(token: string) {
+        super();
+
         this.kit = new Octokit({ auth: `token ${token}` });
         this.sha = Git.getSHA(process.cwd());
     }
@@ -55,7 +57,7 @@ export default class Git {
     }
 
     public async getCommits(page: number): Promise<ReposListCommitsResponseItem[]> {
-        debug(`load list of [GitHub] commits for page #${page.toString()}`);
+        this.debug(`load page #${page.toString()}`);
 
         const { data: commits } = await this.kit.repos.listCommits({
             page,
@@ -73,13 +75,11 @@ export default class Git {
         let since: string = (new Date(0)).toISOString();
 
         if (length) {
-            debug('get last [GitHub] repository release date');
-
             const { data: release } = await this.kit.repos.getLatestRelease({ ...this.repository });
 
             since = release.created_at;
         } else {
-            debug('[GitHub] repository does not have releases');
+            this.debug('repository does not have releases');
         }
 
         Process.info('Get last commits since', since);

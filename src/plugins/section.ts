@@ -2,13 +2,13 @@ import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
-import Modifier from '../entities/modifier';
+import Entity from '../entities/entity';
 
 interface SectionConfig extends Config {
     sections: { [key: string]: string[] }[] | undefined;
 }
 
-class SectionModifier extends Modifier {
+class SectionModifier extends Entity {
     public readonly index: number;
 
     public constructor(index: number) {
@@ -25,13 +25,19 @@ export default class Section extends AbstractPlugin {
     public constructor(config: SectionConfig) {
         super(config);
 
+        let titleIndex: number;
+
         if (Array.isArray(config.sections)) {
             config.sections.forEach((section): void => {
                 Object.keys(section).forEach((name: string): void => {
                     if (Array.isArray(section[name])) {
+                        this.debug('append: %s:', name);
+                        titleIndex = this.titles.push(name) - 1;
+
                         section[name].forEach((type: string): void => {
                             if (!this.types.has(type)) {
-                                this.types.set(type, this.titles.push(name) - 1);
+                                this.debug('-- %s', type);
+                                this.types.set(type, titleIndex);
                             }
                         });
                     }
@@ -49,7 +55,7 @@ export default class Section extends AbstractPlugin {
         }
     }
 
-    public async modify(state: State, commit: Commit, modifier?: Modifier): Promise<void> {
+    public async modify(state: State, commit: Commit, modifier?: Entity): Promise<void> {
         const { index } = modifier as SectionModifier;
 
         state.group(this.titles[index], commit);

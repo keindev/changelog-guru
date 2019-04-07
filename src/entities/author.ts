@@ -1,9 +1,7 @@
 import urlParse from 'url-parse';
-import Process from '../utils/process';
+import Entity from './entity';
 
-const debug = Process.getDebugger('entities:author');
-
-export default class Author {
+export default class Author extends Entity {
     public static AVATAR_SIZE: number = 40;
     public readonly login: string;
 
@@ -13,16 +11,22 @@ export default class Author {
     private contribution: number = 0;
     private bonus: number = 0;
 
-    public constructor(id: number, login: string, url: string, avatarUrl: string) {
-        debug('create [Author]: %s', login);
+    public static resizeAvatar(url: string, size: number = Author.AVATAR_SIZE): string {
+        const avatar = urlParse(url, true);
 
-        const avatar = urlParse(avatarUrl, true);
+        if (avatar.query) {
+            avatar.query.size = size.toString();
+        }
 
-        if (avatar.query) avatar.query.size = Author.AVATAR_SIZE.toString();
+        return avatar.toString();
+    }
+
+    public constructor(id: number, login: string, url: string, avatar: string) {
+        super(login);
 
         this.id = id;
         this.url = url;
-        this.avatar = avatar.toString();
+        this.avatar = Author.resizeAvatar(avatar);
         this.login = login;
     }
 

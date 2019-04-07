@@ -2,7 +2,7 @@ import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
-import Modifier from '../entities/modifier';
+import Entity from '../entities/entity';
 
 enum SignName {
     // !break - indicates major changes breaking backward compatibility
@@ -30,7 +30,7 @@ interface SignConfig extends Config {
     signs: SignName[] | undefined;
 }
 
-class SignModifier extends Modifier {
+class SignModifier extends Entity {
     public readonly type: SignType;
     public readonly value: string;
 
@@ -67,6 +67,7 @@ export default class Sign extends AbstractPlugin {
 
         if (Array.isArray(config.signs)) {
             config.signs.forEach((name: SignName): void => {
+                this.debug('avaliable: %s', name);
                 this.types = this.types | Sign.getType(name);
             });
         }
@@ -93,7 +94,7 @@ export default class Sign extends AbstractPlugin {
         });
     }
 
-    public async modify(state: State, commit: Commit, modifier?: Modifier): Promise<void> {
+    public async modify(state: State, commit: Commit, modifier?: Entity): Promise<void> {
         if (this.types !== SignType.None) {
             const { value, type } = modifier as SignModifier;
 

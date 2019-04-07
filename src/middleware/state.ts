@@ -3,10 +3,9 @@ import Commit from '../entities/commit';
 import Author from '../entities/author';
 import Section from '../entities/section';
 import Process from '../utils/process';
+import Entity from '../entities/entity';
 
-const debug = Process.getDebugger('middleware:state');
-
-export default class State {
+export default class State extends Entity {
     private version: string = '1.0.0';
     private types: string[] = [];
     private commits: Map<string, Commit> = new Map();
@@ -14,10 +13,9 @@ export default class State {
     private sections: Map<string, Section> = new Map();
 
     public setVersion(version: string): void {
-        debug('set pkg version: %s', version);
-
         if (!semver.valid(version)) Process.error('<version> is invalid (see https://semver.org/)');
 
+        this.debug('set version: %s', version);
         this.version = version;
     }
 
@@ -26,11 +24,10 @@ export default class State {
     }
 
     public addType(type: string): void {
-        debug('add [Commit] type: %', type);
-
         if (typeof type !== 'string' || !type) Process.error(`incorrect or empty commit type name - "${type}"`);
         if (this.types.indexOf(type) >= 0) Process.error(`commit type name is defined twice - ${type}`);
 
+        this.debug('add type: %s', type);
         this.types.push(type);
     }
 
@@ -49,11 +46,13 @@ export default class State {
             this.commits.set(commit.sha, commit);
         } else {
             Process.warn(`invalid commit: ${commit.sha}`);
+            this.debug('invalid: %O', commit);
         }
     }
 
     public removeCommit(commit: Commit, force: boolean = false): void {
         if (!commit.isImportant() || force) {
+            this.debug('remove: %s', commit.sha);
             this.commits.delete(commit.sha);
         }
     }

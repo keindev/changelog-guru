@@ -8,28 +8,22 @@ import PluginManager from '../middleware/plugin';
 import State from '../middleware/state';
 import Commit from '../entities/commit';
 import Process from '../utils/process';
+import Package from './package';
+import Entity from '../entities/entity';
 
-const debug = Process.getDebugger('io:reader');
-
-export interface Package {
-    version: string;
-    repository: {
-        type: string,
-        url: string,
-    };
-}
-
-export default class Reader {
+export default class Reader extends Entity {
     private state: State = new State();
     private git: Git;
     private plugins: PluginManager;
 
     public constructor(token: string, userConfigPath?: string) {
+        super();
+
         const load = (configPath: string): Config => yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
         const config: Config = load(path.join(__dirname, '../../.changelog.yaml'));
 
         if (userConfigPath) {
-            debug('read [Config]: %s', userConfigPath);
+            this.debug('read: %s', userConfigPath);
 
             const userConfig = load(userConfigPath);
 
@@ -68,7 +62,7 @@ export default class Reader {
         if (!repository.url) Process.error('<package.repository.url> is not specified');
         if (!repository.type) Process.error('<package.repository> is not git repository type');
 
-        debug('parse <repository>: %s', pkgPath);
+        this.debug('parse: %s', pkgPath);
 
         const pathname: string[] = (new URL(repository.url)).pathname.split('/');
         const repo: string = path.basename(pathname.pop() as string, Git.EXTENSION);

@@ -8,6 +8,7 @@ export default class Process {
     public static EXIT_CODE_ERROR: number = 1;
     public static EXIT_CODE_SUCCES: number = 0;
     public static DEBUG_NAMESPACE: string = 'changelog';
+    public static DEBUG_NAMESPACE_LENGTH: number = 15;
 
     public static log(label: string, msg: string): void {
         const date = (): string => new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
@@ -45,11 +46,11 @@ export default class Process {
         return version;
     }
 
-    public static exit(code: number = Process.EXIT_CODE_ERROR): void {
-        process.exit(code);
+    public static getDebugger(context: string): Debug.Debugger {
+        return debug([Process.DEBUG_NAMESPACE, context.padEnd(Process.DEBUG_NAMESPACE_LENGTH, '.')].join(':'));
     }
 
-    public static getDebugger(context: string): Debug.Debugger {
-        return debug([Process.DEBUG_NAMESPACE, context].join(':'));
+    public static exit(code: number = Process.EXIT_CODE_ERROR): void {
+        process.exit(code);
     }
 }

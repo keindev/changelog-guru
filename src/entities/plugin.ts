@@ -1,32 +1,29 @@
 import Config from '../io/config';
 import Commit from './commit';
 import State from '../middleware/state';
-import Modifier from './modifier';
-import Process from '../utils/process';
-
-const debug = Process.getDebugger('entities:plugin');
+import Entity from './entity';
 
 export interface Plugin {
     parse(commit: Commit): void;
     modify(state: State, commit: Commit): Promise<void>;
-    modify(state: State, commit: Commit, modifier: Modifier): Promise<void>;
+    modify(state: State, commit: Commit, modifier: Entity): Promise<void>;
 }
 
-export default abstract class AbstractPlugin implements Plugin {
+export default abstract class AbstractPlugin extends Entity implements Plugin {
     protected config: Config;
     private modifier: string | undefined;
 
     public constructor(config: Config) {
-        debug('create [Plugin]: %s', this.constructor.name);
+        super();
 
         this.config = config;
     }
 
     public abstract parse(commit: Commit): void;
     public abstract modify(state: State, commit: Commit): Promise<void>;
-    public abstract modify(state: State, commit: Commit, modifier: Modifier): Promise<void>;
+    public abstract modify(state: State, commit: Commit, modifier: Entity): Promise<void>;
 
-    public addModifier(commit: Commit, modifier: Modifier): void {
+    public addModifier(commit: Commit, modifier: Entity): void {
         commit.modifiers.push(modifier);
 
         if (typeof this.modifier === 'undefined') {
@@ -34,7 +31,7 @@ export default abstract class AbstractPlugin implements Plugin {
         }
     }
 
-    public isCompatible(modifier: Modifier): boolean {
+    public isCompatible(modifier: Entity): boolean {
         return this.modifier === modifier.constructor.name;
     }
 }

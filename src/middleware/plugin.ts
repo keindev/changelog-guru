@@ -3,10 +3,7 @@ import State from './state';
 import AbstractPlugin from '../entities/plugin';
 import Commit from '../entities/commit';
 import Config from '../io/config';
-import Modifier from '../entities/modifier';
-import Process from '../utils/process';
-
-const debug = Process.getDebugger('middleware:plugin');
+import Entity from '../entities/entity';
 
 interface Plugin<T> {
     new(config: Config) : T;
@@ -31,7 +28,7 @@ export default class PluginManager extends AbstractPlugin {
             import(path.resolve(__dirname, '../plugins', `${name}.js`)));
         const plugins: ImportedPlugin[] = await Promise.all(promises);
 
-        debug('import & create [Plugins]: %j', config.plugins);
+        this.debug('load plugins: %j', config.plugins);
 
         plugins.map((plugin): Plugin<AbstractPlugin> => plugin.default).forEach((PluginClass, index): void => {
             if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
@@ -40,10 +37,10 @@ export default class PluginManager extends AbstractPlugin {
                 if (plugin instanceof AbstractPlugin) {
                     this.plugins.push(plugin);
                 } else {
-                    debug('[Plugin]: %s failed, is not a [AbstractPlugin].', config.plugins[index]);
+                    this.debug('%s is not a Plugin.', config.plugins[index]);
                 }
             } else {
-                debug('create [Plugin]: %s failed, is not a class.', config.plugins[index]);
+                this.debug('%s is not a class.', config.plugins[index]);
             }
         });
     }
@@ -54,7 +51,7 @@ export default class PluginManager extends AbstractPlugin {
     }
 
     public parse(commit: Commit): void {
-        debug('parse [Commit]: %s', commit.sha);
+        this.debug('parse: %s', commit.sha);
 
         this.plugins.forEach((plugin): void => {
             plugin.parse(commit);
@@ -62,13 +59,13 @@ export default class PluginManager extends AbstractPlugin {
     }
 
     public async modify(state: State, commit: Commit): Promise<void> {
-        debug('modify [Commit]: %s', commit.sha);
+        this.debug('modify: %s', commit.sha);
 
-        let modifier: Modifier | undefined;
+        let modifier: Entity | undefined;
         const promises: Promise<void>[] = [];
         const modify = (plugin: AbstractPlugin): void => {
-            if (plugin.isCompatible(modifier as Modifier)) {
-                promises.push(plugin.modify(state, commit, modifier as Modifier));
+            if (plugin.isCompatible(modifier as Entity)) {
+                promises.push(plugin.modify(state, commit, modifier as Entity));
             }
         };
 

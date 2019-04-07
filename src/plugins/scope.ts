@@ -2,13 +2,13 @@ import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
-import Modifier from '../entities/modifier';
+import Entity from '../entities/entity';
 
 interface ScopeConfig extends Config {
     scopes: { [key: string]: string } | undefined;
 }
 
-class ScopeModifier extends Modifier {
+class ScopeModifier extends Entity {
     public readonly index: number;
 
     public constructor(index: number) {
@@ -29,7 +29,8 @@ export default class Scope extends AbstractPlugin {
 
         if (Array.isArray(scopes)) {
             Object.keys(scopes).forEach((type: string): void => {
-                if (!this.types.has(type)) {
+                if (!this.types.has(type) && typeof scopes[type] === 'string') {
+                    this.debug('append: %s', scopes[type]);
                     this.types.set(type, this.titles.push(scopes[type]) - 1);
                 }
             });
@@ -45,7 +46,7 @@ export default class Scope extends AbstractPlugin {
         }
     }
 
-    public async modify(state: State, commit: Commit, modifier?: Modifier): Promise<void> {
+    public async modify(state: State, commit: Commit, modifier?: Entity): Promise<void> {
         const { index } = modifier as ScopeModifier;
 
         state.group(this.titles[index], commit);
