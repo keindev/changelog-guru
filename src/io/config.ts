@@ -1,4 +1,4 @@
-export type Configurable = string | number | string[];
+export type Configurable = string | number | boolean | string[];
 export type ConfigurableStructure = { [key: string]: Configurable } | { [key: string]: Configurable }[];
 
 export default interface Config {

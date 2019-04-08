@@ -1,16 +1,19 @@
 import dotenv from 'dotenv';
 import Reader from './io/reader';
 import Process from './utils/process';
+import Entity from './entities/entity';
 
 export interface Options {
     config?: string;
     token?: string;
 }
 
-export default class Changelog {
+export default class Changelog extends Entity {
     private reader: Reader;
 
     public constructor(options: Options) {
+        super();
+
         if (!options.token) dotenv.config();
         if (!process.env.GITHUB_TOKEN) Process.error('<token> option must be provided');
 
@@ -22,12 +25,10 @@ export default class Changelog {
         const promises: Promise<void>[] = [];
 
         state.modify((commit) => {
-            promises.push(plugins.process(state, commit));
+            promises.push(plugins.process(commit));
         });
 
         await Promise.all(promises);
-
-        // TODO: plugins
 
         // TODO: write
     }

@@ -57,19 +57,23 @@ export default class State extends Entity {
         }
     }
 
-    public group(name: string, commit: Commit): void {
+    public getSection(title: string): Section | undefined {
         const { sections } = this;
-        let section: Section;
+        let section: Section | undefined;
 
-        if (sections.has(name)) {
-            section = sections.get(name) as Section;
-        } else {
-            section = new Section(name);
-            sections.set(name, section);
+        if (sections.has(title)) {
+            section = sections.get(title) as Section;
         }
 
-        section.assign(commit);
-        this.removeCommit(commit);
+        return section;
+    }
+
+    public addSection(section: Section): void {
+        const { sections } = this;
+
+        if (!sections.has(section.title)) {
+            sections.set(section.title, section);
+        }
     }
 
     public modify(callback: (commit: Commit) => void): void {

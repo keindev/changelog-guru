@@ -3,6 +3,7 @@ import AbstractPlugin from '../entities/plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
 import Entity from '../entities/entity';
+import { SectionBlock } from '../entities/section';
 
 interface SectionConfig extends Config {
     sections: { [key: string]: string[] }[] | undefined;
@@ -22,8 +23,8 @@ export default class Section extends AbstractPlugin {
     private titles: string[] = [];
     private types: Map<string, number> = new Map();
 
-    public constructor(config: SectionConfig) {
-        super(config);
+    public constructor(config: SectionConfig, state: State) {
+        super(config, state);
 
         let titleIndex: number;
 
@@ -55,9 +56,9 @@ export default class Section extends AbstractPlugin {
         }
     }
 
-    public async modify(state: State, commit: Commit, modifier?: Entity): Promise<void> {
+    public async modify(commit: Commit, modifier?: Entity): Promise<void> {
         const { index } = modifier as SectionModifier;
 
-        state.group(this.titles[index], commit);
+        this.addToSection(this.titles[index], commit, index, SectionBlock.Body);
     }
 }

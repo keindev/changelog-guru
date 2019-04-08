@@ -37,4 +37,8 @@ export default class Author extends Entity {
             this.contribution++;
         }
     }
+
+    public toString(): string {
+        return `@${this.login}`;
+    }
 }

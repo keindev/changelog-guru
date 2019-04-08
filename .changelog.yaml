@@ -13,7 +13,6 @@ types:
     - style
     - workflow
     - perf
-    - break
     - revert
 # List of avaliable signs
 signs:
@@ -28,6 +27,7 @@ signs:
     # !break - indicates major changes breaking backward compatibility
     - break
 # list of major scopes
+allowCustomScopes: true
 scopes:
     core: Core
     theme: Themes
@@ -45,8 +45,6 @@ sections:
         - test
         - chore
         - docs
-    - Breaking сhanges:
-        - break
     - Performance:
         - perf
     - Refactoring:

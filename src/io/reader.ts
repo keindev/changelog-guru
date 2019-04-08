@@ -41,7 +41,7 @@ export default class Reader extends Entity {
         }
 
         this.git = new Git(token);
-        this.plugins = new PluginManager(config);
+        this.plugins = new PluginManager(config, this.state);
     }
 
     public async read(): Promise<[State, PluginManager]> {

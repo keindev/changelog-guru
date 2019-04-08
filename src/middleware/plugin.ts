@@ -6,7 +6,7 @@ import Config from '../io/config';
 import Entity from '../entities/entity';
 
 interface Plugin<T> {
-    new(config: Config) : T;
+    new(config: Config, state: State) : T;
 }
 
 interface ImportedPlugin {
@@ -16,8 +16,8 @@ interface ImportedPlugin {
 export default class PluginManager extends AbstractPlugin {
     private plugins: AbstractPlugin[];
 
-    public constructor(config: Config) {
-        super(config);
+    public constructor(config: Config, state: State) {
+        super(config, state);
 
         this.plugins = [];
     }
@@ -32,7 +32,7 @@ export default class PluginManager extends AbstractPlugin {
 
         plugins.map((plugin): Plugin<AbstractPlugin> => plugin.default).forEach((PluginClass, index): void => {
             if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
-                const plugin: AbstractPlugin = new PluginClass(config);
+                const plugin: AbstractPlugin = new PluginClass(config, this.state);
 
                 if (plugin instanceof AbstractPlugin) {
                     this.plugins.push(plugin);
@@ -45,9 +45,9 @@ export default class PluginManager extends AbstractPlugin {
         });
     }
 
-    public async process(state: State, commit: Commit): Promise<void> {
+    public async process(commit: Commit): Promise<void> {
         this.parse(commit);
-        await this.modify(state, commit);
+        await this.modify(commit);
     }
 
     public parse(commit: Commit): void {
@@ -58,14 +58,14 @@ export default class PluginManager extends AbstractPlugin {
         });
     }
 
-    public async modify(state: State, commit: Commit): Promise<void> {
+    public async modify(commit: Commit): Promise<void> {
         this.debug('modify: %s', commit.sha);
 
         let modifier: Entity | undefined;
         const promises: Promise<void>[] = [];
         const modify = (plugin: AbstractPlugin): void => {
             if (plugin.isCompatible(modifier as Entity)) {
-                promises.push(plugin.modify(state, commit, modifier as Entity));
+                promises.push(plugin.modify(commit, modifier as Entity));
             }
         };
 

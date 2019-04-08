@@ -5,6 +5,7 @@ import Config from '../io/config';
 import Entity from '../entities/entity';
 
 interface ScopeConfig extends Config {
+    allowCustomScopes?: boolean;
     scopes: { [key: string]: string } | undefined;
 }
 
@@ -19,15 +20,17 @@ class ScopeModifier extends Entity {
 }
 
 export default class Scope extends AbstractPlugin {
+    private readonly allowCustomScopes: boolean;
     private titles: string[] = [];
     private types: Map<string, number> = new Map();
 
-    public constructor(config: ScopeConfig) {
-        super(config);
+    public constructor(config: ScopeConfig, state: State) {
+        super(config, state);
 
-        const { scopes } = config;
+        const { scopes, allowCustomScopes } = config;
 
-        if (Array.isArray(scopes)) {
+        this.allowCustomScopes = !!allowCustomScopes;
+        if (typeof scopes === 'object') {
             Object.keys(scopes).forEach((type: string): void => {
                 if (!this.types.has(type) && typeof scopes[type] === 'string') {
                     this.debug('append: %s', scopes[type]);
@@ -39,16 +42,22 @@ export default class Scope extends AbstractPlugin {
 
     public parse(commit: Commit): void {
         const type: string = commit.getScope();
-        const { types } = this;
+        const { types, allowCustomScopes } = this;
 
-        if (type.length && types.has(type)) {
-            this.addModifier(commit, new ScopeModifier(types.get(type) as number));
+        if (type.length) {
+            if (types.has(type)) {
+                this.addModifier(commit, new ScopeModifier(types.get(type) as number));
+            } else if (allowCustomScopes) {
+                this.types.set(type, this.titles.push(type) - 1);
+                this.addModifier(commit, new ScopeModifier(types.get(type) as number));
+                this.debug('add custom scope: %s', type);
+            }
         }
     }
 
-    public async modify(state: State, commit: Commit, modifier?: Entity): Promise<void> {
+    public async modify(commit: Commit, modifier?: Entity): Promise<void> {
         const { index } = modifier as ScopeModifier;
 
-        state.group(this.titles[index], commit);
+        this.addToSection(this.titles[index], commit, index);
     }
 }

@@ -52,22 +52,16 @@ export default class Commit extends Entity {
 
     public break(): void {
         this.breaking = true;
-        this.increasePriority();
     }
 
     public deprecate(): void {
         this.deprecated = true;
-        this.increasePriority();
     }
 
     public hide(): void {
         if (!this.isImportant()) {
             this.visible = false;
         }
-    }
-
-    public increasePriority(): void {
-        this.priority++;
     }
 
     public isBreaking(): boolean {
