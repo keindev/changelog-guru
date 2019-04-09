@@ -1,9 +1,9 @@
 import Commit from '../entities/commit';
-import AbstractPlugin from '../entities/plugin';
+import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
 import Entity from '../entities/entity';
-import { SectionBlock } from '../entities/section';
+import Section, { SectionBlock } from '../entities/section';
 
 interface SectionConfig extends Config {
     sections: { [key: string]: string[] }[] | undefined;
@@ -19,7 +19,7 @@ class SectionModifier extends Entity {
     }
 }
 
-export default class Section extends AbstractPlugin {
+export default class SectionPlugin extends AbstractPlugin {
     private titles: string[] = [];
     private types: Map<string, number> = new Map();
 
@@ -58,7 +58,9 @@ export default class Section extends AbstractPlugin {
 
     public async modify(commit: Commit, modifier?: Entity): Promise<void> {
         const { index } = modifier as SectionModifier;
+        const { state: { sections } } = this;
+        const section: Section | undefined = sections.add(this.titles[index], index, SectionBlock.Body);
 
-        this.addToSection(this.titles[index], commit, index, SectionBlock.Body);
+        if (section) sections.assign(section, commit);
     }
 }

@@ -1,9 +1,9 @@
 import path from 'path';
-import State from './state';
-import AbstractPlugin from '../entities/plugin';
-import Commit from '../entities/commit';
-import Config from '../io/config';
-import Entity from '../entities/entity';
+import State from '../state';
+import AbstractPlugin from '../../entities/abstract-plugin';
+import Commit from '../../entities/commit';
+import Config from '../../io/config';
+import Entity from '../../entities/entity';
 
 interface Plugin<T> {
     new(config: Config, state: State) : T;
@@ -25,7 +25,7 @@ export default class PluginManager extends AbstractPlugin {
     public async load(): Promise<void> {
         const { config } = this;
         const promises: Promise<ImportedPlugin>[] = config.plugins.map((name): Promise<ImportedPlugin> =>
-            import(path.resolve(__dirname, '../plugins', `${name}.js`)));
+            import(path.resolve(__dirname, '../../plugins', `${name}.js`)));
         const plugins: ImportedPlugin[] = await Promise.all(promises);
 
         this.debug('load plugins: %j', config.plugins);

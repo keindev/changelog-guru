@@ -1,16 +1,17 @@
 import * as semver from 'semver';
-import Commit from '../entities/commit';
+import SectionManager from './managers/section';
+import CommitManager from './managers/commit';
 import Author from '../entities/author';
-import Section from '../entities/section';
-import Process from '../utils/process';
 import Entity from '../entities/entity';
+import Process from '../utils/process';
 
 export default class State extends Entity {
+    public readonly sections: SectionManager = new SectionManager();
+    public readonly commits: CommitManager = new CommitManager();
+
     private version: string = '1.0.0';
     private types: string[] = [];
-    private commits: Map<string, Commit> = new Map();
     private authors: Map<number, Author> = new Map();
-    private sections: Map<string, Section> = new Map();
 
     public setVersion(version: string): void {
         if (!semver.valid(version)) Process.error('<version> is invalid (see https://semver.org/)');
@@ -39,46 +40,5 @@ export default class State extends Entity {
         }
 
         return authors.get(id) as Author;
-    }
-
-    public addCommit(commit: Commit): void {
-        if (commit.isValid() && !this.commits.has(commit.sha)) {
-            this.commits.set(commit.sha, commit);
-        } else {
-            Process.warn(`invalid commit: ${commit.sha}`);
-            this.debug('invalid: %O', commit);
-        }
-    }
-
-    public removeCommit(commit: Commit, force: boolean = false): void {
-        if (!commit.isImportant() || force) {
-            this.debug('remove: %s', commit.sha);
-            this.commits.delete(commit.sha);
-        }
-    }
-
-    public getSection(title: string): Section | undefined {
-        const { sections } = this;
-        let section: Section | undefined;
-
-        if (sections.has(title)) {
-            section = sections.get(title) as Section;
-        }
-
-        return section;
-    }
-
-    public addSection(section: Section): void {
-        const { sections } = this;
-
-        if (!sections.has(section.title)) {
-            sections.set(section.title, section);
-        }
-    }
-
-    public modify(callback: (commit: Commit) => void): void {
-        this.commits.forEach((commit): void => {
-            callback(commit);
-        });
     }
 }

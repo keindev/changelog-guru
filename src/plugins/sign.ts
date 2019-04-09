@@ -1,9 +1,9 @@
 import Commit from '../entities/commit';
-import AbstractPlugin from '../entities/plugin';
+import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
 import Entity from '../entities/entity';
-import { SectionPosition } from '../entities/section';
+import Section, { SectionPosition } from '../entities/section';
 
 enum SignName {
     // !break - indicates major changes breaking backward compatibility
@@ -43,11 +43,12 @@ class SignModifier extends Entity {
     }
 }
 
-export default class Sign extends AbstractPlugin {
+export default class SignPlugin extends AbstractPlugin {
     public static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w ]+)\)|)( |)/gi;
     public static IMPORTANT_SECTION_TITLE: string = "Important";
 
     private types: SignType = SignType.None;
+    private importantSection: Section;
 
     public static getType(name: string): SignType {
         let result: SignType;
@@ -70,9 +71,11 @@ export default class Sign extends AbstractPlugin {
         if (Array.isArray(config.signs)) {
             config.signs.forEach((name: SignName): void => {
                 this.debug('avaliable: %s', name);
-                this.types = this.types | Sign.getType(name);
+                this.types = this.types | SignPlugin.getType(name);
             });
         }
+
+        this.importantSection = state.sections.add(SignPlugin.IMPORTANT_SECTION_TITLE, SectionPosition.Top) as Section;
     }
 
     public parse(commit: Commit): void {
@@ -81,12 +84,12 @@ export default class Sign extends AbstractPlugin {
 
         commit.body.forEach((line): void => {
             do {
-                match = Sign.EXPRESSION.exec(line);
+                match = SignPlugin.EXPRESSION.exec(line);
 
                 if (match && match.groups) {
                     const { name, value } = match.groups;
 
-                    type = Sign.getType(name);
+                    type = SignPlugin.getType(name);
 
                     if (this.types & type) {
                         this.addModifier(commit, new SignModifier(type, value));
@@ -99,12 +102,17 @@ export default class Sign extends AbstractPlugin {
     public async modify(commit: Commit, modifier?: Entity): Promise<void> {
         if (this.types !== SignType.None) {
             const { value, type } = modifier as SignModifier;
+            const { state: { sections } } = this;
 
             if (type & SignType.Break) commit.break();
             if (type & SignType.Deprecated) commit.deprecate();
             if (type & SignType.Hide) commit.hide();
-            if (type & SignType.Important) this.addToSection(Sign.IMPORTANT_SECTION_TITLE, commit, SectionPosition.Top);
-            if (type & SignType.Group && typeof value === 'string') this.addToSection(value, commit);
+            if (type & SignType.Important) sections.assign(this.importantSection, commit);
+            if (type & SignType.Group && typeof value === 'string') {
+                const section: Section | undefined = sections.add(value);
+
+                if (section) sections.assign(section, commit);
+            }
         }
     }
 }

@@ -1,7 +1,8 @@
 import Commit from '../entities/commit';
-import AbstractPlugin from '../entities/plugin';
+import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
+import Section from '../entities/section';
 import Entity from '../entities/entity';
 
 interface ScopeConfig extends Config {
@@ -19,7 +20,7 @@ class ScopeModifier extends Entity {
     }
 }
 
-export default class Scope extends AbstractPlugin {
+export default class ScopePlugin extends AbstractPlugin {
     private readonly allowCustomScopes: boolean;
     private titles: string[] = [];
     private types: Map<string, number> = new Map();
@@ -57,7 +58,9 @@ export default class Scope extends AbstractPlugin {
 
     public async modify(commit: Commit, modifier?: Entity): Promise<void> {
         const { index } = modifier as ScopeModifier;
+        const { state: { sections } } = this;
+        const section: Section | undefined = sections.add(this.titles[index], index);
 
-        this.addToSection(this.titles[index], commit, index);
+        if (section) sections.assign(section, commit);
     }
 }

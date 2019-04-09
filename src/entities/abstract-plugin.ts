@@ -2,7 +2,6 @@ import Config from '../io/config';
 import Commit from './commit';
 import State from '../middleware/state';
 import Entity from './entity';
-import Section, { SectionBlock, SectionPosition } from './section';
 
 export interface Plugin {
     parse(commit: Commit): void;
@@ -36,18 +35,5 @@ export default abstract class AbstractPlugin extends Entity implements Plugin {
 
     public isCompatible(modifier: Entity): boolean {
         return this.modifier === modifier.constructor.name;
-    }
-
-    public addToSection(title: string, commit: Commit, position: SectionPosition | number = SectionPosition.Any,
-        block: SectionBlock = SectionBlock.Mixed): void {
-        const { state } = this;
-        let section: Section | undefined = state.getSection(title);
-
-        if (!section) {
-            section = new Section(title, block, position);
-            state.addSection(section);
-        }
-
-        section.assign(commit);
     }
 }

@@ -4,7 +4,7 @@ import yaml from 'js-yaml'
 import { ReposListCommitsResponseItem } from '@octokit/rest';
 import Config from './config';
 import Git from '../middleware/git';
-import PluginManager from '../middleware/plugin';
+import PluginManager from '../middleware/managers/plugin';
 import State from '../middleware/state';
 import Commit from '../entities/commit';
 import Process from '../utils/process';
@@ -84,9 +84,9 @@ export default class Reader extends Entity {
                 const { author: { id: authorId, html_url: authorUrl, avatar_url: authorAvatar, login } } = response;
                 const timestamp = new Date(commit.author.date).getTime();
                 const { state } = this;
+                const author = state.addAutor(authorId, login, authorUrl, authorAvatar);
 
-                state.addCommit(new Commit(sha, timestamp, commit.message, url,
-                    state.addAutor(authorId, login, authorUrl, authorAvatar)));
+                state.commits.add(new Commit(sha, timestamp, commit.message, url, author));
             });
 
             if (length === Git.COMMITS_PAGE_SIZE) {
