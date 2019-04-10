@@ -6,61 +6,65 @@ import Section from '../entities/section';
 import Entity from '../entities/entity';
 
 interface ScopeConfig extends Config {
-    allowCustomScopes?: boolean;
     scopes: { [key: string]: string } | undefined;
 }
 
 class ScopeModifier extends Entity {
-    public readonly index: number;
+    public readonly key: string;
 
-    public constructor(index: number) {
+    public constructor(key: string) {
         super();
 
-        this.index = index;
+        this.key = key;
     }
 }
 
 export default class ScopePlugin extends AbstractPlugin {
-    private readonly allowCustomScopes: boolean;
-    private titles: string[] = [];
-    private types: Map<string, number> = new Map();
+    private sections: Map<string, Section> = new Map();
 
     public constructor(config: ScopeConfig, state: State) {
         super(config, state);
 
-        const { scopes, allowCustomScopes } = config;
+        const { scopes } = config;
 
-        this.allowCustomScopes = !!allowCustomScopes;
         if (typeof scopes === 'object') {
             Object.keys(scopes).forEach((type: string): void => {
-                if (!this.types.has(type) && typeof scopes[type] === 'string') {
-                    this.debug('append: %s', scopes[type]);
-                    this.types.set(type, this.titles.push(scopes[type]) - 1);
+                if (typeof scopes[type] === 'string') {
+                    this.createSection(scopes[type]);
                 }
             });
         }
     }
 
     public parse(commit: Commit): void {
-        const type: string = commit.getScope();
-        const { types, allowCustomScopes } = this;
+        const scope: string = commit.getScope();
 
-        if (type.length) {
-            if (types.has(type)) {
-                this.addModifier(commit, new ScopeModifier(types.get(type) as number));
-            } else if (allowCustomScopes) {
-                this.types.set(type, this.titles.push(type) - 1);
-                this.addModifier(commit, new ScopeModifier(types.get(type) as number));
-                this.debug('add custom scope: %s', type);
-            }
+        if (scope.length) {
+            this.addModifier(commit, new ScopeModifier(this.createSection(scope)));
         }
     }
 
     public async modify(commit: Commit, modifier?: Entity): Promise<void> {
-        const { index } = modifier as ScopeModifier;
-        const { state: { sections } } = this;
-        const section: Section | undefined = sections.add(this.titles[index], index);
+        const { key } = modifier as ScopeModifier;
+        const section: Section | undefined = this.sections.get(key);
 
-        if (section) sections.assign(section, commit);
+        if (section) {
+            this.state.sections.assign(section, commit);
+        }
+    }
+
+    private createSection(scope: string): string {
+        const { sections } = this;
+        const key = scope.trim().toLowerCase();
+
+        if (!sections.has(scope)) {
+            const section: Section | undefined = this.state.sections.add(scope);
+
+            if (section) {
+                sections.set(key, section);
+            }
+        }
+
+        return key;
     }
 }

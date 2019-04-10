@@ -10,13 +10,13 @@ export default class SectionManager extends Entity {
         let section: Section | undefined;
 
         if (typeof title === 'string') {
-            const sectionTitle = title.trim();
+            const sectionTitle = title.trim().toLowerCase();
 
             if (sectionTitle.length) {
                 section = this.sections.get(sectionTitle);
 
                 if (typeof section === 'undefined') {
-                    section = new Section(sectionTitle, block || SectionBlock.Mixed, position || SectionPosition.Any);
+                    section = new Section(title.trim(), block || SectionBlock.Mixed, position || SectionPosition.Any);
                     this.sections.set(sectionTitle, section);
                 }
             }

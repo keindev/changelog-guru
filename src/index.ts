@@ -30,6 +30,8 @@ export default class Changelog extends Entity {
 
         await Promise.all(promises);
 
+        this.debug('test %O', state.sections);
+
         // TODO: write
     }
 }

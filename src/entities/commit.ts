@@ -12,7 +12,6 @@ export default class Commit extends Entity {
     private author: Author;
     private types: string[] = [];
     private scope: string | undefined;
-    private priority: number = 0;
     private breaking: boolean = false;
     private deprecated: boolean = false;
     private visible: boolean = true;
@@ -24,7 +23,7 @@ export default class Commit extends Entity {
 
         this.sha = sha;
         this.timestamp = timestamp;
-        this.header = lines.shift() || '';
+        this.header = (lines.shift() || '').trim();
         this.body = lines;
         this.url = url;
         this.author = author;
@@ -37,7 +36,7 @@ export default class Commit extends Entity {
             }
 
             if (match.groups.scope) {
-                this.scope = match.groups.scope;
+                this.scope = match.groups.scope.trim();
             }
         }
     }

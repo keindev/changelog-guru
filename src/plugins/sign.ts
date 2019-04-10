@@ -48,7 +48,7 @@ export default class SignPlugin extends AbstractPlugin {
     public static IMPORTANT_SECTION_TITLE: string = "Important";
 
     private types: SignType = SignType.None;
-    private importantSection: Section;
+    private section: Section;
 
     public static getType(name: string): SignType {
         let result: SignType;
@@ -75,7 +75,7 @@ export default class SignPlugin extends AbstractPlugin {
             });
         }
 
-        this.importantSection = state.sections.add(SignPlugin.IMPORTANT_SECTION_TITLE, SectionPosition.Top) as Section;
+        this.section = state.sections.add(SignPlugin.IMPORTANT_SECTION_TITLE, SectionPosition.Top) as Section;
     }
 
     public parse(commit: Commit): void {
@@ -107,7 +107,7 @@ export default class SignPlugin extends AbstractPlugin {
             if (type & SignType.Break) commit.break();
             if (type & SignType.Deprecated) commit.deprecate();
             if (type & SignType.Hide) commit.hide();
-            if (type & SignType.Important) sections.assign(this.importantSection, commit);
+            if (type & SignType.Important) sections.assign(this.section, commit);
             if (type & SignType.Group && typeof value === 'string') {
                 const section: Section | undefined = sections.add(value);
 

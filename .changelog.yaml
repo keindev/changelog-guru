@@ -27,27 +27,14 @@ signs:
     # !break - indicates major changes breaking backward compatibility
     - break
 # list of major scopes
-allowCustomScopes: true
 scopes:
     core: Core
     theme: Themes
     api: API
 sections:
-    - Features:
-        - feat
-    - Bugfixes:
-        - fix
-    - Internal сhanges:
-        - types
-        - workflow
-        - ci
-        - build
-        - test
-        - chore
-        - docs
-    - Performance:
-        - perf
-    - Refactoring:
-        - refactor
-    - Reverts:
-        - revert
+    - Features: [ feat ]
+    - Bugfixes: [ fix ]
+    - Internal сhanges: [ types, workflow, ci, build, test, chore, docs ]
+    - Performance: [ perf ]
+    - Refactoring: [ refactor ]
+    - Reverts: [ revert ]
