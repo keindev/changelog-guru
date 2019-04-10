@@ -21,9 +21,13 @@ export default class CommitManager extends Entity {
         }
     }
 
-    public modify(callback: (commit: Commit) => void): void {
+    public async modify(callback: (commit: Commit) => Promise<void>) {
+        const promises: Promise<void>[] = [];
+
         this.commits.forEach((commit): void => {
-            callback(commit);
+            promises.push(callback(commit));
         });
+
+        await Promise.all(promises);
     }
 }

@@ -2,9 +2,10 @@ import Entity from './entity';
 
 export enum SectionBlock {
     Mixed = 0,
-    Header = 1,
-    Body = 2,
-    Footer = 3,
+    Group = 1,
+    Header = 2,
+    Body = 3,
+    Footer = 4,
 }
 
 export enum SectionPosition {

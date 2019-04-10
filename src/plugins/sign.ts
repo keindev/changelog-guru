@@ -3,7 +3,7 @@ import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
 import Entity from '../entities/entity';
-import Section, { SectionPosition } from '../entities/section';
+import Section, { SectionBlock, SectionPosition } from '../entities/section';
 
 enum SignName {
     // !break - indicates major changes breaking backward compatibility
@@ -109,7 +109,7 @@ export default class SignPlugin extends AbstractPlugin {
             if (type & SignType.Hide) commit.hide();
             if (type & SignType.Important) sections.assign(this.section, commit);
             if (type & SignType.Group && typeof value === 'string') {
-                const section: Section | undefined = sections.add(value);
+                const section: Section | undefined = sections.add(value, SectionPosition.Any, SectionBlock.Group);
 
                 if (section) sections.assign(section, commit);
             }

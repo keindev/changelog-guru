@@ -22,14 +22,8 @@ export default class Changelog extends Entity {
 
     public async generate(): Promise<void> {
         const [state, plugins] = await this.reader.read();
-        const promises: Promise<void>[] = [];
 
-        state.commits.modify((commit) => {
-            promises.push(plugins.process(commit));
-        });
-
-        await Promise.all(promises);
-
+        state.commits.modify((commit): Promise<void> => plugins.process(commit));
         this.debug('test %O', state.sections);
 
         // TODO: write
