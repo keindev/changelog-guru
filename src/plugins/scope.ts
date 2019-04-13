@@ -2,25 +2,15 @@ import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
-import Section from '../entities/section';
+import Section, { SectionPosition } from '../entities/section';
 import Entity from '../entities/entity';
 
 interface ScopeConfig extends Config {
     scopes: { [key: string]: string } | undefined;
 }
 
-class ScopeModifier extends Entity {
-    public readonly key: string;
-
-    public constructor(key: string) {
-        super();
-
-        this.key = key;
-    }
-}
-
 export default class ScopePlugin extends AbstractPlugin {
-    private sections: Map<string, Section> = new Map();
+    private scopes: Map<string, number> = new Map();
 
     public constructor(config: ScopeConfig, state: State) {
         super(config, state);
@@ -28,9 +18,9 @@ export default class ScopePlugin extends AbstractPlugin {
         const { scopes } = config;
 
         if (typeof scopes === 'object') {
-            Object.keys(scopes).forEach((type: string): void => {
-                if (typeof scopes[type] === 'string') {
-                    this.createSection(scopes[type]);
+            Object.keys(scopes).forEach((key: string): void => {
+                if (typeof scopes[key] === 'string') {
+                    this.scopes.set(Section.trim(key), state.sections.create(key, SectionPosition.Subgroup));
                 }
             });
         }
@@ -38,33 +28,18 @@ export default class ScopePlugin extends AbstractPlugin {
 
     public parse(commit: Commit): void {
         const scope: string = commit.getScope();
+        const key: string = Section.trim(scope);
 
-        if (scope.length) {
-            this.addModifier(commit, new ScopeModifier(this.createSection(scope)));
-        }
-    }
+        if (key.length) {
+            const { scopes, state } = this;
+            let index: number | undefined = scopes.get(key);
 
-    public async modify(commit: Commit, modifier?: Entity): Promise<void> {
-        const { key } = modifier as ScopeModifier;
-        const section: Section | undefined = this.sections.get(key);
-
-        if (section) {
-            this.state.sections.assign(section, commit);
-        }
-    }
-
-    private createSection(scope: string): string {
-        const { sections } = this;
-        const key = scope.trim().toLowerCase();
-
-        if (!sections.has(scope)) {
-            const section: Section | undefined = this.state.sections.add(scope);
-
-            if (section) {
-                sections.set(key, section);
+            if (typeof index === 'undefined') {
+                index = state.sections.create(scope, SectionPosition.Subgroup);
+                scopes.set(key, index);
             }
-        }
 
-        return key;
+            state.sections.assign(index, commit.sha);
+        }
     }
 }

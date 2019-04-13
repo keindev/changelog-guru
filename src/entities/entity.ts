@@ -4,6 +4,10 @@ import Process from '../utils/process';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type mixed = string | number | Record<string, any>;
 
+export interface ReadonlyArray<T> extends Array<T> {
+    readonly [key: number]: T;
+}
+
 export default class Entity {
     public readonly name: string;
 

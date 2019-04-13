@@ -25,7 +25,7 @@ export default class CommitManager extends Entity {
         const promises: Promise<void>[] = [];
 
         this.commits.forEach((commit): void => {
-            promises.push(callback(commit));
+            promises.push(callback(commit), );
         });
 
         await Promise.all(promises);

@@ -1,33 +1,27 @@
 import Entity from './entity';
 
-export enum SectionBlock {
-    Mixed = 0,
-    Group = 1,
-    Header = 2,
-    Body = 3,
-    Footer = 4,
-}
-
 export enum SectionPosition {
-    Any = 0,
-    Top = -1,
-    Bottom = -2,
+    Group,
+    Subgroup,
+    Header,
+    Body,
+    Footer,
 }
 
 export default class Section extends Entity {
     public readonly title: string;
-    public readonly block: SectionBlock;
-    public readonly position: SectionPosition | number;
+    public readonly trimmedTitle: string;
+    public readonly position: SectionPosition;
 
-    public constructor(title: string, block: SectionBlock, position: SectionPosition | number) {
+    public static trim(title: string): string {
+        return title.trim().toLowerCase();
+    }
+
+    public constructor(title: string, position?: SectionPosition) {
         super(title);
 
         this.title = title;
-        this.block = block;
-        this.position = Math.max(position, SectionPosition.Bottom);
-    }
-
-    public isHigherThan(section: Section): boolean {
-        return this.block > section.block || (this.block === section.block && this.position < section.position);
+        this.trimmedTitle = Section.trim(title);
+        this.position = position || SectionPosition.Mixed;
     }
 }

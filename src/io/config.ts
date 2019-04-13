@@ -1,8 +1,8 @@
-export type Configurable = string | number | boolean | string[];
-export type ConfigurableStructure = { [key: string]: Configurable } | { [key: string]: Configurable }[];
+type OptionValue = string | number | boolean | string[];
+type Option = { [key: string]: OptionValue };
 
 export default interface Config {
     plugins: string[];
     types: string[];
-    [key: string]: Configurable | ConfigurableStructure | undefined;
+    [key: string]: OptionValue | Option | Option[] | undefined;
 }

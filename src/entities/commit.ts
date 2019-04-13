@@ -1,9 +1,9 @@
 import Author from './author';
-import Entity from './entity';
+import Entity, { ReadonlyArray } from './entity';
 
 export default class Commit extends Entity {
     public readonly header: string;
-    public readonly body: string[];
+    public readonly body: ReadonlyArray<string>;
     public readonly modifiers: Entity[] = [];
     public readonly timestamp: number;
     public readonly url: string;

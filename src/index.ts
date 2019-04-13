@@ -24,8 +24,5 @@ export default class Changelog extends Entity {
         const [state, plugins] = await this.reader.read();
 
         state.commits.modify((commit): Promise<void> => plugins.process(commit));
-        this.debug('test %O', state.sections);
-
-        // TODO: write
     }
 }

@@ -3,42 +3,30 @@ import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
 import Config from '../io/config';
 import Entity from '../entities/entity';
-import Section, { SectionBlock } from '../entities/section';
+import Section, { SectionPosition } from '../entities/section';
 
 interface SectionConfig extends Config {
     sections: { [key: string]: string[] }[] | undefined;
 }
 
-class SectionModifier extends Entity {
-    public readonly type: string;
-
-    public constructor(type: string) {
-        super();
-
-        this.type = type;
-    }
-}
-
 export default class SectionPlugin extends AbstractPlugin {
-    private sections: Map<string, Section> = new Map();
+    private sections: Map<string, number> = new Map();
 
     public constructor(config: SectionConfig, state: State) {
         super(config, state);
 
         if (Array.isArray(config.sections)) {
-            config.sections.forEach((block, index): void => {
+            config.sections.forEach((block): void => {
                 Object.keys(block).forEach((name: string): void => {
                     if (Array.isArray(block[name])) {
-                        const section: Section | undefined = new Section(name, index, SectionBlock.Body);
+                        const index: number = state.sections.create(name, SectionPosition.Body);
 
-                        if (section) {
-                            block[name].forEach((type: string): void => {
-                                const key: string = type.trim().toLowerCase();
+                        block[name].forEach((type: string): void => {
+                            const key: string = Section.trim(type);
 
-                                this.debug('-- %s', type);
-                                this.sections.set(key, section);
-                            });
-                        }
+                            this.debug('-- %s', type);
+                            this.sections.set(key, index);
+                        });
                     }
                 });
             });
@@ -47,17 +35,18 @@ export default class SectionPlugin extends AbstractPlugin {
 
     public parse(commit: Commit): void {
         const type: string = commit.getType();
+        const key: string = Section.trim(type);
 
-        if (type.length && this.sections.has(type)) {
-            this.addModifier(commit, new SectionModifier(type));
+        if (key.length) {
+            const { sections, state } = this;
+            let index: number | undefined = sections.get(key);
+
+            if (typeof index === 'undefined') {
+                index = state.sections.create(sections, SectionPosition.Subgroup);
+                sections.set(key, index);
+            }
+
+            state.sections.assign(index, commit.sha);
         }
-    }
-
-    public async modify(commit: Commit, modifier?: Entity): Promise<void> {
-        const { type } = modifier as SectionModifier;
-        const { state: { sections } } = this;
-        const section: Section | undefined = this.sections.get(type);
-
-        if (section) sections.assign(section, commit);
     }
 }

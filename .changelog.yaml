@@ -1,5 +1,5 @@
 ---
-plugins: [sign, scope, section]
+plugins: [marker, scope, section]
 types:
     - feat
     - fix
@@ -14,27 +14,27 @@ types:
     - workflow
     - perf
     - revert
-# List of avaliable signs
-signs:
+# List of avaliable markers
+markers:
     # !important - place a commit title to special section on top of changelog
-    - important
-    # !hide - hide a commit
-    - hide
-    # !group(NAME) - creates a group of commits with the <NAME>
-    - group
+    important: Important Internal Changes
     # !deprecated- place a commit title to special section with deprecated propertyes
-    - deprecated
+    deprecated: DEPRECATIONS
     # !break - indicates major changes breaking backward compatibility
-    - break
+    break: BREAKING CHANGES
+    # !hide - hide a commit
+    hide: Hidden commits
+    # !group(NAME) - creates a group of commits with the <NAME>
+    group: Grouped commit
 # list of major scopes
 scopes:
     core: Core
     theme: Themes
     api: API
 sections:
+    - Bug Fixes: [ fix ]
     - Features: [ feat ]
-    - Bugfixes: [ fix ]
-    - Internal сhanges: [ types, workflow, ci, build, test, chore, docs ]
-    - Performance: [ perf ]
-    - Refactoring: [ refactor ]
+    - Internal сhanges: [ types, workflow, ci, cd, build, test, chore, docs ]
+    - Performance Improvements: [ perf ]
+    - Code Refactoring: [ refactor ]
     - Reverts: [ revert ]
