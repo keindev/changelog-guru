@@ -3,6 +3,8 @@ import Key from '../utils/key';
 import Entity, { ReadonlyArray } from './entity';
 
 export default class Commit extends Entity {
+    private static EXPRESSION: RegExp = /(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,\/:-]+)\)){0,1}(?=:)/i;
+
     public readonly header: string;
     public readonly body: ReadonlyArray<string>;
     public readonly modifiers: Entity[] = [];
@@ -30,7 +32,7 @@ export default class Commit extends Entity {
         this.author = author;
         this.author.contribute();
 
-        const match = this.header.match(/(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,]+)\)){0,1}(?=:)/i);
+        const match = this.header.match(Commit.EXPRESSION);
         if (match && match.groups) {
             const { groups: { types, scope } } = match;
 

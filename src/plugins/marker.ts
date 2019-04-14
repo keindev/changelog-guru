@@ -23,7 +23,7 @@ interface MarkerConfig extends Config {
 }
 
 export default class MarkerPlugin extends AbstractPlugin {
-    private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
+    private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/i;
 
     public constructor(config: MarkerConfig, state: State) {
         super(config, state);
