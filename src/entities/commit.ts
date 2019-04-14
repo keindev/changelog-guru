@@ -1,4 +1,5 @@
 import Author from './author';
+import Key from '../utils/key';
 import Entity, { ReadonlyArray } from './entity';
 
 export default class Commit extends Entity {
@@ -31,13 +32,13 @@ export default class Commit extends Entity {
 
         const match = this.header.match(/(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,]+)\)){0,1}(?=:)/i);
         if (match && match.groups) {
-            if (match.groups.types) {
-                this.types = match.groups.types.split(',').map((type):string => type.trim());
+            const { groups: { types, scope } } = match;
+
+            if (types.length) {
+                this.types = types.split(',').map((type):string => Key.unify(type));
             }
 
-            if (match.groups.scope) {
-                this.scope = match.groups.scope.trim();
-            }
+            this.scope = Key.unify(scope);
         }
     }
 

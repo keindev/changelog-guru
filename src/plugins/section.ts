@@ -1,52 +1,48 @@
 import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
-import Config from '../io/config';
-import Entity from '../entities/entity';
-import Section, { SectionPosition } from '../entities/section';
+import Config, { ConfigOption, ConfigOptionValue } from '../io/config';
+import Key from '../utils/key';
+import { SectionPosition } from '../entities/section';
 
 interface SectionConfig extends Config {
-    sections: { [key: string]: string[] }[] | undefined;
+    sections: ConfigOption;
 }
 
 export default class SectionPlugin extends AbstractPlugin {
-    private sections: Map<string, number> = new Map();
+    private blocks: Map<string, string> = new Map();
 
     public constructor(config: SectionConfig, state: State) {
         super(config, state);
 
-        if (Array.isArray(config.sections)) {
-            config.sections.forEach((block): void => {
-                Object.keys(block).forEach((name: string): void => {
-                    if (Array.isArray(block[name])) {
-                        const index: number = state.sections.create(name, SectionPosition.Body);
+        const { sections } = config;
 
-                        block[name].forEach((type: string): void => {
-                            const key: string = Section.trim(type);
+        if (Array.isArray(sections)) {
+            sections.forEach((block): void => {
+                if (typeof block === 'object') {
+                    Object.keys(block).forEach((name: string): void => {
+                        const types: ConfigOptionValue = block[name];
 
-                            this.debug('-- %s', type);
-                            this.sections.set(key, index);
-                        });
-                    }
-                });
+                        if (Array.isArray(types)) {
+                            this.createSection(name, SectionPosition.Body);
+
+                            types.forEach((type: string): void => {
+                                this.blocks.set(Key.unify(type), name);
+                            });
+                        }
+                    });
+                }
             });
         }
     }
 
-    public parse(commit: Commit): void {
+    public async parse(commit: Commit): Promise<void> {
         const type: string = commit.getType();
-        const key: string = Section.trim(type);
 
-        if (key.length) {
-            const { sections, state } = this;
-            let index: number | undefined = sections.get(key);
+        if (type.length) {
+            const name: string | undefined = Key.inMap(type, this.blocks);
 
-            if (typeof index === 'undefined') {
-                index = state.sections.create(sections, SectionPosition.Subgroup);
-                sections.set(key, index);
-            }
-
-            state.sections.assign(index, commit.sha);
+            if (typeof name === 'string') this.assignSection(name, commit);
         }
     }
 }

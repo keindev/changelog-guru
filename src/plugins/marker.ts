@@ -1,9 +1,9 @@
 import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
-import Config from '../io/config';
-import Entity from '../entities/entity';
-import Section, { SectionPosition } from '../entities/section';
+import Config, { ConfigOption, ConfigOptionValue } from '../io/config';
+import Key from '../utils/key';
+import { SectionPosition } from '../entities/section';
 
 enum MarkerName {
     // !break - indicates major changes breaking backward compatibility
@@ -19,12 +19,11 @@ enum MarkerName {
 }
 
 interface MarkerConfig extends Config {
-    markers: { [key: string]: string } | undefined;
+    markers: ConfigOption;
 }
 
 export default class MarkerPlugin extends AbstractPlugin {
     private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w ]+)\)|)( |)/gi;
-    private sections: Map<string, number> = new Map();
 
     public constructor(config: MarkerConfig, state: State) {
         super(config, state);
@@ -32,45 +31,38 @@ export default class MarkerPlugin extends AbstractPlugin {
         const { markers } = config;
 
         if (markers) {
-            Object.keys(MarkerName).forEach((name: string) => {
-                if (typeof markers[name] === 'string') {
-                    let position: SectionPosition;
+            Object.keys(MarkerName).forEach((name: string): void => {
+                const title: ConfigOption | ConfigOptionValue = markers[name];
 
-                    switch(name) {
-                        case MarkerName.Break:
-                        case MarkerName.Deprecated: position = SectionPosition.Header; break;
-                        case MarkerName.Important: position = SectionPosition.Footer; break;
-                        case MarkerName.Hide:
-                        default: position = SectionPosition.Mixed; break;
+                if (typeof title === 'string') {
+                    let position: SectionPosition | undefined;
+
+                    if (name === MarkerName.Break || name === MarkerName.Deprecated) position = SectionPosition.Header;
+                    if (name === MarkerName.Important) position = SectionPosition.Footer;
+
+                    if (typeof position !== 'undefined') {
+                        this.createSection(name, position, title);
                     }
-
-                    this.sections.set(name, state.sections.create(markers[name], position));
                 }
             });
         }
     }
 
-    public parse(commit: Commit): void {
+    public async parse(commit: Commit): Promise<void> {
         let match: RegExpExecArray | null;
 
         commit.body.forEach((line): void => {
             do {
                 match = MarkerPlugin.EXPRESSION.exec(line);
 
-                if (match && match.groups) {
+                if (match && match.groups && typeof match.groups.name === 'string') {
                     const { name, value } = match.groups;
 
-                    if (typeof name === 'string') {
-                        const { state, sections } = this;
-                        const marker: string = name.toLowerCase();
-                        const index: number | undefined = marker === MarkerName.Group && typeof value === 'string'
-                            ? state.sections.create(value, SectionPosition.Group)
-                            : sections.get(marker);
-
-                        if (typeof index === 'number') {
-                            state.sections.assign(index, commit.sha);
-                        }
+                    if (typeof value === 'string' && Key.isEqual(Key.unify(name), MarkerName.Group)) {
+                        this.createSection(value, SectionPosition.Group);
                     }
+
+                    this.assignSection(name, commit);
                 }
             } while (match);
         });

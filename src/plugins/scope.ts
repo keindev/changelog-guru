@@ -1,16 +1,22 @@
 import Commit from '../entities/commit';
 import AbstractPlugin from '../entities/abstract-plugin';
 import State from '../middleware/state';
-import Config from '../io/config';
-import Section, { SectionPosition } from '../entities/section';
-import Entity from '../entities/entity';
+import Config, { ConfigOption } from '../io/config';
+import Key from '../utils/key';
+import { SectionPosition } from '../entities/section';
+
+interface ScopeOptionConfig extends ConfigOption {
+    only: boolean | undefined;
+    list: ConfigOption;
+}
 
 interface ScopeConfig extends Config {
-    scopes: { [key: string]: string } | undefined;
+    scopes: ScopeOptionConfig;
 }
 
 export default class ScopePlugin extends AbstractPlugin {
-    private scopes: Map<string, number> = new Map();
+    private scopes: Set<string> = new Set();
+    private onlyConfiguredScopes: boolean = false;
 
     public constructor(config: ScopeConfig, state: State) {
         super(config, state);
@@ -18,28 +24,34 @@ export default class ScopePlugin extends AbstractPlugin {
         const { scopes } = config;
 
         if (typeof scopes === 'object') {
-            Object.keys(scopes).forEach((key: string): void => {
-                if (typeof scopes[key] === 'string') {
-                    this.scopes.set(Section.trim(key), state.sections.create(key, SectionPosition.Subgroup));
-                }
-            });
+            const { only, list } = scopes;
+
+            this.onlyConfiguredScopes = !!only;
+
+            if (typeof list === 'object') {
+                Object.keys(list).forEach((name: string): void => {
+                    const title = list[name];
+
+                    if (typeof title === 'string' && !this.scopes.has(name)) {
+                        const key: string = Key.unify(name);
+
+                        this.scopes.add(key);
+                        this.createSection(key, SectionPosition.Subgroup, title);
+                    }
+                });
+            }
         }
     }
 
-    public parse(commit: Commit): void {
+    public async parse(commit: Commit): Promise<void> {
         const scope: string = commit.getScope();
-        const key: string = Section.trim(scope);
 
-        if (key.length) {
-            const { scopes, state } = this;
-            let index: number | undefined = scopes.get(key);
+        if (scope.length) {
+            const { scopes, onlyConfiguredScopes } = this;
+            const isConfiguredScope = Key.inSet(scope, scopes);
 
-            if (typeof index === 'undefined') {
-                index = state.sections.create(scope, SectionPosition.Subgroup);
-                scopes.set(key, index);
-            }
-
-            state.sections.assign(index, commit.sha);
+            if (!onlyConfiguredScopes && !isConfiguredScope) this.createSection(scope, SectionPosition.Subgroup);
+            if (isConfiguredScope || !onlyConfiguredScopes) this.assignSection(scope, commit);
         }
     }
 }

@@ -45,38 +45,11 @@ export default class PluginManager extends AbstractPlugin {
         });
     }
 
-    public async process(commit: Commit): Promise<void> {
-        this.parse(commit);
-        await this.modify(commit);
-    }
-
-    public parse(commit: Commit): void {
+    public async parse(commit: Commit): Promise<void> {
         this.debug('parse: %s', commit.sha);
 
         this.plugins.forEach((plugin): void => {
             plugin.parse(commit);
         });
-    }
-
-    public async modify(commit: Commit): Promise<void> {
-        this.debug('modify: %s', commit.sha);
-
-        let modifier: Entity | undefined;
-        const promises: Promise<void>[] = [];
-        const modify = (plugin: AbstractPlugin): void => {
-            if (plugin.isCompatible(modifier as Entity)) {
-                promises.push(plugin.modify(commit, modifier as Entity));
-            }
-        };
-
-        while (commit.modifiers.length) {
-            modifier = commit.modifiers.pop();
-
-            if (typeof modifier !== 'undefined') {
-                this.plugins.forEach(modify);
-            }
-        }
-
-        await Promise.all(promises);
     }
 }

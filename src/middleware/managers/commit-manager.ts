@@ -21,12 +21,8 @@ export default class CommitManager extends Entity {
         }
     }
 
-    public async modify(callback: (commit: Commit) => Promise<void>) {
-        const promises: Promise<void>[] = [];
-
-        this.commits.forEach((commit): void => {
-            promises.push(callback(commit), );
-        });
+    public async forEach(callback: (commit: Commit) => Promise<void>): Promise<void> {
+        const promises = [...this.commits.values()].map((commit: Commit): Promise<void> => callback(commit));
 
         await Promise.all(promises);
     }

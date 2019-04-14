@@ -4,7 +4,7 @@ import yaml from 'js-yaml'
 import { ReposListCommitsResponseItem } from '@octokit/rest';
 import Config from './config';
 import Git from '../middleware/git';
-import PluginManager from '../middleware/managers/plugin';
+import PluginManager from '../middleware/managers/plugin-manager';
 import State from '../middleware/state';
 import Commit from '../entities/commit';
 import Process from '../utils/process';

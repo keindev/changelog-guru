@@ -28,9 +28,11 @@ markers:
     group: Grouped commit
 # list of major scopes
 scopes:
-    core: Core
-    theme: Themes
-    api: API
+    only: false
+    list:
+        core: Core
+        theme: Themes
+        api: API
 sections:
     - Bug Fixes: [ fix ]
     - Features: [ feat ]

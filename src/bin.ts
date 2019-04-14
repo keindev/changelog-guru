@@ -8,7 +8,6 @@ import * as Debug from "debug";
 commander.version(Process.getVersion(), '-v, --version')
     .description('GitHub changelog generator')
     .option('-c, --config <config>', `config file in JSON format.`)
-    .option('-t, --token <token>', `your GitHub access token.`)
     .option('-d, --debug', `enable debugging mode.`)
 
 const command: Command = commander.parse(process.argv);
@@ -28,7 +27,7 @@ if (command.debug) {
     Debug.enable([Process.DEBUG_NAMESPACE, '*'].join(':'));
 }
 
-const options: Options = { config, token: command.token };
+const options: Options = { config };
 const changelog = new Changelog(options);
 
 changelog.generate().then(() => {

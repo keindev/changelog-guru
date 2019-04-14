@@ -1,4 +1,5 @@
 import Entity from './entity';
+import Key from '../utils/key';
 
 export enum SectionPosition {
     Group,
@@ -9,19 +10,15 @@ export enum SectionPosition {
 }
 
 export default class Section extends Entity {
+    public readonly key: string;
     public readonly title: string;
-    public readonly trimmedTitle: string;
     public readonly position: SectionPosition;
-
-    public static trim(title: string): string {
-        return title.trim().toLowerCase();
-    }
 
     public constructor(title: string, position?: SectionPosition) {
         super(title);
 
+        this.key = Key.unify(title);
         this.title = title;
-        this.trimmedTitle = Section.trim(title);
-        this.position = position || SectionPosition.Mixed;
+        this.position = position || SectionPosition.Subgroup;
     }
 }

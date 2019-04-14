@@ -5,7 +5,6 @@ import Entity from './entities/entity';
 
 export interface Options {
     config?: string;
-    token?: string;
 }
 
 export default class Changelog extends Entity {
@@ -14,15 +13,16 @@ export default class Changelog extends Entity {
     public constructor(options: Options) {
         super();
 
-        if (!options.token) dotenv.config();
+        dotenv.config();
+
         if (!process.env.GITHUB_TOKEN) Process.error('<token> option must be provided');
 
-        this.reader = new Reader(options.token || process.env.GITHUB_TOKEN || '', options.config);
+        this.reader = new Reader(process.env.GITHUB_TOKEN || '', options.config);
     }
 
     public async generate(): Promise<void> {
         const [state, plugins] = await this.reader.read();
 
-        state.commits.modify((commit): Promise<void> => plugins.process(commit));
+        await state.commits.forEach((commit): Promise<void> => plugins.parse(commit));
     }
 }

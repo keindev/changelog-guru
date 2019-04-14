@@ -1,8 +1,11 @@
-type OptionValue = string | number | boolean | string[];
-type Option = { [key: string]: OptionValue };
+export type ConfigOptionValue = string | string[] | boolean | undefined;
+
+export interface ConfigOption {
+    [key: string]: ConfigOption | ConfigOptionValue;
+}
 
 export default interface Config {
     plugins: string[];
     types: string[];
-    [key: string]: OptionValue | Option | Option[] | undefined;
+    [key: string]: ConfigOption | ConfigOptionValue;
 }

@@ -1,6 +1,6 @@
 import * as semver from 'semver';
-import SectionManager from './managers/section';
-import CommitManager from './managers/commit';
+import SectionManager from './managers/section-manager';
+import CommitManager from './managers/commit-manager';
 import Author from '../entities/author';
 import Entity from '../entities/entity';
 import Process from '../utils/process';
