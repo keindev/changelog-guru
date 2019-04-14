@@ -1,5 +1,6 @@
 export default class Key {
-    public static MAX_STRING_DIFF_PERCENT: number = .2;
+    public static MAX_DIFF_PERCENT: number = .2;
+    public static MAX_DIFF_DISTANCE: number = 2;
 
     public static unify(key: string): string {
         return key.trim().toLowerCase();
@@ -9,7 +10,7 @@ export default class Key {
         let result = true;
 
         if (!set.has(key)) {
-            result = [...set.keys()].some((value): boolean => Key.isEqual(key, value));
+            result = [...set.keys()].some((setKey): boolean => Key.isEqual(key, setKey));
         }
 
         return result;
@@ -19,11 +20,11 @@ export default class Key {
         let uniqueKey: string = key;
 
         if (!map.has(key)) {
-            [...map.keys()].some((value): boolean => {
-                const isEqual: boolean = Key.isEqual(key, value);
+            [...map.keys()].some((mapKey): boolean => {
+                const isEqual: boolean = Key.isEqual(key, mapKey);
 
                 if (isEqual) {
-                    uniqueKey = value;
+                    uniqueKey = mapKey;
                 }
 
                 return isEqual;
@@ -34,30 +35,37 @@ export default class Key {
     }
 
     public static isEqual(a: string, b: string, ): boolean {
-        let result = true;
+        let result = false;
 
         if (a !== b) {
-            const matrix = [];
-            const { length: lengthA } = a;
-            const { length: lengthB } = b;
-            let i = 0;
-            let j = 0;
+            const unifyedA = Key.unify(a);
+            const unifyedB = Key.unify(b);
+            const { length: lengthA } = unifyedA;
+            const { length: lengthB } = unifyedB;
 
-            while (i <= lengthB) matrix[i] = [i++];
-            while (j <= lengthA) matrix[0][j] = j++;
+            if (Math.abs(lengthA - lengthB) <= Key.MAX_DIFF_DISTANCE) {
+                const matrix = [];
+                let i = 0;
+                let j = 0;
 
-            let m: number;
-            let n: number;
+                while (i <= lengthB) matrix[i] = [i++];
+                while (j <= lengthA) matrix[0][j] = j++;
 
-            for (i = 1, m = 0; i <= lengthB; i++, m++) {
-                for (j = 1, n = 0; j <= lengthA; j++, n++) {
-                    matrix[i][j] = b.charAt(m) === a.charAt(n)
-                        ? matrix[m][n]
-                        : Math.min(matrix[m][n] + 1, Math.min(matrix[i][n] + 1, matrix[m][j] + 1));
+                let m: number;
+                let n: number;
+
+                for (i = 1, m = 0; i <= lengthB; i++, m++) {
+                    for (j = 1, n = 0; j <= lengthA; j++, n++) {
+                        matrix[i][j] = unifyedB.charAt(m) === unifyedA.charAt(n)
+                            ? matrix[m][n]
+                            : Math.min(matrix[m][n] + 1, Math.min(matrix[i][n] + 1, matrix[m][j] + 1));
+                    }
                 }
-            }
 
-            result = (matrix[lengthB][lengthA] / lengthA) <= Key.MAX_STRING_DIFF_PERCENT;
+                const distance = matrix[lengthB][lengthA];
+
+                result = (distance <= Key.MAX_DIFF_DISTANCE) || ((distance / lengthA) <= Key.MAX_DIFF_PERCENT);
+            }
         }
 
         return result;

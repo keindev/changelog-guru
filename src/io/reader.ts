@@ -23,7 +23,7 @@ export default class Reader extends Entity {
         const config: Config = load(path.join(__dirname, '../../.changelog.yaml'));
 
         if (userConfigPath) {
-            this.debug('read: %s', userConfigPath);
+            this.debug('config: %s', userConfigPath);
 
             const userConfig = load(userConfigPath);
 
@@ -62,7 +62,7 @@ export default class Reader extends Entity {
         if (!repository.url) Process.error('<package.repository.url> is not specified');
         if (!repository.type) Process.error('<package.repository> is not git repository type');
 
-        this.debug('parse: %s', pkgPath);
+        this.debug('package: %s', pkgPath);
 
         const pathname: string[] = (new URL(repository.url)).pathname.split('/');
         const repo: string = path.basename(pathname.pop() as string, Git.EXTENSION);

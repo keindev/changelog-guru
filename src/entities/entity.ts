@@ -18,9 +18,9 @@ export default class Entity {
         this.debugger = Process.getDebugger(this.name);
 
         if (typeof id === 'string') {
-            this.debug('create: %s', id);
+            this.debug('+ %s', id);
         } else {
-            this.debug('create...');
+            this.debug('✔');
         }
     }
 

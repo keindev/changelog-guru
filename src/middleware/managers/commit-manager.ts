@@ -9,14 +9,13 @@ export default class CommitManager extends Entity {
         if (commit.isValid() && !this.commits.has(commit.sha)) {
             this.commits.set(commit.sha, commit);
         } else {
-            Process.warn(`invalid commit: ${commit.sha}`);
-            this.debug('invalid: %s', commit.url);
+            this.debug('× %s', commit.url);
         }
     }
 
     public remove(commit: Commit, force: boolean = false): void {
         if (!commit.isImportant() || force) {
-            this.debug('remove: %s', commit.sha);
+            this.debug('remove commit: %s', commit.sha);
             this.commits.delete(commit.sha);
         }
     }

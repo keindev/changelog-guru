@@ -39,6 +39,7 @@ export default abstract class AbstractPlugin extends Entity implements Plugin {
             const index: number | undefined = this.sections.get(key);
 
             if (typeof index === 'number') {
+                this.debug('⇒ %s', name);
                 this.state.sections.assign(index, commit.sha);
             }
         }

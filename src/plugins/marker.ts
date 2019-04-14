@@ -23,15 +23,15 @@ interface MarkerConfig extends Config {
 }
 
 export default class MarkerPlugin extends AbstractPlugin {
-    private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w ]+)\)|)( |)/gi;
+    private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
 
     public constructor(config: MarkerConfig, state: State) {
         super(config, state);
 
         const { markers } = config;
 
-        if (markers) {
-            Object.keys(MarkerName).forEach((name: string): void => {
+        if (typeof markers === 'object') {
+            Object.values(MarkerName).forEach((name: string): void => {
                 const title: ConfigOption | ConfigOptionValue = markers[name];
 
                 if (typeof title === 'string') {
@@ -57,12 +57,13 @@ export default class MarkerPlugin extends AbstractPlugin {
 
                 if (match && match.groups && typeof match.groups.name === 'string') {
                     const { name, value } = match.groups;
+                    let title: string = name;
 
                     if (typeof value === 'string' && Key.isEqual(Key.unify(name), MarkerName.Group)) {
-                        this.createSection(value, SectionPosition.Group);
+                        this.createSection(title = value, SectionPosition.Group);
                     }
 
-                    this.assignSection(name, commit);
+                    this.assignSection(title, commit);
                 }
             } while (match);
         });

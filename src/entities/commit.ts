@@ -34,11 +34,13 @@ export default class Commit extends Entity {
         if (match && match.groups) {
             const { groups: { types, scope } } = match;
 
-            if (types.length) {
-                this.types = types.split(',').map((type):string => Key.unify(type));
+            if (typeof types === 'string' && types.length) {
+                this.types = types.split(',').map((type): string => Key.unify(type));
             }
 
-            this.scope = Key.unify(scope);
+            if (typeof scope === 'string') {
+                this.scope = scope;
+            }
         }
     }
 
