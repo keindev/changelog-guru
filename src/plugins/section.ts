@@ -1,6 +1,5 @@
 import Commit from '../entities/commit';
-import AbstractPlugin from '../entities/abstract-plugin';
-import State from '../middleware/state';
+import Plugin from '../entities/plugin';
 import Config, { ConfigOption, ConfigOptionValue } from '../io/config';
 import Key from '../utils/key';
 import { SectionPosition } from '../entities/section';
@@ -9,12 +8,10 @@ interface SectionConfig extends Config {
     sections: ConfigOption;
 }
 
-export default class SectionPlugin extends AbstractPlugin {
+export default class SectionPlugin extends Plugin {
     private blocks: Map<string, string> = new Map();
 
-    public constructor(config: SectionConfig, state: State) {
-        super(config, state);
-
+    public async load(config: SectionConfig) {
         const { sections } = config;
 
         if (Array.isArray(sections)) {

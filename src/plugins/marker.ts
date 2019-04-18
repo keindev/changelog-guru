@@ -1,7 +1,7 @@
 import Commit from '../entities/commit';
-import AbstractPlugin from '../entities/abstract-plugin';
-import State from '../middleware/state';
-import Config, { ConfigOption, ConfigOptionValue } from '../io/config';
+import Plugin from '../entities/plugin';
+import Context from '../entities/context';
+import Config, { Options, OptionValue } from '../io/config';
 import Key from '../utils/key';
 import { SectionPosition } from '../entities/section';
 
@@ -18,16 +18,14 @@ enum MarkerName {
     Important = 'important',
 }
 
-interface MarkerConfig extends Config {
-    markers: ConfigOption;
+interface MarkerConfig extends Options {
+    markers: Option;
 }
 
-export default class MarkerPlugin extends AbstractPlugin {
+export default class MarkerPlugin extends Plugin {
     private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/i;
 
-    public constructor(config: MarkerConfig, state: State) {
-        super(config, state);
-
+    public async load(config: MarkerConfig, context: Context) {
         const { markers } = config;
 
         if (typeof markers === 'object') {

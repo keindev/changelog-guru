@@ -1,27 +1,22 @@
-import Author from './author';
 import Key from '../utils/key';
-import Entity, { ReadonlyArray } from './entity';
 
-export default class Commit extends Entity {
+export default class Commit {
     private static EXPRESSION: RegExp = /(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,\/:-]+)\)){0,1}(?=:)/i;
 
     public readonly header: string;
     public readonly body: ReadonlyArray<string>;
-    public readonly modifiers: Entity[] = [];
     public readonly timestamp: number;
     public readonly url: string;
     public readonly sha: string;
+    public readonly author: string;
 
-    private author: Author;
     private types: string[] = [];
     private scope: string | undefined;
     private breaking: boolean = false;
     private deprecated: boolean = false;
     private visible: boolean = true;
 
-    public constructor(sha: string, timestamp: number, message: string, url: string, author: Author) {
-        super(sha);
-
+    public constructor(sha: string, timestamp: number, message: string, url: string, author: string) {
         const lines = message.split('\n').map((line): string => line.trim());
 
         this.sha = sha;
@@ -30,7 +25,6 @@ export default class Commit extends Entity {
         this.body = lines;
         this.url = url;
         this.author = author;
-        this.author.contribute();
 
         const match = this.header.match(Commit.EXPRESSION);
         if (match && match.groups) {

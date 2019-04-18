@@ -1,28 +1,24 @@
 import dotenv from 'dotenv';
 import Reader from './io/reader';
+import Config, { Options } from './io/config';
 import Process from './utils/process';
-import Entity from './entities/entity';
 
-export interface Options {
-    config?: string;
-}
+dotenv.config();
 
-export default class Changelog extends Entity {
+export default class Changelog {
     private reader: Reader;
+    private config: Config;
 
-    public constructor(options: Options) {
-        super();
-
-        dotenv.config();
-
-        if (!process.env.GITHUB_TOKEN) Process.error('<token> option must be provided');
-
-        this.reader = new Reader(process.env.GITHUB_TOKEN || '', options.config);
+    // TODO: configuration interface
+    public constructor(options?: Options) {
+        this.config = new Config(options);
+        this.reader = new Reader(this.config.provider);
     }
 
     public async generate(): Promise<void> {
-        const [state, plugins] = await this.reader.read();
+        const state = await this.reader.read();
+        const { config } = this;
 
-        await state.commits.forEach((commit): Promise<void> => plugins.parse(commit));
+        await state.modify(config.plugins, config.options);
     }
 }

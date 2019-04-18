@@ -2,11 +2,11 @@ import Entity from './entity';
 import Key from '../utils/key';
 
 export enum SectionPosition {
-    Group,
-    Subgroup,
-    Header,
-    Body,
-    Footer,
+    Header = 1,
+    Body = 2,
+    Footer = 3,
+    Group = 4,
+    Subgroup = 5,
 }
 
 export default class Section extends Entity {

@@ -46,10 +46,6 @@ export default class Process {
         return version;
     }
 
-    public static getDebugger(context: string): Debug.Debugger {
-        return debug([Process.DEBUG_NAMESPACE, context.padEnd(Process.DEBUG_NAMESPACE_LENGTH, '.')].join(':'));
-    }
-
     public static exit(code: number = Process.EXIT_CODE_ERROR): void {
         process.exit(code);
     }

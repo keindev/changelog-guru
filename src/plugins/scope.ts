@@ -1,6 +1,5 @@
 import Commit from '../entities/commit';
-import AbstractPlugin from '../entities/abstract-plugin';
-import State from '../middleware/state';
+import Plugin from '../entities/plugin';
 import Config, { ConfigOption } from '../io/config';
 import Key from '../utils/key';
 import { SectionPosition } from '../entities/section';
@@ -14,13 +13,11 @@ interface ScopeConfig extends Config {
     scopes: ScopeOptionConfig;
 }
 
-export default class ScopePlugin extends AbstractPlugin {
+export default class ScopePlugin extends Plugin {
     private scopes: Set<string> = new Set();
     private onlyConfiguredScopes: boolean = false;
 
-    public constructor(config: ScopeConfig, state: State) {
-        super(config, state);
-
+    public async load(config: ScopeConfig) {
         const { scopes } = config;
 
         if (typeof scopes === 'object') {
