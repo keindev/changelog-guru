@@ -1,7 +1,6 @@
-import Entity from './entity';
-import Key from '../utils/key';
+import Commit from './commit';
 
-export enum SectionPosition {
+export enum Position {
     Header = 1,
     Body = 2,
     Footer = 3,
@@ -9,16 +8,24 @@ export enum SectionPosition {
     Subgroup = 5,
 }
 
-export default class Section extends Entity {
-    public readonly key: string;
+export default class Section {
     public readonly title: string;
-    public readonly position: SectionPosition;
+    public readonly position: Position;
 
-    public constructor(title: string, position?: SectionPosition) {
-        super(title);
+    private relations: Set<string> = new Set();
+    private commits: Commit[] = [];
 
-        this.key = Key.unify(title);
+    public constructor(title: string, position?: Position) {
         this.title = title;
-        this.position = position || SectionPosition.Subgroup;
+        this.position = position || Position.Subgroup;
+    }
+
+    public assign(commit: Commit): void {
+        const { relations } = this;
+
+        if (!relations.has(commit.sha)) {
+            relations.add(commit.sha);
+            this.commits.push(commit);
+        }
     }
 }

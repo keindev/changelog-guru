@@ -1,7 +1,7 @@
 import Key from '../utils/key';
 
 export default class Commit {
-    private static EXPRESSION: RegExp = /(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,\/:-]+)\)){0,1}(?=:)/i;
+    private static EXPRESSION: RegExp = /(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:)/i;
 
     public readonly header: string;
     public readonly body: ReadonlyArray<string>;
@@ -12,8 +12,9 @@ export default class Commit {
 
     private types: string[] = [];
     private scope: string | undefined;
-    private breaking: boolean = false;
+    private breaked: boolean = false;
     private deprecated: boolean = false;
+    private important: boolean = false;
     private visible: boolean = true;
 
     public constructor(sha: string, timestamp: number, message: string, url: string, author: string) {
@@ -49,11 +50,18 @@ export default class Commit {
     }
 
     public break(): void {
-        this.breaking = true;
+        this.breaked = true;
+        this.show();
     }
 
     public deprecate(): void {
         this.deprecated = true;
+        this.show();
+    }
+
+    public setImportant(): void {
+        this.important = true;
+        this.show();
     }
 
     public hide(): void {
@@ -62,8 +70,12 @@ export default class Commit {
         }
     }
 
+    public show(): void {
+        this.visible = true;
+    }
+
     public isBreaking(): boolean {
-        return this.breaking;
+        return this.breaked;
     }
 
     public isDeprecated(): boolean {
@@ -71,7 +83,7 @@ export default class Commit {
     }
 
     public isImportant(): boolean {
-        return this.isBreaking() && this.isDeprecated();
+        return this.important || (this.isBreaking() && this.isDeprecated());
     }
 
     public isVisible(): boolean {

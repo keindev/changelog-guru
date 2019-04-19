@@ -49,7 +49,7 @@ export default class GitHubProvider extends Provider {
         Process.info('Brach', this.sha);
     }
 
-    public async getCommits(page: number): Promise<Array<[Commit, Author]>> {
+    public async getCommits(page: number): Promise<Array<[Commit, Author][]>> {
         const { data: commits } = await this.kit.repos.listCommits({
             page,
             ...this.repository,
@@ -58,7 +58,7 @@ export default class GitHubProvider extends Provider {
             'per_page': GitHubProvider.COMMITS_PAGE_SIZE
         });
 
-        commits.map((response: ReposListCommitsResponseItem): [Commit, Author] => {
+        return commits.map((response: ReposListCommitsResponseItem): [Commit, Author] => {
             const author = this.getAuthor(response.author);
             const commit = this.getCommit(response, author.login);
 

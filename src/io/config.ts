@@ -36,7 +36,7 @@ export default class Config {
             filePath = path.resolve(process.cwd(), filePath);
 
             if (typeof filePath === 'string' && filePath.length && fs.existsSync(filePath)) {
-                Object.assign(config, load(filePath));
+                config = Object.assign({}, config, load(filePath));
             }
         }
 

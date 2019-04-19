@@ -4,7 +4,8 @@ import Author from '../../entities/author';
 export enum ProviderName {
     None = '',
     GitHub = 'github',
-    GitLab = 'not supported yet',
+    // not supported yet
+    GitLab = 'gitlab',
 }
 
 export default abstract class Provider {

@@ -1,7 +1,14 @@
-import Config from '../io/config';
 import Commit from './commit';
+import State from './state';
+import { Options } from '../io/config';
 
 export default abstract class Plugin {
-    public abstract async load(config: Config): Promise<void>;
+    protected state: State;
+
+    public constructor(state: State) {
+        this.state = state;
+    }
+
+    public abstract async init(config: Options): Promise<void>;
     public abstract async parse(commit: Commit): Promise<void>;
 }

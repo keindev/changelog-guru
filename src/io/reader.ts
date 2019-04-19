@@ -1,7 +1,7 @@
 import path from 'path';
 import GitHubProvider from './providers/github-provider';
 import Provider, { ProviderName } from './providers/provider';
-import State from '../middleware/state';
+import State from '../entities/state';
 import Process from '../utils/process';
 import Package from './package';
 
@@ -11,9 +11,9 @@ export default class Reader {
 
     public constructor(name: ProviderName) {
         switch (name) {
-            case ProviderName.GitHub: this.provider = new GitHubProvider(); break;
-            // TODO: GitLab
-            default: Process.error(); break;
+        case ProviderName.GitHub: this.provider = new GitHubProvider(); break;
+        // TODO: GitLab
+        default: Process.error('unexpected git provider name'); break;
         }
 
         this.state = new State();
@@ -31,10 +31,10 @@ export default class Reader {
             const pkg: Package = await import(path.resolve(process.cwd(), 'package.json'));
             const { version, repository } = pkg;
 
-            if (!version) Process.error('<package.version> is not specified');
-            if (!repository) Process.error('<package.repository> is not specified');
-            if (!repository.url) Process.error('<package.repository.url> is not specified');
-            if (!repository.type) Process.error('<package.repository> is not git repository type');
+            if (!version) Process.error('pkg.version is not specified');
+            if (!repository) Process.error('pkg.repository is not specified');
+            if (!repository.url) Process.error('pkg.repository.url is not specified');
+            if (!repository.type) Process.error('pkg.repository.type is not git repository type');
 
             const pathname: string[] = (new URL(repository.url)).pathname.split('/');
             const repo: string = path.basename(pathname.pop() as string, Provider.EXTENSION);
@@ -51,7 +51,7 @@ export default class Reader {
             const { length } = commits;
 
             if (length) {
-                commits.forEach((entities) => {
+                commits.forEach((entities): void => {
                     this.state.addCommit(...entities);
                 });
 
