@@ -1,8 +1,12 @@
-import Key from '../utils/key';
+export enum Status {
+    Default = 0,
+    BreakingChanges = 1,
+    Deprecated = 2,
+    Important = 4,
+    Hidden = 8,
+}
 
 export default class Commit {
-    private static EXPRESSION: RegExp = /(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:)/i;
-
     public readonly header: string;
     public readonly body: ReadonlyArray<string>;
     public readonly timestamp: number;
@@ -12,10 +16,7 @@ export default class Commit {
 
     private types: string[] = [];
     private scope: string | undefined;
-    private breaked: boolean = false;
-    private deprecated: boolean = false;
-    private important: boolean = false;
-    private visible: boolean = true;
+    private status: number = Status.Default;
 
     public constructor(sha: string, timestamp: number, message: string, url: string, author: string) {
         const lines = message.split('\n').map((line): string => line.trim());
@@ -27,70 +28,29 @@ export default class Commit {
         this.url = url;
         this.author = author;
 
-        const match = this.header.match(Commit.EXPRESSION);
+        const match = this.header.match(/(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:)/i);
+
         if (match && match.groups) {
             const { groups: { types, scope } } = match;
 
-            if (typeof types === 'string' && types.length) {
-                this.types = types.split(',').map((type): string => Key.unify(type));
-            }
-
-            if (typeof scope === 'string') {
-                this.scope = scope;
-            }
+            if (types) this.types = types.split(',').filter((type): boolean => !!type);
+            if (scope) this.scope = scope;
         }
     }
 
-    public getType(): string {
-        return this.types[0] || '';
+    public getType(index: number = 0): string | undefined {
+        return this.types[index];
     }
 
-    public getScope(): string {
-        return this.scope || '';
+    public getScope(): string | undefined {
+        return this.scope;
     }
 
-    public break(): void {
-        this.breaked = true;
-        this.show();
+    public setStatus(status: Status): void {
+        this.status = this.status | status;
     }
 
-    public deprecate(): void {
-        this.deprecated = true;
-        this.show();
-    }
-
-    public setImportant(): void {
-        this.important = true;
-        this.show();
-    }
-
-    public hide(): void {
-        if (!this.isImportant()) {
-            this.visible = false;
-        }
-    }
-
-    public show(): void {
-        this.visible = true;
-    }
-
-    public isBreaking(): boolean {
-        return this.breaked;
-    }
-
-    public isDeprecated(): boolean {
-        return this.deprecated;
-    }
-
-    public isImportant(): boolean {
-        return this.important || (this.isBreaking() && this.isDeprecated());
-    }
-
-    public isVisible(): boolean {
-        return this.visible
-    }
-
-    public isValid(): boolean {
-        return !!this.header.length && !!this.types.length;
+    public checkStatus(...statuses: Status[]): boolean {
+        return statuses.every((status): boolean => !!(this.status & status));
     }
 }

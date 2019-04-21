@@ -1,8 +1,4 @@
 import chalk from 'chalk';
-// eslint-disable-next-line import/no-duplicates
-import * as Debug from "debug";
-// eslint-disable-next-line import/no-duplicates
-import debug from "debug";
 
 export default class Process {
     public static EXIT_CODE_ERROR: number = 1;

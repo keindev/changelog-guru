@@ -1,8 +1,10 @@
-import Commit from '../entities/commit';
+import Process from '../utils/process';
+import Commit, { Status } from '../entities/commit';
 import Plugin from '../entities/plugin';
 import Key from '../utils/key';
 import Section, { Position } from '../entities/section';
-import { Options, Option, OptionValue } from '../io/config';
+import { ConfigOptions } from '../entities/config';
+import { Option, OptionValue } from '../utils/types';
 
 enum MarkerName {
     // !break - indicates major changes breaking backward compatibility
@@ -17,7 +19,7 @@ enum MarkerName {
     Important = 'important',
 }
 
-interface MarkerConfig extends Options {
+interface Config extends ConfigOptions {
     markers: Option;
 }
 
@@ -26,7 +28,7 @@ export default class MarkerPlugin extends Plugin {
 
     private markers: Map<string, Section> = new Map();
 
-    public async init(config: MarkerConfig) {
+    public async init(config: Config): Promise<void> {
         const { markers } = config;
 
         if (typeof markers === 'object') {
@@ -40,7 +42,7 @@ export default class MarkerPlugin extends Plugin {
                     if (name === MarkerName.Important) position = Position.Footer;
 
                     if (typeof position !== 'undefined') {
-                        this.markers.set(name, this.state.createSection(title, position));
+                        this.markers.set(name, this.context.addSection(title, position));
                     }
                 }
             });
@@ -48,9 +50,10 @@ export default class MarkerPlugin extends Plugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const { state, markers } = this;
+        const { markers } = this;
+        const names: string[] = [...markers.keys(), MarkerName.Group];
+        const getGroup = (name: string): Section => this.context.addSection(name, Position.Group);
         let match: RegExpExecArray | null;
-        let names: string[] = [...markers.keys(), MarkerName.Group];
 
         commit.body.forEach((line): void => {
             do {
@@ -62,15 +65,12 @@ export default class MarkerPlugin extends Plugin {
                     let section: Section | undefined = key ? markers.get(key) : undefined;
 
                     switch (key) {
-                        case MarkerName.Break: commit.break(); break;
-                        case MarkerName.Deprecated: commit.deprecate(); break;
-                        case MarkerName.Hide: commit.hide(); break;
-                        case MarkerName.Important: commit.setImportant(); break;
-                        case MarkerName.Group:
-                            if (typeof value === 'string') section = state.createSection(value, Position.Group);
-                            break;
-                        // TODO: log message
-                        default: Process.log(''); break;
+                    case MarkerName.Break: commit.setStatus(Status.BreakingChanges); break;
+                    case MarkerName.Deprecated: commit.setStatus(Status.Deprecated); break;
+                    case MarkerName.Hide: commit.setStatus(Status.Hidden); break;
+                    case MarkerName.Important: commit.setStatus(Status.Important); break;
+                    case MarkerName.Group: if (typeof value === 'string') section = getGroup(value); break;
+                    default: Process.info('Marker', `{bold ${name}} is not avaliable`); break;
                     }
 
                     if (section instanceof Section) section.assign(commit);

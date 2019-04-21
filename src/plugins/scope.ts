@@ -1,29 +1,28 @@
 import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
-import Config, { ConfigOption } from '../io/config';
+import { ConfigOptions } from '../entities/config';
+import { Option } from '../utils/types';
 import Key from '../utils/key';
-import { SectionPosition } from '../entities/section';
+import Section, { Position } from '../entities/section';
 
-interface ScopeOptionConfig extends ConfigOption {
-    only: boolean | undefined;
-    list: ConfigOption;
-}
-
-interface ScopeConfig extends Config {
-    scopes: ScopeOptionConfig;
+interface Config extends ConfigOptions {
+    scopes: {
+        only: boolean | undefined;
+        list: Option;
+    };
 }
 
 export default class ScopePlugin extends Plugin {
-    private scopes: Set<string> = new Set();
-    private onlyConfiguredScopes: boolean = false;
+    private scopes: Map<string, Section> = new Map();
+    private onlyConfigured: boolean = false;
 
-    public async load(config: ScopeConfig) {
+    public async init(config: Config): Promise<void> {
         const { scopes } = config;
 
         if (typeof scopes === 'object') {
             const { only, list } = scopes;
 
-            this.onlyConfiguredScopes = !!only;
+            this.onlyConfigured = !!only;
 
             if (typeof list === 'object') {
                 Object.keys(list).forEach((name: string): void => {
@@ -32,8 +31,7 @@ export default class ScopePlugin extends Plugin {
                     if (typeof title === 'string' && !this.scopes.has(name)) {
                         const key: string = Key.unify(name);
 
-                        this.scopes.add(key);
-                        this.createSection(key, SectionPosition.Subgroup, title);
+                        this.scopes.set(key, this.context.addSection(title, Position.Subgroup));
                     }
                 });
             }
@@ -41,14 +39,14 @@ export default class ScopePlugin extends Plugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const scope: string = commit.getScope();
+        const scope: string | undefined = commit.getScope();
 
-        if (scope.length) {
-            const { scopes, onlyConfiguredScopes } = this;
-            const isConfiguredScope = Key.inSet(scope, scopes);
+        if (scope) {
+            const { scopes, context, onlyConfigured } = this;
+            let section = Key.inMap(scope, scopes);
 
-            if (!onlyConfiguredScopes && !isConfiguredScope) this.createSection(scope, SectionPosition.Subgroup);
-            if (isConfiguredScope || !onlyConfiguredScopes) this.assignSection(scope, commit);
+            if (!onlyConfigured && !section) section = context.addSection(scope, Position.Subgroup);
+            if (section) section.assign(commit);
         }
     }
 }

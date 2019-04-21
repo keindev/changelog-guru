@@ -1,30 +1,31 @@
 import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
-import Config, { ConfigOption, ConfigOptionValue } from '../io/config';
+import { ConfigOptions } from '../entities/config';
 import Key from '../utils/key';
-import { SectionPosition } from '../entities/section';
+import { Option, OptionValue } from '../utils/types';
+import Section, { Position } from '../entities/section';
 
-interface SectionConfig extends Config {
-    sections: ConfigOption;
+interface Config extends ConfigOptions {
+    sections: Option;
 }
 
 export default class SectionPlugin extends Plugin {
-    private blocks: Map<string, string> = new Map();
+    private blocks: Map<string, Section> = new Map();
 
-    public async load(config: SectionConfig) {
+    public async init(config: Config): Promise<void> {
         const { sections } = config;
 
         if (Array.isArray(sections)) {
             sections.forEach((block): void => {
                 if (typeof block === 'object') {
                     Object.keys(block).forEach((name: string): void => {
-                        const types: ConfigOptionValue = block[name];
+                        const types: OptionValue = block[name];
 
                         if (Array.isArray(types)) {
-                            this.createSection(name, SectionPosition.Body);
+                            const section = this.context.addSection(name, Position.Body);
 
                             types.forEach((type: string): void => {
-                                this.blocks.set(Key.unify(type), name);
+                                this.blocks.set(Key.unify(type), section);
                             });
                         }
                     });
@@ -34,12 +35,12 @@ export default class SectionPlugin extends Plugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const type: string = commit.getType();
+        const type: string | undefined = commit.getType();
 
-        if (type.length) {
-            const name: string | undefined = Key.inMap(type, this.blocks);
+        if (type) {
+            const section = Key.inMap(type, this.blocks);
 
-            if (typeof name === 'string') this.assignSection(name, commit);
+            if (section) section.assign(commit);
         }
     }
 }

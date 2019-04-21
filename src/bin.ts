@@ -1,6 +1,6 @@
 import commander, { Command } from 'commander';
 import Process from './utils/process';
-import { Options } from './io/config';
+import { ConfigOptions } from './entities/config';
 import Changelog from './index';
 
 commander.version(Process.getVersion(), '-v, --version')
@@ -9,7 +9,7 @@ commander.version(Process.getVersion(), '-v, --version')
     .option('-c, --config <config>', `config file in JSON format.`);;
 
 const command: Command = commander.parse(process.argv);
-const options: Options = {
+const options: ConfigOptions = {
     config: command.config
 };
 

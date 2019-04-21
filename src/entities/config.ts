@@ -1,20 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml'
-import { ReadonlyArray } from '../utils/types';
-import { ProviderName } from './providers/provider';
+import { ProviderName } from '../providers/provider';
+import { ReadonlyArray, Option, OptionValue } from '../utils/types';
 
 const fileName = '.changelog.yaml';
-const load = (p: string): Options => yaml.safeLoad(fs.readFileSync(p, 'utf8')) || {};
-const defaultConfig: Options = load(path.join(__dirname, '../../', fileName));
+const load = (p: string): ConfigOptions => yaml.safeLoad(fs.readFileSync(p, 'utf8')) || {};
+const defaultConfig: ConfigOptions = load(path.join(__dirname, '../../', fileName));
 
-export type OptionValue = string | string[] | boolean | undefined;
-
-export interface Option {
-    [key: string]: Option | OptionValue;
-}
-
-export interface Options extends Option {
+export interface ConfigOptions extends Option {
     config?: string;
     types?: string[];
     plugins?: string[];
@@ -25,11 +19,11 @@ export interface Options extends Option {
 export default class Config {
     public readonly plugins: ReadonlyArray<string> = defaultConfig.plugins || [];
     public readonly types: ReadonlyArray<string>;
-    public readonly provider: ProviderName;
     public readonly options: Option;
+    public readonly provider: ProviderName;
 
-    public constructor(options?: Options) {
-        let config: Options = Object.assign({}, defaultConfig, options || {});
+    public constructor(options?: ConfigOptions) {
+        let config: ConfigOptions = Object.assign({}, defaultConfig, options || {});
         let { config: filePath } = config;
 
         if (typeof filePath === 'string') {
@@ -40,7 +34,7 @@ export default class Config {
             }
         }
 
-        this.provider = config.provider || ProviderName.None;
+        this.provider = config.provider || ProviderName.GitHub;
         this.types = config.types || [];
         this.plugins = this.plugins.concat(config.plugins || []);
         this.options = new Proxy(config as Option, {

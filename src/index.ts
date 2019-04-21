@@ -1,24 +1,39 @@
 import dotenv from 'dotenv';
 import Reader from './io/reader';
-import Config, { Options } from './io/config';
+import Provider, { ProviderName } from './providers/provider';
+import GitHubProvider from './providers/github-provider';
+import GitLabProvider from './providers/gitlab-provider';
+import Config, { ConfigOptions } from './entities/config';
+import Package from './entities/package';
 import Process from './utils/process';
 
 dotenv.config();
 
 export default class Changelog {
-    private reader: Reader;
     private config: Config;
+    private package: Package;
 
     // TODO: configuration interface
-    public constructor(options?: Options) {
+    public constructor(options?: ConfigOptions) {
         this.config = new Config(options);
-        this.reader = new Reader(this.config.provider);
+        this.package = new Package();
     }
 
     public async generate(): Promise<void> {
-        const state = await this.reader.read();
-        const { config } = this;
+        const { config, package: { url } } = this;
+        let provider: Provider | undefined;
 
-        await state.modify(config.plugins, config.options);
+        switch(config.provider) {
+        case ProviderName.GitHub: provider = new GitHubProvider(url); break;
+        case ProviderName.GitLab: provider = new GitLabProvider(url); break;
+        default: Process.error('Provider is not specified'); break;
+        }
+
+        if (provider) {
+            const reader = new Reader(provider);
+            const state = await reader.read();
+
+            await state.modify(config.plugins, config.options);
+        }
     }
 }
