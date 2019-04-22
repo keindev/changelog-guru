@@ -39,9 +39,9 @@ export default class Key {
     }
 
     public static isEqual(a: string, b: string, ): boolean {
-        let result = false;
+        let result = a === b;
 
-        if (a !== b) {
+        if (!result) {
             const unifyedA = Key.unify(a);
             const unifyedB = Key.unify(b);
             const { length: lengthA } = unifyedA;

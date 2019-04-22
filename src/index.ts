@@ -13,10 +13,13 @@ export default class Changelog {
     private config: Config;
     private package: Package;
 
-    // TODO: configuration interface
     public constructor(options?: ConfigOptions) {
+        const task = Process.addTask('Loading a configuration files');
+
         this.config = new Config(options);
         this.package = new Package();
+
+        if (task) task.complete('LoadedLoaded configuration files');
     }
 
     public async generate(): Promise<void> {
@@ -26,14 +29,14 @@ export default class Changelog {
         switch(config.provider) {
         case ProviderName.GitHub: provider = new GitHubProvider(url); break;
         case ProviderName.GitLab: provider = new GitLabProvider(url); break;
-        default: Process.error('Provider is not specified'); break;
+        default: Process.error(`Provider is not specified (${config.provider})`); break;
         }
 
         if (provider) {
             const reader = new Reader(provider);
             const state = await reader.read();
 
-            await state.modify(config.plugins, config.options);
+            // await state.modify(config.plugins, config.options);
         }
     }
 }

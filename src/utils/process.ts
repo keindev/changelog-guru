@@ -1,36 +1,50 @@
-import chalk from 'chalk';
+import logUpdate from 'log-update';
+import Task from './task';
+
+const tasks: Task[] = [];
+let intervalId: NodeJS.Timeout | undefined;
+let activeTaskIndex: number = 0;
 
 export default class Process {
     public static EXIT_CODE_ERROR: number = 1;
     public static EXIT_CODE_SUCCES: number = 0;
-    public static DEBUG_NAMESPACE: string = 'changelog';
-    public static DEBUG_NAMESPACE_LENGTH: number = 15;
 
-    public static log(label: string, msg: string): void {
-        const date = (): string => new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+    public static addTask(text: string): Task {
+        const task = new Task(text);
 
-        // eslint-disable-next-line no-console
-        console.log(chalk`{whiteBright [${date()}]}: {bold ${label}} {greenBright ${msg}}`);
+        activeTaskIndex = tasks.push(task);
+
+        return task;
     }
 
-    public static info(label: string, msg: string): void {
-        // eslint-disable-next-line no-console
-        console.log(chalk`{bold ${label}}: {greenBright ${msg}}`);
+    public static addSubtask(text: string): Task | undefined {
+        const task: Task | undefined = Process.getActiveTask();
+        let subtask: Task | undefined;
+
+        if (task) subtask = task.add(text);
+
+        return subtask;
     }
 
-    public static warn(label: string): void {
-        // eslint-disable-next-line no-console
-        console.log(chalk`${chalk.hex('#FF8800').bold('warning')}: ${label}`);
+    public static getActiveTask(): Task | undefined {
+        return tasks[activeTaskIndex - 1];
     }
 
-    public static error(error: string, exit: boolean = true): void {
-        // eslint-disable-next-line no-console
-        console.error(chalk`{red ${error}}`);
+    public static start() {
+		if (!intervalId) {
+            intervalId = setInterval(() => {
+                logUpdate(tasks.map((task: Task) => task.render()).join(Task.LINE_SEPARATOR));
+    		}, 100);
+		}
+	}
 
-        if (exit) {
-            Process.exit();
-        }
-    }
+	public static end() {
+		if (intervalId) {
+			clearInterval(intervalId);
+			intervalId = undefined;
+            logUpdate.done();
+		}
+	}
 
     public static getVersion(): string {
         let version = '';
@@ -43,6 +57,8 @@ export default class Process {
     }
 
     public static exit(code: number = Process.EXIT_CODE_ERROR): void {
+        if (code === Process.EXIT_CODE_ERROR) Process.end();
+
         process.exit(code);
     }
 }

@@ -8,13 +8,13 @@ commander.version(Process.getVersion(), '-v, --version')
     .option('-c, --config <config>', `config file in JSON format.`)
     .option('-c, --config <config>', `config file in JSON format.`);;
 
-const command: Command = commander.parse(process.argv);
-const options: ConfigOptions = {
-    config: command.config
-};
+Process.start();
 
+const command: Command = commander.parse(process.argv);
+const options: ConfigOptions = { config: command.config };
 const changelog = new Changelog(options);
 
 changelog.generate().then(() => {
     Process.exit(Process.EXIT_CODE_SUCCES);
+    Process.end();
 });

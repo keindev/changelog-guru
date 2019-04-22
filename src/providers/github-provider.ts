@@ -21,9 +21,6 @@ export default class GitHubProvider extends Provider {
         const since: string = await this.getLatestReleaseDate();
 
         Process.info('Get last commits since', since);
-        Process.info('Repository', this.repository);
-        Process.info('Owner', this.owner);
-        Process.info('Brach', this.branch);
 
         const { data: commits } = await this.kit.repos.listCommits({
             page,

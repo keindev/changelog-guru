@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import Process from '../utils/process';
 import Commit, { Status } from '../entities/commit';
 import Plugin from '../entities/plugin';
@@ -70,7 +71,7 @@ export default class MarkerPlugin extends Plugin {
                     case MarkerName.Hide: commit.setStatus(Status.Hidden); break;
                     case MarkerName.Important: commit.setStatus(Status.Important); break;
                     case MarkerName.Group: if (typeof value === 'string') section = getGroup(value); break;
-                    default: Process.info('Marker', `{bold ${name}} is not avaliable`); break;
+                    default: Process.warn(chalk`Marker {bold ${name}} is not avaliable`); break;
                     }
 
                     if (section instanceof Section) section.assign(commit);
