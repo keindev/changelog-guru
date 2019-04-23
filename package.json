@@ -11,14 +11,14 @@
         "github",
         "gitlab"
     ],
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "lib/changelog.js",
+    "types": "lib/changelog.d.ts",
     "bin": {
         "changelog-guru": "bin/changelog",
         "changelog": "bin/changelog"
     },
-    "unpkg": "dist/index.js",
-    "module": "dist/index.js",
+    "unpkg": "lib/changelog.js",
+    "module": "lib/changelog.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/keindev/changelog-guru.git"
@@ -27,7 +27,7 @@
         "url": "https://github.com/keindev/changelog-guru/issues"
     },
     "scripts": {
-        "clean": "rm -rf dist",
+        "clean": "rm -rf lib",
         "lint": "eslint src/**/*.ts",
         "test": "",
         "cover": "",

@@ -23,36 +23,37 @@ export default class Task {
     private status: Status;
     private subtasks: Task[] = [];
 
-    public constructor(text: string) {
+    public constructor(text: string, status: Status = Status.Pending) {
         this.text = text;
-        this.status = Status.Pending;
+        this.status = status;
     }
 
-    public add(text: string): Task {
-        const task = new Task(text);
-
+    public add(task: Task) {
         this.subtasks.push(task);
-
-        return task;
     }
 
-    public complete(text: string) {
+    public subtask(text: string, status: Status = Status.Completed) {
+        if (status === Status.Completed || status === Status.Skipped) this.add(new Task(text, status));
+    }
+
+    public complete() {
         if (!this.subtasks.length) {
-            this.text = text;
-            this.status = Status.Completed;
+            this.update(Status.Completed);
         } else {
             this.fail('Subtasks is not complete.')
         }
     }
 
-    public skip(text: string) {
-        this.text = text;
-        this.status = Status.Skipped;
+    public skip() {
+        this.update(Status.Skipped);
     }
 
-    public fail(text: string) {
-        this.text = text;
-        this.status = Status.Failed;
+    public fail(error?: string) {
+        this.update(Status.Failed, error ? `${this.text}: ${error}` : this.text);
+    }
+
+    public isPending(): boolean {
+        return this.status === Status.Pending;
     }
 
     public render(level: number = 0): string {
@@ -78,5 +79,11 @@ export default class Task {
         }
 
         return symbol;
+    }
+
+    private update(status: Status, text?: string) {
+        if (text) this.text = text;
+
+        this.status = status;
     }
 }

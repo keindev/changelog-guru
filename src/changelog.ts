@@ -5,7 +5,7 @@ import GitHubProvider from './providers/github-provider';
 import GitLabProvider from './providers/gitlab-provider';
 import Config, { ConfigOptions } from './entities/config';
 import Package from './entities/package';
-import Process from './utils/process';
+import * as Process from './utils/process';
 
 dotenv.config();
 
@@ -14,12 +14,12 @@ export default class Changelog {
     private package: Package;
 
     public constructor(options?: ConfigOptions) {
-        const task = Process.addTask('Loading a configuration files');
+        Process.Instance.addTask('Reading configuration files');
 
         this.config = new Config(options);
         this.package = new Package();
 
-        if (task) task.complete('LoadedLoaded configuration files');
+        Process.Instance.completeTask();
     }
 
     public async generate(): Promise<void> {
@@ -29,7 +29,7 @@ export default class Changelog {
         switch(config.provider) {
         case ProviderName.GitHub: provider = new GitHubProvider(url); break;
         case ProviderName.GitLab: provider = new GitLabProvider(url); break;
-        default: Process.error(`Provider is not specified (${config.provider})`); break;
+        default: Process.Instance.failTask(`Provider is not specified (${config.provider})`); break;
         }
 
         if (provider) {

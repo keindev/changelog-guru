@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml'
+import chalk from 'chalk';
+import * as Process from '../utils/process';
+import { Status } from '../utils/task';
 import { ProviderName } from '../providers/provider';
 import { ReadonlyArray, Option, OptionValue } from '../utils/types';
 
@@ -23,6 +26,8 @@ export default class Config {
     public readonly provider: ProviderName;
 
     public constructor(options?: ConfigOptions) {
+        const task = Process.Instance.addTask('Config initializing');
+
         let config: ConfigOptions = Object.assign({}, defaultConfig, options || {});
         let { config: filePath } = config;
 
@@ -31,7 +36,14 @@ export default class Config {
 
             if (typeof filePath === 'string' && filePath.length && fs.existsSync(filePath)) {
                 config = Object.assign({}, config, load(filePath));
+
+                task.subtask(`Used config file from: ${filePath}`, Status.Skipped);
+            } else {
+                task.subtask(`File ${chalk.bold(fileName)} is not exists`, Status.Skipped);
             }
+        } else {
+            task.subtask(`File path to ${chalk.bold(fileName)} is not specified`, Status.Skipped);
+            task.subtask(`Used default config`, Status.Completed);
         }
 
         this.provider = config.provider || ProviderName.GitHub;
@@ -42,5 +54,7 @@ export default class Config {
                 return Reflect.get(target, name, receiver);
             }
         });
+
+        if (task) task.complete();
     }
 }

@@ -1,64 +1,82 @@
 import logUpdate from 'log-update';
-import Task from './task';
+import Task, { Status } from './task';
 
-const tasks: Task[] = [];
-let intervalId: NodeJS.Timeout | undefined;
-let activeTaskIndex: number = 0;
+class Process {
+    public static SUCCESS: number = 0;
+    public static ERROR: number = 1;
 
-export default class Process {
-    public static EXIT_CODE_ERROR: number = 1;
-    public static EXIT_CODE_SUCCES: number = 0;
+    private static instance: Process;
 
-    public static addTask(text: string): Task {
-        const task = new Task(text);
+    private id: NodeJS.Timeout | undefined;
+    private tasks: Task[] = [];
+    private task: Task | undefined;
 
-        activeTaskIndex = tasks.push(task);
+    public static get Instance() {
+        return this.instance || (this.instance = new this());
+    }
+
+    public start() {
+		if (!this.id) {
+            this.id = setInterval(() => {
+                this.render();
+            }, 100);
+        }
+	}
+
+	public end(code: number = Process.SUCCESS) {
+		if (this.id) {
+            clearInterval(this.id);
+            this.id = undefined;
+            this.render();
+            logUpdate.done();
+		}
+
+        process.exit(code);
+
+	}
+
+    public addTask(text: string, status: Status = Status.Pending): Task {
+        const task = new Task(text, status);
+
+        if (this.task && this.task.isPending()) {
+            this.task.add(task);
+        } else {
+            this.tasks.push(task);
+            this.task = task;
+        }
+
+        if (status === Status.Failed) this.failTask();
 
         return task;
     }
 
-    public static addSubtask(text: string): Task | undefined {
-        const task: Task | undefined = Process.getActiveTask();
-        let subtask: Task | undefined;
+    public completeTask() {
+        const { task } = this;
 
-        if (task) subtask = task.add(text);
+        if (task) task.complete();
 
-        return subtask;
+        this.task = undefined;
     }
 
-    public static getActiveTask(): Task | undefined {
-        return tasks[activeTaskIndex - 1];
+    public skipTask() {
+        const { task } = this;
+
+        if (task) task.skip();
+
+        this.task = undefined;
     }
 
-    public static start() {
-		if (!intervalId) {
-            intervalId = setInterval(() => {
-                logUpdate(tasks.map((task: Task) => task.render()).join(Task.LINE_SEPARATOR));
-    		}, 100);
-		}
-	}
+    public failTask(error?: string) {
+        const { task } = this;
 
-	public static end() {
-		if (intervalId) {
-			clearInterval(intervalId);
-			intervalId = undefined;
-            logUpdate.done();
-		}
-	}
+        if (task) task.fail(error);
 
-    public static getVersion(): string {
-        let version = '';
-
-        if (typeof process.env.npm_package_version === 'string') {
-            version = process.env.npm_package_version;
-        }
-
-        return version;
+        this.end(Process.ERROR);
     }
 
-    public static exit(code: number = Process.EXIT_CODE_ERROR): void {
-        if (code === Process.EXIT_CODE_ERROR) Process.end();
-
-        process.exit(code);
+    private render() {
+        logUpdate(this.tasks.map((task: Task) => task.render()).join(Task.LINE_SEPARATOR));
     }
 }
+
+export const Instance = Process.Instance;
