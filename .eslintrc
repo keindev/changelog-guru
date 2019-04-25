@@ -8,14 +8,14 @@
 	"parserOptions": {
 		"project": "./tsconfig.json"
 	},
-	"plugins": [
-		"@typescript-eslint"
-	],
 	"extends": [
-		"airbnb-base",
-		"plugin:@typescript-eslint/recommended",
-		"prettier",
+        "airbnb-base",
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
 		"prettier/@typescript-eslint"
+    ],
+    "plugins": [
+        "@typescript-eslint"
 	],
 	"rules": {
 		"max-len": [

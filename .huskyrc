@@ -1,0 +1,6 @@
+{
+    "hooks": {
+        "pre-commit": "yarn run build",
+        "pre-push": "yarn run build"
+    }
+}
