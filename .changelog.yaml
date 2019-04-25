@@ -9,6 +9,7 @@ types:
     - test
     - docs
     - ci
+    - cd
     - build
     - types
     - style
