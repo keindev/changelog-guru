@@ -1,5 +1,3 @@
-import urlParse from 'url-parse';
-
 export default class Author {
     public static DEFAULT_AVATAR_SIZE: number = 40;
 
@@ -17,11 +15,16 @@ export default class Author {
     }
 
     public getAvatar(size: number = Author.DEFAULT_AVATAR_SIZE): string {
-        const data = urlParse(this.avatar, true);
+        const url = new URLSearchParams(this.avatar);
+        const name = 'size';
 
-        data.query.size = size.toString();
+        if (url.has(name)) {
+            url.set(name, size.toString());
+        } else {
+            url.append(name, size.toString());
+        }
 
-        return data.toString();
+        return url.toString();
     }
 
     public toString(): string {
