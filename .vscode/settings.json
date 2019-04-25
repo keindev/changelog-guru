@@ -1,0 +1,34 @@
+{
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "cSpell.enabledLanguageIds": [
+        "css",
+        "dockerfile",
+        "dotenv",
+        "html",
+        "javascript",
+        "javascriptreact",
+        "json",
+        "jsonc",
+        "markdown",
+        "plaintext",
+        "restructuredtext",
+        "scss",
+        "shellscript",
+        "text",
+        "typescript",
+        "typescriptreact",
+        "yaml",
+        "yml"
+    ],
+    "cSpell.ignorePaths": [
+        "**/package-lock.json",
+        "**/yarn.lock",
+        "**/node_modules/**",
+        "**/vscode-extension/**",
+        "**/.git/**",
+        ".vscode",
+        ".yarnclean",
+        "tsconfig.json",
+        "typings"
+    ]
+}

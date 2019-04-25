@@ -6,6 +6,14 @@
         "rootDir": "src",
         "outDir": "lib",
         "newLine": "lf",
+        "allowJs": false,
+        "allowUnreachableCode": false,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": true,
+        "preserveConstEnums": true,
+        "pretty": true,
+        "sourceMap": true,
         "strict": true,
         "declaration": true,
         "noImplicitAny": true,
@@ -13,7 +21,7 @@
         "removeComments": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
     },
     "exclude": ["node_modules", "lib"]
 }
