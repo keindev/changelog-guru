@@ -34,12 +34,6 @@
         "build:ts": "tsc",
         "build": "npm-run-all clean lint build:*"
     },
-    "husky": {
-        "hooks": {
-            "pre-commit": "yarn build",
-            "pre-push": "yarn build"
-        }
-    },
     "engines": {
         "node": "^10.13.0"
     },
