@@ -10,14 +10,15 @@ export default class Reader {
 
     public async read(): Promise<State> {
         const state: State = new State();
+        const date: string = await this.provider.getLatestReleaseDate();
 
-        await this.readCommits(state);
+        await this.readCommits(date, state);
 
         return state;
     }
 
-    private async readCommits(state: State, pageNumber: number = 0): Promise<void> {
-        const commits = await this.provider.getCommits(pageNumber + 1);
+    private async readCommits(date: string, state: State, pageNumber: number = 0): Promise<void> {
+        const commits = await this.provider.getCommits(date, pageNumber + 1);
         const { length } = commits;
 
         if (length) {
@@ -26,7 +27,7 @@ export default class Reader {
             });
 
             if (length === Provider.PAGE_SIZE) {
-                await this.readCommits(state, pageNumber);
+                await this.readCommits(date, state, pageNumber);
             }
         }
     }

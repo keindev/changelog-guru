@@ -6,10 +6,12 @@ import Commit from '../entities/commit';
 import Author from '../entities/author';
 import Process from '../utils/process';
 
+const $process = Process.getInstance();
+
 export enum ProviderName {
     GitHub = 'github',
     // not supported yet
-    GitLab = 'gitlab',
+    GitLab = 'gitlab'
 }
 
 export default abstract class Provider {
@@ -21,7 +23,7 @@ export default abstract class Provider {
     protected branch: string = '';
 
     public constructor(url: string) {
-        const pathname: string[] = (new URL(url)).pathname.split('/');
+        const pathname: string[] = new URL(url).pathname.split('/');
 
         this.repository = path.basename(pathname.pop() as string, `.${Provider.TYPE}`);
         this.owner = pathname.pop() as string;
@@ -29,24 +31,27 @@ export default abstract class Provider {
         const pattern = `.${Provider.TYPE}/HEAD`;
         const filepath = findupSync(pattern, { cwd: process.cwd() });
 
+        $process.addTask('Initializing GitHub provider');
+
         if (fs.existsSync(filepath)) {
             const buffer: Buffer = fs.readFileSync(filepath);
             const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
 
             if (match) {
-                [,this.branch] = match;
+                [, this.branch] = match;
             } else {
-                Process.error(chalk`{bold ${pattern}} - ref(s) SHA not found`);
+                $process.failTask(`${chalk.bold(pattern)} - ref(s) SHA not found`);
             }
         } else {
-            Process.error(chalk`{bold ${pattern}} - does not exist`);
+            $process.failTask(`${chalk.bold(pattern)} - does not exist`);
         }
 
-        Process.info('Provider', this.constructor.name);
-        Process.info('Repository', this.repository);
-        Process.info('Owner', this.owner);
-        Process.info('Brach', this.branch);
+        $process.addSubTask(`Repository: ${chalk.bold(this.repository)}`);
+        $process.addSubTask(`Brach: ${chalk.bold(this.branch)}`);
+        $process.addSubTask(`Owner: ${chalk.bold(this.owner)}`);
+        $process.completeTask();
     }
 
-    abstract async getCommits(page: number): Promise<[Commit, Author][]>;
+    abstract async getCommits(date: string, page: number): Promise<[Commit, Author][]>;
+    abstract async getLatestReleaseDate(): Promise<string>;
 }

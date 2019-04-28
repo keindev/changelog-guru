@@ -1,5 +1,5 @@
 export default class Key {
-    public static MAX_DIFF_PERCENT: number = .2;
+    public static MAX_DIFF_PERCENT: number = 0.2;
     public static MAX_DIFF_DISTANCE: number = 2;
 
     public static unify(key: string): string {
@@ -20,15 +20,17 @@ export default class Key {
         let uniqueKey: string = key;
 
         if (!map.has(key)) {
-            [...map.keys()].some((mapKey): boolean => {
-                const isEqual: boolean = Key.isEqual(key, mapKey);
+            [...map.keys()].some(
+                (mapKey): boolean => {
+                    const isEqual: boolean = Key.isEqual(key, mapKey);
 
-                if (isEqual) {
-                    uniqueKey = mapKey;
+                    if (isEqual) {
+                        uniqueKey = mapKey;
+                    }
+
+                    return isEqual;
                 }
-
-                return isEqual;
-            });
+            );
         }
 
         return map.get(uniqueKey);
@@ -38,7 +40,7 @@ export default class Key {
         return list.find((item): boolean => Key.isEqual(item, key));
     }
 
-    public static isEqual(a: string, b: string, ): boolean {
+    public static isEqual(a: string, b: string): boolean {
         let result = a === b;
 
         if (!result) {
@@ -60,15 +62,16 @@ export default class Key {
 
                 for (i = 1, m = 0; i <= lengthB; i++, m++) {
                     for (j = 1, n = 0; j <= lengthA; j++, n++) {
-                        matrix[i][j] = unifyedB.charAt(m) === unifyedA.charAt(n)
-                            ? matrix[m][n]
-                            : Math.min(matrix[m][n] + 1, Math.min(matrix[i][n] + 1, matrix[m][j] + 1));
+                        matrix[i][j] =
+                            unifyedB.charAt(m) === unifyedA.charAt(n)
+                                ? matrix[m][n]
+                                : Math.min(matrix[m][n] + 1, Math.min(matrix[i][n] + 1, matrix[m][j] + 1));
                     }
                 }
 
                 const distance = matrix[lengthB][lengthA];
 
-                result = (distance <= Key.MAX_DIFF_DISTANCE) || ((distance / lengthA) <= Key.MAX_DIFF_PERCENT);
+                result = distance <= Key.MAX_DIFF_DISTANCE || distance / lengthA <= Key.MAX_DIFF_PERCENT;
             }
         }
 

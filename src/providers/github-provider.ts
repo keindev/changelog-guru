@@ -1,9 +1,15 @@
-import Octokit, { ReposListCommitsResponseItem, ReposListReleasesParams,
-    ReposListCommitsResponseItemAuthor } from '@octokit/rest';
+import chalk from 'chalk';
+import Octokit, {
+    ReposListCommitsResponseItem,
+    ReposListReleasesParams,
+    ReposListCommitsResponseItemAuthor
+} from '@octokit/rest';
 import Provider from './provider';
 import Process from '../utils/process';
 import Author from '../entities/author';
 import Commit from '../entities/commit';
+
+const $process = Process.getInstance();
 
 export default class GitHubProvider extends Provider {
     private kit: Octokit;
@@ -12,33 +18,66 @@ export default class GitHubProvider extends Provider {
     public constructor(url: string) {
         super(url);
 
-        if (!process.env.GITHUB_TOKEN) Process.error('process.env.GITHUB_TOKEN - must be provided');
+        $process.addTask('Initializing GitHub provider');
+
+        if (!process.env.GITHUB_TOKEN) {
+            $process.failTask('process.env.GITHUB_TOKEN - must be provided');
+        }
 
         this.kit = new Octokit({ auth: `token ${process.env.GITHUB_TOKEN || ''}` });
+        $process.completeTask();
     }
 
-    public async getCommits(page: number): Promise<[Commit, Author][]> {
-        const since: string = await this.getLatestReleaseDate();
-
-        Process.info('Get last commits since', since);
+    public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {
+        $process.addTask(`Loading page #${page.toString()}`);
 
         const { data: commits } = await this.kit.repos.listCommits({
             page,
-            since,
+            since: date,
             repo: this.repository,
             owner: this.owner,
             sha: this.branch,
-            'per_page': GitHubProvider.PAGE_SIZE
+            /* eslint-disable-next-line @typescript-eslint/camelcase */
+            per_page: GitHubProvider.PAGE_SIZE
         });
 
-        return commits.map((response: ReposListCommitsResponseItem): [Commit, Author] => {
-            const author = this.parseAuthor(response.author);
-            const { commit: { message, author: { date } }, html_url: url, sha } = response;
-            const timestamp = new Date(date).getTime();
-            const commit = new Commit(sha, timestamp, message, url, author.login);
+        $process.addSubTask(`${chalk.bold(commits.length.toString())} commits loaded`);
+        $process.completeTask();
 
-            return [commit, author];
-        });
+        return commits.map(
+            (response: ReposListCommitsResponseItem): [Commit, Author] => {
+                const author = this.parseAuthor(response.author);
+                const {
+                    commit: {
+                        message,
+                        author: { date: timestamp }
+                    },
+                    html_url: url,
+                    sha
+                } = response;
+                const commit = new Commit(sha, new Date(timestamp).getTime(), message, url, author.login);
+
+                return [commit, author];
+            }
+        );
+    }
+
+    public async getLatestReleaseDate(): Promise<string> {
+        const repository: ReposListReleasesParams = { repo: this.repository, owner: this.owner };
+        // FIXME: get last release from list
+        const {
+            data: { length }
+        } = await this.kit.repos.listReleases(repository);
+        let date: string = new Date(0).toISOString();
+
+        if (length) {
+            // FIXME: get last release from list
+            const { data: release } = await this.kit.repos.getLatestRelease(repository);
+
+            date = release.created_at;
+        }
+
+        return date;
     }
 
     private parseAuthor(response: ReposListCommitsResponseItemAuthor): Author {
@@ -50,21 +89,5 @@ export default class GitHubProvider extends Provider {
         }
 
         return authors.get(id) as Author;
-    }
-
-    private async getLatestReleaseDate(): Promise<string> {
-        const repository: ReposListReleasesParams = { repo: this.repository, owner: this.owner };
-        // FIXME: get last release from list
-        const { data: { length } } = await this.kit.repos.listReleases(repository);
-        let since: string = (new Date(0)).toISOString();
-
-        if (length) {
-            // FIXME: get last release from list
-            const { data: release } = await this.kit.repos.getLatestRelease(repository);
-
-            since = release.created_at;
-        }
-
-        return since;
     }
 }

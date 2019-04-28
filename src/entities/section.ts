@@ -5,7 +5,7 @@ export enum Position {
     Body = 2,
     Footer = 3,
     Group = 4,
-    Subgroup = 5,
+    Subgroup = 5
 }
 
 export default class Section {

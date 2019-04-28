@@ -7,6 +7,8 @@ import Section, { Position } from '../entities/section';
 import { ConfigOptions } from '../entities/config';
 import { Option, OptionValue } from '../utils/types';
 
+const $process = Process.getInstance();
+
 enum MarkerName {
     // !break - indicates major changes breaking backward compatibility
     Break = 'break',
@@ -17,7 +19,7 @@ enum MarkerName {
     // !hide - hide a commit
     Hide = 'hide',
     // !important - place a commit title to special section on top of changelog
-    Important = 'important',
+    Important = 'important'
 }
 
 interface Config extends ConfigOptions {
@@ -33,20 +35,22 @@ export default class MarkerPlugin extends Plugin {
         const { markers } = config;
 
         if (typeof markers === 'object') {
-            Object.values(MarkerName).forEach((name: string): void => {
-                const title: Option | OptionValue = markers[name];
+            Object.values(MarkerName).forEach(
+                (name: string): void => {
+                    const title: Option | OptionValue = markers[name];
 
-                if (typeof title === 'string') {
-                    let position: Position | undefined;
+                    if (typeof title === 'string') {
+                        let position: Position | undefined;
 
-                    if (name === MarkerName.Break || name === MarkerName.Deprecated) position = Position.Header;
-                    if (name === MarkerName.Important) position = Position.Footer;
+                        if (name === MarkerName.Break || name === MarkerName.Deprecated) position = Position.Header;
+                        if (name === MarkerName.Important) position = Position.Footer;
 
-                    if (typeof position !== 'undefined') {
-                        this.markers.set(name, this.context.addSection(title, position));
+                        if (typeof position !== 'undefined') {
+                            this.markers.set(name, this.context.addSection(title, position));
+                        }
                     }
                 }
-            });
+            );
         }
     }
 
@@ -56,27 +60,41 @@ export default class MarkerPlugin extends Plugin {
         const getGroup = (name: string): Section => this.context.addSection(name, Position.Group);
         let match: RegExpExecArray | null;
 
-        commit.body.forEach((line): void => {
-            do {
-                match = MarkerPlugin.EXPRESSION.exec(line);
+        commit.body.forEach(
+            (line): void => {
+                do {
+                    match = MarkerPlugin.EXPRESSION.exec(line);
 
-                if (match && match.groups && typeof match.groups.name === 'string') {
-                    const { name, value } = match.groups;
-                    const key: string | undefined = Key.getEqualy(name, names);
-                    let section: Section | undefined = key ? markers.get(key) : undefined;
+                    if (match && match.groups && typeof match.groups.name === 'string') {
+                        const { name, value } = match.groups;
+                        const key: string | undefined = Key.getEqualy(name, names);
+                        let section: Section | undefined = key ? markers.get(key) : undefined;
 
-                    switch (key) {
-                    case MarkerName.Break: commit.setStatus(Status.BreakingChanges); break;
-                    case MarkerName.Deprecated: commit.setStatus(Status.Deprecated); break;
-                    case MarkerName.Hide: commit.setStatus(Status.Hidden); break;
-                    case MarkerName.Important: commit.setStatus(Status.Important); break;
-                    case MarkerName.Group: if (typeof value === 'string') section = getGroup(value); break;
-                    default: Process.warn(chalk`Marker {bold ${name}} is not avaliable`); break;
+                        switch (key) {
+                            case MarkerName.Break:
+                                commit.setStatus(Status.BreakingChanges);
+                                break;
+                            case MarkerName.Deprecated:
+                                commit.setStatus(Status.Deprecated);
+                                break;
+                            case MarkerName.Hide:
+                                commit.setStatus(Status.Hidden);
+                                break;
+                            case MarkerName.Important:
+                                commit.setStatus(Status.Important);
+                                break;
+                            case MarkerName.Group:
+                                if (typeof value === 'string') section = getGroup(value);
+                                break;
+                            default:
+                                $process.addSubTask(`Marker ${chalk.bold(name)} is not avaliable`);
+                                break;
+                        }
+
+                        if (section instanceof Section) section.assign(commit);
                     }
-
-                    if (section instanceof Section) section.assign(commit);
-                }
-            } while (match);
-        });
+                } while (match);
+            }
+        );
     }
 }

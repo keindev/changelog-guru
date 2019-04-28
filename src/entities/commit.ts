@@ -3,7 +3,7 @@ export enum Status {
     BreakingChanges = 1,
     Deprecated = 2,
     Important = 4,
-    Hidden = 8,
+    Hidden = 8
 }
 
 export default class Commit {
@@ -31,7 +31,9 @@ export default class Commit {
         const match = this.header.match(/(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:)/i);
 
         if (match && match.groups) {
-            const { groups: { types, scope } } = match;
+            const {
+                groups: { types, scope }
+            } = match;
 
             if (types) this.types = types.split(',').filter((type): boolean => !!type);
             if (scope) this.scope = scope;

@@ -4,6 +4,8 @@ import readPkg from 'read-pkg';
 import Process from '../utils/process';
 import { Option } from '../utils/types';
 
+const $process = Process.getInstance();
+
 export interface PackageInterface {
     version: string;
     repository: Option;
@@ -14,15 +16,27 @@ export default class Package {
     public readonly url: string;
 
     public constructor() {
-        const { version, repository } = readPkg.sync({ normalize: false });
-        const semverion: string | undefined = semver.valid(version) || undefined;
+        $process.addTask('Reading package.json');
 
-        if (!version) Process.error('pkg.version is not specified');
-        if (!semverion) Process.error('version is invalid (see https://semver.org/)');
-        if (!repository) Process.error('pkg.repository is not specified');
-        if (!repository.url) Process.error('pkg.repository.url is not specified');
+        const { version, repository } = readPkg.sync({ normalize: true });
+        const actualVersion = semver.valid(version) || undefined;
 
-        this.version = semverion || '';
-        this.url = repository.url;
+        $process.failTaskIf(!version, 'pkg.version is not specified');
+        $process.failTaskIf(!actualVersion, 'version is invalid (see https://semver.org/)');
+        this.version = actualVersion || '';
+
+        switch (typeof repository) {
+            case 'string':
+                this.url = repository;
+                break;
+            case 'object':
+                this.url = repository.url;
+                break;
+            default:
+                this.url = '';
+                break;
+        }
+
+        $process.failTaskIf(!this.url, 'Package repository url is not specified');
     }
 }

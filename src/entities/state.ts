@@ -35,7 +35,7 @@ export default class State implements Context {
         let section: Section | undefined = this.getSection(title);
 
         if (typeof section === 'undefined') {
-            this.sections.push(section = new Section(title, position));
+            this.sections.push((section = new Section(title, position)));
         }
 
         return section;
@@ -44,18 +44,27 @@ export default class State implements Context {
     public async modify(plugins: string[], options: ConfigOptions): Promise<void> {
         const commits: Commit[] = [...this.commits.values()];
         const classes: Importable<Plugin, Context>[] = await Promise.all(
-            plugins.map((name): Promise<Importable<Plugin, Context>> => {
-                return import(path.resolve(__dirname, '../plugins', `${name}.js`))
-            })
+            plugins.map(
+                (name): Promise<Importable<Plugin, Context>> => {
+                    return import(path.resolve(__dirname, '../plugins', `${name}.js`));
+                }
+            )
         );
 
-        await Promise.all(classes.map((pluginModule: Importable<Plugin, Context>): Promise<void> => {
-            return this.modifyWith(pluginModule.default, options, commits);
-        }));
+        await Promise.all(
+            classes.map(
+                (pluginModule: Importable<Plugin, Context>): Promise<void> => {
+                    return this.modifyWith(pluginModule.default, options, commits);
+                }
+            )
+        );
     }
 
-    private async modifyWith(PluginClass: Constructable<Plugin, Context>,
-        options: ConfigOptions, commits: Commit[]): Promise<void> {
+    private async modifyWith(
+        PluginClass: Constructable<Plugin, Context>,
+        options: ConfigOptions,
+        commits: Commit[]
+    ): Promise<void> {
         if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
             const plugin: Plugin = new PluginClass(this);
 

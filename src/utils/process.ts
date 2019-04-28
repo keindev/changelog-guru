@@ -1,82 +1,86 @@
 import logUpdate from 'log-update';
 import Task, { Status } from './task';
 
-class Process {
-    public static SUCCESS: number = 0;
-    public static ERROR: number = 1;
-
+export default class Process {
     private static instance: Process;
 
     private id: NodeJS.Timeout | undefined;
     private tasks: Task[] = [];
-    private task: Task | undefined;
+    private stack: Task[] = [];
 
-    public static get Instance() {
-        return this.instance || (this.instance = new this());
+    public static getInstance(): Process {
+        if (!Process.instance) {
+            Process.instance = new Process();
+        }
+
+        return Process.instance;
     }
 
-    public start() {
-		if (!this.id) {
-            this.id = setInterval(() => {
+    public start(): void {
+        if (!this.id) {
+            this.id = setInterval((): void => {
                 this.render();
             }, 100);
         }
-	}
+    }
 
-	public end(code: number = Process.SUCCESS) {
-		if (this.id) {
+    public end(success: boolean): void {
+        if (this.id) {
             clearInterval(this.id);
             this.id = undefined;
             this.render();
             logUpdate.done();
-		}
-
-        process.exit(code);
-
-	}
-
-    public addTask(text: string, status: Status = Status.Pending): Task {
-        const task = new Task(text, status);
-
-        if (this.task && this.task.isPending()) {
-            this.task.add(task);
-        } else {
-            this.tasks.push(task);
-            this.task = task;
         }
 
-        if (status === Status.Failed) this.failTask();
-
-        return task;
+        process.exit(Number(success));
     }
 
-    public completeTask() {
-        const { task } = this;
+    public addTask(text: string, status: Status = Status.Pending): void {
+        const { stack } = this;
+        const task: Task | undefined = stack[stack.length - 1];
+        const subtask = new Task(text, status);
+
+        if (task && task.isPending()) {
+            task.add(subtask);
+            stack.push(subtask);
+        } else {
+            this.tasks.push(subtask);
+        }
+    }
+
+    public addSubTask(text: string, skipped: boolean = false): void {
+        const { stack } = this;
+        const status = skipped ? Status.Skipped : Status.Completed;
+        const task: Task | undefined = stack[stack.length - 1];
+
+        if (task) task.add(new Task(text, status));
+    }
+
+    public completeTask(): void {
+        const task: Task | undefined = this.stack.pop();
 
         if (task) task.complete();
-
-        this.task = undefined;
     }
 
-    public skipTask() {
-        const { task } = this;
+    public skipTask(): void {
+        const task: Task | undefined = this.stack.pop();
 
         if (task) task.skip();
-
-        this.task = undefined;
     }
 
-    public failTask(error?: string) {
-        const { task } = this;
+    public failTask(error?: string): void {
+        const task: Task | undefined = this.stack.pop();
 
         if (task) task.fail(error);
 
-        this.end(Process.ERROR);
+        this.end(false);
     }
 
-    private render() {
-        logUpdate(this.tasks.map((task: Task) => task.render()).join(Task.LINE_SEPARATOR));
+    public failTaskIf(condition: boolean, error?: string): void {
+        if (condition) this.failTask(error);
+    }
+
+    private render(): void {
+        logUpdate(this.tasks.map((task: Task): string => task.render()).join(Task.LINE_SEPARATOR));
     }
 }
-
-export const Instance = Process.Instance;
