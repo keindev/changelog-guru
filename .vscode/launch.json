@@ -5,12 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "debug",
+            "name": "Node.js (yarn)",
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": ["run-script", "debug"],
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["run", "debug"],
             "port": 9229
         }
     ]

@@ -36,9 +36,9 @@ scopes:
         theme: Themes
         api: API
 sections:
-    - Bug Fixes: [ fix ]
-    - Features: [ feat ]
-    - Internal сhanges: [ types, workflow, ci, cd, build, test, chore, docs ]
-    - Performance Improvements: [ perf ]
-    - Code Refactoring: [ refactor ]
-    - Reverts: [ revert ]
+    - Bug Fixes: [fix]
+    - Features: [feat]
+    - Internal сhanges: [types, workflow, ci, cd, build, test, chore, docs]
+    - Performance Improvements: [perf]
+    - Code Refactoring: [refactor]
+    - Reverts: [revert]
