@@ -16,13 +16,13 @@ export default class Package {
     public readonly url: string;
 
     public constructor() {
-        $process.addTask('Reading package.json');
-
+        const task = $process.task('Reading package.json');
         const { version, repository } = readPkg.sync({ normalize: true });
         const actualVersion = semver.valid(version) || undefined;
 
-        $process.failTaskIf(!version, 'pkg.version is not specified');
-        $process.failTaskIf(!actualVersion, 'version is invalid (see https://semver.org/)');
+        if (!version) task.fail('pkg.version is not specified');
+        if (!actualVersion) task.fail('pkg.version is invalid (see https://semver.org/)');
+
         this.version = actualVersion || '';
 
         switch (typeof repository) {
@@ -37,6 +37,8 @@ export default class Package {
                 break;
         }
 
-        $process.failTaskIf(!this.url, 'Package repository url is not specified');
+        if (!this.url) task.fail('Package repository url is not specified');
+
+        task.complete();
     }
 }

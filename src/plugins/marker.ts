@@ -1,13 +1,9 @@
-import chalk from 'chalk';
-import Process from '../utils/process';
 import Commit, { Status } from '../entities/commit';
 import Plugin from '../entities/plugin';
 import Key from '../utils/key';
 import Section, { Position } from '../entities/section';
 import { ConfigOptions } from '../entities/config';
 import { Option, OptionValue } from '../utils/types';
-
-const $process = Process.getInstance();
 
 enum MarkerName {
     // !break - indicates major changes breaking backward compatibility
@@ -87,7 +83,7 @@ export default class MarkerPlugin extends Plugin {
                                 if (typeof value === 'string') section = getGroup(value);
                                 break;
                             default:
-                                $process.addSubTask(`Marker ${chalk.bold(name)} is not avaliable`);
+                                // $process.addSubTask(`Marker ${chalk.bold(name)} is not avaliable`);
                                 break;
                         }
 

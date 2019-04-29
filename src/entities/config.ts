@@ -26,8 +26,7 @@ export default class Config {
     public readonly provider: ProviderName;
 
     public constructor(options?: ConfigOptions) {
-        $process.addTask('Config initializing');
-
+        const task = $process.task('Config initializing');
         let config: ConfigOptions = Object.assign({}, defaultConfig, options || {});
         let { config: filePath } = config;
 
@@ -37,13 +36,13 @@ export default class Config {
             if (typeof filePath === 'string' && filePath.length && fs.existsSync(filePath)) {
                 config = Object.assign({}, config, load(filePath));
 
-                $process.addSubTask(`Used config file from: ${filePath}`, true);
+                task.add(`Used config file from: ${filePath}`).complete();
             } else {
-                $process.addSubTask(`File ${chalk.bold(fileName)} is not exists`, true);
+                task.add(`File ${chalk.bold(fileName)} is not exists`).skip();
+                task.info(`Used default config`);
             }
         } else {
-            $process.addSubTask(`File path to ${chalk.bold(fileName)} is not specified`, true);
-            $process.addSubTask(`Used default config`);
+            task.info(`Used default config`);
         }
 
         this.provider = config.provider || ProviderName.GitHub;
@@ -55,6 +54,6 @@ export default class Config {
             }
         });
 
-        $process.completeTask();
+        task.complete('Config initialized');
     }
 }

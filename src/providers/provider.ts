@@ -29,27 +29,26 @@ export default abstract class Provider {
         this.owner = pathname.pop() as string;
 
         const pattern = `.${Provider.TYPE}/HEAD`;
-        const filepath = findupSync(pattern, { cwd: process.cwd() });
+        const filePath = findupSync(pattern, { cwd: process.cwd() });
+        const task = $process.task('Initializing git provider');
 
-        $process.addTask('Initializing GitHub provider');
-
-        if (fs.existsSync(filepath)) {
-            const buffer: Buffer = fs.readFileSync(filepath);
+        if (fs.existsSync(filePath)) {
+            const buffer: Buffer = fs.readFileSync(filePath);
             const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
 
             if (match) {
                 [, this.branch] = match;
             } else {
-                $process.failTask(`${chalk.bold(pattern)} - ref(s) SHA not found`);
+                task.fail(`${chalk.bold(pattern)} - ref(s) SHA not found`);
             }
         } else {
-            $process.failTask(`${chalk.bold(pattern)} - does not exist`);
+            task.fail(`${chalk.bold(pattern)} - does not exist`);
         }
 
-        $process.addSubTask(`Repository: ${chalk.bold(this.repository)}`);
-        $process.addSubTask(`Brach: ${chalk.bold(this.branch)}`);
-        $process.addSubTask(`Owner: ${chalk.bold(this.owner)}`);
-        $process.completeTask();
+        task.info(`Repository: ${chalk.bold(this.repository)}`);
+        task.info(`Branch: ${chalk.bold(this.branch)}`);
+        task.info(`Owner: ${chalk.bold(this.owner)}`);
+        task.complete('Git provider initialized:');
     }
 
     abstract async getCommits(date: string, page: number): Promise<[Commit, Author][]>;

@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-// import Reader from './io/reader';
+import Reader from './io/reader';
 import Provider, { ProviderName } from './providers/provider';
 import GitHubProvider from './providers/github-provider';
 import Config, { ConfigOptions } from './entities/config';
@@ -15,12 +15,11 @@ export default class Changelog {
     private package: Package;
 
     public constructor(options?: ConfigOptions) {
-        $process.addTask('Reading configuration files');
+        const task = $process.task('Reading configuration files');
 
         this.config = new Config(options);
         this.package = new Package();
-
-        $process.completeTask();
+        task.complete();
     }
 
     public async generate(): Promise<void> {
@@ -28,9 +27,8 @@ export default class Changelog {
             config,
             package: { url }
         } = this;
+        const task = $process.task('Generating changelog');
         let provider: Provider | undefined;
-
-        $process.addTask('Generating changelog');
 
         switch (config.provider) {
             case ProviderName.GitHub:
@@ -38,14 +36,18 @@ export default class Changelog {
                 break;
             // case ProviderName.GitLab: provider = new GitLabProvider(url); break;
             default:
-                $process.failTask(`Provider is not specified (${config.provider})`);
+                task.fail(`Provider is not specified (${config.provider})`);
                 break;
         }
 
         if (provider) {
-            // const reader = new Reader(provider);
-            // const state = await reader.read();
-            // await state.modify(config.plugins, config.options);
+            const reader = new Reader(provider);
+
+            await reader.read();
+            /* const state = await reader.read();
+            await state.modify(config.plugins, config.options); */
+
+            task.complete();
         }
     }
 }

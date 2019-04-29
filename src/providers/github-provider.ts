@@ -18,18 +18,18 @@ export default class GitHubProvider extends Provider {
     public constructor(url: string) {
         super(url);
 
-        $process.addTask('Initializing GitHub provider');
+        const task = $process.task('Initializing GitHub provider');
 
         if (!process.env.GITHUB_TOKEN) {
-            $process.failTask('process.env.GITHUB_TOKEN - must be provided');
+            task.fail('process.env.GITHUB_TOKEN - must be provided');
         }
 
         this.kit = new Octokit({ auth: `token ${process.env.GITHUB_TOKEN || ''}` });
-        $process.completeTask();
+        task.complete('GitHub provider initialized');
     }
 
     public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {
-        $process.addTask(`Loading page #${page.toString()}`);
+        const task = $process.task(`Loading page #${page.toString()}`);
 
         const { data: commits } = await this.kit.repos.listCommits({
             page,
@@ -41,8 +41,7 @@ export default class GitHubProvider extends Provider {
             per_page: GitHubProvider.PAGE_SIZE
         });
 
-        $process.addSubTask(`${chalk.bold(commits.length.toString())} commits loaded`);
-        $process.completeTask();
+        task.complete(`Loaded page #${page.toString()}: ${chalk.bold(commits.length.toString())} commits`);
 
         return commits.map(
             (response: ReposListCommitsResponseItem): [Commit, Author] => {
