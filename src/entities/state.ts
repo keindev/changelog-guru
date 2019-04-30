@@ -1,4 +1,5 @@
 import path from 'path';
+import chalk from 'chalk';
 import Author from './author';
 import Commit from './commit';
 import Plugin from './plugin';
@@ -6,6 +7,9 @@ import Key from '../utils/key';
 import { ConfigOptions } from './config';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
+import Process from '../utils/process';
+
+const $process = Process.getInstance();
 
 export interface Context {
     getSection(title: string): Section | undefined;
@@ -42,10 +46,13 @@ export default class State implements Context {
     }
 
     public async modify(plugins: string[], options: ConfigOptions): Promise<void> {
+        const task = $process.task('Modify a release state');
         const commits: Commit[] = [...this.commits.values()];
         const classes: Importable<Plugin, Context>[] = await Promise.all(
             plugins.map(
                 (name): Promise<Importable<Plugin, Context>> => {
+                    task.log(`${chalk.bold(name)} imported`);
+
                     return import(path.resolve(__dirname, '../plugins', `${name}.js`));
                 }
             )
@@ -58,6 +65,8 @@ export default class State implements Context {
                 }
             )
         );
+
+        task.complete();
     }
 
     private async modifyWith(

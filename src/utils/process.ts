@@ -40,6 +40,7 @@ export default class Process {
         let task: Task | undefined = tasks[tasks.length - 1];
 
         if (task && task.isPending()) {
+            task = task.getActive();
             task = task.add(text);
         } else {
             tasks.push((task = new Task(text)));

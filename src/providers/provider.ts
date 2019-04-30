@@ -45,9 +45,9 @@ export default abstract class Provider {
             task.fail(`${chalk.bold(pattern)} - does not exist`);
         }
 
-        task.info(`Repository: ${chalk.bold(this.repository)}`);
-        task.info(`Branch: ${chalk.bold(this.branch)}`);
-        task.info(`Owner: ${chalk.bold(this.owner)}`);
+        task.log(`Repository: ${chalk.bold(this.repository)}`);
+        task.log(`Branch: ${chalk.bold(this.branch)}`);
+        task.log(`Owner: ${chalk.bold(this.owner)}`);
         task.complete('Git provider initialized:');
     }
 

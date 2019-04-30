@@ -36,18 +36,18 @@ export default class Config {
             if (typeof filePath === 'string' && filePath.length && fs.existsSync(filePath)) {
                 config = Object.assign({}, config, load(filePath));
 
-                task.add(`Used config file from: ${filePath}`).complete();
+                task.log(`Used config file from: ${filePath}`);
             } else {
-                task.add(`File ${chalk.bold(fileName)} is not exists`).skip();
-                task.info(`Used default config`);
+                task.warn(`File ${chalk.bold(fileName)} is not exists`);
+                task.log(`Used default config`);
             }
         } else {
-            task.info(`Used default config`);
+            task.log(`Used default config`);
         }
 
         this.provider = config.provider || ProviderName.GitHub;
         this.types = config.types || [];
-        this.plugins = this.plugins.concat(config.plugins || []);
+        this.plugins = [...new Set(this.plugins.concat(config.plugins || []))];
         this.options = new Proxy(config as Option, {
             get(target, name, receiver): Option | undefined {
                 return Reflect.get(target, name, receiver);

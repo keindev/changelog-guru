@@ -13,41 +13,38 @@ const $process = Process.getInstance();
 export default class Changelog {
     private config: Config;
     private package: Package;
+    private reader: Reader | undefined;
 
     public constructor(options?: ConfigOptions) {
         const task = $process.task('Reading configuration files');
 
         this.config = new Config(options);
         this.package = new Package();
+        this.reader = this.getReader();
+
+        if (!this.reader) task.fail(`Provider or Reader is not specified (${this.config.provider})`);
+
         task.complete();
     }
 
     public async generate(): Promise<void> {
-        const {
-            config,
-            package: { url }
-        } = this;
-        const task = $process.task('Generating changelog');
+        const { config, reader } = this;
+
+        if (reader) {
+            const state = await reader.read();
+
+            await state.modify(config.plugins, config.options);
+        }
+    }
+
+    private getReader(): Reader | undefined {
+        const { config } = this;
         let provider: Provider | undefined;
+        let reader: Reader | undefined;
 
-        switch (config.provider) {
-            case ProviderName.GitHub:
-                provider = new GitHubProvider(url);
-                break;
-            // case ProviderName.GitLab: provider = new GitLabProvider(url); break;
-            default:
-                task.fail(`Provider is not specified (${config.provider})`);
-                break;
-        }
+        if (config.provider === ProviderName.GitHub) provider = new GitHubProvider(this.package.url);
+        if (provider) reader = new Reader(provider);
 
-        if (provider) {
-            const reader = new Reader(provider);
-
-            await reader.read();
-            /* const state = await reader.read();
-            await state.modify(config.plugins, config.options); */
-
-            task.complete();
-        }
+        return reader;
     }
 }

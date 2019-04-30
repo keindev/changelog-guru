@@ -41,7 +41,7 @@ export default class GitHubProvider extends Provider {
             per_page: GitHubProvider.PAGE_SIZE
         });
 
-        task.complete(`Loaded page #${page.toString()}: ${chalk.bold(commits.length.toString())} commits`);
+        task.complete(`Page #${page.toString()} loaded (${chalk.bold(commits.length.toString())} commits)`);
 
         return commits.map(
             (response: ReposListCommitsResponseItem): [Commit, Author] => {

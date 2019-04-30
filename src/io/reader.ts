@@ -15,11 +15,11 @@ export default class Reader {
     public async read(): Promise<State> {
         const state: State = new State();
         const date: string = await this.provider.getLatestReleaseDate();
-        const task = $process.task(`Reading current state, since ${chalk.bold(date)} (last release date)`);
+        const task = $process.task('Getting release state information');
 
+        task.log(`Last release date: ${chalk.bold(date)}`);
         await this.readCommits(date, state);
-
-        task.complete(`State read, since ${chalk.bold(date)} (last release date)`);
+        task.complete(`Release information`);
 
         return state;
     }
