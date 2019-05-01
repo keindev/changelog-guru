@@ -8,6 +8,7 @@ import { ConfigOptions } from './config';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import Process from '../utils/process';
+import Task from '../utils/task';
 
 const $process = Process.getInstance();
 
@@ -39,6 +40,7 @@ export default class State implements Context {
         let section: Section | undefined = this.getSection(title);
 
         if (typeof section === 'undefined') {
+            $process.task(`Added Section: ${chalk.bold(title)}`).complete();
             this.sections.push((section = new Section(title, position)));
         }
 
@@ -47,21 +49,13 @@ export default class State implements Context {
 
     public async modify(plugins: string[], options: ConfigOptions): Promise<void> {
         const task = $process.task('Modify a release state');
-        const commits: Commit[] = [...this.commits.values()];
-        const classes: Importable<Plugin, Context>[] = await Promise.all(
-            plugins.map(
-                (name): Promise<Importable<Plugin, Context>> => {
-                    task.log(`${chalk.bold(name)} imported`);
-
-                    return import(path.resolve(__dirname, '../plugins', `${name}.js`));
-                }
-            )
-        );
 
         await Promise.all(
-            classes.map(
-                (pluginModule: Importable<Plugin, Context>): Promise<void> => {
-                    return this.modifyWith(pluginModule.default, options, commits);
+            plugins.map(
+                (name: string): Promise<void> => {
+                    task.log(`${chalk.bold(name)} plugin imported`);
+
+                    return this.importPlugin(path.resolve(__dirname, '../plugins', `${name}.js`), options, task);
                 }
             )
         );
@@ -69,18 +63,25 @@ export default class State implements Context {
         task.complete();
     }
 
-    private async modifyWith(
-        PluginClass: Constructable<Plugin, Context>,
-        options: ConfigOptions,
-        commits: Commit[]
-    ): Promise<void> {
+    private async importPlugin(pluginPath: string, options: ConfigOptions, task: Task): Promise<void> {
+        const pluginModule: Importable<Plugin, Context> = await import(pluginPath);
+        const PluginClass: Constructable<Plugin, Context> = pluginModule.default;
+
         if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
             const plugin: Plugin = new PluginClass(this);
+            const subtask = task.add(`Changing state with a ${chalk.bold(PluginClass.name)}`);
+            const commits: Commit[] = [...this.commits.values()];
 
             if (plugin instanceof Plugin) {
                 await plugin.init(options);
                 await Promise.all(commits.map((commit: Commit): Promise<void> => plugin.parse(commit)));
+
+                subtask.complete();
+            } else {
+                subtask.fail(`${chalk.bold(PluginClass.name)} is not a Plugin class`);
             }
+        } else {
+            task.fail(`${chalk.bold(PluginClass.name)} is not a constructable Plugin class`);
         }
     }
 }

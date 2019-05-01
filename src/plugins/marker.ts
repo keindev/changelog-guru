@@ -23,7 +23,7 @@ interface Config extends ConfigOptions {
 }
 
 export default class MarkerPlugin extends Plugin {
-    private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/i;
+    private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
 
     private markers: Map<string, Section> = new Map();
 
@@ -54,12 +54,13 @@ export default class MarkerPlugin extends Plugin {
         const { markers } = this;
         const names: string[] = [...markers.keys(), MarkerName.Group];
         const getGroup = (name: string): Section => this.context.addSection(name, Position.Group);
+        const expression = MarkerPlugin.EXPRESSION;
         let match: RegExpExecArray | null;
 
         commit.body.forEach(
             (line): void => {
                 do {
-                    match = MarkerPlugin.EXPRESSION.exec(line);
+                    match = expression.exec(line);
 
                     if (match && match.groups && typeof match.groups.name === 'string') {
                         const { name, value } = match.groups;
@@ -89,7 +90,7 @@ export default class MarkerPlugin extends Plugin {
 
                         if (section instanceof Section) section.assign(commit);
                     }
-                } while (match);
+                } while (match && expression.lastIndex);
             }
         );
     }
