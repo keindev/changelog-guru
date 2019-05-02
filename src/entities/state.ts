@@ -40,7 +40,7 @@ export default class State implements Context {
         let section: Section | undefined = this.getSection(title);
 
         if (typeof section === 'undefined') {
-            $process.task(`Added Section: ${chalk.bold(title)}`).complete();
+            $process.task(`Added Section: ${chalk.bold(title)} [${position}]`).complete();
             this.sections.push((section = new Section(title, position)));
         }
 
@@ -60,6 +60,10 @@ export default class State implements Context {
             )
         );
 
+        this.sections = this.sections
+            .filter((s): boolean => !!s.getWeight())
+            .sort((a, b): number => b.position - a.position || b.getWeight() - a.getWeight());
+
         task.complete();
     }
 
@@ -74,7 +78,7 @@ export default class State implements Context {
 
             if (plugin instanceof Plugin) {
                 await plugin.init(options);
-                await Promise.all(commits.map((commit: Commit): Promise<void> => plugin.parse(commit)));
+                await Promise.all(commits.map((commit: Commit): Promise<void> => plugin.parse(commit, subtask)));
 
                 subtask.complete();
             } else {

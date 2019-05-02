@@ -9,11 +9,13 @@ export enum Position {
 }
 
 export default class Section {
+    public static DEFAULT_WEIGHT = 0;
+
     public readonly title: string;
     public readonly position: Position;
 
-    private relations: Set<string> = new Set();
-    private commits: Commit[] = [];
+    private weight = Section.DEFAULT_WEIGHT;
+    private relations: Map<string, Commit> = new Map();
 
     public constructor(title: string, position?: Position) {
         this.title = title;
@@ -24,8 +26,24 @@ export default class Section {
         const { relations } = this;
 
         if (!relations.has(commit.sha)) {
-            relations.add(commit.sha);
-            this.commits.push(commit);
+            relations.set(commit.sha, commit);
+            this.weight = Section.DEFAULT_WEIGHT;
         }
+    }
+
+    public getWeight(): number {
+        if (this.weight === Section.DEFAULT_WEIGHT) {
+            this.getRelations().forEach(
+                (commit: Commit): void => {
+                    this.weight += commit.getWeight();
+                }
+            );
+        }
+
+        return this.weight;
+    }
+
+    public getRelations(): Commit[] {
+        return [...this.relations.values()];
     }
 }

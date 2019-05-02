@@ -25,15 +25,17 @@ export default class ScopePlugin extends Plugin {
             this.onlyConfigured = !!only;
 
             if (typeof list === 'object') {
-                Object.keys(list).forEach((name: string): void => {
-                    const title = list[name];
+                Object.keys(list).forEach(
+                    (name: string): void => {
+                        const title = list[name];
 
-                    if (typeof title === 'string' && !this.scopes.has(name)) {
-                        const key: string = Key.unify(name);
+                        if (typeof title === 'string' && !this.scopes.has(name)) {
+                            const key: string = Key.unify(name);
 
-                        this.scopes.set(key, this.context.addSection(title, Position.Subgroup));
+                            this.scopes.set(key, this.context.addSection(title, Position.Subgroup));
+                        }
                     }
-                });
+                );
             }
         }
     }

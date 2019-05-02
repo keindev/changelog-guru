@@ -16,21 +16,27 @@ export default class SectionPlugin extends Plugin {
         const { sections } = config;
 
         if (Array.isArray(sections)) {
-            sections.forEach((block): void => {
-                if (typeof block === 'object') {
-                    Object.keys(block).forEach((name: string): void => {
-                        const types: OptionValue = block[name];
+            sections.forEach(
+                (block): void => {
+                    if (typeof block === 'object') {
+                        Object.keys(block).forEach(
+                            (name: string): void => {
+                                const types: OptionValue = block[name];
 
-                        if (Array.isArray(types)) {
-                            const section = this.context.addSection(name, Position.Body);
+                                if (Array.isArray(types)) {
+                                    const section = this.context.addSection(name, Position.Body);
 
-                            types.forEach((type: string): void => {
-                                this.blocks.set(Key.unify(type), section);
-                            });
-                        }
-                    });
+                                    types.forEach(
+                                        (type: string): void => {
+                                            this.blocks.set(Key.unify(type), section);
+                                        }
+                                    );
+                                }
+                            }
+                        );
+                    }
                 }
-            });
+            );
         }
     }
 

@@ -1,9 +1,9 @@
 export enum Status {
-    Default = 0,
     BreakingChanges = 1,
     Deprecated = 2,
     Important = 4,
-    Hidden = 8
+    Default = 8,
+    Hidden = 16
 }
 
 export default class Commit {
@@ -46,6 +46,18 @@ export default class Commit {
 
     public getScope(): string | undefined {
         return this.scope;
+    }
+
+    public getWeight(): number {
+        const { status } = this;
+        let weight = 0;
+
+        if (status & Status.BreakingChanges) weight += 1000;
+        if (status & Status.Deprecated) weight += 100;
+        if (status & Status.Important) weight += 10;
+        if (status & Status.Default) weight += 1;
+
+        return weight;
     }
 
     public setStatus(status: Status): void {

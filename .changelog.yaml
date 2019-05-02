@@ -20,7 +20,7 @@ types:
 markers:
     # !important - place a commit title to special section on top of changelog
     important: Important Internal Changes
-    # !deprecated- place a commit title to special section with deprecated propertyes
+    # !deprecated - place a commit title to special section with deprecated propertyes
     deprecated: DEPRECATIONS
     # !break - indicates major changes breaking backward compatibility
     break: BREAKING CHANGES
