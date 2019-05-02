@@ -5,6 +5,8 @@ import elegantSpinner from 'elegant-spinner';
 import indentString from 'indent-string';
 import Process from './process';
 
+const spinner = elegantSpinner();
+
 export enum Status {
     Pending,
     Completed,
@@ -103,7 +105,6 @@ export default class Task {
     }
 
     private getSymbol(): string {
-        const spinner = elegantSpinner();
         let symbol: string;
 
         switch (this.status) {
