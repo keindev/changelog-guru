@@ -1,13 +1,10 @@
 import chalk from 'chalk';
-import Octokit, {
-    ReposListCommitsResponseItem,
-    ReposListReleasesParams,
-    ReposListCommitsResponseItemAuthor
-} from '@octokit/rest';
+import Octokit from '@octokit/rest';
 import Provider from './provider';
 import Process from '../utils/process';
 import Author from '../entities/author';
 import Commit from '../entities/commit';
+import Version from '../utils/version';
 
 const $process = Process.getInstance();
 
@@ -44,7 +41,7 @@ export default class GitHubProvider extends Provider {
         task.complete(`Page #${page.toString()} loaded (${chalk.bold(commits.length.toString())} commits)`);
 
         return commits.map(
-            (response: ReposListCommitsResponseItem): [Commit, Author] => {
+            (response): [Commit, Author] => {
                 const author = this.parseAuthor(response.author);
                 const {
                     commit: {
@@ -62,24 +59,35 @@ export default class GitHubProvider extends Provider {
     }
 
     public async getLatestReleaseDate(): Promise<string> {
-        const repository: ReposListReleasesParams = { repo: this.repository, owner: this.owner };
-        // FIXME: get last release from list
-        const {
-            data: { length }
-        } = await this.kit.repos.listReleases(repository);
-        let date: string = new Date(0).toISOString();
+        const release = await this.getLatestRelease();
 
-        if (length) {
-            // FIXME: get last release from list
-            const { data: release } = await this.kit.repos.getLatestRelease(repository);
-
-            date = release.created_at;
-        }
-
-        return date;
+        return release ? release.published_at : new Date(0).toISOString();
     }
 
-    private parseAuthor(response: ReposListCommitsResponseItemAuthor): Author {
+    public async getVersion(): Promise<string | undefined> {
+        const release = await this.getLatestRelease();
+        let version: string | undefined;
+
+        if (release) version = Version.clear(release.tag_name);
+
+        return version;
+    }
+
+    private async getLatestRelease(): Promise<Octokit.ReposGetLatestReleaseResponse | undefined> {
+        const repository: Octokit.ReposListReleasesParams = { repo: this.repository, owner: this.owner };
+        const { data: list } = await this.kit.repos.listReleases(repository);
+        let release: Octokit.ReposGetLatestReleaseResponse | undefined;
+
+        if (list.length) {
+            const response = await this.kit.repos.getLatestRelease(repository);
+
+            release = response.data;
+        }
+
+        return release;
+    }
+
+    private parseAuthor(response: Octokit.ReposListCommitsResponseItemAuthor): Author {
         const { id, html_url: url, avatar_url: avatar, login } = response;
         const { authors } = this;
 

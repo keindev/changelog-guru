@@ -9,6 +9,7 @@ import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import Process from '../utils/process';
 import Task from '../utils/task';
+import Version from '../utils/version';
 
 const $process = Process.getInstance();
 
@@ -18,9 +19,19 @@ export interface Context {
 }
 
 export default class State implements Context {
+    private version = '0.0.1';
     private authors: Map<number, Author> = new Map();
     private commits: Map<string, Commit> = new Map();
     private sections: Section[] = [];
+
+    public setVersion(version: string): void {
+        const newVersion = Version.clear(version);
+
+        if (newVersion && Version.greaterThan(newVersion, this.version)) {
+            $process.task(`Release version updated to ${chalk.bold(newVersion)}`).complete();
+            this.version = newVersion;
+        }
+    }
 
     public addCommit(commit: Commit, author: Author): void {
         const { commits, authors } = this;

@@ -32,8 +32,11 @@ export default class Changelog {
 
         if (reader) {
             const state = await reader.read();
+            const version = this.package.getVersion();
 
             await state.modify(config.plugins, config.options);
+
+            if (version) state.setVersion(version);
 
             const relations = state.getRelations();
 

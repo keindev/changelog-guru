@@ -52,5 +52,6 @@ export default abstract class Provider {
     }
 
     abstract async getCommits(date: string, page: number): Promise<[Commit, Author][]>;
+    abstract async getVersion(): Promise<string | undefined>;
     abstract async getLatestReleaseDate(): Promise<string>;
 }
