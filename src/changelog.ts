@@ -34,6 +34,12 @@ export default class Changelog {
             const state = await reader.read();
 
             await state.modify(config.plugins, config.options);
+
+            const relations = state.getRelations();
+
+            if (relations.length) {
+                $process.task('TODO: write').complete();
+            }
         }
     }
 

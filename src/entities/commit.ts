@@ -15,6 +15,7 @@ export default class Commit {
     public readonly author: string;
 
     private types: string[] = [];
+    private prefixes: string[] = [];
     private scope: string | undefined;
     private status: number = Status.Default;
 
@@ -58,6 +59,12 @@ export default class Commit {
         if (status & Status.Default) weight += 1;
 
         return weight;
+    }
+
+    public addPrefix(text: string): void {
+        if (text.length) {
+            this.prefixes.push(text);
+        }
     }
 
     public setStatus(status: Status): void {

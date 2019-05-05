@@ -3,7 +3,6 @@ import Plugin from '../entities/plugin';
 import { ConfigOptions } from '../entities/config';
 import { Option } from '../utils/types';
 import Key from '../utils/key';
-import Section, { Position } from '../entities/section';
 
 interface Config extends ConfigOptions {
     scopes: {
@@ -13,7 +12,7 @@ interface Config extends ConfigOptions {
 }
 
 export default class ScopePlugin extends Plugin {
-    private scopes: Map<string, Section> = new Map();
+    private scopes: Map<string, string> = new Map();
     private onlyConfigured: boolean = false;
 
     public async init(config: Config): Promise<void> {
@@ -30,9 +29,7 @@ export default class ScopePlugin extends Plugin {
                         const title = list[name];
 
                         if (typeof title === 'string' && !this.scopes.has(name)) {
-                            const key: string = Key.unify(name);
-
-                            this.scopes.set(key, this.context.addSection(title, Position.Subgroup));
+                            this.scopes.set(Key.unify(name), title);
                         }
                     }
                 );
@@ -44,11 +41,11 @@ export default class ScopePlugin extends Plugin {
         const scope: string | undefined = commit.getScope();
 
         if (scope) {
-            const { scopes, context, onlyConfigured } = this;
-            let section = Key.inMap(scope, scopes);
+            const { scopes, onlyConfigured } = this;
+            let prefix = Key.inMap(scope, scopes);
 
-            if (!onlyConfigured && !section) section = context.addSection(scope, Position.Subgroup);
-            if (section) section.assign(commit);
+            if (!prefix && !onlyConfigured) prefix = scope;
+            if (prefix) commit.addPrefix(prefix);
         }
     }
 }

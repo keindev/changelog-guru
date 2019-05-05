@@ -5,35 +5,53 @@ export enum Position {
     Body = 2,
     Footer = 3,
     Group = 4,
-    Subgroup = 5
+    Subsection = 5
 }
 
 export default class Section {
     public static DEFAULT_WEIGHT = 0;
 
     public readonly title: string;
-    public readonly position: Position;
 
+    private position: Position;
     private weight = Section.DEFAULT_WEIGHT;
-    private relations: Map<string, Commit> = new Map();
+    private commits: Map<string, Commit> = new Map();
+    private sections: Map<string, Section> = new Map();
 
-    public constructor(title: string, position?: Position) {
+    public constructor(title: string, position: Position) {
         this.title = title;
-        this.position = position || Position.Subgroup;
+        this.position = position;
     }
 
-    public assign(commit: Commit): void {
-        const { relations } = this;
-
-        if (!relations.has(commit.sha)) {
-            relations.set(commit.sha, commit);
-            this.weight = Section.DEFAULT_WEIGHT;
+    public assign(entity: Commit | Section): void {
+        if (entity instanceof Commit) this.assignEntity(entity.sha, entity, this.commits);
+        if (entity instanceof Section) {
+            this.assignEntity(entity.title, entity, this.sections);
+            entity.setPosition(Position.Subsection);
         }
+    }
+
+    public remove(entity: Commit | Section): void {
+        if (entity instanceof Commit) this.removeEntity(entity.sha, this.commits);
+        if (entity instanceof Section) {
+            this.removeEntity(entity.title, this.sections);
+            entity.setPosition(Position.Group);
+        }
+    }
+
+    public getPosition(): Position {
+        return this.position;
+    }
+
+    public setPosition(position: Position): void {
+        const check = (p: Position): boolean => p === Position.Group || p === Position.Subsection;
+
+        if (check(position) && check(this.position)) this.position = position;
     }
 
     public getWeight(): number {
         if (this.weight === Section.DEFAULT_WEIGHT) {
-            this.getRelations().forEach(
+            this.commits.forEach(
                 (commit: Commit): void => {
                     this.weight += commit.getWeight();
                 }
@@ -43,7 +61,29 @@ export default class Section {
         return this.weight;
     }
 
-    public getRelations(): Commit[] {
-        return [...this.relations.values()];
+    public getFirstCommit(): Commit | undefined {
+        let commit: Commit | undefined;
+
+        if (this.commits.size) commit = this.getCommits().shift();
+
+        return commit;
+    }
+
+    public getCommits(): Commit[] {
+        return [...this.commits.values()].sort((a, b): number => a.timestamp - b.timestamp);
+    }
+
+    private assignEntity<T>(key: string, value: T, map: Map<string, T>): void {
+        if (!map.has(key)) {
+            map.set(key, value);
+            this.weight = Section.DEFAULT_WEIGHT;
+        }
+    }
+
+    private removeEntity<T>(key: string, map: Map<string, T>): void {
+        if (map.has(key)) {
+            map.delete(key);
+            this.weight = Section.DEFAULT_WEIGHT;
+        }
     }
 }
