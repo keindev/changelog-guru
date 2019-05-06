@@ -32,17 +32,16 @@ export default class Changelog {
 
         if (reader) {
             const state = await reader.read();
+
+            await state.modify(config);
+
+            /*
+
+            Update package version if state ver. after modify > pkg.version
+
             const version = this.package.getVersion();
-
-            await state.modify(config.plugins, config.options);
-
             if (version) state.setVersion(version);
-
-            const relations = state.getRelations();
-
-            if (relations.length) {
-                $process.task('TODO: write').complete();
-            }
+            */
         }
     }
 

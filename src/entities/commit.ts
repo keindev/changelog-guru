@@ -6,6 +6,12 @@ export enum Status {
     Hidden = 16
 }
 
+export enum Type {
+    Major = 0,
+    Minor = 1,
+    Patch = 2
+}
+
 export default class Commit {
     public readonly header: string;
     public readonly body: ReadonlyArray<string>;
@@ -14,8 +20,8 @@ export default class Commit {
     public readonly sha: string;
     public readonly author: string;
 
-    private types: string[] = [];
     private prefixes: string[] = [];
+    private type: Type = Type.Patch;
     private scope: string | undefined;
     private status: number = Status.Default;
 
@@ -29,20 +35,28 @@ export default class Commit {
         this.url = url;
         this.author = author;
 
-        const match = this.header.match(/(?<types>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:)/i);
+        const match = this.header.match(/(?<prefixes>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:)/i);
 
         if (match && match.groups) {
             const {
-                groups: { types, scope }
+                groups: { prefixes, scope }
             } = match;
 
-            if (types) this.types = types.split(',').filter((type): boolean => !!type);
+            if (prefixes) this.prefixes = prefixes.split(',').filter((prefix): boolean => !!prefix);
             if (scope) this.scope = scope;
         }
     }
 
-    public getType(index: number = 0): string | undefined {
-        return this.types[index];
+    public setType(type: Type): void {
+        if (type < this.type) this.type = type;
+    }
+
+    public getType(): Type {
+        return this.type;
+    }
+
+    public getPrefix(index: number = 0): string | undefined {
+        return this.prefixes[index];
     }
 
     public getScope(): string | undefined {
@@ -69,6 +83,9 @@ export default class Commit {
 
     public setStatus(status: Status): void {
         this.status = this.status | status;
+
+        if (this.status & Status.BreakingChanges) this.setType(Type.Major);
+        if (this.status & Status.Deprecated) this.setType(Type.Minor);
     }
 
     public checkStatus(...statuses: Status[]): boolean {

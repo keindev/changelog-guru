@@ -2,20 +2,25 @@
 provider: github
 plugins: [marker, scope, section]
 types:
-    - feat
-    - fix
-    - chore
-    - refactor
-    - test
-    - docs
-    - ci
-    - cd
-    - build
-    - types
-    - style
-    - workflow
-    - perf
-    - revert
+    major:
+        - break
+    minor:
+        - feat
+    patch:
+        - fix
+        - chore
+        - refactor
+        - test
+        - docs
+        - ci
+        - cd
+        - build
+        - types
+        - style
+        - workflow
+        - perf
+        - revert
+
 # List of avaliable markers
 markers:
     # !important - place a commit title to special section on top of changelog

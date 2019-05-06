@@ -14,15 +14,14 @@ export default class Reader {
 
     public async read(): Promise<State> {
         const task = $process.task('Getting release state information');
-        const state: State = new State();
-        const date: string = await this.provider.getLatestReleaseDate();
         const version: string | undefined = await this.provider.getVersion();
+        const state: State = new State(version);
+        const date: string = await this.provider.getLatestReleaseDate();
 
         task.log(`Last release date: ${chalk.bold(date)}`);
         task.log(`Last release version: ${chalk.bold(version || '-')}`);
+        task.log(`Release version: ${chalk.bold(state.getVersion())}`);
         await this.readCommits(date, state);
-
-        if (version) state.setVersion(version);
         task.complete(`Release information`);
 
         return state;
@@ -33,15 +32,9 @@ export default class Reader {
         const { length } = commits;
 
         if (length) {
-            commits.forEach(
-                (entities): void => {
-                    state.addCommit(...entities);
-                }
-            );
+            commits.forEach((entities): void => state.addCommit(...entities));
 
-            if (length === Provider.PAGE_SIZE) {
-                await this.readCommits(date, state, pageNumber);
-            }
+            if (length === Provider.PAGE_SIZE) await this.readCommits(date, state, pageNumber);
         }
     }
 }

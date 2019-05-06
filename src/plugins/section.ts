@@ -41,7 +41,7 @@ export default class SectionPlugin extends Plugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const type: string | undefined = commit.getType();
+        const type: string | undefined = commit.getPrefix();
 
         if (type) {
             const section = Key.inMap(type, this.blocks);

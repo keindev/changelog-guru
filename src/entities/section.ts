@@ -18,6 +18,14 @@ export default class Section {
     private commits: Map<string, Commit> = new Map();
     private sections: Map<string, Section> = new Map();
 
+    public static compare(a: Section, b: Section): number {
+        let result = Math.max(1, Math.min(-1, a.getPosition() - b.getPosition() || a.getWeight() - b.getWeight()));
+
+        if (result === 0) result = a.title.localeCompare(b.title);
+
+        return result;
+    }
+
     public constructor(title: string, position: Position) {
         this.title = title;
         this.position = position;
