@@ -19,7 +19,7 @@ export default class Section {
     private sections: Map<string, Section> = new Map();
 
     public static compare(a: Section, b: Section): number {
-        let result = Math.max(1, Math.min(-1, a.getPosition() - b.getPosition() || a.getWeight() - b.getWeight()));
+        let result = Math.min(1, Math.max(-1, a.getPosition() - b.getPosition() || a.getWeight() - b.getWeight()));
 
         if (result === 0) result = a.title.localeCompare(b.title);
 
@@ -79,6 +79,11 @@ export default class Section {
 
     public getCommits(): Commit[] {
         return [...this.commits.values()].sort((a, b): number => a.timestamp - b.timestamp);
+    }
+
+    public render(): string {
+        // TODO: render section
+        return this.title;
     }
 
     private assignEntity<T>(key: string, value: T, map: Map<string, T>): void {

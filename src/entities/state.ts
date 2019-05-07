@@ -19,14 +19,12 @@ export interface Context {
 }
 
 export default class State implements Context {
-    public static DEFAULT_VERSION = '0.0.1';
-
     private authors: Map<number, Author> = new Map();
     private commits: Map<string, Commit> = new Map();
     private sections: Section[] = [];
     private version: string;
 
-    public constructor(version: string = State.DEFAULT_VERSION) {
+    public constructor(version: string = Version.DEFAULT) {
         this.version = version;
     }
 
@@ -37,7 +35,7 @@ export default class State implements Context {
     public setVersion(version: string): void {
         const newVersion = Version.clear(version);
 
-        if (newVersion && Version.greaterThan(newVersion, this.version)) this.version = newVersion;
+        if (!!newVersion && Version.greaterThan(newVersion, this.version)) this.version = newVersion;
     }
 
     public addCommit(commit: Commit, author: Author): void {
@@ -76,7 +74,12 @@ export default class State implements Context {
         task.complete();
     }
 
-    public updateSections(): void {
+    public getSections(): Section[] {
+        return this.sections;
+    }
+
+    private updateSections(): void {
+        const task = $process.task('Build sections tree');
         const sections = this.sections.sort(Section.compare);
 
         if (sections.length) {
@@ -93,10 +96,11 @@ export default class State implements Context {
             );
         }
 
-        // FIXME: creates wrong sections tree
         this.sections = sections
             .filter((section): boolean => section.getPosition() !== Position.Subsection && !!section.getWeight())
-            .sort(Section.compare);
+            .sort(Section.compare)
+            .reverse();
+        task.complete();
     }
 
     private updateCommitsTypes(config: Config): void {
@@ -104,6 +108,7 @@ export default class State implements Context {
     }
 
     private updateVersion(): void {
+        const task = $process.task('Calculate release version');
         const changes: [number, number, number] = [0, 0, 0];
 
         this.commits.forEach(
@@ -112,7 +117,11 @@ export default class State implements Context {
             }
         );
 
-        this.setVersion(Version.update(this.version, ...changes));
+        const version = Version.update(this.version, ...changes);
+
+        this.setVersion(version);
+        task.log(`Release version: ${chalk.bold(version)}`);
+        task.complete();
     }
 
     private static matchSubsectionWith(section: Section, relations: Map<string, Section>): void {

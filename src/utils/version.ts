@@ -1,6 +1,8 @@
 import * as semver from 'semver';
 
 export default class Version {
+    public static DEFAULT = '0.0.1';
+
     public static clear(version: string): string | undefined {
         return semver.valid(semver.coerce(version) || '') || undefined;
     }

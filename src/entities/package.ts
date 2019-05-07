@@ -46,13 +46,14 @@ export default class Package {
         return this.version;
     }
 
-    public update(version: string): void {
+    public async update(version: string): Promise<void> {
         const task = $process.task(`Writing version to package.json`);
         const newVersion = Version.clear(version);
 
         if (newVersion && Version.greaterThan(newVersion, this.version)) {
             this.version = newVersion;
-            writePkg.sync({ version: newVersion });
+
+            await writePkg({ version: newVersion });
             task.complete(`Package version updated to ${chalk.bold(newVersion)}`);
         } else {
             task.fail(`New package version [${chalk.bold(version)}] is invalid or less (see https://semver.org/)`);
