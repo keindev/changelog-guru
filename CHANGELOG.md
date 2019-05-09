@@ -26,6 +26,7 @@
 - Added Section block & position enums
 - Added Section & Commit managers
 - Reworked plugins, added a Levenshtein distance compare algorithm
+- Add sections tree & commit list render
 ## Bug Fixes
 - **[Section,State]** Add commit tree generation method
 - **[State]** Added section list sorting after modify with plugins
