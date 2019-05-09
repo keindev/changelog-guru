@@ -37,14 +37,6 @@ export default class Changelog {
 
             await state.modify(config);
             await Writer.write(state, pkg);
-
-            /*
-
-            Update package version if state ver. after modify > pkg.version
-
-            const version = this.package.getVersion();
-            if (version) state.setVersion(version);
-            */
         }
     }
 

@@ -14,16 +14,31 @@ export enum Type {
 
 export default class Commit {
     public readonly header: string;
+    public readonly title: string;
     public readonly body: ReadonlyArray<string>;
     public readonly timestamp: number;
     public readonly url: string;
     public readonly sha: string;
     public readonly author: string;
 
-    private prefixes: string[] = [];
-    private type: Type = Type.Patch;
     private scope: string | undefined;
+    private prefixes: string[] = [];
+    private accents: Set<string> = new Set();
+    private type: Type = Type.Patch;
     private status: number = Status.Default;
+
+    public static compare(a: Commit, b: Commit): number {
+        const scopeA = a.getScope();
+        const scopeB = b.getScope();
+        let result = 0;
+
+        if (scopeA && !scopeB) result--;
+        if (!scopeA && scopeB) result++;
+        if (scopeA && scopeB) result = scopeA.localeCompare(scopeB);
+        if (result === 0) result = a.timestamp - b.timestamp;
+
+        return result;
+    }
 
     public constructor(sha: string, timestamp: number, message: string, url: string, author: string) {
         const lines = message.split('\n').map((line): string => line.trim());
@@ -34,16 +49,20 @@ export default class Commit {
         this.body = lines;
         this.url = url;
         this.author = author;
+        this.title = '';
 
-        const match = this.header.match(/(?<prefixes>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:)/i);
+        const match = this.header.match(
+            /(?<prefixes>[a-z, ]+) {0,1}(\((?<scope>[a-z,/:-]+)\)){0,1}(?=:):(?<title>[\S ]+)/i
+        );
 
         if (match && match.groups) {
             const {
-                groups: { prefixes, scope }
+                groups: { prefixes, scope, title }
             } = match;
 
             if (prefixes) this.prefixes = prefixes.split(',').filter((prefix): boolean => !!prefix);
             if (scope) this.scope = scope;
+            if (title) this.title = title.trim();
         }
     }
 
@@ -75,10 +94,12 @@ export default class Commit {
         return weight;
     }
 
-    public addPrefix(text: string): void {
-        if (text.length) {
-            this.prefixes.push(text);
-        }
+    public addAccent(text: string): void {
+        this.accents.add(text);
+    }
+
+    public getAccents(): string[] {
+        return [...this.accents.values()];
     }
 
     public setStatus(status: Status): void {

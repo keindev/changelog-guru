@@ -77,13 +77,16 @@ export default class Section {
         return commit;
     }
 
-    public getCommits(): Commit[] {
-        return [...this.commits.values()].sort((a, b): number => a.timestamp - b.timestamp);
+    public getSections(sort: boolean = true): Section[] {
+        const sections = [...this.sections.values()];
+
+        return sort ? sections.sort(Section.compare) : sections;
     }
 
-    public render(): string {
-        // TODO: render section
-        return this.title;
+    public getCommits(sort: boolean = true): Commit[] {
+        const commits = [...this.commits.values()];
+
+        return sort ? commits.sort((a: Commit, b: Commit): number => a.timestamp - b.timestamp) : commits;
     }
 
     private assignEntity<T>(key: string, value: T, map: Map<string, T>): void {

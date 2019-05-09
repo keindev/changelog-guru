@@ -42,10 +42,10 @@ export default class ScopePlugin extends Plugin {
 
         if (scope) {
             const { scopes, onlyConfigured } = this;
-            let prefix = Key.inMap(scope, scopes);
+            let accent = Key.inMap(scope, scopes);
 
-            if (!prefix && !onlyConfigured) prefix = scope;
-            if (prefix) commit.addPrefix(prefix);
+            if (!accent && !onlyConfigured) accent = scope;
+            if (accent) commit.addAccent(accent);
         }
     }
 }
