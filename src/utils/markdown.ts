@@ -16,4 +16,8 @@ export default class Markdown {
     public static list(items: string[]): string {
         return items.map((item): string => `- ${Markdown.capitalize(item)}`).join('\n');
     }
+
+    public static link(text: string, url: string): string {
+        return `[${text}](${url})`;
+    }
 }

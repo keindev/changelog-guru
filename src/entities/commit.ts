@@ -94,6 +94,10 @@ export default class Commit {
         return weight;
     }
 
+    public getShotSHA(): string {
+        return this.sha.substr(0, 7);
+    }
+
     public addAccent(text: string): void {
         this.accents.add(text);
     }

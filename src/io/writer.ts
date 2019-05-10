@@ -61,7 +61,7 @@ export default class Writer {
             result.push(...accents.map((a): string => Markdown.bold(`[${Markdown.capitalize(a)}]`)));
         }
 
-        result.push(Markdown.capitalize(commit.title));
+        result.push(Markdown.capitalize(commit.title), Markdown.link(commit.getShotSHA(), commit.url));
 
         return result.join('');
     }
