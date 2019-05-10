@@ -44,7 +44,13 @@ export default class State implements Context {
         if (!commits.has(commit.sha)) {
             commits.set(commit.sha, commit);
 
-            if (!authors.has(author.id)) authors.set(author.id, author);
+            const actualAuthor = authors.get(author.id);
+
+            if (actualAuthor) {
+                actualAuthor.increaseContribution();
+            } else {
+                authors.set(author.id, author);
+            }
         }
     }
 
@@ -76,6 +82,10 @@ export default class State implements Context {
 
     public getSections(): Section[] {
         return this.sections;
+    }
+
+    public getAuthors(): Author[] {
+        return [...this.authors.values()].sort((a, b): number => b.getContribution() - a.getContribution());
     }
 
     private updateSections(): void {

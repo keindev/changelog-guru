@@ -8,7 +8,8 @@ import Version from '../utils/version';
 import Task from '../utils/task';
 import Section from '../entities/section';
 import Markdown from '../utils/markdown';
-import Commit from '../entities/commit';
+import Commit, { Status } from '../entities/commit';
+import Author from '../entities/author';
 
 const $process = Process.getInstance();
 
@@ -20,18 +21,26 @@ export default class Writer {
         const task = $process.task('Write changelog');
 
         await Writer.updatePackage(state, pkg, task);
-        await Writer.writeSections(state.getSections());
+        await Writer.writeChangelog(state.getAuthors(), state.getSections());
 
         task.complete();
     }
 
-    private static async writeSections(tree: Section[]): Promise<void> {
+    private static async writeChangelog(authors: Author[], sections: Section[]): Promise<void> {
         const filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
-        const data = tree
-            .map((s): string => Writer.renderSection(s, Markdown.DEFAULT_HEADER_LEVEL))
-            .join(Writer.LINE_DELIMITER);
+        const data = sections.map((s): string => Writer.renderSection(s, Markdown.DEFAULT_HEADER_LEVEL));
 
-        await fs.promises.writeFile(filePath, data);
+        if (authors.length) data.push(Markdown.line(), Writer.renderAuthors(authors));
+
+        await fs.promises.writeFile(filePath, data.join(Writer.LINE_DELIMITER));
+    }
+
+    public static renderAuthors(authors: Author[]): string {
+        const result: string[] = authors.map(
+            (author): string => Markdown.link(Markdown.image(author.toString(), author.getAvatar()), author.url)
+        );
+
+        return [Markdown.title('Contributors'), result.join('')].join(Writer.LINE_DELIMITER);
     }
 
     public static renderSection(section: Section, level: number): string {
@@ -47,7 +56,14 @@ export default class Writer {
         }
 
         if (commits.length) {
-            result.push(Markdown.list(commits.sort(Commit.compare).map(Writer.renderCommit)));
+            result.push(
+                Markdown.list(
+                    commits
+                        .sort(Commit.compare)
+                        .filter((commit): boolean => !commit.checkStatus(Status.Hidden))
+                        .map(Writer.renderCommit)
+                )
+            );
         }
 
         return result.join(Writer.LINE_DELIMITER);
@@ -61,7 +77,13 @@ export default class Writer {
             result.push(...accents.map((a): string => Markdown.bold(`[${Markdown.capitalize(a)}]`)));
         }
 
-        result.push(Markdown.capitalize(commit.title), Markdown.link(commit.getShotSHA(), commit.url));
+        result.push(
+            Markdown.capitalize(commit.title),
+            ' ',
+            // tasks
+            ' ',
+            Markdown.link(Markdown.code(commit.getShotSHA()), commit.url)
+        );
 
         return result.join('');
     }

@@ -20,4 +20,16 @@ export default class Markdown {
     public static link(text: string, url: string): string {
         return `[${text}](${url})`;
     }
+
+    public static code(text: string, lang: string = ''): string {
+        return `\`\`\`${lang} ${text} \`\`\``;
+    }
+
+    public static line(): string {
+        return '---';
+    }
+
+    public static image(text: string, url: string): string {
+        return `![${text}](${url})`;
+    }
 }
