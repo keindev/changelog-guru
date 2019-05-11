@@ -8,8 +8,9 @@ import Version from '../utils/version';
 import Task from '../utils/task';
 import Section from '../entities/section';
 import Markdown from '../utils/markdown';
-import Commit, { Status } from '../entities/commit';
+import Commit from '../entities/commit';
 import Author from '../entities/author';
+import { Status } from '../utils/enums';
 
 const $process = Process.getInstance();
 
@@ -24,15 +25,6 @@ export default class Writer {
         await Writer.writeChangelog(state.getAuthors(), state.getSections());
 
         task.complete();
-    }
-
-    private static async writeChangelog(authors: Author[], sections: Section[]): Promise<void> {
-        const filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
-        const data = sections.map((s): string => Writer.renderSection(s, Markdown.DEFAULT_HEADER_LEVEL));
-
-        if (authors.length) data.push(Markdown.line(), Writer.renderAuthors(authors));
-
-        await fs.promises.writeFile(filePath, data.join(Writer.LINE_DELIMITER));
     }
 
     public static renderAuthors(authors: Author[]): string {
@@ -60,7 +52,7 @@ export default class Writer {
                 Markdown.list(
                     commits
                         .sort(Commit.compare)
-                        .filter((commit): boolean => !commit.checkStatus(Status.Hidden))
+                        .filter((commit): boolean => !commit.hasStatus(Status.Hidden))
                         .map(Writer.renderCommit)
                 )
             );
@@ -82,10 +74,19 @@ export default class Writer {
             ' ',
             // tasks
             ' ',
-            Markdown.link(Markdown.code(commit.getShotSHA()), commit.url)
+            Markdown.link(Markdown.code(commit.getName()), commit.url)
         );
 
         return result.join('');
+    }
+
+    private static async writeChangelog(authors: Author[], sections: Section[]): Promise<void> {
+        const filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
+        const data = sections.map((s): string => Writer.renderSection(s, Markdown.DEFAULT_HEADER_LEVEL));
+
+        if (authors.length) data.push(Markdown.line(), Writer.renderAuthors(authors));
+
+        await fs.promises.writeFile(filePath, data.join(Writer.LINE_DELIMITER));
     }
 
     private static async updatePackage(state: State, pkg: Package, task: Task): Promise<void> {

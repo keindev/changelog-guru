@@ -51,7 +51,12 @@ export default class GitHubProvider extends Provider {
                     html_url: url,
                     sha
                 } = response;
-                const commit = new Commit(sha, new Date(timestamp).getTime(), message, url, author.login);
+                const commit = new Commit(sha, {
+                    timestamp: new Date(timestamp).getTime(),
+                    author: author.login,
+                    message,
+                    url
+                });
 
                 return [commit, author];
             }
@@ -92,7 +97,7 @@ export default class GitHubProvider extends Provider {
         const { authors } = this;
 
         if (!authors.has(id)) {
-            authors.set(id, new Author(id, login, url, avatar));
+            authors.set(id, new Author(id, { login, url, avatar }));
         }
 
         return authors.get(id) as Author;

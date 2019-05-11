@@ -20,6 +20,7 @@ export default class Package {
     public constructor() {
         const task = $process.task('Reading package.json');
         const { version, repository } = readPkg.sync({ normalize: true });
+
         this.version = Version.clear(version);
 
         if (!version) task.fail('pkg.version is not specified');
@@ -54,6 +55,7 @@ export default class Package {
             this.version = newVersion;
 
             await writePkg({ version: newVersion });
+
             task.complete(`Package version updated to ${chalk.bold(newVersion)}`);
         } else {
             task.fail(`New package version [${chalk.bold(version)}] is invalid or less (see https://semver.org/)`);

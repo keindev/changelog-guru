@@ -1,4 +1,5 @@
 import Commit from './commit';
+import { Compare, Priority } from '../utils/enums';
 
 export enum Position {
     Header = 1,
@@ -9,46 +10,27 @@ export enum Position {
 }
 
 export default class Section {
-    public static DEFAULT_WEIGHT = 0;
-
     public readonly title: string;
 
     private position: Position;
-    private weight = Section.DEFAULT_WEIGHT;
+    private priority = Priority.Default;
     private commits: Map<string, Commit> = new Map();
     private sections: Map<string, Section> = new Map();
-
-    public static compare(a: Section, b: Section): number {
-        let result = Math.min(1, Math.max(-1, a.getPosition() - b.getPosition() || a.getWeight() - b.getWeight()));
-
-        if (result === 0) result = a.title.localeCompare(b.title);
-
-        return result;
-    }
 
     public constructor(title: string, position: Position) {
         this.title = title;
         this.position = position;
     }
 
-    public assign(entity: Commit | Section): void {
-        if (entity instanceof Commit) this.assignEntity(entity.sha, entity, this.commits);
-        if (entity instanceof Section) {
-            this.assignEntity(entity.title, entity, this.sections);
-            entity.setPosition(Position.Subsection);
-        }
-    }
+    public static compare(a: Section, b: Section): number {
+        let result = Math.min(
+            Compare.More,
+            Math.max(Compare.Less, a.getPosition() - b.getPosition() || a.getPriority() - b.getPriority())
+        );
 
-    public remove(entity: Commit | Section): void {
-        if (entity instanceof Commit) this.removeEntity(entity.sha, this.commits);
-        if (entity instanceof Section) {
-            this.removeEntity(entity.title, this.sections);
-            entity.setPosition(Position.Group);
-        }
-    }
+        if (result === Compare.Equal) result = a.title.localeCompare(b.title);
 
-    public getPosition(): Position {
-        return this.position;
+        return result;
     }
 
     public setPosition(position: Position): void {
@@ -57,16 +39,8 @@ export default class Section {
         if (check(position) && check(this.position)) this.position = position;
     }
 
-    public getWeight(): number {
-        if (this.weight === Section.DEFAULT_WEIGHT) {
-            this.commits.forEach(
-                (commit: Commit): void => {
-                    this.weight += commit.getWeight();
-                }
-            );
-        }
-
-        return this.weight;
+    public getPosition(): Position {
+        return this.position;
     }
 
     public getFirstCommit(): Commit | undefined {
@@ -86,20 +60,44 @@ export default class Section {
     public getCommits(sort: boolean = true): Commit[] {
         const commits = [...this.commits.values()];
 
-        return sort ? commits.sort((a: Commit, b: Commit): number => a.timestamp - b.timestamp) : commits;
+        return sort ? commits.sort((a, b): number => a.timestamp - b.timestamp) : commits;
+    }
+
+    public assign(entity: Commit | Section): void {
+        if (entity instanceof Commit) this.assignEntity(entity.hash, entity, this.commits);
+        if (entity instanceof Section) {
+            this.assignEntity(entity.title, entity, this.sections);
+            entity.setPosition(Position.Subsection);
+        }
+    }
+
+    public remove(entity: Commit | Section): void {
+        if (entity instanceof Commit) this.removeEntity(entity.hash, this.commits);
+        if (entity instanceof Section) {
+            this.removeEntity(entity.title, this.sections);
+            entity.setPosition(Position.Group);
+        }
+    }
+
+    public getPriority(): number {
+        if (this.priority === Priority.Default) {
+            this.priority = this.getCommits().reduce((a, c): number => a + c.getPriority(), Priority.Default);
+        }
+
+        return this.priority;
     }
 
     private assignEntity<T>(key: string, value: T, map: Map<string, T>): void {
         if (!map.has(key)) {
             map.set(key, value);
-            this.weight = Section.DEFAULT_WEIGHT;
+            this.priority = Priority.Default;
         }
     }
 
     private removeEntity<T>(key: string, map: Map<string, T>): void {
         if (map.has(key)) {
             map.delete(key);
-            this.weight = Section.DEFAULT_WEIGHT;
+            this.priority = Priority.Default;
         }
     }
 }

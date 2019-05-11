@@ -1,3 +1,9 @@
+export interface AuthorOptions {
+    login: string;
+    url: string;
+    avatar: string;
+}
+
 export default class Author {
     public static DEFAULT_AVATAR_SIZE: number = 40;
 
@@ -8,11 +14,11 @@ export default class Author {
     private avatar: string;
     private contribution: number;
 
-    public constructor(id: number, login: string, url: string, avatar: string) {
+    public constructor(id: number, options: AuthorOptions) {
         this.id = id;
-        this.url = url;
-        this.login = login;
-        this.avatar = avatar;
+        this.url = options.url;
+        this.login = options.login;
+        this.avatar = options.avatar;
         this.contribution = 1;
     }
 

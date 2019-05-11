@@ -38,6 +38,10 @@ export default class Task {
         this.status = status;
     }
 
+    private static renderList(list: string[], symbol: string, level: number): string[] {
+        return list.map((text: string): string => indentString(`${symbol} ${text}`, level + 1, Task.LINE_INDENT));
+    }
+
     public add(text: string, status: Status = Status.Pending): Task {
         const task: Task = new Task(text, status);
 
@@ -98,10 +102,6 @@ export default class Task {
         ].join(Task.LINE_SEPARATOR);
 
         return level ? chalk.dim(text) : text;
-    }
-
-    private static renderList(list: string[], symbol: string, level: number): string[] {
-        return list.map((text: string): string => indentString(`${symbol} ${text}`, level + 1, Task.LINE_INDENT));
     }
 
     private getSymbol(): string {

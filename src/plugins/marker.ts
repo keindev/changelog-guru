@@ -1,11 +1,12 @@
 import chalk from 'chalk';
-import Commit, { Status } from '../entities/commit';
+import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
 import Key from '../utils/key';
 import Section, { Position } from '../entities/section';
 import { ConfigOptions } from '../entities/config';
 import { Option, OptionValue } from '../utils/types';
 import Task from '../utils/task';
+import { Status } from '../utils/enums';
 
 enum Marker {
     // !break - indicates major changes breaking backward compatibility
