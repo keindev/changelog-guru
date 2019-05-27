@@ -1,11 +1,11 @@
 import chalk from 'chalk';
+import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
 import Key from '../utils/key';
 import Section, { Position } from '../entities/section';
 import { ConfigOptions } from '../entities/config';
 import { Option, OptionValue } from '../utils/types';
-import Task from '../utils/task';
 import { Status } from '../utils/enums';
 
 enum Marker {
@@ -18,7 +18,7 @@ enum Marker {
     // !hide - hide a commit
     Hidden = 'hide',
     // !important - place a commit title to special section on top of changelog
-    Important = 'important'
+    Important = 'important',
 }
 
 interface Config extends ConfigOptions {

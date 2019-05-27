@@ -1,5 +1,7 @@
 import path from 'path';
 import chalk from 'chalk';
+import { TaskTree } from 'tasktree-cli';
+import { Task } from 'tasktree-cli/lib/task';
 import Author from './author';
 import Commit from './commit';
 import Plugin from './plugin';
@@ -7,11 +9,9 @@ import Key from '../utils/key';
 import Config, { ConfigOptions } from './config';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
-import Process from '../utils/process';
-import Task from '../utils/task';
 import Version from '../utils/version';
 
-const $process = Process.getInstance();
+const $tasks = TaskTree.tree();
 
 export interface Context {
     findSection(title: string): Section | undefined;
@@ -29,31 +29,36 @@ export default class State implements Context {
     }
 
     private static matchSubsectionWith(section: Section, relations: Map<string, Section>): void {
-        const firstCommit = section.getFirstCommit();
+        const commits = section.getCommits();
         let parent: Section | undefined;
 
-        if (firstCommit) {
-            parent = relations.get(firstCommit.hash);
+        if (commits.length) {
+            parent = relations.get(commits[0].hash);
 
             if (parent) parent.assign(section);
+
+            commits.forEach(
+                (commit): void => {
+                    parent = relations.get(commit.hash);
+
+                    if (parent) parent.remove(commit);
+
+                    relations.set(commit.hash, section);
+                }
+            );
         }
-
-        section.getCommits().forEach(
-            (c): void => {
-                parent = relations.get(c.hash);
-
-                if (parent) parent.remove(c);
-
-                relations.set(c.hash, section);
-            }
-        );
     }
 
     private static matchSectionWith(section: Section, relations: Map<string, Section>): void {
-        section.getCommits().forEach(
-            (c): void => {
-                if (relations.has(c.hash)) section.remove(c);
-                else relations.set(c.hash, section);
+        const commits = section.getCommits();
+
+        commits.forEach(
+            (commit): void => {
+                if (relations.has(commit.hash)) {
+                    section.remove(commit);
+                } else {
+                    relations.set(commit.hash, section);
+                }
             }
         );
     }
@@ -84,8 +89,11 @@ export default class State implements Context {
 
             const actualAuthor = authors.get(author.id);
 
-            if (actualAuthor) actualAuthor.increaseContribution();
-            else authors.set(author.id, author);
+            if (actualAuthor) {
+                actualAuthor.increaseContribution();
+            } else {
+                authors.set(author.id, author);
+            }
         }
     }
 
@@ -93,7 +101,7 @@ export default class State implements Context {
         let section = this.findSection(title);
 
         if (typeof section === 'undefined') {
-            $process.task(`Added Section: ${chalk.bold(title)} [${position}]`).complete();
+            $tasks.add(`Added Section: ${chalk.bold(title)} [${position}]`).complete();
             this.sections.push((section = new Section(title, position)));
         }
 
@@ -106,7 +114,7 @@ export default class State implements Context {
 
     public async modify(config: Config): Promise<void> {
         const { plugins, options } = config;
-        const task = $process.task('Modify release state');
+        const task = $tasks.add('Modify release state');
 
         this.updateCommitsTypes(config);
 
@@ -118,7 +126,7 @@ export default class State implements Context {
     }
 
     private updateSections(): void {
-        const task = $process.task('Build sections tree');
+        const task = $tasks.add('Build sections tree');
         const sections = this.sections.sort(Section.compare);
 
         if (sections.length) {
@@ -147,7 +155,7 @@ export default class State implements Context {
     }
 
     private updateVersion(): void {
-        const task = $process.task('Calculate release version');
+        const task = $tasks.add('Calculate release version');
         const changes: [number, number, number] = [0, 0, 0];
 
         this.commits.forEach(
@@ -170,13 +178,13 @@ export default class State implements Context {
         task.log(`${chalk.bold(name)} plugin imported`);
 
         if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
-            const plugin: Plugin = new PluginClass(this);
+            const plugin = new PluginClass(this);
             const subtask = task.add(`Changing state with ${chalk.bold(PluginClass.name)}`);
-            const commits: Commit[] = [...this.commits.values()];
+            const commits = [...this.commits.values()];
 
             if (plugin instanceof Plugin) {
                 await plugin.init(options);
-                await Promise.all(commits.map((commit: Commit): Promise<void> => plugin.parse(commit, subtask)));
+                await Promise.all(commits.map((commit): Promise<void> => plugin.parse(commit, subtask)));
 
                 subtask.complete();
             } else {

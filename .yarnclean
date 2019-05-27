@@ -36,3 +36,4 @@ wercker.yml
 
 # misc
 *.md
+*.map

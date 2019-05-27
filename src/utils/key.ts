@@ -44,10 +44,10 @@ export default class Key {
         let result = a === b;
 
         if (!result) {
-            const unifyedA = Key.unify(a);
-            const unifyedB = Key.unify(b);
-            const { length: lengthA } = unifyedA;
-            const { length: lengthB } = unifyedB;
+            const unifiedA = Key.unify(a);
+            const unifiedB = Key.unify(b);
+            const { length: lengthA } = unifiedA;
+            const { length: lengthB } = unifiedB;
 
             if (Math.abs(lengthA - lengthB) <= Key.MAX_DIFF_DISTANCE) {
                 const matrix = [];
@@ -63,7 +63,7 @@ export default class Key {
                 for (i = 1, m = 0; i <= lengthB; i++, m++) {
                     for (j = 1, n = 0; j <= lengthA; j++, n++) {
                         matrix[i][j] =
-                            unifyedB.charAt(m) === unifyedA.charAt(n)
+                            unifiedB.charAt(m) === unifiedA.charAt(n)
                                 ? matrix[m][n]
                                 : Math.min(matrix[m][n] + 1, Math.min(matrix[i][n] + 1, matrix[m][j] + 1));
                     }

@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
-import Process from '../utils/process';
+import { TaskTree } from 'tasktree-cli';
 import { Option } from '../utils/types';
 import Version from '../utils/version';
 
-const $process = Process.getInstance();
+const $tasks = TaskTree.tree();
 
 export interface PackageInterface {
     version: string;
@@ -18,7 +18,7 @@ export default class Package {
     private version: string | undefined;
 
     public constructor() {
-        const task = $process.task('Reading package.json');
+        const task = $tasks.add('Reading package.json');
         const { version, repository } = readPkg.sync({ normalize: true });
 
         this.version = Version.clear(version);
@@ -48,7 +48,7 @@ export default class Package {
     }
 
     public async update(version: string): Promise<void> {
-        const task = $process.task(`Writing version to package.json`);
+        const task = $tasks.add(`Writing version to package.json`);
         const newVersion = Version.clear(version);
 
         if (newVersion && Version.greaterThan(newVersion, this.version)) {

@@ -1,12 +1,12 @@
 import chalk from 'chalk';
 import Octokit from '@octokit/rest';
+import { TaskTree } from 'tasktree-cli';
 import Provider from './provider';
-import Process from '../utils/process';
 import Author from '../entities/author';
 import Commit from '../entities/commit';
 import Version from '../utils/version';
 
-const $process = Process.getInstance();
+const $tasks = TaskTree.tree();
 
 export default class GitHubProvider extends Provider {
     private kit: Octokit;
@@ -15,7 +15,7 @@ export default class GitHubProvider extends Provider {
     public constructor(url: string) {
         super(url);
 
-        const task = $process.task('Initializing GitHub provider');
+        const task = $tasks.add('Initializing GitHub provider');
 
         if (!process.env.GITHUB_TOKEN) {
             task.fail('process.env.GITHUB_TOKEN - must be provided');
@@ -26,7 +26,7 @@ export default class GitHubProvider extends Provider {
     }
 
     public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {
-        const task = $process.task(`Loading page #${page.toString()}`);
+        const task = $tasks.add(`Loading page #${page.toString()}`);
 
         const { data: commits } = await this.kit.repos.listCommits({
             page,
@@ -35,7 +35,7 @@ export default class GitHubProvider extends Provider {
             owner: this.owner,
             sha: this.branch,
             /* eslint-disable-next-line @typescript-eslint/camelcase */
-            per_page: GitHubProvider.PAGE_SIZE
+            per_page: GitHubProvider.PAGE_SIZE,
         });
 
         task.complete(`Page #${page.toString()} loaded (${chalk.bold(commits.length.toString())} commits)`);
@@ -46,16 +46,16 @@ export default class GitHubProvider extends Provider {
                 const {
                     commit: {
                         message,
-                        author: { date: timestamp }
+                        author: { date: timestamp },
                     },
                     html_url: url,
-                    sha
+                    sha,
                 } = response;
                 const commit = new Commit(sha, {
                     timestamp: new Date(timestamp).getTime(),
                     author: author.login,
                     message,
-                    url
+                    url,
                 });
 
                 return [commit, author];

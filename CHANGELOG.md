@@ -42,6 +42,7 @@
 - Pkg version management  [``` 41b7652 ```](https://github.com/keindev/changelog-guru/commit/41b7652a3fcab0d0e812e91745897e82300b2495)
 - Add writer, fix state tree  [``` 4a792a4 ```](https://github.com/keindev/changelog-guru/commit/4a792a4e0b487611611962cd60861b794d5e0562)
 - Add commit ref in output  [``` 0bd34b4 ```](https://github.com/keindev/changelog-guru/commit/0bd34b47bfe986e95f2f04abc3702773fcf9558c)
+- Add commit links & "Contributors" section  [``` 2764e83 ```](https://github.com/keindev/changelog-guru/commit/2764e83b47d9c0ed0a3ca7848476bda28e5f17c9)
 ## Internal сhanges
 - **[Author]** Сhanged the size parameter modification method  [``` 4e88a69 ```](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 - **[Package]** Update dependencies  [``` 54e6330 ```](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f)
@@ -70,6 +71,12 @@
 - Change config file struct  [``` cd8449e ```](https://github.com/keindev/changelog-guru/commit/cd8449e71e896be695c7bb8497b068d693a56db0)
 - Fix lint & tsc errors  [``` 90efe99 ```](https://github.com/keindev/changelog-guru/commit/90efe997e7b8669d3e9a4e7239d3d9e7e61058b9)
 - Change Scope & Section plugins creation  [``` 35536c1 ```](https://github.com/keindev/changelog-guru/commit/35536c131a08bfef67aa07244cde76183ff70240)
+- Refactor Entities  [``` 2e6d122 ```](https://github.com/keindev/changelog-guru/commit/2e6d12275c2141337aab1c1af7a5b73b45b48ef0)
+## Reverts
+## Performance Improvements
+## Important Internal Changes
+## DEPRECATIONS
+## BREAKING CHANGES
 ---
 ## Contributors
-[![@keindev](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)
+[![[object Object]](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)

@@ -1,33 +1,30 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
+import { TaskTree } from 'tasktree-cli';
+import { Task } from 'tasktree-cli/lib/task';
 import State from '../entities/state';
 import Package from '../entities/package';
-import Process from '../utils/process';
 import Version from '../utils/version';
-import Task from '../utils/task';
 import Section from '../entities/section';
 import Markdown from '../utils/markdown';
 import Commit from '../entities/commit';
 import Author from '../entities/author';
 import { Status } from '../utils/enums';
 
-const $process = Process.getInstance();
+const $tasks = TaskTree.tree();
 
 export default class Writer {
     public static FILE_NAME = 'CHANGELOG.md';
     public static LINE_DELIMITER = '\n';
 
-    public static async write(state: State, pkg: Package): Promise<void> {
-        const task = $process.task('Write changelog');
+    private pkg: Package;
 
-        await Writer.updatePackage(state, pkg, task);
-        await Writer.writeChangelog(state.getAuthors(), state.getSections());
-
-        task.complete();
+    public constructor(pkg: Package) {
+        this.pkg = pkg;
     }
 
-    public static renderAuthors(authors: Author[]): string {
+    private static renderAuthors(authors: Author[]): string {
         const result: string[] = authors.map(
             (author): string => Markdown.link(Markdown.image(author.toString(), author.getAvatar()), author.url)
         );
@@ -35,7 +32,7 @@ export default class Writer {
         return [Markdown.title('Contributors'), result.join('')].join(Writer.LINE_DELIMITER);
     }
 
-    public static renderSection(section: Section, level: number): string {
+    private static renderSection(section: Section, level: number): string {
         const result: string[] = [Markdown.title(section.title, level)];
         const sections = section.getSections();
         const commits = section.getCommits();
@@ -61,7 +58,7 @@ export default class Writer {
         return result.join(Writer.LINE_DELIMITER);
     }
 
-    public static renderCommit(commit: Commit): string {
+    private static renderCommit(commit: Commit): string {
         const result: string[] = [];
         const accents = commit.getAccents();
 
@@ -80,25 +77,30 @@ export default class Writer {
         return result.join('');
     }
 
-    private static async writeChangelog(authors: Author[], sections: Section[]): Promise<void> {
-        const filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
-        const data = sections.map((s): string => Writer.renderSection(s, Markdown.DEFAULT_HEADER_LEVEL));
+    public async write(state: State): Promise<void> {
+        const task = $tasks.add('Write changelog');
+        const authors = state.getAuthors();
+        const data = state.getSections().map((s): string => Writer.renderSection(s, Markdown.DEFAULT_HEADER_LEVEL));
 
-        if (authors.length) data.push(Markdown.line(), Writer.renderAuthors(authors));
+        data.push(Markdown.line(), Writer.renderAuthors(authors));
 
-        await fs.promises.writeFile(filePath, data.join(Writer.LINE_DELIMITER));
+        await fs.promises.writeFile(path.resolve(process.cwd(), Writer.FILE_NAME), data.join(Writer.LINE_DELIMITER));
+        await this.updatePackage(state, task);
+
+        task.complete();
     }
 
-    private static async updatePackage(state: State, pkg: Package, task: Task): Promise<void> {
+    private async updatePackage(state: State, task: Task): Promise<void> {
+        const { pkg } = this;
         const v1 = state.getVersion();
         const v2 = pkg.getVersion();
         const subtask = task.add(`Update package version to ${chalk.bold(v1)}`);
 
-        if (Version.greaterThan(v1, v2)) {
-            pkg.update(v1);
+        if (!v2 || Version.greaterThan(v1, v2)) {
+            await pkg.update(v1);
             subtask.complete();
         } else {
-            subtask.skip('Current package version is geater');
+            subtask.skip(`Current package version is greater (${chalk.bold(v2)})`);
         }
     }
 }

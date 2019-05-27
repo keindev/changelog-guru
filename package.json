@@ -2,6 +2,7 @@
     "name": "changelog-guru",
     "version": "1.0.0",
     "description": "Git changelog generator",
+    "homepage": "https://github.com/keindev/changelog-guru#readme",
     "license": "MIT",
     "author": "Daniil Ryazanov <opensource@tagproject.ru>",
     "keywords": [
@@ -12,13 +13,13 @@
         "gitlab"
     ],
     "main": "lib/changelog.js",
+    "unpkg": "lib/changelog.js",
+    "module": "lib/changelog.js",
     "types": "lib/changelog.d.ts",
     "bin": {
         "changelog-guru": "bin/changelog",
         "changelog": "bin/changelog"
     },
-    "unpkg": "lib/changelog.js",
-    "module": "lib/changelog.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/keindev/changelog-guru.git"
@@ -27,23 +28,23 @@
         "url": "https://github.com/keindev/changelog-guru/issues"
     },
     "scripts": {
-        "clean": "rm -rf lib",
+        "clean": "rm -rf lib coverage",
         "lint": "eslint src/**/*.ts",
-        "test": "echo 'todo test'",
-        "cover": "echo 'todo cover'",
+        "test": "jest --passWithNoTests",
+        "coverage": "cat ./coverage/lcov.info | codacy-coverage",
         "debug": "node --nolazy --inspect-brk=9229 bin/changelog",
-        "precommit": "npm-run-all lint test cover",
+        "precommit": "npm-run-all clean test",
         "build:ts": "tsc",
-        "build": "npm-run-all clean precommit build:*"
+        "build": "npm-run-all clean test build:*"
     },
     "engines": {
-        "node": "^10.13.0"
+        "node": ">=10.0.0"
     },
     "dependencies": {
-        "@octokit/rest": "^16.25.3",
+        "@octokit/rest": "^16.27.0",
         "chalk": "^2.4.2",
         "commander": "^2.20.0",
-        "dotenv": "^6.2.0",
+        "dotenv": "^8.0.0",
         "elegant-spinner": "^2.0.0",
         "figures": "^3.0.0",
         "findup-sync": "^3.0.0",
@@ -52,27 +53,33 @@
         "log-symbols": "^3.0.0",
         "log-update": "^3.2.0",
         "read-pkg": "^5.1.1",
-        "semver": "^6.0.0",
+        "semver": "^6.1.0",
+        "tasktree-cli": "^1.1.0",
         "write-pkg": "^4.0.0"
     },
     "devDependencies": {
         "@types/dotenv": "^6.1.1",
         "@types/findup-sync": "^2.0.1",
+        "@types/jest": "^24.0.13",
         "@types/js-yaml": "^3.12.1",
         "@types/node": "^10.14.6",
         "@types/read-pkg": "^4.0.0",
         "@types/semver": "^6.0.0",
         "@types/url-parse": "^1.4.3",
         "@types/write-pkg": "^3.1.0",
-        "@typescript-eslint/eslint-plugin": "^1.7.0",
-        "@typescript-eslint/parser": "^1.7.0",
+        "@typescript-eslint/eslint-plugin": "^1.9.0",
+        "@typescript-eslint/parser": "^1.9.0",
+        "codacy-coverage": "^3.4.0",
         "eslint": "5.16.0",
         "eslint-config-airbnb-base": "13.1.0",
-        "eslint-config-prettier": "^4.2.0",
-        "eslint-plugin-import": "^2.17.2",
-        "husky": "^2.2.0",
+        "eslint-config-prettier": "^4.3.0",
+        "eslint-plugin-import": "^2.17.3",
+        "eslint-plugin-jest": "^22.6.4",
+        "husky": "^2.3.0",
+        "jest": "^24.8.0",
         "npm-run-all": "^4.1.5",
-        "prettier": "^1.17.0",
+        "prettier": "^1.17.1",
+        "ts-jest": "^24.0.2",
         "typescript": "^3.4.5"
     }
 }

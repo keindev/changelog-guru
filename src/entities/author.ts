@@ -5,7 +5,10 @@ export interface AuthorOptions {
 }
 
 export default class Author {
-    public static DEFAULT_AVATAR_SIZE: number = 40;
+    public static DEFAULT_AVATAR_SIZE = 40;
+    public static DEFAULT_CONTRIBUTION = 1;
+    public static URL_SIZE_PARAMETER_NAME = 'size';
+    public static NAME_PREFIX = '@';
 
     public readonly id: number;
     public readonly login: string;
@@ -19,32 +22,31 @@ export default class Author {
         this.url = options.url;
         this.login = options.login;
         this.avatar = options.avatar;
-        this.contribution = 1;
+        this.contribution = Author.DEFAULT_CONTRIBUTION;
     }
 
     public getAvatar(size: number = Author.DEFAULT_AVATAR_SIZE): string {
         const url = new URL(this.avatar);
         const { searchParams } = url;
-        const name = 'size';
 
-        if (searchParams.has(name)) {
-            searchParams.set(name, size.toString());
+        if (searchParams.has(Author.URL_SIZE_PARAMETER_NAME)) {
+            searchParams.set(Author.URL_SIZE_PARAMETER_NAME, size.toString());
         } else {
-            searchParams.append(name, size.toString());
+            searchParams.append(Author.URL_SIZE_PARAMETER_NAME, size.toString());
         }
 
         return url.toString();
-    }
-
-    public increaseContribution(): void {
-        this.contribution++;
     }
 
     public getContribution(): number {
         return this.contribution;
     }
 
-    public toString(): string {
-        return `@${this.login}`;
+    public getName(): string {
+        return `${Author.NAME_PREFIX}${this.login}`;
+    }
+
+    public increaseContribution(): void {
+        this.contribution++;
     }
 }

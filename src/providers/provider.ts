@@ -1,17 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
+import { TaskTree } from 'tasktree-cli';
 import findupSync from 'findup-sync';
 import Commit from '../entities/commit';
 import Author from '../entities/author';
-import Process from '../utils/process';
 
-const $process = Process.getInstance();
+const $tasks = TaskTree.tree();
 
 export enum ProviderName {
     GitHub = 'github',
     // not supported yet
-    GitLab = 'gitlab'
+    GitLab = 'gitlab',
 }
 
 export default abstract class Provider {
@@ -30,7 +30,7 @@ export default abstract class Provider {
 
         const pattern = `.${Provider.TYPE}/HEAD`;
         const filePath = findupSync(pattern, { cwd: process.cwd() });
-        const task = $process.task('Initializing git provider');
+        const task = $tasks.add('Initializing git provider');
 
         if (fs.existsSync(filePath)) {
             const buffer: Buffer = fs.readFileSync(filePath);

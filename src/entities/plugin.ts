@@ -1,5 +1,5 @@
+import { Task } from 'tasktree-cli/lib/task';
 import Commit from './commit';
-import Task from '../utils/task';
 import { Context } from './state';
 import { ConfigOptions } from './config';
 

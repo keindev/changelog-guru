@@ -1,9 +1,9 @@
 import chalk from 'chalk';
+import { TaskTree } from 'tasktree-cli';
 import Provider from '../providers/provider';
 import State from '../entities/state';
-import Process from '../utils/process';
 
-const $process = Process.getInstance();
+const $tasks = TaskTree.tree();
 
 export default class Reader {
     private provider: Provider;
@@ -13,7 +13,7 @@ export default class Reader {
     }
 
     public async read(): Promise<State> {
-        const task = $process.task('Getting release state information');
+        const task = $tasks.add('Getting release state information');
         const version: string | undefined = await this.provider.getVersion();
         const state: State = new State(version);
         const date: string = await this.provider.getLatestReleaseDate();

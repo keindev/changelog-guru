@@ -23,10 +23,7 @@ export default class Section {
     }
 
     public static compare(a: Section, b: Section): number {
-        let result = Math.min(
-            Compare.More,
-            Math.max(Compare.Less, a.getPosition() - b.getPosition() || a.getPriority() - b.getPriority())
-        );
+        let result = a.getPosition() - b.getPosition() || a.getPriority() - b.getPriority();
 
         if (result === Compare.Equal) result = a.title.localeCompare(b.title);
 
@@ -34,21 +31,11 @@ export default class Section {
     }
 
     public setPosition(position: Position): void {
-        const check = (p: Position): boolean => p === Position.Group || p === Position.Subsection;
-
-        if (check(position) && check(this.position)) this.position = position;
+        this.position = position;
     }
 
     public getPosition(): Position {
         return this.position;
-    }
-
-    public getFirstCommit(): Commit | undefined {
-        let commit: Commit | undefined;
-
-        if (this.commits.size) commit = this.getCommits().shift();
-
-        return commit;
     }
 
     public getSections(sort: boolean = true): Section[] {
@@ -81,7 +68,10 @@ export default class Section {
 
     public getPriority(): number {
         if (this.priority === Priority.Default) {
-            this.priority = this.getCommits().reduce((a, c): number => a + c.getPriority(), Priority.Default);
+            this.priority = this.getCommits().reduce(
+                (acc, commit): number => acc + commit.getPriority(),
+                Priority.Default
+            );
         }
 
         return this.priority;

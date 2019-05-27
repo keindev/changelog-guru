@@ -10,11 +10,11 @@ export interface CommitOptions {
 export default class Commit {
     public static PREFIX_DELIMITER = ',';
     public static PREFIX_MAIN_INDEX = 0;
+    public static LINE_DELIMITER = '\n';
     public static NAME_LENGTH = 7;
 
-    public readonly header: string;
     public readonly title: string;
-    public readonly body: ReadonlyArray<string>;
+    public readonly body: readonly string[];
     public readonly timestamp: number;
     public readonly url: string;
     public readonly hash: string;
@@ -27,27 +27,29 @@ export default class Commit {
     private status: number = Status.Default;
 
     public constructor(hash: string, options: CommitOptions) {
-        const lines = options.message.split('\n').map((l): string => l.trim());
+        const lines = options.message.split(Commit.LINE_DELIMITER).map((l): string => l.trim());
+        const header = lines.shift();
 
         this.hash = hash;
         this.timestamp = options.timestamp;
-        this.header = (lines.shift() || '').trim();
         this.body = lines;
         this.url = options.url;
         this.author = options.author;
         this.title = '';
 
-        const match = this.header.match(/(?<p>[a-z, ]+) {0,1}(\((?<s>[a-z,/:-]+)\)){0,1}(?=:):(?<t>[\S ]+)/i);
+        if (header) {
+            const match = header.match(/(?<p>[a-z, ]+) {0,1}(\((?<s>[a-z,/:-]+)\)){0,1}(?=:):(?<t>[\S ]+)/i);
 
-        if (match) {
-            const { groups } = match;
+            if (match) {
+                const { groups } = match;
 
-            if (groups) {
-                const { p: prefixes, s: scope, t: title } = groups;
+                if (groups) {
+                    const { p: prefixes, s: scope, t: title } = groups;
 
-                if (prefixes) this.prefixes.push(...prefixes.split(Commit.PREFIX_DELIMITER).filter(Boolean));
-                if (scope) this.scope = scope.trim();
-                if (title) this.title = title.trim();
+                    if (prefixes) this.prefixes.push(...prefixes.split(Commit.PREFIX_DELIMITER).filter(Boolean));
+                    if (scope) this.scope = scope.trim();
+                    if (title) this.title = title.trim();
+                }
             }
         }
     }

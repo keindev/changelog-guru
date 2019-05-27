@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import chalk from 'chalk';
-import Process from '../utils/process';
+import { TaskTree } from 'tasktree-cli';
 import { ProviderName } from '../providers/provider';
-import { ReadonlyArray, Option, OptionValue } from '../utils/types';
+import { Option, OptionValue } from '../utils/types';
 import Key from '../utils/key';
 import { Type } from '../utils/enums';
 
-const $process = Process.getInstance();
+const $tasks = TaskTree.tree();
 
 export interface ConfigOptions extends Option {
     config?: string;
@@ -25,24 +25,23 @@ export interface ConfigOptions extends Option {
 export default class Config {
     public static FILE_NAME = '.changelog.yaml';
 
-    public readonly plugins: ReadonlyArray<string>;
+    public readonly plugins: readonly string[] = [];
     public readonly options: Option;
     public readonly provider: ProviderName;
 
     private prefixes: Map<string, Type> = new Map();
 
     public constructor(options?: ConfigOptions) {
-        const task = $process.task('Config initializing');
+        const task = $tasks.add('Config initializing');
         const defaultConfig = Config.load();
         let config = Object.assign({}, defaultConfig, options || {});
         let { config: filePath } = config;
 
-        if (typeof filePath === 'string') {
+        if (filePath) {
             filePath = path.resolve(process.cwd(), filePath);
 
-            if (typeof filePath === 'string' && filePath.length && fs.existsSync(filePath)) {
+            if (fs.existsSync(filePath)) {
                 config = Object.assign({}, config, Config.load(filePath));
-
                 task.log(`Used config file from: ${filePath}`);
             } else {
                 task.warn(`File ${chalk.bold(Config.FILE_NAME)} is not exists`);
@@ -52,18 +51,23 @@ export default class Config {
             task.log(`Used default config`);
         }
 
-        if (typeof config.types === 'object') {
-            this.addPrefixes(config.types.major, Type.Major);
-            this.addPrefixes(config.types.minor, Type.Minor);
-            this.addPrefixes(config.types.patch, Type.Patch);
+        const { types } = config;
+
+        if (typeof types === 'object') {
+            this.addPrefixes(types.major, Type.Major);
+            this.addPrefixes(types.minor, Type.Minor);
+            this.addPrefixes(types.patch, Type.Patch);
+        }
+
+        if (Array.isArray(defaultConfig.plugins) && Array.isArray(config.plugins)) {
+            this.plugins = [...new Set(defaultConfig.plugins.concat(config.plugins))];
         }
 
         this.provider = config.provider || ProviderName.GitHub;
-        this.plugins = [...new Set((defaultConfig.plugins || []).concat(config.plugins || []))];
         this.options = new Proxy(config as Option, {
             get(target, name, receiver): Option | undefined {
                 return Reflect.get(target, name, receiver);
-            }
+            },
         });
 
         task.complete('Config initialized');
@@ -86,8 +90,8 @@ export default class Config {
             const { prefixes } = this;
 
             list.forEach(
-                (p): void => {
-                    if (!prefixes.has(p)) prefixes.set(p, type);
+                (prefix): void => {
+                    if (!prefixes.has(prefix)) prefixes.set(prefix, type);
                 }
             );
         }
