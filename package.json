@@ -54,7 +54,7 @@
         "log-update": "^3.2.0",
         "read-pkg": "^5.1.1",
         "semver": "^6.1.1",
-        "tasktree-cli": "^1.1.1",
+        "tasktree-cli": "^1.1.2",
         "write-pkg": "^4.0.0"
     },
     "devDependencies": {
