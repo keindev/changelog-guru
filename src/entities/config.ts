@@ -6,13 +6,13 @@ import { TaskTree } from 'tasktree-cli';
 import { ProviderName } from '../providers/provider';
 import { Option, OptionValue } from '../utils/types';
 import Key from '../utils/key';
-import { Type } from '../utils/enums';
+import { Level } from '../utils/enums';
 
 const $tasks = TaskTree.tree();
 
 export interface ConfigOptions extends Option {
     config?: string;
-    types?: {
+    levels?: {
         major?: string[];
         minor?: string[];
         patch?: string[];
@@ -22,6 +22,7 @@ export interface ConfigOptions extends Option {
     [key: string]: Option | OptionValue;
 }
 
+// TODO: refactor
 export default class Config {
     public static FILE_NAME = '.changelog.yaml';
 
@@ -29,7 +30,7 @@ export default class Config {
     public readonly options: Option;
     public readonly provider: ProviderName;
 
-    private prefixes: Map<string, Type> = new Map();
+    private types: Map<string, Level> = new Map();
 
     public constructor(options?: ConfigOptions) {
         const task = $tasks.add('Config initializing');
@@ -51,12 +52,12 @@ export default class Config {
             task.log(`Used default config`);
         }
 
-        const { types } = config;
+        const { levels } = config;
 
-        if (typeof types === 'object') {
-            this.addPrefixes(types.major, Type.Major);
-            this.addPrefixes(types.minor, Type.Minor);
-            this.addPrefixes(types.patch, Type.Patch);
+        if (typeof levels === 'object') {
+            this.addTypes(levels.major, Level.Major);
+            this.addTypes(levels.minor, Level.Minor);
+            this.addTypes(levels.patch, Level.Patch);
         }
 
         if (Array.isArray(defaultConfig.plugins) && Array.isArray(config.plugins)) {
@@ -77,21 +78,17 @@ export default class Config {
         return yaml.safeLoad(fs.readFileSync(filePath, 'utf8')) || {};
     }
 
-    public getType(prefix?: string): Type {
-        let type: Type | undefined;
-
-        if (prefix) type = Key.inMap(prefix, this.prefixes);
-
-        return type || Type.Patch;
+    public getLevel(type: string): Level {
+        return Key.inMap(type, this.types) || Level.Patch;
     }
 
-    private addPrefixes(list: string[] | undefined, type: Type): void {
+    private addTypes(list: string[] | undefined, level: Level): void {
         if (Array.isArray(list)) {
-            const { prefixes } = this;
+            const { types } = this;
 
             list.forEach(
-                (prefix): void => {
-                    if (!prefixes.has(prefix)) prefixes.set(prefix, type);
+                (type): void => {
+                    if (!types.has(type)) types.set(type, level);
                 }
             );
         }

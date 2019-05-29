@@ -151,7 +151,15 @@ export default class State implements Context {
     }
 
     private updateCommitsTypes(config: Config): void {
-        this.commits.forEach((commit): void => commit.setType(config.getType(commit.getPrefix())));
+        let type: string | undefined;
+
+        this.commits.forEach(
+            (commit): void => {
+                type = commit.getType();
+
+                if (type) commit.setLevel(config.getLevel(type));
+            }
+        );
     }
 
     private updateVersion(): void {
@@ -160,7 +168,7 @@ export default class State implements Context {
 
         this.commits.forEach(
             (c): void => {
-                changes[c.getType()]++;
+                changes[c.getLevel()]++;
             }
         );
 

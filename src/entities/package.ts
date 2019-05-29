@@ -2,21 +2,16 @@ import chalk from 'chalk';
 import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
 import { TaskTree } from 'tasktree-cli';
-import { Option } from '../utils/types';
 import Version from '../utils/version';
 
 const $tasks = TaskTree.tree();
-
-export interface PackageInterface {
-    version: string;
-    repository: Option;
-}
 
 export default class Package {
     public readonly url: string;
 
     private version: string | undefined;
 
+    // TODO: refactor
     public constructor() {
         const task = $tasks.add('Reading package.json');
         const { version, repository } = readPkg.sync({ normalize: true });

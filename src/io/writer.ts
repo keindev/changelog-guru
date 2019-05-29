@@ -67,11 +67,11 @@ export default class Writer {
         }
 
         result.push(
-            Markdown.capitalize(commit.title),
+            Markdown.capitalize(commit.subject),
             ' ',
             // tasks
             ' ',
-            Markdown.link(Markdown.code(commit.getName()), commit.url)
+            Markdown.link(Markdown.code(commit.getShortHash()), commit.url)
         );
 
         return result.join('');
