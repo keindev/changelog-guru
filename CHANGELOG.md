@@ -1,3 +1,24 @@
+## Internal сhanges
+- **[Author]** Сhanged the size parameter modification method  [``` 4e88a69 ```](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
+- **[Deps]** Bump tasktree-cli from 1.1.0 to 1.1.1  [``` 6b42938 ```](https://github.com/keindev/changelog-guru/commit/6b429381d2424c23f062aef17acab7b2dc179d90)
+- **[Deps]** Bump semver from 6.1.0 to 6.1.1  [``` 1153598 ```](https://github.com/keindev/changelog-guru/commit/1153598f0ad213fe00651ed5f4313b76d8eb2eba)
+- **[Deps]** Bump tasktree-cli from 1.1.1 to 1.1.2  [``` 5cfe447 ```](https://github.com/keindev/changelog-guru/commit/5cfe447b856d9355ff104d3d0cd8c33f55a3454a)
+- **[Deps]** Bump deps  [``` 0d7c223 ```](https://github.com/keindev/changelog-guru/commit/0d7c223d1e3ab91c092143c93e822c7eb44c770c)
+- **[Deps-dev]** Bump @types/node from 10.14.7 to 12.0.3  [``` f60f131 ```](https://github.com/keindev/changelog-guru/commit/f60f131a1327306170faf7d1fe334cd61743b113)
+- **[Package]** Update dependencies  [``` 54e6330 ```](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f)
+- Add .editorconfig & dependencies  [``` 99c5204 ```](https://github.com/keindev/changelog-guru/commit/99c5204c7f1816a0aac980ff56aa2c0573cb437a)
+- Work on commit message template struct  [``` ad62093 ```](https://github.com/keindev/changelog-guru/commit/ad62093ee283cbf772724be6779935951a57bb17)
+- Fix path to src in lint command  [``` 6629b89 ```](https://github.com/keindev/changelog-guru/commit/6629b89b82ce9262929938e8548fd884c2af13d3)
+- Added VS settings, fix configs, update dependencies  [``` 77fb627 ```](https://github.com/keindev/changelog-guru/commit/77fb62753b6e7f634805215b7253c39b8947fc48)
+- Added husky dependence  [``` 9c1316b ```](https://github.com/keindev/changelog-guru/commit/9c1316bc9ea7f8cc0e8234ca6b2e713015b71b98)
+- Added "cd" type  [``` 8bbb2a6 ```](https://github.com/keindev/changelog-guru/commit/8bbb2a612fe2a8f52beb374c16a2d8972bc77893)
+- Removed husky cfg from pkg  [``` dec55ae ```](https://github.com/keindev/changelog-guru/commit/dec55ae96d4020ddae99d521bcd7f86fbfc39ad7)
+- Added debug command, added prettier, update dependencies  [``` efc9058 ```](https://github.com/keindev/changelog-guru/commit/efc9058577e69eea9bc701c6b09931f8a22dd2d6)
+- Added debug config for vsc  [``` 683d359 ```](https://github.com/keindev/changelog-guru/commit/683d359880688c43de98a706f272107187df3023)
+- Changed husky hooks  [``` 93e92d3 ```](https://github.com/keindev/changelog-guru/commit/93e92d38234536a06423894a761e243915f05d6a)
+- Update and add new dependences  [``` 73d64c2 ```](https://github.com/keindev/changelog-guru/commit/73d64c2ec7e4c07424a5d758e8e765d803290491)
+- Add badges  [``` 33cc22a ```](https://github.com/keindev/changelog-guru/commit/33cc22a2dd970cabd6ca66b17d9a7ed542f16d76)
+- Add apps  [``` 69c47e7 ```](https://github.com/keindev/changelog-guru/commit/69c47e747cb94aa7120ac7242f743f1d115f42a0)
 ## Features
 ### Logging
 - Added base logging system a task & statuses  [``` ba1e7ee ```](https://github.com/keindev/changelog-guru/commit/ba1e7eeb4ac0c12044cbbe4ba17337add9f4bef1)
@@ -43,19 +64,6 @@
 - Add writer, fix state tree  [``` 4a792a4 ```](https://github.com/keindev/changelog-guru/commit/4a792a4e0b487611611962cd60861b794d5e0562)
 - Add commit ref in output  [``` 0bd34b4 ```](https://github.com/keindev/changelog-guru/commit/0bd34b47bfe986e95f2f04abc3702773fcf9558c)
 - Add commit links & "Contributors" section  [``` 2764e83 ```](https://github.com/keindev/changelog-guru/commit/2764e83b47d9c0ed0a3ca7848476bda28e5f17c9)
-## Internal сhanges
-- **[Author]** Сhanged the size parameter modification method  [``` 4e88a69 ```](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
-- **[Package]** Update dependencies  [``` 54e6330 ```](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f)
-- Add .editorconfig & dependencies  [``` 99c5204 ```](https://github.com/keindev/changelog-guru/commit/99c5204c7f1816a0aac980ff56aa2c0573cb437a)
-- Work on commit message template struct  [``` ad62093 ```](https://github.com/keindev/changelog-guru/commit/ad62093ee283cbf772724be6779935951a57bb17)
-- Fix path to src in lint command  [``` 6629b89 ```](https://github.com/keindev/changelog-guru/commit/6629b89b82ce9262929938e8548fd884c2af13d3)
-- Added VS settings, fix configs, update dependencies  [``` 77fb627 ```](https://github.com/keindev/changelog-guru/commit/77fb62753b6e7f634805215b7253c39b8947fc48)
-- Added husky dependence  [``` 9c1316b ```](https://github.com/keindev/changelog-guru/commit/9c1316bc9ea7f8cc0e8234ca6b2e713015b71b98)
-- Added "cd" type  [``` 8bbb2a6 ```](https://github.com/keindev/changelog-guru/commit/8bbb2a612fe2a8f52beb374c16a2d8972bc77893)
-- Removed husky cfg from pkg  [``` dec55ae ```](https://github.com/keindev/changelog-guru/commit/dec55ae96d4020ddae99d521bcd7f86fbfc39ad7)
-- Added debug command, added prettier, update dependencies  [``` efc9058 ```](https://github.com/keindev/changelog-guru/commit/efc9058577e69eea9bc701c6b09931f8a22dd2d6)
-- Added debug config for vsc  [``` 683d359 ```](https://github.com/keindev/changelog-guru/commit/683d359880688c43de98a706f272107187df3023)
-- Changed husky hooks  [``` 93e92d3 ```](https://github.com/keindev/changelog-guru/commit/93e92d38234536a06423894a761e243915f05d6a)
 ## Code Refactoring
 ### Refactoring
 - Reworked plugins, fix some a linter errors  [``` bdb7a0a ```](https://github.com/keindev/changelog-guru/commit/bdb7a0a9cbc57c5aee3ad3b7785f4bb1be5e2c93)
@@ -79,4 +87,4 @@
 ## BREAKING CHANGES
 ---
 ## Contributors
-[![[object Object]](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)
+[![[object Object]](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)[![[object Object]](https://avatars3.githubusercontent.com/in/2141?v=4&size=40)](https://github.com/apps/dependabot-preview)
