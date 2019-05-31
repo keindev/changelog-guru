@@ -40,7 +40,7 @@
         "node": ">=10.0.0"
     },
     "dependencies": {
-        "@octokit/rest": "^16.27.0",
+        "@octokit/rest": "^16.27.3",
         "chalk": "^2.4.2",
         "commander": "^2.20.0",
         "dotenv": "^8.0.0",
