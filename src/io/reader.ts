@@ -34,7 +34,7 @@ export default class Reader {
         if (length) {
             commits.forEach((entities): void => state.addCommit(...entities));
 
-            if (length === Provider.PAGE_SIZE) await this.readCommits(date, state, pageNumber);
+            if (length === Provider.PAGE_SIZE) await this.readCommits(date, state, pageNumber + 1);
         }
     }
 }
