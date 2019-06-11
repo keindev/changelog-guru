@@ -67,7 +67,7 @@
         "@types/url-parse": "^1.4.3",
         "@types/write-pkg": "^3.1.0",
         "@typescript-eslint/eslint-plugin": "^1.9.0",
-        "@typescript-eslint/parser": "^1.9.0",
+        "@typescript-eslint/parser": "^1.10.2",
         "eslint": "5.16.0",
         "eslint-config-airbnb-base": "13.1.0",
         "eslint-config-prettier": "^4.3.0",
