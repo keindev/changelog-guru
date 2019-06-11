@@ -19,6 +19,25 @@
 - Update and add new dependences  [``` 73d64c2 ```](https://github.com/keindev/changelog-guru/commit/73d64c2ec7e4c07424a5d758e8e765d803290491)
 - Add badges  [``` 33cc22a ```](https://github.com/keindev/changelog-guru/commit/33cc22a2dd970cabd6ca66b17d9a7ed542f16d76)
 - Add apps  [``` 69c47e7 ```](https://github.com/keindev/changelog-guru/commit/69c47e747cb94aa7120ac7242f743f1d115f42a0)
+- Fix vsc debugger conf  [``` b963c31 ```](https://github.com/keindev/changelog-guru/commit/b963c317dc63fad0d62b2031cd0907b063ad1ce1)
+- Render new changelog  [``` f23e7d2 ```](https://github.com/keindev/changelog-guru/commit/f23e7d23865c348bfa5da26685c7e168971f6c32)
+## Bug Fixes
+- **[Section,State]** Add commit tree generation method  [``` 6c819c8 ```](https://github.com/keindev/changelog-guru/commit/6c819c80096fd1276185ad5d5180ada3965500e9)
+- **[State]** Added section list sorting after modify with plugins  [``` f85afda ```](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
+- Rewrite reader, test github api  [``` dfea14d ```](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae)
+- Rewrite reader, test github api  [``` a5b847f ```](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
+- Add author avatar size  [``` f2107a2 ```](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)
+- Added missing Commit type  [``` 0ceac52 ```](https://github.com/keindev/changelog-guru/commit/0ceac527bef36747930de4e91df52acd46017cdd)
+- Fixed commit parsing  [``` 8de6944 ```](https://github.com/keindev/changelog-guru/commit/8de6944e8ac88bc96b8a3e83117ac506f36e7736)
+- Fixed regular expressions  [``` 4529371 ```](https://github.com/keindev/changelog-guru/commit/452937153e7cd3582002c1538af00bfd23e37eed)
+- Fixed parsing & modify commits  [``` 3125893 ```](https://github.com/keindev/changelog-guru/commit/3125893812639b832e1933bec6eb616e7de62f54)
+- Spinner rotation bug fixed  [``` 5df31f1 ```](https://github.com/keindev/changelog-guru/commit/5df31f15da9d59bd71ea67d89ad7b628786589e9)
+- Add version information from package and last release  [``` 3ba83c8 ```](https://github.com/keindev/changelog-guru/commit/3ba83c818ecd0566f077b969a05c3de2279803dc)
+- Pkg version management  [``` 41b7652 ```](https://github.com/keindev/changelog-guru/commit/41b7652a3fcab0d0e812e91745897e82300b2495)
+- Add writer, fix state tree  [``` 4a792a4 ```](https://github.com/keindev/changelog-guru/commit/4a792a4e0b487611611962cd60861b794d5e0562)
+- Add commit ref in output  [``` 0bd34b4 ```](https://github.com/keindev/changelog-guru/commit/0bd34b47bfe986e95f2f04abc3702773fcf9558c)
+- Add commit links & "Contributors" section  [``` 2764e83 ```](https://github.com/keindev/changelog-guru/commit/2764e83b47d9c0ed0a3ca7848476bda28e5f17c9)
+- Rename 'types' to 'levels' in conf file  [``` 8dce766 ```](https://github.com/keindev/changelog-guru/commit/8dce7666f5bb5a0a9d2cb6b13721bd1bee912bdc)
 ## Features
 ### Logging
 - Added base logging system a task & statuses  [``` ba1e7ee ```](https://github.com/keindev/changelog-guru/commit/ba1e7eeb4ac0c12044cbbe4ba17337add9f4bef1)
@@ -48,22 +67,6 @@
 - Added Section & Commit managers  [``` 13aa1e2 ```](https://github.com/keindev/changelog-guru/commit/13aa1e2053a0fa3de4b29c6f3a74b8557d1a98f4)
 - Reworked plugins, added a Levenshtein distance compare algorithm  [``` 6c45621 ```](https://github.com/keindev/changelog-guru/commit/6c456218d0a6ccd698e56e3cb1f024e56db57844)
 - Add sections tree & commit list render  [``` 9d3bc70 ```](https://github.com/keindev/changelog-guru/commit/9d3bc7004cb591eb3c5db11b5d4c3fec5540b2cb)
-## Bug Fixes
-- **[Section,State]** Add commit tree generation method  [``` 6c819c8 ```](https://github.com/keindev/changelog-guru/commit/6c819c80096fd1276185ad5d5180ada3965500e9)
-- **[State]** Added section list sorting after modify with plugins  [``` f85afda ```](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
-- Rewrite reader, test github api  [``` dfea14d ```](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae)
-- Rewrite reader, test github api  [``` a5b847f ```](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
-- Add author avatar size  [``` f2107a2 ```](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)
-- Added missing Commit type  [``` 0ceac52 ```](https://github.com/keindev/changelog-guru/commit/0ceac527bef36747930de4e91df52acd46017cdd)
-- Fixed commit parsing  [``` 8de6944 ```](https://github.com/keindev/changelog-guru/commit/8de6944e8ac88bc96b8a3e83117ac506f36e7736)
-- Fixed regular expressions  [``` 4529371 ```](https://github.com/keindev/changelog-guru/commit/452937153e7cd3582002c1538af00bfd23e37eed)
-- Fixed parsing & modify commits  [``` 3125893 ```](https://github.com/keindev/changelog-guru/commit/3125893812639b832e1933bec6eb616e7de62f54)
-- Spinner rotation bug fixed  [``` 5df31f1 ```](https://github.com/keindev/changelog-guru/commit/5df31f15da9d59bd71ea67d89ad7b628786589e9)
-- Add version information from package and last release  [``` 3ba83c8 ```](https://github.com/keindev/changelog-guru/commit/3ba83c818ecd0566f077b969a05c3de2279803dc)
-- Pkg version management  [``` 41b7652 ```](https://github.com/keindev/changelog-guru/commit/41b7652a3fcab0d0e812e91745897e82300b2495)
-- Add writer, fix state tree  [``` 4a792a4 ```](https://github.com/keindev/changelog-guru/commit/4a792a4e0b487611611962cd60861b794d5e0562)
-- Add commit ref in output  [``` 0bd34b4 ```](https://github.com/keindev/changelog-guru/commit/0bd34b47bfe986e95f2f04abc3702773fcf9558c)
-- Add commit links & "Contributors" section  [``` 2764e83 ```](https://github.com/keindev/changelog-guru/commit/2764e83b47d9c0ed0a3ca7848476bda28e5f17c9)
 ## Code Refactoring
 ### Refactoring
 - Reworked plugins, fix some a linter errors  [``` bdb7a0a ```](https://github.com/keindev/changelog-guru/commit/bdb7a0a9cbc57c5aee3ad3b7785f4bb1be5e2c93)
@@ -80,6 +83,7 @@
 - Fix lint & tsc errors  [``` 90efe99 ```](https://github.com/keindev/changelog-guru/commit/90efe997e7b8669d3e9a4e7239d3d9e7e61058b9)
 - Change Scope & Section plugins creation  [``` 35536c1 ```](https://github.com/keindev/changelog-guru/commit/35536c131a08bfef67aa07244cde76183ff70240)
 - Refactor Entities  [``` 2e6d122 ```](https://github.com/keindev/changelog-guru/commit/2e6d12275c2141337aab1c1af7a5b73b45b48ef0)
+- Rename some Commit methods  [``` 82c987c ```](https://github.com/keindev/changelog-guru/commit/82c987c22e938c21a7e8b42b7a4c5ad40b7a5d4a)
 ## Reverts
 ## Performance Improvements
 ## Important Internal Changes
