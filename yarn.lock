@@ -385,10 +385,10 @@
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
 
-"@types/findup-sync@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/findup-sync/-/findup-sync-2.0.1.tgz#f4664de6b48a78f20c62c8c89291afe539c77bc0"
-  integrity sha512-4I98Ia1Ty1h7XTbQBBw7oyZChPgU9yAqwRaFH3I4PzwDlLAEKKlSra9FvmSHd1zvq98gM1C4VZ5t8mm1Jc7uKw==
+"@types/findup-sync@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/findup-sync/-/findup-sync-2.0.2.tgz#3fff6e72b8bbec258c64208a8d64c861fec63ea7"
+  integrity sha512-ZXb5EN/MQvWI5LucmZ1JT1vocMRCAk0Ri+ss4NO06BpUoDOFn/FlWpFX2PQYuWzQ77eTz9QuZd6f4sZxoSrDqQ==
   dependencies:
     "@types/micromatch" "*"
 
