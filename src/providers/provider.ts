@@ -32,7 +32,7 @@ export default abstract class Provider {
         const filePath = findupSync(pattern, { cwd: process.cwd() });
         const task = $tasks.add('Initializing git provider');
 
-        if (fs.existsSync(filePath)) {
+        if (filePath && fs.existsSync(filePath)) {
             const buffer: Buffer = fs.readFileSync(filePath);
             const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
 
