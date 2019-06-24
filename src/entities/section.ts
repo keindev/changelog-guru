@@ -50,6 +50,10 @@ export default class Section {
         return sort ? commits.sort((a, b): number => a.timestamp - b.timestamp) : commits;
     }
 
+    public isEmpty(): boolean {
+        return !this.sections.size && !this.commits.size;
+    }
+
     public assign(entity: Commit | Section): void {
         if (entity instanceof Commit) this.assignEntity(entity.hash, entity, this.commits);
         if (entity instanceof Section) {

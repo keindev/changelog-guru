@@ -37,30 +37,26 @@ export default class State implements Context {
 
             if (parent) parent.assign(section);
 
-            commits.forEach(
-                (commit): void => {
-                    parent = relations.get(commit.hash);
+            commits.forEach((commit): void => {
+                parent = relations.get(commit.hash);
 
-                    if (parent) parent.remove(commit);
+                if (parent) parent.remove(commit);
 
-                    relations.set(commit.hash, section);
-                }
-            );
+                relations.set(commit.hash, section);
+            });
         }
     }
 
     private static matchSectionWith(section: Section, relations: Map<string, Section>): void {
         const commits = section.getCommits();
 
-        commits.forEach(
-            (commit): void => {
-                if (relations.has(commit.hash)) {
-                    section.remove(commit);
-                } else {
-                    relations.set(commit.hash, section);
-                }
+        commits.forEach((commit): void => {
+            if (relations.has(commit.hash)) {
+                section.remove(commit);
+            } else {
+                relations.set(commit.hash, section);
             }
-        );
+        });
     }
 
     public setVersion(version: string): void {
@@ -101,7 +97,6 @@ export default class State implements Context {
         let section = this.findSection(title);
 
         if (typeof section === 'undefined') {
-            $tasks.add(`Added Section: ${chalk.bold(title)} [${position}]`).complete();
             this.sections.push((section = new Section(title, position)));
         }
 
@@ -132,19 +127,17 @@ export default class State implements Context {
         if (sections.length) {
             const relations: Map<string, Section> = new Map();
 
-            sections.forEach(
-                (s): void => {
-                    if (s.getPosition() === Position.Group) {
-                        State.matchSubsectionWith(s, relations);
-                    } else {
-                        State.matchSectionWith(s, relations);
-                    }
+            sections.forEach((s): void => {
+                if (s.getPosition() === Position.Group) {
+                    State.matchSubsectionWith(s, relations);
+                } else {
+                    State.matchSectionWith(s, relations);
                 }
-            );
+            });
         }
 
         this.sections = sections
-            .filter((s): boolean => s.getPosition() !== Position.Subsection && !!s.getPriority())
+            .filter((s): boolean => s.getPosition() !== Position.Subsection && !!s.getPriority() && !s.isEmpty())
             .sort(Section.compare)
             .reverse();
         task.complete();
@@ -153,24 +146,20 @@ export default class State implements Context {
     private updateCommitsTypes(config: Config): void {
         let type: string | undefined;
 
-        this.commits.forEach(
-            (commit): void => {
-                type = commit.getType();
+        this.commits.forEach((commit): void => {
+            type = commit.getType();
 
-                if (type) commit.setLevel(config.getLevel(type));
-            }
-        );
+            if (type) commit.setLevel(config.getLevel(type));
+        });
     }
 
     private updateVersion(): void {
         const task = $tasks.add('Calculate release version');
         const changes: [number, number, number] = [0, 0, 0];
 
-        this.commits.forEach(
-            (c): void => {
-                changes[c.getLevel()]++;
-            }
-        );
+        this.commits.forEach((c): void => {
+            changes[c.getLevel()]++;
+        });
 
         const version = Version.update(this.version, ...changes);
 

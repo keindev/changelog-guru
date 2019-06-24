@@ -26,6 +26,7 @@
 - **[Deps-dev]** Bump @types/semver from 6.0.0 to 6.0.1  [``` bdf39c0 ```](https://github.com/keindev/changelog-guru/commit/bdf39c0abfe4a05732d58e7d13d1896b2e945795)
 - **[Package]** Update dependencies  [``` 54e6330 ```](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f)
 - **[Package]** Update dependencies  [``` 1fbed44 ```](https://github.com/keindev/changelog-guru/commit/1fbed44925822a89fdb3cb8ceef460ac3b4fb77c)
+- **[Package]** Update dependencies  [``` 839d042 ```](https://github.com/keindev/changelog-guru/commit/839d04201466025bad2269548a4ca5be2f81593c)
 - Add .editorconfig & dependencies  [``` 99c5204 ```](https://github.com/keindev/changelog-guru/commit/99c5204c7f1816a0aac980ff56aa2c0573cb437a)
 - Work on commit message template struct  [``` ad62093 ```](https://github.com/keindev/changelog-guru/commit/ad62093ee283cbf772724be6779935951a57bb17)
 - Fix path to src in lint command  [``` 6629b89 ```](https://github.com/keindev/changelog-guru/commit/6629b89b82ce9262929938e8548fd884c2af13d3)
@@ -107,11 +108,6 @@
 - Change Scope & Section plugins creation  [``` 35536c1 ```](https://github.com/keindev/changelog-guru/commit/35536c131a08bfef67aa07244cde76183ff70240)
 - Refactor Entities  [``` 2e6d122 ```](https://github.com/keindev/changelog-guru/commit/2e6d12275c2141337aab1c1af7a5b73b45b48ef0)
 - Rename some Commit methods  [``` 82c987c ```](https://github.com/keindev/changelog-guru/commit/82c987c22e938c21a7e8b42b7a4c5ad40b7a5d4a)
-## Reverts
-## Performance Improvements
-## Important Internal Changes
-## DEPRECATIONS
-## BREAKING CHANGES
 ---
 ## Contributors
 [![[object Object]](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)[![[object Object]](https://avatars3.githubusercontent.com/in/2141?v=4&size=40)](https://github.com/apps/dependabot-preview)
