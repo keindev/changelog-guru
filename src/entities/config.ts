@@ -19,6 +19,9 @@ export interface ConfigOptions extends Option {
     };
     plugins?: string[];
     provider?: ProviderName;
+    ignore?: {
+        authors?: string[];
+    };
     [key: string]: Option | OptionValue;
 }
 
@@ -29,6 +32,7 @@ export default class Config {
     public readonly plugins: readonly string[] = [];
     public readonly options: Option;
     public readonly provider: ProviderName;
+    public readonly ignoreAuthors: string[] = [];
 
     private types: Map<string, Level> = new Map();
 
@@ -52,12 +56,16 @@ export default class Config {
             task.log(`Used default config`);
         }
 
-        const { levels } = config;
+        const { levels, ignore } = config;
 
         if (typeof levels === 'object') {
             this.addTypes(levels.major, Level.Major);
             this.addTypes(levels.minor, Level.Minor);
             this.addTypes(levels.patch, Level.Patch);
+        }
+
+        if (typeof ignore === 'object' && Array.isArray(ignore.authors)) {
+            this.ignoreAuthors = ignore.authors.filter(Boolean);
         }
 
         if (Array.isArray(defaultConfig.plugins) && Array.isArray(config.plugins)) {
@@ -86,11 +94,9 @@ export default class Config {
         if (Array.isArray(list)) {
             const { types } = this;
 
-            list.forEach(
-                (type): void => {
-                    if (!types.has(type)) types.set(type, level);
-                }
-            );
+            list.forEach((type): void => {
+                if (!types.has(type)) types.set(type, level);
+            });
         }
     }
 }

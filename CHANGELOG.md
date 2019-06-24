@@ -47,8 +47,8 @@
 ## Bug Fixes
 - **[Section,State]** Add commit tree generation method  [``` 6c819c8 ```](https://github.com/keindev/changelog-guru/commit/6c819c80096fd1276185ad5d5180ada3965500e9)
 - **[State]** Added section list sorting after modify with plugins  [``` f85afda ```](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
-- Rewrite reader, test github api  [``` dfea14d ```](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae)
 - Rewrite reader, test github api  [``` a5b847f ```](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
+- Rewrite reader, test github api  [``` dfea14d ```](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae)
 - Add author avatar size  [``` f2107a2 ```](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)
 - Added missing Commit type  [``` 0ceac52 ```](https://github.com/keindev/changelog-guru/commit/0ceac527bef36747930de4e91df52acd46017cdd)
 - Fixed commit parsing  [``` 8de6944 ```](https://github.com/keindev/changelog-guru/commit/8de6944e8ac88bc96b8a3e83117ac506f36e7736)
@@ -62,6 +62,7 @@
 - Add commit links & "Contributors" section  [``` 2764e83 ```](https://github.com/keindev/changelog-guru/commit/2764e83b47d9c0ed0a3ca7848476bda28e5f17c9)
 - Rename 'types' to 'levels' in conf file  [``` 8dce766 ```](https://github.com/keindev/changelog-guru/commit/8dce7666f5bb5a0a9d2cb6b13721bd1bee912bdc)
 - Fix multy page loading  [``` 23d9f81 ```](https://github.com/keindev/changelog-guru/commit/23d9f8133d53716e09b0882069c0c0f0347b0eac)
+- Fix blank section output  [``` 4a6876d ```](https://github.com/keindev/changelog-guru/commit/4a6876df0413bb761bd54e85474fdd047fb29d46)
 ## Features
 ### Logging
 - Added base logging system a task & statuses  [``` ba1e7ee ```](https://github.com/keindev/changelog-guru/commit/ba1e7eeb4ac0c12044cbbe4ba17337add9f4bef1)
@@ -110,4 +111,4 @@
 - Rename some Commit methods  [``` 82c987c ```](https://github.com/keindev/changelog-guru/commit/82c987c22e938c21a7e8b42b7a4c5ad40b7a5d4a)
 ---
 ## Contributors
-[![[object Object]](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)[![[object Object]](https://avatars3.githubusercontent.com/in/2141?v=4&size=40)](https://github.com/apps/dependabot-preview)
+[![[object Object]](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)

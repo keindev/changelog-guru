@@ -14,7 +14,8 @@ export default class Author {
     public readonly url: string;
 
     private avatar: string;
-    private contribution: number = 0;
+    private ignored = false;
+    private contribution = 0;
 
     public constructor(id: number, options: AuthorOptions) {
         this.id = id;
@@ -46,7 +47,15 @@ export default class Author {
         return `${Author.NAME_PREFIX}${this.login}`;
     }
 
+    public isIgnored(): boolean {
+        return this.ignored;
+    }
+
     public increaseContribution(): void {
         this.contribution++;
+    }
+
+    public ignore(): void {
+        this.ignored = true;
     }
 }

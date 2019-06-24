@@ -47,3 +47,5 @@ sections:
     - Performance Improvements: [perf]
     - Code Refactoring: [refactor]
     - Reverts: [revert]
+ignore:
+    authors: ['dependabot-preview[bot]']

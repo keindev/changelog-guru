@@ -25,9 +25,13 @@ export default class Writer {
     }
 
     private static renderAuthors(authors: Author[]): string {
-        const result: string[] = authors.map((author): string =>
-            Markdown.link(Markdown.image(author.toString(), author.getAvatar()), author.url)
-        );
+        const result: string[] = [];
+
+        authors.forEach((author): void => {
+            if (!author.isIgnored()) {
+                result.push(Markdown.link(Markdown.image(author.toString(), author.getAvatar()), author.url));
+            }
+        });
 
         return [Markdown.title('Contributors'), result.join('')].join(Writer.LINE_DELIMITER);
     }
