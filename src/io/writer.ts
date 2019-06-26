@@ -73,9 +73,7 @@ export default class Writer {
         result.push(
             Markdown.capitalize(commit.subject),
             ' ',
-            // tasks
-            ' ',
-            Markdown.link(Markdown.code(commit.getShortHash()), commit.url)
+            Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url)
         );
 
         return result.join('');
