@@ -38,7 +38,7 @@ export default class Commit {
         if (header) {
             const match = header.match(
                 // <type>(<scope>): <subject>
-                /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
+                /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
             );
 
             if (match) {
