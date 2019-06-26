@@ -21,6 +21,7 @@ export interface ConfigOptions extends Option {
     provider?: ProviderName;
     ignore?: {
         authors?: string[];
+        commits?: string[];
     };
     [key: string]: Option | OptionValue;
 }
@@ -33,6 +34,7 @@ export default class Config {
     public readonly options: Option;
     public readonly provider: ProviderName;
     public readonly ignoreAuthors: string[] = [];
+    public readonly ignoreCommits: string[] = [];
 
     private types: Map<string, Level> = new Map();
 
@@ -64,8 +66,14 @@ export default class Config {
             this.addTypes(levels.patch, Level.Patch);
         }
 
-        if (typeof ignore === 'object' && Array.isArray(ignore.authors)) {
-            this.ignoreAuthors = ignore.authors.filter(Boolean);
+        if (typeof ignore === 'object') {
+            if (Array.isArray(ignore.authors)) {
+                this.ignoreAuthors = [...new Set(ignore.authors)].filter(Boolean);
+            }
+
+            if (Array.isArray(ignore.commits)) {
+                this.ignoreCommits = [...new Set(ignore.commits)].filter(Boolean);
+            }
         }
 
         if (Array.isArray(defaultConfig.plugins) && Array.isArray(config.plugins)) {

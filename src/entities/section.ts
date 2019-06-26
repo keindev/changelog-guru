@@ -45,7 +45,7 @@ export default class Section {
     }
 
     public getCommits(sort: boolean = true): Commit[] {
-        const commits = [...this.commits.values()];
+        const commits = [...this.commits.values()].filter((commit): boolean => !commit.isIgnored());
 
         return sort ? commits.sort((a, b): number => a.timestamp - b.timestamp) : commits;
     }

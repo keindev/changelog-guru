@@ -50,3 +50,4 @@ sections:
     - Reverts: [revert]
 ignore:
     authors: ['dependabot-preview[bot]']
+    commits: ['merge']

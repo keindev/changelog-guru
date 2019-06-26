@@ -21,8 +21,9 @@ export default class Commit {
     private scope: string | undefined;
     private type: string | undefined;
     private accents: Set<string> = new Set();
-    private level: Level = Level.Patch;
-    private status: number = Status.Default;
+    private level = Level.Patch;
+    private status = Status.Default;
+    private ignored = false;
 
     public constructor(hash: string, options: CommitOptions) {
         const lines = options.message.split(Commit.LINE_SEPARATOR).map((l): string => l.trim());
@@ -37,7 +38,7 @@ export default class Commit {
         if (header) {
             const match = header.match(
                 // <type>(<scope>): <subject>
-                /(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
+                /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
             );
 
             if (match) {
@@ -114,5 +115,13 @@ export default class Commit {
 
     public hasStatus(status: Status): boolean {
         return !!(this.status & status);
+    }
+
+    public isIgnored(): boolean {
+        return this.ignored;
+    }
+
+    public ignore(): void {
+        this.ignored = true;
     }
 }

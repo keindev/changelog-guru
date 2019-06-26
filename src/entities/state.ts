@@ -111,8 +111,9 @@ export default class State implements Context {
         const { plugins, options } = config;
         const task = $tasks.add('Modify release state');
 
-        this.updateCommitsTypes(config);
         this.ignoreAuthors(config.ignoreAuthors);
+        this.ignoreCommits(config.ignoreCommits);
+        this.updateCommitsTypes(config);
 
         await Promise.all(plugins.map((p): Promise<void> => this.importPlugin(p, options, task)));
 
@@ -125,6 +126,14 @@ export default class State implements Context {
         this.authors.forEach((author): void => {
             if (list.indexOf(author.login) >= 0) {
                 author.ignore();
+            }
+        });
+    }
+
+    private ignoreCommits(list: string[]): void {
+        this.commits.forEach((commit): void => {
+            if (list.some((item): boolean => commit.subject.includes(item))) {
+                commit.ignore();
             }
         });
     }
