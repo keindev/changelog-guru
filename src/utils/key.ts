@@ -6,6 +6,13 @@ export default class Key {
         return key.trim().toLowerCase();
     }
 
+    public static inArray(key: string | undefined, list: string[]): boolean {
+        if (typeof key !== 'string') return false;
+        if (!list.length) return false;
+
+        return list.some((item): boolean => Key.isEqual(key, item));
+    }
+
     public static inSet(key: string, set: Set<string>): boolean {
         let result = true;
 
@@ -20,17 +27,15 @@ export default class Key {
         let uniqueKey: string = key;
 
         if (!map.has(key)) {
-            [...map.keys()].some(
-                (mapKey): boolean => {
-                    const isEqual: boolean = Key.isEqual(key, mapKey);
+            [...map.keys()].some((mapKey): boolean => {
+                const isEqual: boolean = Key.isEqual(key, mapKey);
 
-                    if (isEqual) {
-                        uniqueKey = mapKey;
-                    }
-
-                    return isEqual;
+                if (isEqual) {
+                    uniqueKey = mapKey;
                 }
-            );
+
+                return isEqual;
+            });
         }
 
         return map.get(uniqueKey);

@@ -10,6 +10,7 @@ import Config, { ConfigOptions } from './config';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import Version from '../utils/version';
+import { FilterType } from '../utils/enums';
 
 const $tasks = TaskTree.tree();
 
@@ -111,8 +112,8 @@ export default class State implements Context {
         const { plugins, options } = config;
         const task = $tasks.add('Modify release state');
 
-        this.ignoreAuthors(config.ignoreAuthors);
-        this.ignoreCommits(config.ignoreCommits);
+        this.ignoreAuthors(config.filters);
+        this.ignoreCommits(config.filters);
         this.updateCommitsTypes(config);
 
         await Promise.all(plugins.map((p): Promise<void> => this.importPlugin(p, options, task)));
@@ -122,17 +123,29 @@ export default class State implements Context {
         task.complete();
     }
 
-    private ignoreAuthors(list: string[]): void {
-        this.authors.forEach((author): void => {
-            if (list.indexOf(author.login) >= 0) {
-                author.ignore();
-            }
-        });
+    private ignoreAuthors(filters: Map<FilterType, string[]>): void {
+        const list = filters.get(FilterType.AuthorLogin);
+
+        if (Array.isArray(list)) {
+            this.authors.forEach((author): void => {
+                if (list.indexOf(author.login) >= 0) {
+                    author.ignore();
+                }
+            });
+        }
     }
 
-    private ignoreCommits(list: string[]): void {
+    private ignoreCommits(filters: Map<FilterType, string[]>): void {
+        const types = filters.get(FilterType.CommitType) || [];
+        const scopes = filters.get(FilterType.CommitScope) || [];
+        const subjects = filters.get(FilterType.CommitSubject) || [];
+
         this.commits.forEach((commit): void => {
-            if (list.some((item): boolean => commit.subject.includes(item))) {
+            if (
+                subjects.some((item): boolean => commit.subject.includes(item)) ||
+                Key.inArray(commit.getType(), types) ||
+                Key.inArray(commit.getScope(), scopes)
+            ) {
                 commit.ignore();
             }
         });

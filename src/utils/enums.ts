@@ -24,3 +24,10 @@ export enum Compare {
     Less = -1,
     Equal = 0,
 }
+
+export enum FilterType {
+    AuthorLogin = 0,
+    CommitType = 1,
+    CommitScope = 2,
+    CommitSubject = 3,
+}

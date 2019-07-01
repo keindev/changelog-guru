@@ -6,7 +6,7 @@ import { TaskTree } from 'tasktree-cli';
 import { ProviderName } from '../providers/provider';
 import { Option, OptionValue } from '../utils/types';
 import Key from '../utils/key';
-import { Level } from '../utils/enums';
+import { Level, FilterType } from '../utils/enums';
 
 const $tasks = TaskTree.tree();
 
@@ -21,20 +21,20 @@ export interface ConfigOptions extends Option {
     provider?: ProviderName;
     ignore?: {
         authors?: string[];
-        commits?: string[];
+        types?: string[];
+        scopes?: string[];
+        subjects?: string[];
     };
     [key: string]: Option | OptionValue;
 }
 
-// TODO: refactor
 export default class Config {
     public static FILE_NAME = '.changelog.yaml';
 
     public readonly plugins: readonly string[] = [];
     public readonly options: Option;
     public readonly provider: ProviderName;
-    public readonly ignoreAuthors: string[] = [];
-    public readonly ignoreCommits: string[] = [];
+    public readonly filters: Map<FilterType, string[]> = new Map();
 
     private types: Map<string, Level> = new Map();
 
@@ -67,13 +67,10 @@ export default class Config {
         }
 
         if (typeof ignore === 'object') {
-            if (Array.isArray(ignore.authors)) {
-                this.ignoreAuthors = [...new Set(ignore.authors)].filter(Boolean);
-            }
-
-            if (Array.isArray(ignore.commits)) {
-                this.ignoreCommits = [...new Set(ignore.commits)].filter(Boolean);
-            }
+            this.addFilter(ignore.authors, FilterType.AuthorLogin);
+            this.addFilter(ignore.types, FilterType.CommitType);
+            this.addFilter(ignore.scopes, FilterType.CommitScope);
+            this.addFilter(ignore.subjects, FilterType.CommitSubject);
         }
 
         if (Array.isArray(defaultConfig.plugins) && Array.isArray(config.plugins)) {
@@ -96,6 +93,12 @@ export default class Config {
 
     public getLevel(type: string): Level {
         return Key.inMap(type, this.types) || Level.Patch;
+    }
+
+    private addFilter(list: string[] | undefined, type: FilterType): void {
+        if (Array.isArray(list)) {
+            this.filters.set(type, [...new Set(list)].filter(Boolean));
+        }
     }
 
     private addTypes(list: string[] | undefined, level: Level): void {

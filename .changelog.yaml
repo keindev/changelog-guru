@@ -40,7 +40,6 @@ scopes:
         core: Core
         theme: Themes
         api: API
-        deps: Updated dependencies
 sections:
     - Bug Fixes: [fix]
     - Features: [feat]
@@ -50,4 +49,6 @@ sections:
     - Reverts: [revert]
 ignore:
     authors: ['dependabot-preview[bot]']
-    commits: ['merge']
+    types: ['build']
+    scopes: ['deps', 'deps-dev']
+    subjects: ['merge']
