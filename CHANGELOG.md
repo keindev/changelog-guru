@@ -33,6 +33,7 @@
 ### Subsections & Groups
 - **[Section]** Added new SectionBlock type - Group [`e1e837c`](https://github.com/keindev/changelog-guru/commit/e1e837ccf41fd543af77bf2595bca97adfecb0d7)
 ### Others
+- **[Filters]** Add commit and author filter [`c32e377`](https://github.com/keindev/changelog-guru/commit/c32e37721cfb746a52a9fcb05b2591e250229677)
 - **[Ignore]** Add ignore rules for authors [`d72de85`](https://github.com/keindev/changelog-guru/commit/d72de850a7c67c3c0f81e0f754df7167ad4a422e)
 - **[Plugins]** Added Sign plugin [`18cb21e`](https://github.com/keindev/changelog-guru/commit/18cb21e45693d68e6cc499aac72882d91161fac2)
 - **[Plugins]** Added Sign plugin parse method [`3a5fb46`](https://github.com/keindev/changelog-guru/commit/3a5fb46755f9f12dd38142187f88eac7d3b81a99)

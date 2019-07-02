@@ -4,7 +4,7 @@ import Reader from './io/reader';
 import Writer from './io/writer';
 import Provider, { ProviderName } from './providers/provider';
 import GitHubProvider from './providers/github-provider';
-import Config, { ConfigOptions } from './entities/config';
+import { Config } from './entities/config';
 import Package from './entities/package';
 
 dotenv.config();
@@ -16,26 +16,28 @@ export default class Changelog {
     private pkg: Package;
     private reader: Reader | undefined;
 
-    public constructor(options?: ConfigOptions) {
+    public constructor() {
         const task = $tasks.add('Reading configuration files');
 
-        this.config = new Config(options);
+        this.config = new Config();
         this.pkg = new Package();
         this.reader = this.getReader();
 
-        if (!this.reader) task.fail(`Provider or Reader is not specified (${this.config.provider})`);
+        if (!this.reader) task.fail(`Provider or Reader is not specified (${this.config.getProvider()})`);
 
         task.complete();
     }
 
     public async generate(): Promise<void> {
-        const { reader } = this;
+        const { reader, config } = this;
 
         if (reader) {
+            await config.load();
+
             const state = await reader.read();
             const writer = new Writer(this.pkg);
 
-            await state.modify(this.config);
+            await state.modify(config);
             await writer.write(state);
         }
     }
@@ -45,7 +47,7 @@ export default class Changelog {
         let provider: Provider | undefined;
         let reader: Reader | undefined;
 
-        if (config.provider === ProviderName.GitHub) provider = new GitHubProvider(this.pkg.url);
+        if (config.getProvider() === ProviderName.GitHub) provider = new GitHubProvider(this.pkg.url);
         if (provider) reader = new Reader(provider);
 
         return reader;

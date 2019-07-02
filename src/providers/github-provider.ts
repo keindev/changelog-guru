@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import Octokit from '@octokit/rest';
 import { TaskTree } from 'tasktree-cli';
 import Provider from './provider';
@@ -38,29 +37,27 @@ export default class GitHubProvider extends Provider {
             per_page: GitHubProvider.PAGE_SIZE,
         });
 
-        task.complete(`Page #${page.toString()} loaded (${chalk.bold(commits.length.toString())} commits)`);
+        task.complete(`Page #${page.toString()} loaded (${commits.length.toString()} commits)`);
 
-        return commits.map(
-            (response): [Commit, Author] => {
-                const author = this.parseAuthor(response.author);
-                const {
-                    commit: {
-                        message,
-                        author: { date: timestamp },
-                    },
-                    html_url: url,
-                    sha,
-                } = response;
-                const commit = new Commit(sha, {
-                    timestamp: new Date(timestamp).getTime(),
-                    author: author.login,
+        return commits.map((response): [Commit, Author] => {
+            const author = this.parseAuthor(response.author);
+            const {
+                commit: {
                     message,
-                    url,
-                });
+                    author: { date: timestamp },
+                },
+                html_url: url,
+                sha,
+            } = response;
+            const commit = new Commit(sha, {
+                timestamp: new Date(timestamp).getTime(),
+                author: author.login,
+                message,
+                url,
+            });
 
-                return [commit, author];
-            }
-        );
+            return [commit, author];
+        });
     }
 
     public async getLatestReleaseDate(): Promise<string> {

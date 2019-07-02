@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
 import { TaskTree } from 'tasktree-cli';
@@ -51,9 +50,9 @@ export default class Package {
 
             await writePkg({ version: newVersion });
 
-            task.complete(`Package version updated to ${chalk.bold(newVersion)}`);
+            task.complete(`Package version updated to ${newVersion}`);
         } else {
-            task.fail(`New package version [${chalk.bold(version)}] is invalid or less (see https://semver.org/)`);
+            task.fail(`New package version [${version}] is invalid or less (see https://semver.org/)`);
         }
     }
 }

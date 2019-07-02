@@ -1,12 +1,11 @@
 import path from 'path';
-import chalk from 'chalk';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
 import Author from './author';
 import Commit from './commit';
 import Plugin from './plugin';
 import Key from '../utils/key';
-import Config, { ConfigOptions } from './config';
+import { Config, ConfigOptions } from './config';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import Version from '../utils/version';
@@ -109,11 +108,12 @@ export default class State implements Context {
     }
 
     public async modify(config: Config): Promise<void> {
-        const { plugins, options } = config;
         const task = $tasks.add('Modify release state');
+        const plugins = config.getPlugins();
+        const options = config.getOptions();
 
-        this.ignoreAuthors(config.filters);
-        this.ignoreCommits(config.filters);
+        this.ignoreAuthors(config);
+        this.ignoreCommits(config);
         this.updateCommitsTypes(config);
 
         await Promise.all(plugins.map((p): Promise<void> => this.importPlugin(p, options, task)));
@@ -123,22 +123,20 @@ export default class State implements Context {
         task.complete();
     }
 
-    private ignoreAuthors(filters: Map<FilterType, string[]>): void {
-        const list = filters.get(FilterType.AuthorLogin);
+    private ignoreAuthors(config: Config): void {
+        const list = config.getFilters(FilterType.AuthorLogin);
 
-        if (Array.isArray(list)) {
-            this.authors.forEach((author): void => {
-                if (list.indexOf(author.login) >= 0) {
-                    author.ignore();
-                }
-            });
-        }
+        this.authors.forEach((author): void => {
+            if (list.indexOf(author.login) >= 0) {
+                author.ignore();
+            }
+        });
     }
 
-    private ignoreCommits(filters: Map<FilterType, string[]>): void {
-        const types = filters.get(FilterType.CommitType) || [];
-        const scopes = filters.get(FilterType.CommitScope) || [];
-        const subjects = filters.get(FilterType.CommitSubject) || [];
+    private ignoreCommits(config: Config): void {
+        const types = config.getFilters(FilterType.CommitType);
+        const scopes = config.getFilters(FilterType.CommitScope);
+        const subjects = config.getFilters(FilterType.CommitSubject);
 
         this.commits.forEach((commit): void => {
             if (
@@ -195,7 +193,7 @@ export default class State implements Context {
         const version = Version.update(this.version, ...changes);
 
         this.setVersion(version);
-        task.log(`Release version: ${chalk.bold(version)}`);
+        task.log(`Release version: ${version}`);
         task.complete();
     }
 
@@ -203,11 +201,11 @@ export default class State implements Context {
         const module: Importable<Plugin, Context> = await import(path.resolve(__dirname, '../plugins', `${name}.js`));
         const PluginClass: Constructable<Plugin, Context> = module.default;
 
-        task.log(`${chalk.bold(name)} plugin imported`);
+        task.log(`${name} plugin imported`);
 
         if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
             const plugin = new PluginClass(this);
-            const subtask = task.add(`Changing state with ${chalk.bold(PluginClass.name)}`);
+            const subtask = task.add(`Changing state with ${PluginClass.name}`);
             const commits = [...this.commits.values()];
 
             if (plugin instanceof Plugin) {
@@ -216,10 +214,10 @@ export default class State implements Context {
 
                 subtask.complete();
             } else {
-                subtask.fail(`${chalk.bold(PluginClass.name)} is not Plugin class`);
+                subtask.fail(`${PluginClass.name} is not Plugin class`);
             }
         } else {
-            task.fail(`${chalk.bold(PluginClass.name)} is not constructor`);
+            task.fail(`${PluginClass.name} is not constructor`);
         }
     }
 }

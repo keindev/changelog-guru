@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { TaskTree } from 'tasktree-cli';
 import Provider from '../providers/provider';
 import State from '../entities/state';
@@ -18,9 +17,9 @@ export default class Reader {
         const state: State = new State(version);
         const date: string = await this.provider.getLatestReleaseDate();
 
-        task.log(`Last release date: ${chalk.bold(date)}`);
-        task.log(`Last release version: ${chalk.bold(version || '-')}`);
-        task.log(`Release version: ${chalk.bold(state.getVersion())}`);
+        task.log(`Last release date: ${date}`);
+        task.log(`Last release version: ${version || '-'}`);
+        task.log(`Release version: ${state.getVersion()}`);
         await this.readCommits(date, state);
         task.complete(`Release information`);
 

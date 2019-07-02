@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import { TaskTree } from 'tasktree-cli';
 import findupSync from 'findup-sync';
 import Commit from '../entities/commit';
@@ -39,15 +38,15 @@ export default abstract class Provider {
             if (match) {
                 [, this.branch] = match;
             } else {
-                task.fail(`${chalk.bold(pattern)} - ref(s) SHA not found`);
+                task.fail(`${pattern} - ref(s) SHA not found`);
             }
         } else {
-            task.fail(`${chalk.bold(pattern)} - does not exist`);
+            task.fail(`${pattern} - does not exist`);
         }
 
-        task.log(`Repository: ${chalk.bold(this.repository)}`);
-        task.log(`Branch: ${chalk.bold(this.branch)}`);
-        task.log(`Owner: ${chalk.bold(this.owner)}`);
+        task.log(`Repository: ${this.repository}`);
+        task.log(`Branch: ${this.branch}`);
+        task.log(`Owner: ${this.owner}`);
         task.complete('Git provider initialized:');
     }
 

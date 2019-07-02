@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
 import State from '../entities/state';
@@ -96,13 +95,13 @@ export default class Writer {
         const { pkg } = this;
         const v1 = state.getVersion();
         const v2 = pkg.getVersion();
-        const subtask = task.add(`Update package version to ${chalk.bold(v1)}`);
+        const subtask = task.add(`Update package version to ${v1}`);
 
         if (!v2 || Version.greaterThan(v1, v2)) {
             await pkg.update(v1);
             subtask.complete();
         } else {
-            subtask.skip(`Current package version is greater (${chalk.bold(v2)})`);
+            subtask.skip(`Current package version is greater (${v2})`);
         }
     }
 }
