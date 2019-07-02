@@ -1,0 +1,52 @@
+---
+provider: github
+plugins: [marker, scope, section]
+levels:
+    major:
+        - break
+    minor:
+        - feat
+    patch:
+        - fix
+        - chore
+        - refactor
+        - test
+        - docs
+        - build
+        - types
+        - style
+        - workflow
+        - perf
+        - revert
+
+# List of avaliable markers
+markers:
+    # !important - place a commit title to special section on top of changelog
+    important: Important Internal Changes
+    # !deprecated - place a commit title to special section with deprecated propertyes
+    deprecated: DEPRECATIONS
+    # !break - indicates major changes breaking backward compatibility
+    break: BREAKING CHANGES
+    # !hide - hide a commit
+    hide: Hidden commits
+    # !group(NAME) - creates a group of commits with the <NAME>
+    group: Grouped commit
+# list of major scopes
+scopes:
+    only: false
+    list:
+        core: Core
+        theme: Themes
+        api: API
+sections:
+    - Bug Fixes: [fix]
+    - Features: [feat]
+    - Internal сhanges: [types, workflow, build, test, chore, docs]
+    - Performance Improvements: [perf]
+    - Code Refactoring: [refactor]
+    - Reverts: [revert]
+ignore:
+    authors: ['dependabot-preview[bot]']
+    types: ['build']
+    scopes: ['deps', 'deps-dev']
+    subjects: ['merge']
