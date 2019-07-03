@@ -24,28 +24,30 @@ export default class ScopePlugin extends Plugin {
             this.onlyConfigured = !!only;
 
             if (typeof list === 'object') {
-                Object.keys(list).forEach(
-                    (name: string): void => {
-                        const title = list[name];
+                Object.keys(list).forEach((name: string): void => {
+                    const title = list[name];
 
-                        if (typeof title === 'string' && !this.scopes.has(name)) {
-                            this.scopes.set(Key.unify(name), title);
-                        }
+                    if (typeof title === 'string' && !this.scopes.has(name)) {
+                        this.scopes.set(Key.unify(name), title);
                     }
-                );
+                });
             }
         }
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const scope: string | undefined = commit.getScope();
+        const commitScope: string | undefined = commit.getScope();
 
-        if (scope) {
+        if (commitScope) {
             const { scopes, onlyConfigured } = this;
-            let accent = Key.inMap(scope, scopes);
+            let accent: string | undefined;
 
-            if (!accent && !onlyConfigured) accent = scope;
-            if (accent) commit.addAccent(accent);
+            commitScope.split(',').forEach((scope): void => {
+                accent = Key.inMap(scope, scopes);
+
+                if (!accent && !onlyConfigured) accent = scope;
+                if (accent) commit.addAccent(accent);
+            });
         }
     }
 }

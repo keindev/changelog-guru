@@ -10,6 +10,7 @@ import Markdown from '../utils/markdown';
 import Commit from '../entities/commit';
 import Author from '../entities/author';
 import { Status } from '../utils/enums';
+import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
@@ -48,12 +49,31 @@ export default class Writer {
         }
 
         if (commits.length) {
+            const uniqueList: Map<string, Commit | Commit[]> = new Map();
+            let mirrors: Commit | Commit[] | undefined;
+
+            commits
+                .sort(Commit.compare)
+                .filter((commit): boolean => !commit.hasStatus(Status.Hidden))
+                .forEach((commit): void => {
+                    mirrors = Key.inMap(commit.subject, uniqueList);
+
+                    if (mirrors) {
+                        if (Array.isArray(mirrors)) {
+                            mirrors.push(commit);
+                        } else {
+                            uniqueList.set(mirrors.subject, [mirrors, commit]);
+                        }
+                    } else {
+                        uniqueList.set(commit.subject, commit);
+                    }
+                });
+
             result.push(
                 Markdown.list(
-                    commits
-                        .sort(Commit.compare)
-                        .filter((commit): boolean => !commit.hasStatus(Status.Hidden))
-                        .map(Writer.renderCommit)
+                    [...uniqueList.values()].map((commit): string => {
+                        return Array.isArray(commit) ? Writer.renderCommitMirrors(commit) : Writer.renderCommit(commit);
+                    })
                 )
             );
         }
@@ -61,12 +81,34 @@ export default class Writer {
         return result.join(Writer.LINE_DELIMITER);
     }
 
+    private static renderCommitMirrors(commits: Commit[]): string {
+        const result: string[] = [];
+        const accents: Set<string> = new Set();
+        const links: string[] = [];
+
+        commits.forEach((commit): void => {
+            commit.getAccents().forEach((accent): void => {
+                accents.add(accent);
+            });
+
+            links.push(Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url));
+        });
+
+        if (accents.size) {
+            result.push(...[...accents.values()].map((a): string => Markdown.bold(`[${Markdown.capitalize(a)}]`)));
+        }
+
+        result.push(Markdown.capitalize(commits[0].subject), ' ', links.join(' '));
+
+        return result.join('');
+    }
+
     private static renderCommit(commit: Commit): string {
         const result: string[] = [];
         const accents = commit.getAccents();
 
         if (accents.length) {
-            result.push(...accents.map((a): string => Markdown.bold(`[${Markdown.capitalize(a)}]`)));
+            result.push(Markdown.bold(`[${accents.map((a): string => Markdown.capitalize(a)).join(', ')}]`));
         }
 
         result.push(
