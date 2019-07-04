@@ -105,8 +105,8 @@ export default class Commit {
     public setStatus(status: Status): void {
         this.status = this.status | status;
 
-        if (this.hasStatus(Status.BreakingChanges)) this.setLevel(Level.Major);
         if (this.hasStatus(Status.Deprecated)) this.setLevel(Level.Minor);
+        if (this.hasStatus(Status.BreakingChanges)) this.setLevel(Level.Major);
     }
 
     public addAccent(text: string): void {
