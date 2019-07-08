@@ -70,6 +70,7 @@ export default class Section {
         }
     }
 
+    // FIXME: consider subsections!
     public getPriority(): number {
         if (this.priority === Priority.Default) {
             this.priority = this.getCommits().reduce(
