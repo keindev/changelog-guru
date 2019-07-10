@@ -19,7 +19,7 @@ export default abstract class Provider {
 
     protected repository: string;
     protected owner: string;
-    protected branch: string = '';
+    protected branch: string = 'master';
 
     public constructor(url: string) {
         const pathname: string[] = new URL(url).pathname.split('/');
@@ -38,10 +38,10 @@ export default abstract class Provider {
             if (match) {
                 [, this.branch] = match;
             } else {
-                task.fail(`${pattern} - ref(s) SHA not found`);
+                task.warn(`${pattern} - ref(s) SHA not found`);
             }
         } else {
-            task.fail(`${pattern} - does not exist`);
+            task.warn(`${pattern} - does not exist`);
         }
 
         task.log(`Repository: ${this.repository}`);
