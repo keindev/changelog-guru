@@ -31,8 +31,6 @@ export default abstract class Provider {
         const filePath = findupSync(pattern, { cwd: __dirname });
         const task = $tasks.add('Initializing git provider');
 
-        console.log(filePath);
-
         if (filePath && fs.existsSync(filePath)) {
             const buffer: Buffer = fs.readFileSync(filePath);
             const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
@@ -40,11 +38,9 @@ export default abstract class Provider {
             if (match) {
                 [, this.branch] = match;
             } else {
-                console.log('ref(s) SHA not found');
                 task.fail(`${pattern} - ref(s) SHA not found`);
             }
         } else {
-            console.log('does not exist');
             task.fail(`${pattern} - does not exist`);
         }
 
