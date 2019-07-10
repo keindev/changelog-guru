@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Config Create & load 1`] = `
+Object {
+  "ignore": Object {
+    "authors": Array [
+      "dependabot-preview[bot]",
+    ],
+    "scopes": Array [
+      "deps",
+      "deps-dev",
+    ],
+    "subjects": Array [
+      "merge",
+    ],
+    "types": Array [
+      "build",
+    ],
+  },
+  "levels": Object {
+    "major": Array [
+      "break",
+    ],
+    "minor": Array [
+      "feat",
+    ],
+    "patch": Array [
+      "fix",
+      "chore",
+      "refactor",
+      "test",
+      "docs",
+      "build",
+      "types",
+      "style",
+      "workflow",
+      "perf",
+      "revert",
+    ],
+  },
+  "markers": Object {
+    "break": "BREAKING CHANGES",
+    "deprecated": "DEPRECATIONS",
+    "group": "Grouped commit",
+    "hide": "Hidden commits",
+    "important": "Important Internal Changes",
+  },
+  "plugins": Array [
+    "marker",
+    "scope",
+    "section",
+  ],
+  "provider": "github",
+  "scopes": Object {
+    "list": Object {
+      "api": "API",
+      "core": "Core",
+      "theme": "Themes",
+    },
+    "only": false,
+  },
+  "sections": Array [
+    Object {
+      "Bug Fixes": Array [
+        "fix",
+      ],
+    },
+    Object {
+      "Features": Array [
+        "feat",
+      ],
+    },
+    Object {
+      "Internal сhanges": Array [
+        "types",
+        "workflow",
+        "build",
+        "test",
+        "chore",
+        "docs",
+      ],
+    },
+    Object {
+      "Performance Improvements": Array [
+        "perf",
+      ],
+    },
+    Object {
+      "Code Refactoring": Array [
+        "refactor",
+      ],
+    },
+    Object {
+      "Reverts": Array [
+        "revert",
+      ],
+    },
+  ],
+}
+`;
