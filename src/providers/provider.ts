@@ -28,7 +28,7 @@ export default abstract class Provider {
         this.owner = pathname.pop() as string;
 
         const pattern = `.${Provider.TYPE}/HEAD`;
-        const filePath = findupSync(pattern, { cwd: __dirname });
+        const filePath = findupSync(pattern, { cwd: process.cwd() });
         const task = $tasks.add('Initializing git provider');
 
         if (filePath && fs.existsSync(filePath)) {
