@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
@@ -198,26 +199,30 @@ export default class State implements Context {
     }
 
     private async importPlugin(name: string, options: ConfigOptions, task: Task): Promise<void> {
-        const module: Importable<Plugin, Context> = await import(path.resolve(__dirname, '../plugins', `${name}.js`));
-        const PluginClass: Constructable<Plugin, Context> = module.default;
+        const filePath = path.resolve(__dirname, '../plugins', `${name}.js`);
 
-        task.log(`${name} plugin imported`);
+        if (fs.existsSync(filePath)) {
+            const module: Importable<Plugin, Context> = await import(filePath);
+            const PluginClass: Constructable<Plugin, Context> = module.default;
 
-        if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
-            const plugin = new PluginClass(this);
-            const subtask = task.add(`Changing state with ${PluginClass.name}`);
-            const commits = [...this.commits.values()];
+            task.log(`${name} plugin imported`);
 
-            if (plugin instanceof Plugin) {
-                await plugin.init(options);
-                await Promise.all(commits.map((commit): Promise<void> => plugin.parse(commit, subtask)));
+            if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
+                const plugin = new PluginClass(this);
+                const subtask = task.add(`Changing state with ${PluginClass.name}`);
+                const commits = [...this.commits.values()];
 
-                subtask.complete();
+                if (plugin instanceof Plugin) {
+                    await plugin.init(options);
+                    await Promise.all(commits.map((commit): Promise<void> => plugin.parse(commit, subtask)));
+
+                    subtask.complete();
+                } else {
+                    subtask.fail(`${PluginClass.name} is not Plugin class`);
+                }
             } else {
-                subtask.fail(`${PluginClass.name} is not Plugin class`);
+                task.fail(`${PluginClass.name} is not constructor`);
             }
-        } else {
-            task.fail(`${PluginClass.name} is not constructor`);
         }
     }
 }
