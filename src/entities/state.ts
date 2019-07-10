@@ -223,6 +223,8 @@ export default class State implements Context {
             } else {
                 task.fail(`${PluginClass.name} is not constructor`);
             }
+        } else {
+            task.skip(`Plugin ${name} not found`);
         }
     }
 }
