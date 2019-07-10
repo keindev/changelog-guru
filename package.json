@@ -40,7 +40,7 @@
         "node": ">=10.0.0"
     },
     "dependencies": {
-        "@octokit/rest": "^16.28.2",
+        "@octokit/rest": "^16.28.3",
         "commander": "^2.20.0",
         "cosmiconfig": "^5.2.1",
         "dotenv": "^8.0.0",
@@ -55,7 +55,7 @@
         "@types/dotenv": "^6.1.1",
         "@types/findup-sync": "^2.0.2",
         "@types/jest": "^24.0.15",
-        "@types/node": "^12.6.1",
+        "@types/node": "^12.6.2",
         "@types/read-pkg": "^4.0.0",
         "@types/semver": "^6.0.1",
         "@types/write-pkg": "^3.1.0",
