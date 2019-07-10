@@ -7,9 +7,9 @@ export enum Status {
 }
 
 export enum Level {
-    Major = 0,
-    Minor = 1,
-    Patch = 2,
+    Major = 1,
+    Minor = 2,
+    Patch = 3,
 }
 
 export enum Priority {

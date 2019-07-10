@@ -188,7 +188,7 @@ export default class State implements Context {
         const changes: [number, number, number] = [0, 0, 0];
 
         this.commits.forEach((c): void => {
-            changes[c.getLevel()]++;
+            changes[c.getLevel() - 1]++;
         });
 
         const version = Version.update(this.version, ...changes);
