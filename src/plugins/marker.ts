@@ -20,7 +20,7 @@ enum Marker {
     Important = 'important',
 }
 
-interface Config extends ConfigOptions {
+export interface Config extends ConfigOptions {
     markers: Option;
 }
 

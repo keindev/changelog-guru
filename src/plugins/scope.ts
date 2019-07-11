@@ -4,7 +4,7 @@ import { ConfigOptions } from '../entities/config';
 import { Option } from '../utils/types';
 import Key from '../utils/key';
 
-interface Config extends ConfigOptions {
+export interface Config extends ConfigOptions {
     scopes: {
         only: boolean | undefined;
         list: Option;
