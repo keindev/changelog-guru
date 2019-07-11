@@ -2,13 +2,11 @@ import Section, { Position } from '../../src/entities/section';
 import { Priority, Compare } from '../../src/utils/enums';
 import Commit from '../../src/entities/commit';
 
-const TITLE = 'test title';
-
 describe('Section', (): void => {
     it('Create', (): void => {
-        const section = new Section(TITLE, Position.Body);
+        const section = new Section('title', Position.Body);
 
-        expect(section.title).toBe(TITLE);
+        expect(section.title).toBe('title');
         expect(section.getPosition()).toBe(Position.Body);
         expect(section.getPriority()).toBe(Priority.Default);
         expect(section.getCommits().length).toBe(0);
@@ -17,7 +15,7 @@ describe('Section', (): void => {
     });
 
     it('Change position', (): void => {
-        const section = new Section(TITLE, Position.Body);
+        const section = new Section('title', Position.Body);
 
         section.setPosition(Position.Body);
         expect(section.getPosition()).toBe(Position.Body);
@@ -36,8 +34,8 @@ describe('Section', (): void => {
     });
 
     it('Assign and remove entities', (): void => {
-        const section = new Section(TITLE, Position.Body);
-        const subsection = new Section(TITLE, Position.Body);
+        const section = new Section('title 1', Position.Body);
+        const subsection = new Section('title 2', Position.Body);
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 0,
             message: `feat(test): message`,

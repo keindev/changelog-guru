@@ -4,7 +4,6 @@ import Author from '../../src/entities/author';
 import { Config } from '../../src/entities/config';
 import { Position } from '../../src/entities/section';
 
-const VERSION = '1.0.0';
 const config = new Config();
 const getAuthor = (id: number, login: string): Author =>
     new Author(id, {
@@ -23,7 +22,7 @@ const getCommit = (id: number, message: string, author: Author): Commit =>
 describe('State', (): void => {
     it('Create', (done): void => {
         config.load().then((): void => {
-            const state = new State(VERSION);
+            const state = new State('1.0.0');
             const author1 = getAuthor(0, 'dev1');
             const author2 = getAuthor(1, 'dev2');
             const commit = getCommit(2, 'test(State): message3', author2);
@@ -40,7 +39,7 @@ describe('State', (): void => {
 
             expect(state.getAuthors()).toStrictEqual([author1, author2, ignoredAuthor]);
             expect(state.getSections()).toStrictEqual([section, emptySection]);
-            expect(state.getVersion()).toBe(VERSION);
+            expect(state.getVersion()).toBe('1.0.0');
             expect(ignoredAuthor.isIgnored()).toBeFalsy();
             expect(ignoredCommit.isIgnored()).toBeFalsy();
 
@@ -55,7 +54,7 @@ describe('State', (): void => {
     });
 
     it('Find section', (): void => {
-        const state = new State(VERSION);
+        const state = new State('1.1.1');
         const title = 'header section';
         const section = state.addSection(title, Position.Header);
 

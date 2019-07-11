@@ -1,36 +1,32 @@
-import Commit, { CommitOptions } from '../../src/entities/commit';
+import Commit from '../../src/entities/commit';
 import { Level, Priority, Status, Compare } from '../../src/utils/enums';
 
-const HASH = 'b816518030dace1b91838ae0abd56fa88eba19f0';
-const TYPE = 'feat';
-const SCOPE = 'test';
-const SUBJECT = 'subject';
-const MESSAGE = `${SUBJECT}\n\nbody\n\nfooter`;
-const OPTIONS: CommitOptions = {
-    timestamp: 0,
-    message: `${TYPE}(${SCOPE}): ${MESSAGE}`,
-    url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-    author: 'keindev',
-};
 let commit: Commit;
 
 describe('Commit', (): void => {
     beforeEach((): void => {
-        commit = new Commit(HASH, OPTIONS);
+        commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
+            timestamp: 21,
+            message: `feat(Jest): subject\n\nbody\n\nfooter`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+            author: 'keindev',
+        });
     });
 
     it('Create', (): void => {
-        expect(commit.hash).toBe(HASH);
-        expect(commit.timestamp).toBe(OPTIONS.timestamp);
-        expect(commit.url).toBe(OPTIONS.url);
-        expect(commit.author).toBe(OPTIONS.author);
-        expect(commit.subject).toBe(SUBJECT);
+        expect(commit.hash).toBe('b816518030dace1b91838ae0abd56fa88eba19f0');
+        expect(commit.timestamp).toBe(21);
+        expect(commit.url).toBe(
+            'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0'
+        );
+        expect(commit.author).toBe('keindev');
+        expect(commit.subject).toBe('subject');
         expect(commit.body.length).toBe(4);
         expect(commit.body).toStrictEqual(['', 'body', '', 'footer']);
         expect(commit.getLevel()).toBe(Level.Patch);
         expect(commit.getPriority()).toBe(Priority.Default);
-        expect(commit.getType()).toBe(TYPE);
-        expect(commit.getScope()).toBe(SCOPE);
+        expect(commit.getType()).toBe('feat');
+        expect(commit.getScope()).toBe('Jest');
         expect(commit.isIgnored()).toBeFalsy();
         expect(commit.getShortHash()).toBe('b816518');
     });
@@ -111,7 +107,7 @@ describe('Commit', (): void => {
         expect(commit.getAccents()).toStrictEqual(['test 1', 'test 2']);
     });
 
-    it('Ignore', (): void => {
+    it('Ignore commit', (): void => {
         expect(commit.isIgnored()).toBeFalsy();
 
         commit.ignore();
@@ -120,17 +116,27 @@ describe('Commit', (): void => {
     });
 
     it('Compare commits', (): void => {
-        const commit1 = new Commit(HASH, OPTIONS);
-        const commit2 = new Commit(HASH, OPTIONS);
-        const commit3 = new Commit(HASH, {
+        const commit1 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 0,
-            message: `${TYPE}: ${MESSAGE}`,
+            message: `feat(Test): subject\n\nbody\n\nfooter`,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
-        const commit4 = new Commit(HASH, {
+        const commit2 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
+            timestamp: 0,
+            message: `feat(Test): subject\n\nbody\n\nfooter`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+            author: 'keindev',
+        });
+        const commit3 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
+            timestamp: 0,
+            message: `feat: subject\n\nbody\n\nfooter`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+            author: 'keindev',
+        });
+        const commit4 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
             timestamp: 1,
-            message: `${TYPE}: ${MESSAGE}`,
+            message: `feat: subject\n\nbody\n\nfooter`,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
