@@ -26,6 +26,7 @@ describe('Marker', (): void => {
     });
 
     it('!important marker', (): void => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const section: Section = context.sections.get('Important Internal Changes') as any;
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 0,
@@ -46,6 +47,7 @@ describe('Marker', (): void => {
     });
 
     it('!deprecated marker', (): void => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const section: Section = context.sections.get('DEPRECATIONS') as any;
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
             timestamp: 0,
@@ -66,6 +68,7 @@ describe('Marker', (): void => {
     });
 
     it('!break marker', (): void => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const section: Section = context.sections.get('BREAKING CHANGES') as any;
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
             timestamp: 0,
