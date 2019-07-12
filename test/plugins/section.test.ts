@@ -16,7 +16,7 @@ describe('SectionPlugin', (): void => {
             expect(context.sections.size).toBe(6);
             expect(context.sections.has('Bug Fixes')).toBeTruthy();
             expect(context.sections.has('Features')).toBeTruthy();
-            expect(context.sections.has('Internal сhanges')).toBeTruthy();
+            expect(context.sections.has('Internal changes')).toBeTruthy();
             expect(context.sections.has('Performance Improvements')).toBeTruthy();
             expect(context.sections.has('Code Refactoring')).toBeTruthy();
             expect(context.sections.has('Reverts')).toBeTruthy();
