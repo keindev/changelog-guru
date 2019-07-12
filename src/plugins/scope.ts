@@ -46,7 +46,7 @@ export default class ScopePlugin extends Plugin {
                 accent = Key.inMap(scope, scopes);
 
                 if (!accent && !onlyConfigured) accent = scope;
-                if (accent) commit.addAccent(accent);
+                if (accent) commit.addAccent(accent.trim());
             });
         }
     }
