@@ -28,7 +28,7 @@ describe('Marker', (): void => {
     it('!important marker', (): void => {
         const section: Section = context.sections.get('Important Internal Changes') as any;
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
-            timestamp: 21,
+            timestamp: 0,
             message: `feat(Jest): subject\n\n!important`,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
             author: 'keindev',
@@ -48,7 +48,7 @@ describe('Marker', (): void => {
     it('!deprecated marker', (): void => {
         const section: Section = context.sections.get('DEPRECATIONS') as any;
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
-            timestamp: 21,
+            timestamp: 0,
             message: `feat(Jest): subject\n\n!deprecated`,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
             author: 'keindev',
@@ -68,7 +68,7 @@ describe('Marker', (): void => {
     it('!break marker', (): void => {
         const section: Section = context.sections.get('BREAKING CHANGES') as any;
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
-            timestamp: 21,
+            timestamp: 0,
             message: `feat(Jest): subject\n\n!break`,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f3',
             author: 'keindev',
@@ -87,7 +87,7 @@ describe('Marker', (): void => {
 
     it('!hide marker', (): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
-            timestamp: 21,
+            timestamp: 0,
             message: `feat(Jest): subject\n\n!hide`,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f4',
             author: 'keindev',
@@ -103,7 +103,7 @@ describe('Marker', (): void => {
 
     it('!group marker', (): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f5', {
-            timestamp: 21,
+            timestamp: 0,
             message: `feat(Jest): subject\n\n!group(Jest markers test)`,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f5',
             author: 'keindev',
