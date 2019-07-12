@@ -1,5 +1,5 @@
-import { TestContext } from '../mocks/context.mock';
-import { TestPlugin } from '../mocks/plugin.mock';
+import { TestContext } from '../__mocks__/context.mock';
+import { TestPlugin } from '../__mocks__/plugin.mock';
 
 describe('Plugin', (): void => {
     it('Create', (): void => {

@@ -1,6 +1,6 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Marker, { Config as MarkerConfig } from '../../src/plugins/marker';
-import { TestContext } from '../mocks/context.mock';
+import { TestContext } from '../__mocks__/context.mock';
 import { Config } from '../../src/entities/config';
 import Commit from '../../src/entities/commit';
 import { Status } from '../../src/utils/enums';

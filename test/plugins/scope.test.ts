@@ -1,5 +1,5 @@
 import Scope, { Config as ScopeConfig } from '../../src/plugins/scope';
-import { TestContext } from '../mocks/context.mock';
+import { TestContext } from '../__mocks__/context.mock';
 import { Config } from '../../src/entities/config';
 import Commit from '../../src/entities/commit';
 
