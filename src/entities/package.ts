@@ -1,22 +1,16 @@
-import chalk from 'chalk';
 import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
 import { TaskTree } from 'tasktree-cli';
-import { Option } from '../utils/types';
 import Version from '../utils/version';
 
 const $tasks = TaskTree.tree();
-
-export interface PackageInterface {
-    version: string;
-    repository: Option;
-}
 
 export default class Package {
     public readonly url: string;
 
     private version: string | undefined;
 
+    // TODO: refactor
     public constructor() {
         const task = $tasks.add('Reading package.json');
         const { version, repository } = readPkg.sync({ normalize: true });
@@ -56,9 +50,9 @@ export default class Package {
 
             await writePkg({ version: newVersion });
 
-            task.complete(`Package version updated to ${chalk.bold(newVersion)}`);
+            task.complete(`Package version updated to ${newVersion}`);
         } else {
-            task.fail(`New package version [${chalk.bold(version)}] is invalid or less (see https://semver.org/)`);
+            task.fail(`New package version [${version}] is invalid or less (see https://semver.org/)`);
         }
     }
 }

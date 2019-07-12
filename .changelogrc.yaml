@@ -1,7 +1,7 @@
 ---
 provider: github
 plugins: [marker, scope, section]
-types:
+levels:
     major:
         - break
     minor:
@@ -12,8 +12,6 @@ types:
         - refactor
         - test
         - docs
-        - ci
-        - cd
         - build
         - types
         - style
@@ -21,11 +19,11 @@ types:
         - perf
         - revert
 
-# List of avaliable markers
+# List of available markers
 markers:
     # !important - place a commit title to special section on top of changelog
     important: Important Internal Changes
-    # !deprecated - place a commit title to special section with deprecated propertyes
+    # !deprecated - place a commit title to special section with deprecated properties
     deprecated: DEPRECATIONS
     # !break - indicates major changes breaking backward compatibility
     break: BREAKING CHANGES
@@ -43,7 +41,12 @@ scopes:
 sections:
     - Bug Fixes: [fix]
     - Features: [feat]
-    - Internal сhanges: [types, workflow, ci, cd, build, test, chore, docs]
+    - Internal changes: [types, workflow, build, test, chore, docs]
     - Performance Improvements: [perf]
     - Code Refactoring: [refactor]
     - Reverts: [revert]
+ignore:
+    authors: ['dependabot-preview[bot]']
+    types: ['build']
+    scopes: ['deps', 'deps-dev']
+    subjects: ['merge']

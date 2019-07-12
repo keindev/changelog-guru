@@ -6,7 +6,7 @@ export enum Position {
     Body = 2,
     Footer = 3,
     Group = 4,
-    Subsection = 5
+    Subsection = 5,
 }
 
 export default class Section {
@@ -45,9 +45,13 @@ export default class Section {
     }
 
     public getCommits(sort: boolean = true): Commit[] {
-        const commits = [...this.commits.values()];
+        const commits = [...this.commits.values()].filter((commit): boolean => !commit.isIgnored());
 
         return sort ? commits.sort((a, b): number => a.timestamp - b.timestamp) : commits;
+    }
+
+    public isEmpty(): boolean {
+        return !this.sections.size && !this.commits.size;
     }
 
     public assign(entity: Commit | Section): void {
@@ -66,6 +70,7 @@ export default class Section {
         }
     }
 
+    // FIXME: consider subsections!
     public getPriority(): number {
         if (this.priority === Priority.Default) {
             this.priority = this.getCommits().reduce(

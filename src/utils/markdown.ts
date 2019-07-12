@@ -25,6 +25,10 @@ export default class Markdown {
         return `\`\`\`${lang} ${text} \`\`\``;
     }
 
+    public static wrap(text: string): string {
+        return `\`${text}\``;
+    }
+
     public static line(): string {
         return '---';
     }

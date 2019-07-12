@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import { TaskTree } from 'tasktree-cli';
 import findupSync from 'findup-sync';
 import Commit from '../entities/commit';
@@ -20,7 +19,7 @@ export default abstract class Provider {
 
     protected repository: string;
     protected owner: string;
-    protected branch: string = '';
+    protected branch: string = 'master';
 
     public constructor(url: string) {
         const pathname: string[] = new URL(url).pathname.split('/');
@@ -32,22 +31,22 @@ export default abstract class Provider {
         const filePath = findupSync(pattern, { cwd: process.cwd() });
         const task = $tasks.add('Initializing git provider');
 
-        if (fs.existsSync(filePath)) {
+        if (filePath && fs.existsSync(filePath)) {
             const buffer: Buffer = fs.readFileSync(filePath);
             const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
 
             if (match) {
                 [, this.branch] = match;
             } else {
-                task.fail(`${chalk.bold(pattern)} - ref(s) SHA not found`);
+                task.warn(`${pattern} - ref(s) SHA not found`);
             }
         } else {
-            task.fail(`${chalk.bold(pattern)} - does not exist`);
+            task.warn(`${pattern} - does not exist`);
         }
 
-        task.log(`Repository: ${chalk.bold(this.repository)}`);
-        task.log(`Branch: ${chalk.bold(this.branch)}`);
-        task.log(`Owner: ${chalk.bold(this.owner)}`);
+        task.log(`Repository: ${this.repository}`);
+        task.log(`Branch: ${this.branch}`);
+        task.log(`Owner: ${this.owner}`);
         task.complete('Git provider initialized:');
     }
 

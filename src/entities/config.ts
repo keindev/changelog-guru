@@ -1,99 +1,138 @@
-import fs from 'fs';
 import path from 'path';
-import yaml from 'js-yaml';
-import chalk from 'chalk';
+import cosmiconfig from 'cosmiconfig';
 import { TaskTree } from 'tasktree-cli';
 import { ProviderName } from '../providers/provider';
 import { Option, OptionValue } from '../utils/types';
 import Key from '../utils/key';
-import { Type } from '../utils/enums';
+import { Level, FilterType } from '../utils/enums';
 
 const $tasks = TaskTree.tree();
+const $explorer = cosmiconfig('changelog');
+
+export interface LevelsConfigOptions extends Option {
+    major?: string[];
+    minor?: string[];
+    patch?: string[];
+}
+
+export interface FiltersConfigOptions extends Option {
+    authors?: string[];
+    types?: string[];
+    scopes?: string[];
+    subjects?: string[];
+}
 
 export interface ConfigOptions extends Option {
     config?: string;
-    types?: {
-        major?: string[];
-        minor?: string[];
-        patch?: string[];
-    };
+    levels?: LevelsConfigOptions;
     plugins?: string[];
     provider?: ProviderName;
+    ignore?: FiltersConfigOptions;
     [key: string]: Option | OptionValue;
 }
 
-export default class Config {
-    public static FILE_NAME = '.changelog.yaml';
+export class Config {
+    public static DEFAULT = '.changelogrc.yaml';
 
-    public readonly plugins: readonly string[] = [];
-    public readonly options: Option;
-    public readonly provider: ProviderName;
+    private provider: ProviderName = ProviderName.GitHub;
+    private plugins: Set<string> = new Set();
+    private types: Map<string, Level> = new Map();
+    private filters: Map<FilterType, string[]> = new Map();
+    private options: Option = {};
 
-    private prefixes: Map<string, Type> = new Map();
+    public getProvider(): string {
+        return this.provider;
+    }
 
-    public constructor(options?: ConfigOptions) {
+    public getPlugins(): string[] {
+        return [...this.plugins.values()];
+    }
+
+    public getLevel(type: string): Level {
+        return Key.inMap(type, this.types) || Level.Patch;
+    }
+
+    public getFilters(type: FilterType): string[] {
+        return this.filters.get(type) || [];
+    }
+
+    public getOptions(): ConfigOptions {
+        return this.options;
+    }
+
+    public async load(): Promise<void> {
         const task = $tasks.add('Config initializing');
-        const defaultConfig = Config.load();
-        let config = Object.assign({}, defaultConfig, options || {});
-        let { config: filePath } = config;
+        const userConfig = await $explorer.search();
+        const defaultConfig = await $explorer.load(path.join(__dirname, '../../', Config.DEFAULT));
+        let options: ConfigOptions;
 
-        if (filePath) {
-            filePath = path.resolve(process.cwd(), filePath);
+        if (defaultConfig && !defaultConfig.isEmpty) {
+            if (userConfig && !userConfig.isEmpty) {
+                task.log(`Use config file: ${userConfig.filepath}`);
 
-            if (fs.existsSync(filePath)) {
-                config = Object.assign({}, config, Config.load(filePath));
-                task.log(`Used config file from: ${filePath}`);
+                options = Object.assign({}, defaultConfig.config, userConfig.config);
             } else {
-                task.warn(`File ${chalk.bold(Config.FILE_NAME)} is not exists`);
-                task.log(`Used default config`);
+                options = defaultConfig.config;
             }
+
+            this.loadProvider(options.provider);
+            this.loadPlugins(defaultConfig.config.plugins, options.plugins);
+            this.loadLevels(options.levels);
+            this.loadFilters(options.ignore);
+            this.options = new Proxy(options as Option, {
+                get(target, name, receiver): Option | undefined {
+                    return Reflect.get(target, name, receiver);
+                },
+            });
+
+            task.complete('Config initialized');
         } else {
-            task.log(`Used default config`);
+            task.fail('Default config file not found');
         }
-
-        const { types } = config;
-
-        if (typeof types === 'object') {
-            this.addPrefixes(types.major, Type.Major);
-            this.addPrefixes(types.minor, Type.Minor);
-            this.addPrefixes(types.patch, Type.Patch);
-        }
-
-        if (Array.isArray(defaultConfig.plugins) && Array.isArray(config.plugins)) {
-            this.plugins = [...new Set(defaultConfig.plugins.concat(config.plugins))];
-        }
-
-        this.provider = config.provider || ProviderName.GitHub;
-        this.options = new Proxy(config as Option, {
-            get(target, name, receiver): Option | undefined {
-                return Reflect.get(target, name, receiver);
-            },
-        });
-
-        task.complete('Config initialized');
     }
 
-    private static load(filePath: string = path.join(__dirname, '../../', Config.FILE_NAME)): ConfigOptions {
-        return yaml.safeLoad(fs.readFileSync(filePath, 'utf8')) || {};
+    private loadProvider(name?: ProviderName): void {
+        this.provider = typeof name === 'string' && name.length ? name : ProviderName.GitHub;
     }
 
-    public getType(prefix?: string): Type {
-        let type: Type | undefined;
+    private loadPlugins(core?: string[], extended?: string[]): void {
+        const getList = (list?: string[]): string[] => (Array.isArray(list) ? list : []);
 
-        if (prefix) type = Key.inMap(prefix, this.prefixes);
-
-        return type || Type.Patch;
+        this.plugins = new Set(getList(core).concat(getList(extended)));
     }
 
-    private addPrefixes(list: string[] | undefined, type: Type): void {
-        if (Array.isArray(list)) {
-            const { prefixes } = this;
+    private loadLevels(levels?: LevelsConfigOptions): void {
+        this.types = new Map();
 
-            list.forEach(
-                (prefix): void => {
-                    if (!prefixes.has(prefix)) prefixes.set(prefix, type);
+        if (typeof levels === 'object') {
+            const { types } = this;
+            const addLevel = (list: string[] | undefined, level: Level): void => {
+                if (Array.isArray(list)) {
+                    list.forEach((type): void => {
+                        if (!types.has(type) && type.length) types.set(type, level);
+                    });
                 }
-            );
+            };
+
+            addLevel(levels.major, Level.Major);
+            addLevel(levels.minor, Level.Minor);
+            addLevel(levels.patch, Level.Patch);
+        }
+    }
+
+    private loadFilters(rules?: FiltersConfigOptions): void {
+        this.filters = new Map();
+
+        if (typeof rules === 'object') {
+            const { filters } = this;
+            const addFilter = (list: string[] | undefined, type: FilterType): void => {
+                if (Array.isArray(list)) filters.set(type, [...new Set(list)].filter(Boolean));
+            };
+
+            addFilter(rules.authors, FilterType.AuthorLogin);
+            addFilter(rules.types, FilterType.CommitType);
+            addFilter(rules.scopes, FilterType.CommitScope);
+            addFilter(rules.subjects, FilterType.CommitSubject);
         }
     }
 }

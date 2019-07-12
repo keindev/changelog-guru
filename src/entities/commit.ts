@@ -1,4 +1,4 @@
-import { Type, Status, Priority, Compare } from '../utils/enums';
+import { Level, Status, Priority, Compare } from '../utils/enums';
 
 export interface CommitOptions {
     timestamp: number;
@@ -8,12 +8,10 @@ export interface CommitOptions {
 }
 
 export default class Commit {
-    public static PREFIX_DELIMITER = ',';
-    public static PREFIX_MAIN_INDEX = 0;
-    public static LINE_DELIMITER = '\n';
-    public static NAME_LENGTH = 7;
+    public static LINE_SEPARATOR = '\n';
+    public static SHORT_HASH_LENGTH = 7;
 
-    public readonly title: string;
+    public readonly subject: string = '';
     public readonly body: readonly string[];
     public readonly timestamp: number;
     public readonly url: string;
@@ -21,13 +19,14 @@ export default class Commit {
     public readonly author: string;
 
     private scope: string | undefined;
-    private prefixes: string[] = [];
+    private type: string | undefined;
     private accents: Set<string> = new Set();
-    private type: Type = Type.Patch;
-    private status: number = Status.Default;
+    private level = Level.Patch;
+    private status = Status.Default;
+    private ignored = false;
 
     public constructor(hash: string, options: CommitOptions) {
-        const lines = options.message.split(Commit.LINE_DELIMITER).map((l): string => l.trim());
+        const lines = options.message.split(Commit.LINE_SEPARATOR).map((l): string => l.trim());
         const header = lines.shift();
 
         this.hash = hash;
@@ -35,20 +34,22 @@ export default class Commit {
         this.body = lines;
         this.url = options.url;
         this.author = options.author;
-        this.title = '';
 
         if (header) {
-            const match = header.match(/(?<p>[a-z, ]+) {0,1}(\((?<s>[a-z,/:-]+)\)){0,1}(?=:):(?<t>[\S ]+)/i);
+            const match = header.match(
+                // <type>(<scope>): <subject>
+                /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
+            );
 
             if (match) {
                 const { groups } = match;
 
                 if (groups) {
-                    const { p: prefixes, s: scope, t: title } = groups;
+                    const { type, scope, subject } = groups;
 
-                    if (prefixes) this.prefixes.push(...prefixes.split(Commit.PREFIX_DELIMITER).filter(Boolean));
+                    if (type) this.type = type.trim();
                     if (scope) this.scope = scope.trim();
-                    if (title) this.title = title.trim();
+                    if (subject) this.subject = subject.trim();
                 }
             }
         }
@@ -67,27 +68,20 @@ export default class Commit {
         return result;
     }
 
-    public setType(type: Type): void {
-        if (type < this.type) this.type = type;
+    public getAccents(): string[] {
+        return [...this.accents.values()];
     }
 
-    public setStatus(status: Status): void {
-        this.status = this.status | status;
-
-        if (this.hasStatus(Status.BreakingChanges)) this.setType(Type.Major);
-        if (this.hasStatus(Status.Deprecated)) this.setType(Type.Minor);
+    public getLevel(): Level {
+        return this.level;
     }
 
-    public getType(): Type {
+    public setLevel(level: Level): void {
+        this.level = level;
+    }
+
+    public getType(): string | undefined {
         return this.type;
-    }
-
-    public getPrefix(index: number = Commit.PREFIX_MAIN_INDEX): string | undefined {
-        return this.prefixes[index];
-    }
-
-    public getScope(): string | undefined {
-        return this.scope;
     }
 
     public getPriority(): number {
@@ -100,12 +94,19 @@ export default class Commit {
         return priority;
     }
 
-    public getName(): string {
-        return this.hash.substr(0, Commit.NAME_LENGTH);
+    public getScope(): string | undefined {
+        return this.scope;
     }
 
-    public getAccents(): string[] {
-        return [...this.accents.values()];
+    public getShortHash(): string {
+        return this.hash.substr(0, Commit.SHORT_HASH_LENGTH);
+    }
+
+    public setStatus(status: Status): void {
+        this.status = this.status | status;
+
+        if (this.hasStatus(Status.Deprecated)) this.setLevel(Level.Minor);
+        if (this.hasStatus(Status.BreakingChanges)) this.setLevel(Level.Major);
     }
 
     public addAccent(text: string): void {
@@ -114,5 +115,13 @@ export default class Commit {
 
     public hasStatus(status: Status): boolean {
         return !!(this.status & status);
+    }
+
+    public isIgnored(): boolean {
+        return this.ignored;
+    }
+
+    public ignore(): void {
+        this.ignored = true;
     }
 }

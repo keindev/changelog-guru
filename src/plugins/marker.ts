@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
@@ -21,7 +20,7 @@ enum Marker {
     Important = 'important',
 }
 
-interface Config extends ConfigOptions {
+export interface Config extends ConfigOptions {
     markers: Option;
 }
 
@@ -34,22 +33,20 @@ export default class MarkerPlugin extends Plugin {
         const { markers } = config;
 
         if (typeof markers === 'object') {
-            Object.values(Marker).forEach(
-                (name: string): void => {
-                    const title: Option | OptionValue = markers[name];
+            Object.values(Marker).forEach((name: string): void => {
+                const title: Option | OptionValue = markers[name];
 
-                    if (typeof title === 'string') {
-                        let position: Position | undefined;
+                if (typeof title === 'string') {
+                    let position: Position | undefined;
 
-                        if (name === Marker.Breaking || name === Marker.Deprecated) position = Position.Header;
-                        if (name === Marker.Important) position = Position.Body;
+                    if (name === Marker.Breaking || name === Marker.Deprecated) position = Position.Header;
+                    if (name === Marker.Important) position = Position.Body;
 
-                        if (typeof position !== 'undefined') {
-                            this.markers.set(name, this.context.addSection(title, position));
-                        }
+                    if (typeof position !== 'undefined') {
+                        this.markers.set(name, this.context.addSection(title, position));
                     }
                 }
-            );
+            });
         }
     }
 
@@ -60,41 +57,39 @@ export default class MarkerPlugin extends Plugin {
         const expression = MarkerPlugin.EXPRESSION;
         let match: RegExpExecArray | null;
 
-        commit.body.forEach(
-            (line): void => {
-                do {
-                    match = expression.exec(line);
+        commit.body.forEach((line): void => {
+            do {
+                match = expression.exec(line);
 
-                    if (match && match.groups && typeof match.groups.name === 'string') {
-                        const { name, value } = match.groups;
-                        const key: string | undefined = Key.getEqualy(name, names);
-                        let section: Section | undefined = key ? markers.get(key) : undefined;
+                if (match && match.groups && typeof match.groups.name === 'string') {
+                    const { name, value } = match.groups;
+                    const key: string | undefined = Key.getEqualy(name, names);
+                    let section: Section | undefined = key ? markers.get(key) : undefined;
 
-                        switch (key) {
-                            case Marker.Breaking:
-                                commit.setStatus(Status.BreakingChanges);
-                                break;
-                            case Marker.Deprecated:
-                                commit.setStatus(Status.Deprecated);
-                                break;
-                            case Marker.Hidden:
-                                commit.setStatus(Status.Hidden);
-                                break;
-                            case Marker.Important:
-                                commit.setStatus(Status.Important);
-                                break;
-                            case Marker.Grouped:
-                                if (typeof value === 'string') section = getGroup(value);
-                                break;
-                            default:
-                                task.warn(`Marker ${chalk.bold(name)} is not available`);
-                                break;
-                        }
-
-                        if (section instanceof Section) section.assign(commit);
+                    switch (key) {
+                        case Marker.Breaking:
+                            commit.setStatus(Status.BreakingChanges);
+                            break;
+                        case Marker.Deprecated:
+                            commit.setStatus(Status.Deprecated);
+                            break;
+                        case Marker.Hidden:
+                            commit.setStatus(Status.Hidden);
+                            break;
+                        case Marker.Important:
+                            commit.setStatus(Status.Important);
+                            break;
+                        case Marker.Grouped:
+                            if (typeof value === 'string') section = getGroup(value);
+                            break;
+                        default:
+                            task.warn(`Marker ${name} is not available`);
+                            break;
                     }
-                } while (match && expression.lastIndex);
-            }
-        );
+
+                    if (section instanceof Section) section.assign(commit);
+                }
+            } while (match && expression.lastIndex);
+        });
     }
 }

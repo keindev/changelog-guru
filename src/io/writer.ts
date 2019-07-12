@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import chalk from 'chalk';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
 import State from '../entities/state';
@@ -11,6 +10,7 @@ import Markdown from '../utils/markdown';
 import Commit from '../entities/commit';
 import Author from '../entities/author';
 import { Status } from '../utils/enums';
+import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
@@ -25,9 +25,13 @@ export default class Writer {
     }
 
     private static renderAuthors(authors: Author[]): string {
-        const result: string[] = authors.map(
-            (author): string => Markdown.link(Markdown.image(author.toString(), author.getAvatar()), author.url)
-        );
+        const result: string[] = [];
+
+        authors.forEach((author): void => {
+            if (!author.isIgnored()) {
+                result.push(Markdown.link(Markdown.image(author.toString(), author.getAvatar()), author.url));
+            }
+        });
 
         return [Markdown.title('Contributors'), result.join('')].join(Writer.LINE_DELIMITER);
     }
@@ -45,12 +49,31 @@ export default class Writer {
         }
 
         if (commits.length) {
+            const uniqueList: Map<string, Commit | Commit[]> = new Map();
+            let mirrors: Commit | Commit[] | undefined;
+
+            commits
+                .sort(Commit.compare)
+                .filter((commit): boolean => !commit.hasStatus(Status.Hidden))
+                .forEach((commit): void => {
+                    mirrors = Key.inMap(commit.subject, uniqueList);
+
+                    if (mirrors) {
+                        if (Array.isArray(mirrors)) {
+                            mirrors.push(commit);
+                        } else {
+                            uniqueList.set(mirrors.subject, [mirrors, commit]);
+                        }
+                    } else {
+                        uniqueList.set(commit.subject, commit);
+                    }
+                });
+
             result.push(
                 Markdown.list(
-                    commits
-                        .sort(Commit.compare)
-                        .filter((commit): boolean => !commit.hasStatus(Status.Hidden))
-                        .map(Writer.renderCommit)
+                    [...uniqueList.values()].map((commit): string => {
+                        return Array.isArray(commit) ? Writer.renderCommitMirrors(commit) : Writer.renderCommit(commit);
+                    })
                 )
             );
         }
@@ -58,20 +81,40 @@ export default class Writer {
         return result.join(Writer.LINE_DELIMITER);
     }
 
+    private static renderCommitMirrors(commits: Commit[]): string {
+        const result: string[] = [];
+        const accents: Set<string> = new Set();
+        const links: string[] = [];
+
+        commits.forEach((commit): void => {
+            commit.getAccents().forEach((accent): void => {
+                accents.add(accent);
+            });
+
+            links.push(Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url));
+        });
+
+        if (accents.size) {
+            result.push(...[...accents.values()].map((a): string => Markdown.bold(`[${Markdown.capitalize(a)}]`)));
+        }
+
+        result.push(Markdown.capitalize(commits[0].subject), ' ', links.join(' '));
+
+        return result.join('');
+    }
+
     private static renderCommit(commit: Commit): string {
         const result: string[] = [];
         const accents = commit.getAccents();
 
         if (accents.length) {
-            result.push(...accents.map((a): string => Markdown.bold(`[${Markdown.capitalize(a)}]`)));
+            result.push(Markdown.bold(`[${accents.map((a): string => Markdown.capitalize(a)).join(', ')}]`));
         }
 
         result.push(
-            Markdown.capitalize(commit.title),
+            Markdown.capitalize(commit.subject),
             ' ',
-            // tasks
-            ' ',
-            Markdown.link(Markdown.code(commit.getName()), commit.url)
+            Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url)
         );
 
         return result.join('');
@@ -94,13 +137,13 @@ export default class Writer {
         const { pkg } = this;
         const v1 = state.getVersion();
         const v2 = pkg.getVersion();
-        const subtask = task.add(`Update package version to ${chalk.bold(v1)}`);
+        const subtask = task.add(`Update package version to ${v1}`);
 
         if (!v2 || Version.greaterThan(v1, v2)) {
             await pkg.update(v1);
             subtask.complete();
         } else {
-            subtask.skip(`Current package version is greater (${chalk.bold(v2)})`);
+            subtask.skip(`Current package version is greater (${v2})`);
         }
     }
 }
