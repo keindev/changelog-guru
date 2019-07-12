@@ -1,16 +1,16 @@
-import Scope, { Config as ScopeConfig } from '../../src/plugins/scope';
+import ScopePlugin, { Config as ScopeConfig } from '../../src/plugins/scope';
 import { TestContext } from '../__mocks__/context.mock';
 import { Config } from '../../src/entities/config';
 import Commit from '../../src/entities/commit';
 
 const context = new TestContext();
 
-describe('Scope', (): void => {
+describe('ScopePlugin', (): void => {
     it('Any scopes', (done): void => {
         const config = new Config();
 
         config.load().then((): void => {
-            const plugin = new Scope(context);
+            const plugin = new ScopePlugin(context);
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
                 timestamp: 0,
                 message: `feat(Core, Jest 1, Jest 2): subject`,
@@ -31,7 +31,7 @@ describe('Scope', (): void => {
         const config = new Config();
 
         config.load().then((): void => {
-            const plugin = new Scope(context);
+            const plugin = new ScopePlugin(context);
             const options = config.getOptions();
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
                 timestamp: 0,

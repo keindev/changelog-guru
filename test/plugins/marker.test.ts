@@ -1,5 +1,5 @@
 import { Task } from 'tasktree-cli/lib/task';
-import Marker, { Config as MarkerConfig } from '../../src/plugins/marker';
+import MarkerPlugin, { Config as MarkerConfig } from '../../src/plugins/marker';
 import { TestContext } from '../__mocks__/context.mock';
 import { Config } from '../../src/entities/config';
 import Commit from '../../src/entities/commit';
@@ -8,10 +8,10 @@ import Section from '../../src/entities/section';
 
 const config = new Config();
 const context = new TestContext();
-const plugin = new Marker(context);
+const plugin = new MarkerPlugin(context);
 const task = new Task('test task');
 
-describe('Marker', (): void => {
+describe('MarkerPlugin', (): void => {
     it('Create', (done): void => {
         config.load().then((): void => {
             plugin.init(config.getOptions() as MarkerConfig);
