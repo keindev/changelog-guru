@@ -1,8 +1,8 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Plugin from '../../src/entities/plugin';
-import { ConfigOptions } from '../../src/entities/config';
 import Commit from '../../src/entities/commit';
 import { Context } from '../../src/entities/state';
+import { ConfigurationOptions } from '../../src/entities/configuration';
 
 export class TestPlugin extends Plugin {
     public getContext(): Context {
@@ -10,7 +10,7 @@ export class TestPlugin extends Plugin {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async init(config: ConfigOptions): Promise<void> {
+    public async init(config: ConfigurationOptions): Promise<void> {
         return Promise.resolve();
     }
 
