@@ -6,7 +6,7 @@ import Author from './author';
 import Commit from './commit';
 import Plugin from './plugin';
 import Key from '../utils/key';
-import { Configuration, ConfigurationOptions } from './config';
+import { Configuration, ConfigurationOptions } from './configuration';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import Version from '../utils/version';

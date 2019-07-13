@@ -1,7 +1,7 @@
 import State from '../../src/entities/state';
 import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
-import { Configuration } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/configuration';
 import { Position } from '../../src/entities/section';
 
 const config = new Configuration();

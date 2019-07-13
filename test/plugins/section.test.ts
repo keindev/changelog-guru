@@ -1,7 +1,7 @@
 import SectionPlugin, { Configuration as SectionConfiguration } from '../../src/plugins/section';
 import Section from '../../src/entities/section';
 import { TestContext } from '../__mocks__/context.mock';
-import { Configuration } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/configuration';
 import Commit from '../../src/entities/commit';
 
 const context = new TestContext();

@@ -1,6 +1,6 @@
 import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
-import { ConfigurationOptions } from '../entities/config';
+import { ConfigurationOptions } from '../entities/configuration';
 import { Option } from '../utils/types';
 import Key from '../utils/key';
 

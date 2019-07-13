@@ -4,7 +4,7 @@ import Reader from './io/reader';
 import Writer from './io/writer';
 import { Provider, ServiceProvider } from './providers/provider';
 import GitHubProvider from './providers/github-provider';
-import { Configuration } from './entities/config';
+import { Configuration } from './entities/configuration';
 import Package from './entities/package';
 
 dotenv.config();

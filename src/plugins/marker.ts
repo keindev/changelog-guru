@@ -3,7 +3,7 @@ import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
 import Key from '../utils/key';
 import Section, { Position } from '../entities/section';
-import { ConfigurationOptions } from '../entities/config';
+import { ConfigurationOptions } from '../entities/configuration';
 import { Option, OptionValue } from '../utils/types';
 import { Status } from '../utils/enums';
 

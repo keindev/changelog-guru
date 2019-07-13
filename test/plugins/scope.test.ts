@@ -1,6 +1,6 @@
 import ScopePlugin, { Configuration as ScopeConfiguration } from '../../src/plugins/scope';
 import { TestContext } from '../__mocks__/context.mock';
-import { Configuration } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/configuration';
 import Commit from '../../src/entities/commit';
 
 const context = new TestContext();

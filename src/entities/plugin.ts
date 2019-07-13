@@ -1,7 +1,7 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from './commit';
 import { Context } from './state';
-import { ConfigurationOptions } from './config';
+import { ConfigurationOptions } from './configuration';
 
 export default abstract class Plugin {
     protected context: Context;

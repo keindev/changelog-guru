@@ -1,7 +1,7 @@
 import { Task } from 'tasktree-cli/lib/task';
 import MarkerPlugin, { Configuration as MarkerConfiguration } from '../../src/plugins/marker';
 import { TestContext } from '../__mocks__/context.mock';
-import { Configuration } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/configuration';
 import Commit from '../../src/entities/commit';
 import { Status } from '../../src/utils/enums';
 import Section from '../../src/entities/section';

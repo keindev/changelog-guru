@@ -1,4 +1,4 @@
-import { Configuration } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/configuration';
 import { FilterType, Level } from '../../src/utils/enums';
 
 describe('Config', (): void => {
