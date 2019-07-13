@@ -1,10 +1,10 @@
 import State from '../../src/entities/state';
 import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
-import { Config } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/config';
 import { Position } from '../../src/entities/section';
 
-const config = new Config();
+const config = new Configuration();
 const getAuthor = (id: number, login: string): Author =>
     new Author(id, {
         login,

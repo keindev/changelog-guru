@@ -1,9 +1,9 @@
-import { Config } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/config';
 import { FilterType, Level } from '../../src/utils/enums';
 
 describe('Config', (): void => {
     it('Create & load', (done): void => {
-        const config = new Config();
+        const config = new Configuration();
 
         config.load().then((): void => {
             expect(config.getOptions()).toMatchSnapshot();

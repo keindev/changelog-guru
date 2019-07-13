@@ -1,18 +1,18 @@
 import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
-import { ConfigOptions } from '../entities/config';
+import { ConfigurationOptions } from '../entities/config';
 import Key from '../utils/key';
 import { Option, OptionValue } from '../utils/types';
 import Section, { Position } from '../entities/section';
 
-export interface Config extends ConfigOptions {
+export interface Configuration extends ConfigurationOptions {
     sections: Option;
 }
 
 export default class SectionPlugin extends Plugin {
     private blocks: Map<string, Section> = new Map();
 
-    public async init(config: Config): Promise<void> {
+    public async init(config: Configuration): Promise<void> {
         const { sections } = config;
 
         if (Array.isArray(sections)) {

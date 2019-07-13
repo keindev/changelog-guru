@@ -3,7 +3,7 @@ import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
 import Key from '../utils/key';
 import Section, { Position } from '../entities/section';
-import { ConfigOptions } from '../entities/config';
+import { ConfigurationOptions } from '../entities/config';
 import { Option, OptionValue } from '../utils/types';
 import { Status } from '../utils/enums';
 
@@ -20,7 +20,7 @@ enum Marker {
     Important = 'important',
 }
 
-export interface Config extends ConfigOptions {
+export interface Configuration extends ConfigurationOptions {
     markers: Option;
 }
 
@@ -29,7 +29,7 @@ export default class MarkerPlugin extends Plugin {
 
     private markers: Map<string, Section> = new Map();
 
-    public async init(config: Config): Promise<void> {
+    public async init(config: Configuration): Promise<void> {
         const { markers } = config;
 
         if (typeof markers === 'object') {

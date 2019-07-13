@@ -6,7 +6,7 @@ import Author from './author';
 import Commit from './commit';
 import Plugin from './plugin';
 import Key from '../utils/key';
-import { Config, ConfigOptions } from './config';
+import { Configuration, ConfigurationOptions } from './config';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import Version from '../utils/version';
@@ -108,7 +108,7 @@ export default class State implements Context {
         return this.sections.find((s): boolean => Key.isEqual(s.title, title));
     }
 
-    public async modify(config: Config): Promise<void> {
+    public async modify(config: Configuration): Promise<void> {
         const task = $tasks.add('Modify release state');
         const plugins = config.getPlugins();
         const options = config.getOptions();
@@ -124,7 +124,7 @@ export default class State implements Context {
         task.complete();
     }
 
-    private ignoreAuthors(config: Config): void {
+    private ignoreAuthors(config: Configuration): void {
         const list = config.getFilters(FilterType.AuthorLogin);
 
         this.authors.forEach((author): void => {
@@ -134,7 +134,7 @@ export default class State implements Context {
         });
     }
 
-    private ignoreCommits(config: Config): void {
+    private ignoreCommits(config: Configuration): void {
         const types = config.getFilters(FilterType.CommitType);
         const scopes = config.getFilters(FilterType.CommitScope);
         const subjects = config.getFilters(FilterType.CommitSubject);
@@ -173,7 +173,7 @@ export default class State implements Context {
         task.complete();
     }
 
-    private updateCommitsTypes(config: Config): void {
+    private updateCommitsTypes(config: Configuration): void {
         let type: string | undefined;
 
         this.commits.forEach((commit): void => {
@@ -198,7 +198,7 @@ export default class State implements Context {
         task.complete();
     }
 
-    private async importPlugin(name: string, options: ConfigOptions, task: Task): Promise<void> {
+    private async importPlugin(name: string, options: ConfigurationOptions, task: Task): Promise<void> {
         const filePath = path.resolve(__dirname, '../plugins', `${name}.js`);
 
         if (fs.existsSync(filePath)) {

@@ -1,4 +1,4 @@
-import Provider from '../../src/providers/provider';
+import { Provider } from '../../src/providers/provider';
 import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
 import Version from '../../src/utils/version';

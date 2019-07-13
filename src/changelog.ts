@@ -2,9 +2,9 @@ import dotenv from 'dotenv';
 import { TaskTree } from 'tasktree-cli';
 import Reader from './io/reader';
 import Writer from './io/writer';
-import Provider, { ProviderName } from './providers/provider';
+import { Provider, ServiceProvider } from './providers/provider';
 import GitHubProvider from './providers/github-provider';
-import { Config } from './entities/config';
+import { Configuration } from './entities/config';
 import Package from './entities/package';
 
 dotenv.config();
@@ -12,14 +12,14 @@ dotenv.config();
 const $tasks = TaskTree.tree();
 
 export default class Changelog {
-    private config: Config;
+    private config: Configuration;
     private pkg: Package;
     private reader: Reader | undefined;
 
     public constructor() {
         const task = $tasks.add('Reading configuration files');
 
-        this.config = new Config();
+        this.config = new Configuration();
         this.pkg = new Package();
         this.reader = this.getReader();
 
@@ -47,7 +47,7 @@ export default class Changelog {
         let provider: Provider | undefined;
         let reader: Reader | undefined;
 
-        if (config.getProvider() === ProviderName.GitHub) provider = new GitHubProvider(this.pkg.url);
+        if (config.getProvider() === ServiceProvider.GitHub) provider = new GitHubProvider(this.pkg.url);
         if (provider) reader = new Reader(provider);
 
         return reader;

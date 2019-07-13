@@ -7,13 +7,12 @@ import Author from '../entities/author';
 
 const $tasks = TaskTree.tree();
 
-export enum ProviderName {
+export enum ServiceProvider {
     GitHub = 'github',
-    // not supported yet
-    GitLab = 'gitlab',
+    GitLab = 'gitlab', // not supported yet
 }
 
-export default abstract class Provider {
+export abstract class Provider {
     public static PAGE_SIZE: number = 100;
     public static TYPE: string = 'git';
 

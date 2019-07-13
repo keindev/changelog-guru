@@ -1,6 +1,6 @@
 import Octokit from '@octokit/rest';
 import { TaskTree } from 'tasktree-cli';
-import Provider from './provider';
+import { Provider } from './provider';
 import Author from '../entities/author';
 import Commit from '../entities/commit';
 import Version from '../utils/version';

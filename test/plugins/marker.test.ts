@@ -1,12 +1,12 @@
 import { Task } from 'tasktree-cli/lib/task';
-import MarkerPlugin, { Config as MarkerConfig } from '../../src/plugins/marker';
+import MarkerPlugin, { Configuration as MarkerConfiguration } from '../../src/plugins/marker';
 import { TestContext } from '../__mocks__/context.mock';
-import { Config } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/config';
 import Commit from '../../src/entities/commit';
 import { Status } from '../../src/utils/enums';
 import Section from '../../src/entities/section';
 
-const config = new Config();
+const config = new Configuration();
 const context = new TestContext();
 const plugin = new MarkerPlugin(context);
 const task = new Task('test task');
@@ -14,7 +14,7 @@ const task = new Task('test task');
 describe('MarkerPlugin', (): void => {
     it('Create', (done): void => {
         config.load().then((): void => {
-            plugin.init(config.getOptions() as MarkerConfig);
+            plugin.init(config.getOptions() as MarkerConfiguration);
 
             expect(context.sections.size).toBe(3);
             expect(context.sections.has('Important Internal Changes')).toBeTruthy();

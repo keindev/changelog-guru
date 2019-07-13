@@ -1,13 +1,13 @@
-import ScopePlugin, { Config as ScopeConfig } from '../../src/plugins/scope';
+import ScopePlugin, { Configuration as ScopeConfiguration } from '../../src/plugins/scope';
 import { TestContext } from '../__mocks__/context.mock';
-import { Config } from '../../src/entities/config';
+import { Configuration } from '../../src/entities/config';
 import Commit from '../../src/entities/commit';
 
 const context = new TestContext();
 
 describe('ScopePlugin', (): void => {
     it('Any scopes', (done): void => {
-        const config = new Config();
+        const config = new Configuration();
 
         config.load().then((): void => {
             const plugin = new ScopePlugin(context);
@@ -18,7 +18,7 @@ describe('ScopePlugin', (): void => {
                 author: 'keindev',
             });
 
-            plugin.init(config.getOptions() as ScopeConfig);
+            plugin.init(config.getOptions() as ScopeConfiguration);
             plugin.parse(commit);
 
             expect(commit.getAccents()).toStrictEqual(['Core', 'Jest 1', 'Jest 2']);
@@ -28,7 +28,7 @@ describe('ScopePlugin', (): void => {
     });
 
     it('Strict scopes', (done): void => {
-        const config = new Config();
+        const config = new Configuration();
 
         config.load().then((): void => {
             const plugin = new ScopePlugin(context);
@@ -40,9 +40,9 @@ describe('ScopePlugin', (): void => {
                 author: 'keindev',
             });
 
-            (options as ScopeConfig).scopes.only = true;
+            (options as ScopeConfiguration).scopes.only = true;
 
-            plugin.init(options as ScopeConfig);
+            plugin.init(options as ScopeConfiguration);
             plugin.parse(commit);
 
             expect(commit.getAccents()).toStrictEqual(['Core']);

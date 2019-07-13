@@ -46,6 +46,7 @@
 - **[Utils]** Add test for utils/key [`68e36d2`](https://github.com/keindev/changelog-guru/commit/68e36d277f1a2e18e0688d63762d26afdd2f80ab)
 ### Others
 - **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
+- **[Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1)
 - **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 - **[Marker]** Add eslint disable no-explicit-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
 - **[Mocks]** Rename mocks folder to __mocks__ [`3185f07`](https://github.com/keindev/changelog-guru/commit/3185f07091721aa929679e4a833d3ac80e384b3a)

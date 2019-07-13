@@ -1,10 +1,10 @@
 import Commit from '../entities/commit';
 import Plugin from '../entities/plugin';
-import { ConfigOptions } from '../entities/config';
+import { ConfigurationOptions } from '../entities/config';
 import { Option } from '../utils/types';
 import Key from '../utils/key';
 
-export interface Config extends ConfigOptions {
+export interface Configuration extends ConfigurationOptions {
     scopes: {
         only: boolean | undefined;
         list: Option;
@@ -15,7 +15,7 @@ export default class ScopePlugin extends Plugin {
     private scopes: Map<string, string> = new Map();
     private onlyConfigured: boolean = false;
 
-    public async init(config: Config): Promise<void> {
+    public async init(config: Configuration): Promise<void> {
         const { scopes } = config;
 
         if (typeof scopes === 'object') {

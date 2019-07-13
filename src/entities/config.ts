@@ -1,47 +1,46 @@
 import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 import { TaskTree } from 'tasktree-cli';
-import { ProviderName } from '../providers/provider';
+import { ServiceProvider } from '../providers/provider';
 import { Option, OptionValue } from '../utils/types';
 import Key from '../utils/key';
 import { Level, FilterType } from '../utils/enums';
 
 const $tasks = TaskTree.tree();
-const $explorer = cosmiconfig('changelog');
 
-export interface LevelsConfigOptions extends Option {
+export interface Levels extends Option {
     major?: string[];
     minor?: string[];
     patch?: string[];
 }
 
-export interface FiltersConfigOptions extends Option {
+export interface Filters extends Option {
     authors?: string[];
     types?: string[];
     scopes?: string[];
     subjects?: string[];
 }
 
-export interface ConfigOptions extends Option {
+export interface ConfigurationOptions extends Option {
     config?: string;
-    levels?: LevelsConfigOptions;
+    levels?: Levels;
     plugins?: string[];
-    provider?: ProviderName;
-    ignore?: FiltersConfigOptions;
+    provider?: ServiceProvider;
+    ignore?: Filters;
     [key: string]: Option | OptionValue;
 }
 
-export class Config {
-    public static DEFAULT = '.changelogrc.yaml';
+export class Configuration {
+    public static FILE_NAME = '.changelogrc.yaml';
 
-    private provider: ProviderName = ProviderName.GitHub;
+    private provider: ServiceProvider | undefined;
     private plugins: Set<string> = new Set();
-    private types: Map<string, Level> = new Map();
+    private levels: Map<string, Level> = new Map();
     private filters: Map<FilterType, string[]> = new Map();
     private options: Option = {};
 
-    public getProvider(): string {
-        return this.provider;
+    public getProvider(): ServiceProvider {
+        return this.provider || ServiceProvider.GitHub;
     }
 
     public getPlugins(): string[] {
@@ -49,90 +48,90 @@ export class Config {
     }
 
     public getLevel(type: string): Level {
-        return Key.inMap(type, this.types) || Level.Patch;
+        return Key.inMap(type, this.levels) || Level.Patch;
     }
 
     public getFilters(type: FilterType): string[] {
         return this.filters.get(type) || [];
     }
 
-    public getOptions(): ConfigOptions {
+    public getOptions(): ConfigurationOptions {
         return this.options;
     }
 
     public async load(): Promise<void> {
-        const task = $tasks.add('Config initializing');
-        const userConfig = await $explorer.search();
-        const defaultConfig = await $explorer.load(path.join(__dirname, '../../', Config.DEFAULT));
-        let options: ConfigOptions;
+        const task = $tasks.add('Configuration initializing');
+        const explorer = cosmiconfig('changelog');
+        const userConfig = await explorer.search();
+        const defaultConfig = await explorer.load(path.join(__dirname, '../../', Configuration.FILE_NAME));
+        let options: ConfigurationOptions;
 
         if (defaultConfig && !defaultConfig.isEmpty) {
             if (userConfig && !userConfig.isEmpty) {
-                task.log(`Use config file: ${userConfig.filepath}`);
-
                 options = Object.assign({}, defaultConfig.config, userConfig.config);
+
+                task.log(`Use config file: ${path.relative(process.cwd(), userConfig.filepath)}`);
             } else {
                 options = defaultConfig.config;
+
+                task.log(`Use default config file: ${path.relative(process.cwd(), defaultConfig.filepath)}`);
             }
 
-            this.loadProvider(options.provider);
-            this.loadPlugins(defaultConfig.config.plugins, options.plugins);
-            this.loadLevels(options.levels);
-            this.loadFilters(options.ignore);
+            this.initLevels(options.levels);
+            this.initFilters(options.ignore);
+
+            this.provider = options.provider;
+            this.plugins = new Set(defaultConfig.config.plugins.concat(options.plugins));
             this.options = new Proxy(options as Option, {
                 get(target, name, receiver): Option | undefined {
                     return Reflect.get(target, name, receiver);
                 },
             });
 
-            task.complete('Config initialized');
+            task.complete('Configuration initialized');
         } else {
-            task.fail('Default config file not found');
+            task.fail('Default configuration file not found');
         }
     }
 
-    private loadProvider(name?: ProviderName): void {
-        this.provider = typeof name === 'string' && name.length ? name : ProviderName.GitHub;
-    }
-
-    private loadPlugins(core?: string[], extended?: string[]): void {
-        const getList = (list?: string[]): string[] => (Array.isArray(list) ? list : []);
-
-        this.plugins = new Set(getList(core).concat(getList(extended)));
-    }
-
-    private loadLevels(levels?: LevelsConfigOptions): void {
-        this.types = new Map();
+    private initLevels(levels?: Levels): void {
+        this.levels = new Map();
 
         if (typeof levels === 'object') {
-            const { types } = this;
-            const addLevel = (list: string[] | undefined, level: Level): void => {
-                if (Array.isArray(list)) {
-                    list.forEach((type): void => {
-                        if (!types.has(type) && type.length) types.set(type, level);
+            const append = (types: string[] | undefined, level: Level): void => {
+                if (Array.isArray(types)) {
+                    let name: string;
+
+                    types.forEach((type): void => {
+                        name = Key.unify(type);
+
+                        if (name.length && !this.levels.has(name)) {
+                            this.levels.set(name, level);
+                        }
                     });
                 }
             };
 
-            addLevel(levels.major, Level.Major);
-            addLevel(levels.minor, Level.Minor);
-            addLevel(levels.patch, Level.Patch);
+            append(levels.major, Level.Major);
+            append(levels.minor, Level.Minor);
+            append(levels.patch, Level.Patch);
         }
     }
 
-    private loadFilters(rules?: FiltersConfigOptions): void {
+    private initFilters(rules?: Filters): void {
         this.filters = new Map();
 
         if (typeof rules === 'object') {
-            const { filters } = this;
-            const addFilter = (list: string[] | undefined, type: FilterType): void => {
-                if (Array.isArray(list)) filters.set(type, [...new Set(list)].filter(Boolean));
+            const append = (list: string[] | undefined, type: FilterType): void => {
+                if (Array.isArray(list)) {
+                    this.filters.set(type, [...new Set(list)].filter((filter): boolean => !!Key.unify(filter).length));
+                }
             };
 
-            addFilter(rules.authors, FilterType.AuthorLogin);
-            addFilter(rules.types, FilterType.CommitType);
-            addFilter(rules.scopes, FilterType.CommitScope);
-            addFilter(rules.subjects, FilterType.CommitSubject);
+            append(rules.authors, FilterType.AuthorLogin);
+            append(rules.types, FilterType.CommitType);
+            append(rules.scopes, FilterType.CommitScope);
+            append(rules.subjects, FilterType.CommitSubject);
         }
     }
 }
