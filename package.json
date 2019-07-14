@@ -47,7 +47,7 @@
         "commander": "^2.20.0",
         "cosmiconfig": "^5.2.1",
         "dotenv": "^8.0.0",
-        "findup-sync": "^3.0.0",
+        "findup-sync": "^4.0.0",
         "read-pkg": "^5.2.0",
         "semver": "^6.2.0",
         "tasktree-cli": "^1.2.1",
