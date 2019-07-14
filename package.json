@@ -4,7 +4,10 @@
     "description": "Git changelog generator",
     "homepage": "https://github.com/keindev/changelog-guru#readme",
     "license": "MIT",
-    "author": "Daniil Ryazanov <opensource@tagproject.ru>",
+    "author": {
+        "name": "Daniil Ryazanov",
+        "email": "opensource@tagproject.ru"
+    },
     "keywords": [
         "changelog",
         "generator",
@@ -22,7 +25,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/keindev/changelog-guru.git"
+        "url": "git+https://github.com/keindev/changelog-guru.git"
     },
     "bugs": {
         "url": "https://github.com/keindev/changelog-guru/issues"
