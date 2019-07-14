@@ -1,7 +1,7 @@
 import { Provider } from '../../src/providers/provider';
+import { Package } from '../../src/entities/package';
 import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
-import Version from '../../src/utils/version';
 
 class TestProvider extends Provider {
     public getRepository(): string {
@@ -23,7 +23,7 @@ class TestProvider extends Provider {
 
     // eslint-disable-next-line class-methods-use-this
     public async getVersion(): Promise<string | undefined> {
-        return Promise.resolve(Version.DEFAULT);
+        return Promise.resolve(Package.DEFAULT_VERSION);
     }
 
     // eslint-disable-next-line class-methods-use-this

@@ -3,7 +3,6 @@ import { TaskTree } from 'tasktree-cli';
 import { Provider } from './provider';
 import Author from '../entities/author';
 import Commit from '../entities/commit';
-import Version from '../utils/version';
 
 const $tasks = TaskTree.tree();
 
@@ -68,11 +67,8 @@ export default class GitHubProvider extends Provider {
 
     public async getVersion(): Promise<string | undefined> {
         const release = await this.getLatestRelease();
-        let version: string | undefined;
 
-        if (release) version = Version.clear(release.tag_name);
-
-        return version;
+        return release ? release.tag_name : undefined;
     }
 
     private async getLatestRelease(): Promise<Octokit.ReposGetLatestReleaseResponse | undefined> {

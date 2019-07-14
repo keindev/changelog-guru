@@ -5,7 +5,7 @@ import Writer from './io/writer';
 import { Provider, ServiceProvider } from './providers/provider';
 import GitHubProvider from './providers/github-provider';
 import { Configuration } from './entities/configuration';
-import Package from './entities/package';
+import { Package } from './entities/package';
 
 dotenv.config();
 
@@ -47,7 +47,7 @@ export default class Changelog {
         let provider: Provider | undefined;
         let reader: Reader | undefined;
 
-        if (config.getProvider() === ServiceProvider.GitHub) provider = new GitHubProvider(this.pkg.url);
+        if (config.getProvider() === ServiceProvider.GitHub) provider = new GitHubProvider(this.pkg.getRepository());
         if (provider) reader = new Reader(provider);
 
         return reader;

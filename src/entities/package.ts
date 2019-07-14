@@ -1,58 +1,71 @@
 import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
+import * as semver from 'semver';
 import { TaskTree } from 'tasktree-cli';
-import Version from '../utils/version';
 
 const $tasks = TaskTree.tree();
 
-export default class Package {
-    public readonly url: string;
+export class Package {
+    public static DEFAULT_VERSION = '0.0.1';
+    public static DEFAULT_REPOSITORY = '';
 
-    private version: string | undefined;
+    private data: readPkg.PackageJson;
 
-    // TODO: refactor
     public constructor() {
         const task = $tasks.add('Reading package.json');
-        const { version, repository } = readPkg.sync({ normalize: true });
 
-        this.version = Version.clear(version);
+        this.data = readPkg.sync({ normalize: false });
 
-        if (!version) task.fail('pkg.version is not specified');
-        if (!this.version) task.fail('pkg.version is invalid (see https://semver.org/)');
+        if (!this.data.version) task.fail('Package version is not specified');
+        if (!this.data.repository) task.fail('Package repository url is not specified');
 
-        switch (typeof repository) {
-            case 'string':
-                this.url = repository;
-                break;
-            case 'object':
-                this.url = repository.url;
-                break;
-            default:
-                this.url = '';
-                break;
-        }
-
-        if (!this.url) task.fail('Package repository url is not specified');
-
-        task.complete();
+        task.log(`Version: ${this.getVersion()}`);
+        task.log(`Repository: ${this.getRepository()}`);
+        task.complete('Package information');
     }
 
-    public getVersion(): string | undefined {
-        return this.version;
+    public getRepository(): string {
+        const {
+            data: { repository },
+        } = this;
+
+        if (typeof repository === 'string') return repository;
+        if (typeof repository === 'object') return repository.url;
+
+        return Package.DEFAULT_REPOSITORY;
     }
 
-    public async update(version: string): Promise<void> {
-        const task = $tasks.add(`Writing version to package.json`);
-        const newVersion = Version.clear(version);
+    public getVersion(): string {
+        const { version } = this.data;
 
-        if (newVersion && Version.greaterThan(newVersion, this.version)) {
-            this.version = newVersion;
+        return version
+            ? semver.valid(semver.coerce(version) || Package.DEFAULT_VERSION) || Package.DEFAULT_VERSION
+            : Package.DEFAULT_VERSION;
+    }
 
-            await writePkg({ version: newVersion });
+    public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {
+        const task = $tasks.add(`Updating package version`);
+        const current = this.getVersion();
+        let next: string | undefined;
 
-            task.complete(`Package version updated to ${newVersion}`);
+        if (major) next = semver.inc(current, 'major') || undefined;
+        if (!major && minor) next = semver.inc(current, 'minor') || undefined;
+        if (!major && !minor && patch) next = semver.inc(current, 'patch') || undefined;
+        if (next) {
+            this.data.version = next;
+
+            // FIXME: JsonObject(writePkg) incompatible with PackageJson(readPkg)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            await writePkg(this.data as any);
+            task.complete(`Package version updated to ${next}`);
         } else {
-            task.fail(`New package version [${version}] is invalid or less (see https://semver.org/)`);
+            task.fail(`New package version [${next}] is invalid or less (see https://semver.org/)`);
         }
     }
+
+    /*
+    public static greaterThan(v1?: string, v2?: string): boolean {
+        return (!!v1 && !v2) || (!!v1 && !!v2 && semver.gt(v1, v2));
+    }
+    */
 }

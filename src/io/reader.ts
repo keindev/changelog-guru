@@ -14,12 +14,11 @@ export default class Reader {
     public async read(): Promise<State> {
         const task = $tasks.add('Getting release state information');
         const version: string | undefined = await this.provider.getVersion();
-        const state: State = new State(version);
+        const state: State = new State();
         const date: string = await this.provider.getLatestReleaseDate();
 
         task.log(`Last release date: ${date}`);
         task.log(`Last release version: ${version || '-'}`);
-        task.log(`Release version: ${state.getVersion()}`);
         await this.readCommits(date, state);
         task.complete(`Release information`);
 

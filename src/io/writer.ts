@@ -1,10 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
-import { Task } from 'tasktree-cli/lib/task';
 import State from '../entities/state';
-import Package from '../entities/package';
-import Version from '../utils/version';
+import { Package } from '../entities/package';
 import Section from '../entities/section';
 import Markdown from '../utils/markdown';
 import Commit from '../entities/commit';
@@ -128,22 +126,8 @@ export default class Writer {
         data.push(Markdown.line(), Writer.renderAuthors(authors));
 
         await fs.promises.writeFile(path.resolve(process.cwd(), Writer.FILE_NAME), data.join(Writer.LINE_DELIMITER));
-        await this.updatePackage(state, task);
+        await this.pkg.incrementVersion(...state.getChangesLevels());
 
         task.complete();
-    }
-
-    private async updatePackage(state: State, task: Task): Promise<void> {
-        const { pkg } = this;
-        const v1 = state.getVersion();
-        const v2 = pkg.getVersion();
-        const subtask = task.add(`Update package version to ${v1}`);
-
-        if (!v2 || Version.greaterThan(v1, v2)) {
-            await pkg.update(v1);
-            subtask.complete();
-        } else {
-            subtask.skip(`Current package version is greater (${v2})`);
-        }
     }
 }

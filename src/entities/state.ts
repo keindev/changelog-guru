@@ -9,7 +9,6 @@ import Key from '../utils/key';
 import { Configuration, ConfigurationOptions } from './configuration';
 import Section, { Position } from './section';
 import { Constructable, Importable } from '../utils/types';
-import Version from '../utils/version';
 import { FilterType } from '../utils/enums';
 
 const $tasks = TaskTree.tree();
@@ -23,11 +22,6 @@ export default class State implements Context {
     private authors: Map<number, Author> = new Map();
     private commits: Map<string, Commit> = new Map();
     private sections: Section[] = [];
-    private version: string;
-
-    public constructor(version: string = Version.DEFAULT) {
-        this.version = version;
-    }
 
     private static matchSubsectionWith(section: Section, relations: Map<string, Section>): void {
         const commits = section.getCommits();
@@ -58,16 +52,6 @@ export default class State implements Context {
                 relations.set(commit.hash, section);
             }
         });
-    }
-
-    public setVersion(version: string): void {
-        const newVersion = Version.clear(version);
-
-        if (!!newVersion && Version.greaterThan(newVersion, this.version)) this.version = newVersion;
-    }
-
-    public getVersion(): string {
-        return this.version;
     }
 
     public getSections(): Section[] {
@@ -120,8 +104,17 @@ export default class State implements Context {
         await Promise.all(plugins.map((p): Promise<void> => this.importPlugin(p, options, task)));
 
         this.updateSections();
-        this.updateVersion();
         task.complete();
+    }
+
+    public getChangesLevels(): [number, number, number] {
+        const changes: [number, number, number] = [0, 0, 0];
+
+        this.commits.forEach((commit): void => {
+            changes[commit.getLevel() - 1]++;
+        });
+
+        return changes;
     }
 
     private ignoreAuthors(config: Configuration): void {
@@ -181,21 +174,6 @@ export default class State implements Context {
 
             if (type) commit.setLevel(config.getLevel(type));
         });
-    }
-
-    private updateVersion(): void {
-        const task = $tasks.add('Calculate release version');
-        const changes: [number, number, number] = [0, 0, 0];
-
-        this.commits.forEach((c): void => {
-            changes[c.getLevel() - 1]++;
-        });
-
-        const version = Version.update(this.version, ...changes);
-
-        this.setVersion(version);
-        task.log(`Release version: ${version}`);
-        task.complete();
     }
 
     private async importPlugin(name: string, options: ConfigurationOptions, task: Task): Promise<void> {

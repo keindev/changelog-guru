@@ -3,6 +3,7 @@ import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
 import { Configuration } from '../../src/entities/configuration';
 import { Position } from '../../src/entities/section';
+import { Level } from '../../src/utils/enums';
 
 const config = new Configuration();
 const getAuthor = (id: number, login: string): Author =>
@@ -22,10 +23,10 @@ const getCommit = (id: number, message: string, author: Author): Commit =>
 describe('State', (): void => {
     it('Create', (done): void => {
         config.load().then((): void => {
-            const state = new State('1.0.0');
+            const state = new State();
             const author1 = getAuthor(0, 'dev1');
             const author2 = getAuthor(1, 'dev2');
-            const commit = getCommit(2, 'test(State): message3', author2);
+            const commit = getCommit(2, 'feat(State): message3', author2);
             const section = state.addSection('header section', Position.Header);
             const emptySection = state.addSection('empty section', Position.Footer);
             const ignoredAuthor = getAuthor(2, 'dependabot-preview[bot]');
@@ -39,9 +40,11 @@ describe('State', (): void => {
 
             expect(state.getAuthors()).toStrictEqual([author1, author2, ignoredAuthor]);
             expect(state.getSections()).toStrictEqual([section, emptySection]);
-            expect(state.getVersion()).toBe('1.0.0');
             expect(ignoredAuthor.isIgnored()).toBeFalsy();
             expect(ignoredCommit.isIgnored()).toBeFalsy();
+
+            commit.setLevel(Level.Major);
+            expect(state.getChangesLevels()).toStrictEqual([1, 0, 3]);
 
             state.modify(config).then((): void => {
                 expect(state.getSections()).toStrictEqual([section]);
@@ -54,26 +57,11 @@ describe('State', (): void => {
     });
 
     it('Find section', (): void => {
-        const state = new State('1.1.1');
+        const state = new State();
         const title = 'header section';
         const section = state.addSection(title, Position.Header);
 
         expect(state.findSection(title)).toStrictEqual(section);
         expect(state.findSection('')).toBeUndefined();
-    });
-
-    it('Change version', (): void => {
-        const ver1 = '1.0.1';
-        const ver2 = '1.2.0';
-        const state = new State(ver1);
-
-        state.setVersion(ver1);
-        expect(state.getVersion()).toBe(ver1);
-
-        state.setVersion(ver2);
-        expect(state.getVersion()).toBe(ver2);
-
-        state.setVersion(ver1);
-        expect(state.getVersion()).toBe(ver2);
     });
 });
