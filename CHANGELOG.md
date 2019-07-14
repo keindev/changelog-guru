@@ -102,6 +102,9 @@
 ### Pkg refactoring
 - Reworked changelog building process [`6c0187b`](https://github.com/keindev/changelog-guru/commit/6c0187bca88a0d0b68767c7ceb894c7b8e105c94)
 ### Others
+- **[Config]** Rename class, add trims [`4a4a66a`](https://github.com/keindev/changelog-guru/commit/4a4a66a9ba474e9bcbd51fddc6d9fe209dcfb0e0)
+- **[Config]** Rename config to configuration [`b4c7a8e`](https://github.com/keindev/changelog-guru/commit/b4c7a8e5eea8bd516deda29a7ee7aa5a0539bfaf)
+- **[Config]** Fix path to conf in mocks [`afd6461`](https://github.com/keindev/changelog-guru/commit/afd64616e7a21be343ff7ade8fe69249061a3999)
 - Rework reader structure, add git & cli classes [`187d35d`](https://github.com/keindev/changelog-guru/commit/187d35dc1436afaa290a4a7cda4926e6eebd0c26)
 - Add linter, begin fix lint errors [`6f6c614`](https://github.com/keindev/changelog-guru/commit/6f6c614cc5b0d700d8725a6ceeb2b4519be8b6a4)
 - Lint free code, rework classes model [`c45d7f3`](https://github.com/keindev/changelog-guru/commit/c45d7f3aed91bb54886f21c57cf22296418c072d)
