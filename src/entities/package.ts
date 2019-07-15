@@ -21,7 +21,7 @@ export class Package {
 
         task.log(`Version: ${this.getVersion()}`);
         task.log(`Repository: ${this.getRepository()}`);
-        task.complete('Package information');
+        task.complete('Package information:');
     }
 
     public getRepository(): string {
@@ -62,10 +62,4 @@ export class Package {
             task.fail(`New package version [${next}] is invalid or less (see https://semver.org/)`);
         }
     }
-
-    /*
-    public static greaterThan(v1?: string, v2?: string): boolean {
-        return (!!v1 && !v2) || (!!v1 && !!v2 && semver.gt(v1, v2));
-    }
-    */
 }

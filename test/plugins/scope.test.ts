@@ -1,15 +1,17 @@
+import { Task } from 'tasktree-cli/lib/task';
 import ScopePlugin, { Configuration as ScopeConfiguration } from '../../src/plugins/scope';
 import { TestContext } from '../__mocks__/context.mock';
 import { Configuration } from '../../src/entities/configuration';
 import Commit from '../../src/entities/commit';
 
 const context = new TestContext();
+const task = new Task('test task');
 
 describe('ScopePlugin', (): void => {
     it('Any scopes', (done): void => {
         const config = new Configuration();
 
-        config.load().then((): void => {
+        config.load(task).then((): void => {
             const plugin = new ScopePlugin(context);
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
                 timestamp: 0,
@@ -30,7 +32,7 @@ describe('ScopePlugin', (): void => {
     it('Strict scopes', (done): void => {
         const config = new Configuration();
 
-        config.load().then((): void => {
+        config.load(task).then((): void => {
             const plugin = new ScopePlugin(context);
             const options = config.getOptions();
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {

@@ -1,11 +1,13 @@
+import { Task } from 'tasktree-cli/lib/task';
 import { Configuration } from '../../src/entities/configuration';
 import { FilterType, Level } from '../../src/utils/enums';
 
 describe('Config', (): void => {
     it('Create & load', (done): void => {
         const config = new Configuration();
+        const task = new Task('test configuration loading');
 
-        config.load().then((): void => {
+        config.load(task).then((): void => {
             expect(config.getOptions()).toMatchSnapshot();
 
             expect(config.getFilters(FilterType.AuthorLogin)).toStrictEqual(['dependabot-preview[bot]']);
@@ -30,6 +32,7 @@ describe('Config', (): void => {
 
             expect(config.getPlugins()).toStrictEqual(['marker', 'scope', 'section']);
             expect(config.getProvider()).toBe('github');
+            expect(task.isPending()).toBeTruthy();
 
             done();
         });

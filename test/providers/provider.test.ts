@@ -1,4 +1,4 @@
-import { Provider } from '../../src/providers/provider';
+import { Provider, ServiceProvider } from '../../src/providers/provider';
 import { Package } from '../../src/entities/package';
 import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
@@ -34,8 +34,9 @@ class TestProvider extends Provider {
 
 describe('Provider', (): void => {
     it('Create (github)', (): void => {
-        const provider = new TestProvider('https://github.com/keindev/changelog-guru.git');
+        const provider = new TestProvider(ServiceProvider.GitHub, 'https://github.com/keindev/changelog-guru.git');
 
+        expect(provider.type).toBe(ServiceProvider.GitHub);
         expect(provider.getRepository()).toBe('changelog-guru');
         expect(provider.getOwner()).toBe('keindev');
         expect(provider.getBranch().length).toBeGreaterThanOrEqual(3);

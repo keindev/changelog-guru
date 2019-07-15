@@ -1,12 +1,10 @@
 import path from 'path';
 import cosmiconfig from 'cosmiconfig';
-import { TaskTree } from 'tasktree-cli';
+import { Task } from 'tasktree-cli/lib/task';
 import { ServiceProvider } from '../providers/provider';
 import { Option, OptionValue } from '../utils/types';
 import Key from '../utils/key';
 import { Level, FilterType } from '../utils/enums';
-
-const $tasks = TaskTree.tree();
 
 export interface Levels extends Option {
     major?: string[];
@@ -59,8 +57,7 @@ export class Configuration {
         return this.options;
     }
 
-    public async load(): Promise<void> {
-        const task = $tasks.add('Configuration initializing');
+    public async load(task: Task): Promise<void> {
         const explorer = cosmiconfig('changelog');
         const userConfig = await explorer.search();
         const defaultConfig = await explorer.load(path.join(__dirname, '../../', Configuration.FILE_NAME));
@@ -87,8 +84,6 @@ export class Configuration {
                     return Reflect.get(target, name, receiver);
                 },
             });
-
-            task.complete('Configuration initialized');
         } else {
             task.fail('Default configuration file not found');
         }

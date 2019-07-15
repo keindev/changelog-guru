@@ -14,42 +14,46 @@ const $tasks = TaskTree.tree();
 export default class Changelog {
     private config: Configuration;
     private pkg: Package;
-    private reader: Reader | undefined;
 
     public constructor() {
-        const task = $tasks.add('Reading configuration files');
-
         this.config = new Configuration();
         this.pkg = new Package();
-        this.reader = this.getReader();
-
-        if (!this.reader) task.fail(`Provider or Reader is not specified (${this.config.getProvider()})`);
-
-        task.complete();
     }
 
     public async generate(): Promise<void> {
-        const { reader, config } = this;
+        const provider = await this.loadConfiguration();
 
-        if (reader) {
-            await config.load();
-
+        if (provider) {
+            const reader = new Reader(provider);
             const state = await reader.read();
             const writer = new Writer(this.pkg);
 
-            await state.modify(config);
+            await state.modify(this.config);
             await writer.write(state);
         }
     }
 
-    private getReader(): Reader | undefined {
+    private async loadConfiguration(): Promise<Provider | undefined> {
         const { config } = this;
+        const task = $tasks.add('Read configuration');
         let provider: Provider | undefined;
-        let reader: Reader | undefined;
 
-        if (config.getProvider() === ServiceProvider.GitHub) provider = new GitHubProvider(this.pkg.getRepository());
-        if (provider) reader = new Reader(provider);
+        await config.load(task);
 
-        return reader;
+        switch (config.getProvider()) {
+            case ServiceProvider.GitLab:
+                task.fail(`${ServiceProvider.GitLab} - not supported yet`);
+                break;
+            case ServiceProvider.GitHub:
+                provider = new GitHubProvider(this.pkg.getRepository());
+                break;
+            default:
+                task.fail(`Service provider not specified`);
+                break;
+        }
+
+        task.complete('Configuration initialized with:');
+
+        return provider;
     }
 }

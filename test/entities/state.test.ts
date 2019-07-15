@@ -1,3 +1,4 @@
+import { Task } from 'tasktree-cli/lib/task';
 import State from '../../src/entities/state';
 import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
@@ -6,6 +7,7 @@ import { Position } from '../../src/entities/section';
 import { Level } from '../../src/utils/enums';
 
 const config = new Configuration();
+const task = new Task('test task');
 const getAuthor = (id: number, login: string): Author =>
     new Author(id, {
         login,
@@ -22,7 +24,7 @@ const getCommit = (id: number, message: string, author: Author): Commit =>
 
 describe('State', (): void => {
     it('Create', (done): void => {
-        config.load().then((): void => {
+        config.load(task).then((): void => {
             const state = new State();
             const author1 = getAuthor(0, 'dev1');
             const author2 = getAuthor(1, 'dev2');

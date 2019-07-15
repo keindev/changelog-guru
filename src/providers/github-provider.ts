@@ -1,6 +1,6 @@
 import Octokit from '@octokit/rest';
 import { TaskTree } from 'tasktree-cli';
-import { Provider } from './provider';
+import { Provider, ServiceProvider } from './provider';
 import Author from '../entities/author';
 import Commit from '../entities/commit';
 
@@ -11,16 +11,9 @@ export default class GitHubProvider extends Provider {
     private authors: Map<number, Author> = new Map();
 
     public constructor(url: string) {
-        super(url);
-
-        const task = $tasks.add('Initializing GitHub provider');
-
-        if (!process.env.GITHUB_TOKEN) {
-            task.fail('process.env.GITHUB_TOKEN - must be provided');
-        }
+        super(ServiceProvider.GitHub, url);
 
         this.kit = new Octokit({ auth: `token ${process.env.GITHUB_TOKEN || ''}` });
-        task.complete('GitHub provider initialized');
     }
 
     public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {

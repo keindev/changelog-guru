@@ -13,7 +13,7 @@ const task = new Task('test task');
 
 describe('MarkerPlugin', (): void => {
     it('Create', (done): void => {
-        config.load().then((): void => {
+        config.load(task).then((): void => {
             plugin.init(config.getOptions() as MarkerConfiguration);
 
             expect(context.sections.size).toBe(3);

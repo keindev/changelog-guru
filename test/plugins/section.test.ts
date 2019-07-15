@@ -1,3 +1,4 @@
+import { Task } from 'tasktree-cli/lib/task';
 import SectionPlugin, { Configuration as SectionConfiguration } from '../../src/plugins/section';
 import Section from '../../src/entities/section';
 import { TestContext } from '../__mocks__/context.mock';
@@ -7,10 +8,11 @@ import Commit from '../../src/entities/commit';
 const context = new TestContext();
 const config = new Configuration();
 const plugin = new SectionPlugin(context);
+const task = new Task('test task');
 
 describe('SectionPlugin', (): void => {
     it('Create', (done): void => {
-        config.load().then((): void => {
+        config.load(task).then((): void => {
             plugin.init(config.getOptions() as SectionConfiguration);
 
             expect(context.sections.size).toBe(6);
