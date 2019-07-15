@@ -117,6 +117,7 @@
 - Change Scope & Section plugins creation [`35536c1`](https://github.com/keindev/changelog-guru/commit/35536c131a08bfef67aa07244cde76183ff70240)
 - Refactor Entities [`2e6d122`](https://github.com/keindev/changelog-guru/commit/2e6d12275c2141337aab1c1af7a5b73b45b48ef0)
 - Rename some Commit methods [`82c987c`](https://github.com/keindev/changelog-guru/commit/82c987c22e938c21a7e8b42b7a4c5ad40b7a5d4a)
+- Refactor changelog.generate [`53d3a63`](https://github.com/keindev/changelog-guru/commit/53d3a63b757621959b259b3f942fc9ae37e72f29)
 ---
 ## Contributors
 [![[object Object]](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)

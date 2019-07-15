@@ -6,8 +6,7 @@ import { Provider, ServiceProvider } from './providers/provider';
 import GitHubProvider from './providers/github-provider';
 import { Configuration } from './entities/configuration';
 import { Package } from './entities/package';
-
-dotenv.config();
+import { FilterType } from './utils/enums';
 
 const $tasks = TaskTree.tree();
 
@@ -16,24 +15,34 @@ export default class Changelog {
     private pkg: Package;
 
     public constructor() {
+        dotenv.config();
+
         this.config = new Configuration();
         this.pkg = new Package();
     }
 
     public async generate(): Promise<void> {
-        const provider = await this.loadConfiguration();
+        const provider = await this.getProvider();
 
         if (provider) {
+            const { config } = this;
             const reader = new Reader(provider);
             const state = await reader.read();
             const writer = new Writer(this.pkg);
 
-            await state.modify(this.config);
+            state.setLevels(config.getLevels());
+            state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
+            state.ignoreCommits(
+                config.getFilters(FilterType.CommitType),
+                config.getFilters(FilterType.CommitScope),
+                config.getFilters(FilterType.CommitSubject)
+            );
+            await state.modify(config.getPlugins(), config.getOptions());
             await writer.write(state);
         }
     }
 
-    private async loadConfiguration(): Promise<Provider | undefined> {
+    private async getProvider(): Promise<Provider | undefined> {
         const { config } = this;
         const task = $tasks.add('Read configuration');
         let provider: Provider | undefined;

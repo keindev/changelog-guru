@@ -18,7 +18,6 @@ export default class GitHubProvider extends Provider {
 
     public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {
         const task = $tasks.add(`Loading page #${page.toString()}`);
-
         const { data: commits } = await this.kit.repos.listCommits({
             page,
             since: date,
@@ -31,25 +30,7 @@ export default class GitHubProvider extends Provider {
 
         task.complete(`Page #${page.toString()} loaded (${commits.length.toString()} commits)`);
 
-        return commits.map((response): [Commit, Author] => {
-            const author = this.parseAuthor(response.author);
-            const {
-                commit: {
-                    message,
-                    author: { date: timestamp },
-                },
-                html_url: url,
-                sha,
-            } = response;
-            const commit = new Commit(sha, {
-                timestamp: new Date(timestamp).getTime(),
-                author: author.login,
-                message,
-                url,
-            });
-
-            return [commit, author];
-        });
+        return commits.map((response): [Commit, Author] => this.parseResponse(response));
     }
 
     public async getLatestReleaseDate(): Promise<string> {
@@ -76,6 +57,18 @@ export default class GitHubProvider extends Provider {
         }
 
         return release;
+    }
+
+    private parseResponse(response: Octokit.ReposListCommitsResponseItem): [Commit, Author] {
+        const author = this.parseAuthor(response.author);
+        const commit = new Commit(response.sha, {
+            timestamp: new Date(response.commit.author.date).getTime(),
+            author: author.login,
+            message: response.commit.message,
+            url: response.html_url,
+        });
+
+        return [commit, author];
     }
 
     private parseAuthor(response: Octokit.ReposListCommitsResponseItemAuthor): Author {

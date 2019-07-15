@@ -26,6 +26,10 @@ export default class Author {
         this.increaseContribution();
     }
 
+    public static compare(a: Author, b: Author): number {
+        return b.getContribution() - a.getContribution();
+    }
+
     public getAvatar(size: number = Author.AVATAR_SIZE): string {
         const url = new URL(this.avatar);
         const { searchParams } = url;

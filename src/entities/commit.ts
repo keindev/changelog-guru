@@ -68,6 +68,10 @@ export default class Commit {
         return result;
     }
 
+    public static filter(c: Commit): boolean {
+        return !c.isIgnored();
+    }
+
     public getAccents(): string[] {
         return [...this.accents.values()];
     }

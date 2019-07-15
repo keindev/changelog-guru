@@ -30,6 +30,10 @@ export default class Section {
         return result;
     }
 
+    public static filter(s: Section): boolean {
+        return !(s.getPosition() === Position.Subsection || s.isEmpty() || s.getPriority() === Priority.Default);
+    }
+
     public setPosition(position: Position): void {
         this.position = position;
     }
@@ -45,7 +49,7 @@ export default class Section {
     }
 
     public getCommits(sort: boolean = true): Commit[] {
-        const commits = [...this.commits.values()].filter((commit): boolean => !commit.isIgnored());
+        const commits = [...this.commits.values()].filter(Commit.filter);
 
         return sort ? commits.sort((a, b): number => a.timestamp - b.timestamp) : commits;
     }
@@ -80,6 +84,41 @@ export default class Section {
         }
 
         return this.priority;
+    }
+
+    public assignAsSubsection(relations: Map<string, Section>): void {
+        const commits = this.getCommits();
+        let parent: Section | undefined;
+
+        if (commits.length) {
+            parent = relations.get(commits[0].hash);
+
+            if (parent) {
+                parent.assign(this);
+            }
+
+            commits.forEach((commit): void => {
+                parent = relations.get(commit.hash);
+
+                if (parent) {
+                    parent.remove(commit);
+                }
+
+                relations.set(commit.hash, this);
+            });
+        }
+    }
+
+    public assignAsSection(relations: Map<string, Section>): void {
+        const commits = this.getCommits();
+
+        commits.forEach((commit): void => {
+            if (relations.has(commit.hash)) {
+                this.remove(commit);
+            } else {
+                relations.set(commit.hash, this);
+            }
+        });
     }
 
     private assignEntity<T>(key: string, value: T, map: Map<string, T>): void {
