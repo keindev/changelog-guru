@@ -4,7 +4,7 @@ import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
 import { Configuration } from '../../src/entities/configuration';
 import { Position } from '../../src/entities/section';
-import { Level } from '../../src/utils/enums';
+import { Level, FilterType } from '../../src/utils/enums';
 
 const config = new Configuration();
 const task = new Task('test task');
@@ -48,14 +48,20 @@ describe('State', (): void => {
             commit.setLevel(Level.Major);
             expect(state.getChangesLevels()).toStrictEqual([1, 0, 3]);
 
+            state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
+            expect(ignoredAuthor.isIgnored()).toBeTruthy();
+
+            state.ignoreCommits(
+                config.getFilters(FilterType.CommitType),
+                config.getFilters(FilterType.CommitScope),
+                config.getFilters(FilterType.CommitSubject)
+            );
+            expect(ignoredCommit.isIgnored()).toBeTruthy();
+
             // FIXME: ignoreAuthors & ignoreCommits now is public
             /*
             state.modify([], config.getOptions()).then((): void => {
                 expect(state.getSections()).toStrictEqual([section]);
-                expect(ignoredAuthor.isIgnored()).toBeTruthy();
-                expect(ignoredCommit.isIgnored()).toBeTruthy();
-
-
             });
             */
             done();
