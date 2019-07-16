@@ -60,12 +60,74 @@ describe('Section', (): void => {
         expect(section.getCommits()).toStrictEqual([]);
     });
 
-    it('Sections compare', (): void => {
+    it('Compare', (): void => {
         const section1 = new Section('a', Position.Body);
         const section2 = new Section('b', Position.Body);
 
         expect(Section.compare(section1, section2)).toBe(Compare.Less);
         expect(Section.compare(section2, section1)).toBe(Compare.More);
         expect(Section.compare(section1, section1)).toBe(Compare.Equal);
+    });
+
+    it('Filter', (): void => {
+        const section1 = new Section('a', Position.Subsection);
+        const section2 = new Section('b', Position.Body);
+        const section3 = new Section('c', Position.Body);
+        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
+            timestamp: 0,
+            message: `feat(test): message`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+            author: 'keindev',
+        });
+
+        section3.assign(commit);
+
+        expect(Section.filter(section1)).toBeFalsy();
+        expect(Section.filter(section2)).toBeFalsy();
+        expect(Section.filter(section3)).toBeTruthy();
+    });
+
+    it('Relations of sections', (): void => {
+        const section = new Section('a', Position.Body);
+        const relations: Map<string, Section> = new Map();
+        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
+            timestamp: 0,
+            message: `feat(test): message`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+            author: 'keindev',
+        });
+
+        section.assign(commit);
+        section.assignAsSection(relations);
+
+        expect(section.getCommits()).toStrictEqual([commit]);
+        expect(relations.size).toBe(1);
+        expect(relations.get(commit.hash)).toStrictEqual(section);
+
+        section.assignAsSection(relations);
+        expect(section.getCommits()).toStrictEqual([]);
+        expect(relations.size).toBe(1);
+        expect(relations.get(commit.hash)).toStrictEqual(section);
+    });
+
+    it('Relations of subsections', (): void => {
+        const section = new Section('a', Position.Body);
+        const subsection = new Section('b', Position.Body);
+        const relations: Map<string, Section> = new Map();
+        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
+            timestamp: 0,
+            message: `feat(test): message`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+            author: 'keindev',
+        });
+
+        section.assign(commit);
+        subsection.assign(commit);
+        relations.set(commit.hash, section);
+        subsection.assignAsSubsection(relations);
+
+        expect(section.getSections()).toStrictEqual([subsection]);
+        expect(section.getCommits()).toStrictEqual([]);
+        expect(subsection.getCommits()).toStrictEqual([commit]);
     });
 });

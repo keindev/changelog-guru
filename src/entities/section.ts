@@ -31,7 +31,7 @@ export default class Section {
     }
 
     public static filter(s: Section): boolean {
-        return !(s.getPosition() === Position.Subsection || s.isEmpty() || s.getPriority() === Priority.Default);
+        return !(s.getPosition() === Position.Subsection || s.isEmpty());
     }
 
     public setPosition(position: Position): void {
