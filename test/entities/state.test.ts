@@ -39,6 +39,7 @@ describe('State', (): void => {
             section.assign(commit);
             state.addCommit(commit, author2);
             state.addCommit(ignoredCommit, ignoredAuthor);
+            state.setLevels(config.getLevels());
 
             expect(state.getAuthors()).toStrictEqual([author1, author2, ignoredAuthor]);
             expect(state.getSections()).toStrictEqual([section, emptySection]);
@@ -46,25 +47,22 @@ describe('State', (): void => {
             expect(ignoredCommit.isIgnored()).toBeFalsy();
 
             commit.setLevel(Level.Major);
-            expect(state.getChangesLevels()).toStrictEqual([1, 0, 3]);
-
             state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
-            expect(ignoredAuthor.isIgnored()).toBeTruthy();
-
             state.ignoreCommits(
                 config.getFilters(FilterType.CommitType),
                 config.getFilters(FilterType.CommitScope),
                 config.getFilters(FilterType.CommitSubject)
             );
+
+            expect(state.getChangesLevels()).toStrictEqual([1, 0, 3]);
+            expect(ignoredAuthor.isIgnored()).toBeTruthy();
             expect(ignoredCommit.isIgnored()).toBeTruthy();
 
-            // FIXME: ignoreAuthors & ignoreCommits now is public
-            /*
             state.modify([], config.getOptions()).then((): void => {
                 expect(state.getSections()).toStrictEqual([section]);
+
+                done();
             });
-            */
-            done();
         });
     });
 
