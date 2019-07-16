@@ -28,7 +28,6 @@ export default class Changelog {
             const { config } = this;
             const reader = new Reader(provider);
             const state = await reader.read();
-            const writer = new Writer(this.pkg);
 
             state.setLevels(config.getLevels());
             state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
@@ -37,8 +36,10 @@ export default class Changelog {
                 config.getFilters(FilterType.CommitScope),
                 config.getFilters(FilterType.CommitSubject)
             );
+
             await state.modify(config.getPlugins(), config.getOptions());
-            await writer.write(state);
+            await Writer.write(state.getAuthors(), state.getSections());
+            await this.pkg.incrementVersion(...state.getChangesLevels());
         }
     }
 

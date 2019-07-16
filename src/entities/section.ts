@@ -1,5 +1,5 @@
 import Commit from './commit';
-import { Compare, Priority } from '../utils/enums';
+import { Compare, Priority, Status } from '../utils/enums';
 
 export enum Position {
     Header = 1,
@@ -48,10 +48,12 @@ export default class Section {
         return sort ? sections.sort(Section.compare) : sections;
     }
 
-    public getCommits(sort: boolean = true): Commit[] {
+    public getCommits(sort: boolean = true, onlyVisible: boolean = false): Commit[] {
         const commits = [...this.commits.values()].filter(Commit.filter);
 
-        return sort ? commits.sort(Commit.compare) : commits;
+        if (sort) commits.sort(Commit.compare);
+
+        return onlyVisible ? commits.filter((commit): boolean => !commit.hasStatus(Status.Hidden)) : commits;
     }
 
     public getPriority(): number {

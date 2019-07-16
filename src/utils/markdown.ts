@@ -36,4 +36,8 @@ export default class Markdown {
     public static image(text: string, url: string): string {
         return `![${text}](${url})`;
     }
+
+    public static imageLink(text: string, img: string, url: string): string {
+        return Markdown.link(Markdown.image(text, img), url);
+    }
 }
