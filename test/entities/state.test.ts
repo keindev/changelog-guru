@@ -36,7 +36,7 @@ describe('State', (): void => {
 
             state.addCommit(getCommit(0, 'test(State): message1', author1), author1);
             state.addCommit(getCommit(1, 'test(State): message2', author1), author1);
-            section.assign(commit);
+            section.add(commit);
             state.addCommit(commit, author2);
             state.addCommit(ignoredCommit, ignoredAuthor);
             state.setLevels(config.getLevels());

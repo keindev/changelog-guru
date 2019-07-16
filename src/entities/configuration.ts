@@ -49,12 +49,6 @@ export class Configuration {
         return this.levels;
     }
 
-    /*
-    public getLevel(type: string): Level {
-        return Key.inMap(type, this.levels) || Level.Patch;
-    }
-    */
-
     public getFilters(type: FilterType): string[] {
         return this.filters.get(type) || [];
     }

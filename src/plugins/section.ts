@@ -40,7 +40,7 @@ export default class SectionPlugin extends Plugin {
         if (type) {
             const section = Key.inMap(type, this.blocks);
 
-            if (section) section.assign(commit);
+            if (section) section.add(commit);
         }
     }
 }

@@ -87,7 +87,7 @@ export default class MarkerPlugin extends Plugin {
                             break;
                     }
 
-                    if (section instanceof Section) section.assign(commit);
+                    if (section instanceof Section) section.add(commit);
                 }
             } while (match && expression.lastIndex);
         });

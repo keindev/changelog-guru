@@ -34,12 +34,12 @@ export default class Section {
         return !(s.getPosition() === Position.Subsection || s.isEmpty());
     }
 
-    public setPosition(position: Position): void {
-        this.position = position;
-    }
-
     public getPosition(): Position {
         return this.position;
+    }
+
+    public setPosition(position: Position): void {
+        this.position = position;
     }
 
     public getSections(sort: boolean = true): Section[] {
@@ -51,14 +51,21 @@ export default class Section {
     public getCommits(sort: boolean = true): Commit[] {
         const commits = [...this.commits.values()].filter(Commit.filter);
 
-        return sort ? commits.sort((a, b): number => a.timestamp - b.timestamp) : commits;
+        return sort ? commits.sort(Commit.compare) : commits;
     }
 
-    public isEmpty(): boolean {
-        return !this.sections.size && !this.commits.size;
+    public getPriority(): number {
+        if (this.priority === Priority.Default) {
+            this.priority = this.getCommits().reduce(
+                (acc, commit): number => acc + commit.getPriority(),
+                Priority.Default
+            );
+        }
+
+        return this.priority;
     }
 
-    public assign(entity: Commit | Section): void {
+    public add(entity: Commit | Section): void {
         if (entity instanceof Commit) this.assignEntity(entity.hash, entity, this.commits);
         if (entity instanceof Section) {
             this.assignEntity(entity.title, entity, this.sections);
@@ -74,16 +81,8 @@ export default class Section {
         }
     }
 
-    // FIXME: consider subsections!
-    public getPriority(): number {
-        if (this.priority === Priority.Default) {
-            this.priority = this.getCommits().reduce(
-                (acc, commit): number => acc + commit.getPriority(),
-                Priority.Default
-            );
-        }
-
-        return this.priority;
+    public isEmpty(): boolean {
+        return !this.sections.size && !this.commits.size;
     }
 
     public assignAsSubsection(relations: Map<string, Section>): void {
@@ -93,16 +92,12 @@ export default class Section {
         if (commits.length) {
             parent = relations.get(commits[0].hash);
 
-            if (parent) {
-                parent.assign(this);
-            }
+            if (parent) parent.add(this);
 
             commits.forEach((commit): void => {
                 parent = relations.get(commit.hash);
 
-                if (parent) {
-                    parent.remove(commit);
-                }
+                if (parent) parent.remove(commit);
 
                 relations.set(commit.hash, this);
             });

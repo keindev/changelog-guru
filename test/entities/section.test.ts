@@ -43,11 +43,11 @@ describe('Section', (): void => {
             author: 'keindev',
         });
 
-        section.assign(subsection);
+        section.add(subsection);
         expect(section.getPriority()).toBe(Priority.Default);
         expect(section.getSections()).toStrictEqual([subsection]);
 
-        section.assign(commit);
+        section.add(commit);
         expect(section.getPriority()).toBe(Priority.Default + commit.getPriority());
         expect(section.getCommits()).toStrictEqual([commit]);
 
@@ -80,7 +80,7 @@ describe('Section', (): void => {
             author: 'keindev',
         });
 
-        section3.assign(commit);
+        section3.add(commit);
 
         expect(Section.filter(section1)).toBeFalsy();
         expect(Section.filter(section2)).toBeFalsy();
@@ -97,7 +97,7 @@ describe('Section', (): void => {
             author: 'keindev',
         });
 
-        section.assign(commit);
+        section.add(commit);
         section.assignAsSection(relations);
 
         expect(section.getCommits()).toStrictEqual([commit]);
@@ -121,8 +121,8 @@ describe('Section', (): void => {
             author: 'keindev',
         });
 
-        section.assign(commit);
-        subsection.assign(commit);
+        section.add(commit);
+        subsection.add(commit);
         relations.set(commit.hash, section);
         subsection.assignAsSubsection(relations);
 
