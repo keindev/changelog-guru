@@ -59,7 +59,7 @@
         "@types/findup-sync": "^2.0.2",
         "@types/jest": "^24.0.15",
         "@types/node": "^12.6.5",
-        "@types/read-pkg": "^4.0.0",
+        "@types/read-pkg": "^5.1.0",
         "@types/semver": "^6.0.1",
         "@types/write-pkg": "^3.1.0",
         "@typescript-eslint/eslint-plugin": "^1.12.0",
