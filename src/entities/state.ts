@@ -31,7 +31,7 @@ export default class State implements Context {
     }
 
     public getAuthors(): Author[] {
-        return [...this.authors.values()].sort(Author.compare);
+        return [...this.authors.values()].filter(Author.filter).sort(Author.compare);
     }
 
     public getChangesLevels(): [number, number, number] {

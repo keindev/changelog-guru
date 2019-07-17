@@ -13,8 +13,8 @@ export default class Markdown {
         return `**${text}** `;
     }
 
-    public static list(items: string[]): string {
-        return items.map((item): string => `- ${Markdown.capitalize(item)}`).join('\n');
+    public static listItem(text: string): string {
+        return `- ${Markdown.capitalize(text)}`;
     }
 
     public static link(text: string, url: string): string {

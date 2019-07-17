@@ -30,6 +30,10 @@ export default class Author {
         return b.getContribution() - a.getContribution();
     }
 
+    public static filter(a: Author): boolean {
+        return !a.isIgnored();
+    }
+
     public getAvatar(size: number = Author.AVATAR_SIZE): string {
         const url = new URL(this.avatar);
         const { searchParams } = url;

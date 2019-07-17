@@ -27,6 +27,7 @@ export default class Changelog {
         if (provider) {
             const { config } = this;
             const reader = new Reader(provider);
+            const writer = new Writer();
             const state = await reader.read();
 
             state.setLevels(config.getLevels());
@@ -38,7 +39,7 @@ export default class Changelog {
             );
 
             await state.modify(config.getPlugins(), config.getOptions());
-            await Writer.write(state.getAuthors(), state.getSections());
+            await writer.write(state.getAuthors(), state.getSections());
             await this.pkg.incrementVersion(...state.getChangesLevels());
         }
     }
