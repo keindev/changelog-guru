@@ -465,10 +465,12 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
-"@types/write-pkg@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@types/write-pkg/-/write-pkg-3.1.0.tgz#f58767f4fb9a6a3ad8e95d3e9cd1f2d026ceab26"
-  integrity sha512-JRGsPEPCrYqTXU0Cr+Yu7esPBE2yvH7ucOHr+JuBy0F59kglPvO5gkmtyEvf3P6dASSkScvy/XQ6SC1QEBFDuA==
+"@types/write-pkg@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/write-pkg/-/write-pkg-4.0.0.tgz#1573e3675c24112cfe0c252cb90acf4f706d9039"
+  integrity sha512-n0M46gLL/LRs8Zx3M1+P71GWzuzhZjE5nBV2izCZSrz9jhO1kWlr+Jc1pIxcqi8V0gt5S3bQ33+ZWyJrn4t1BA==
+  dependencies:
+    write-pkg "*"
 
 "@types/yargs@^12.0.2", "@types/yargs@^12.0.9":
   version "12.0.12"
@@ -4829,7 +4831,7 @@ write-json-file@^3.2.0:
     sort-keys "^2.0.0"
     write-file-atomic "^2.4.2"
 
-write-pkg@^4.0.0:
+write-pkg@*, write-pkg@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/write-pkg/-/write-pkg-4.0.0.tgz#675cc04ef6c11faacbbc7771b24c0abbf2a20039"
   integrity sha512-v2UQ+50TNf2rNHJ8NyWttfm/EJUBWMJcx6ZTYZr6Qp52uuegWw/lBkCtCbnYZEmPRNL61m+u67dAmGxo+HTULA==
