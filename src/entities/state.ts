@@ -19,6 +19,9 @@ export interface Context {
 }
 
 export default class State implements Context {
+    protected pluginsPath: string = path.resolve(__dirname, '../plugins');
+    protected pluginsExtension: string = 'js';
+
     private authors: Map<number, Author> = new Map();
     private commits: Map<string, Commit> = new Map();
     private sections: Section[] = [];
@@ -131,7 +134,7 @@ export default class State implements Context {
     }
 
     private async modifyWithPlugin(name: string, options: ConfigurationOptions, task: Task): Promise<void> {
-        const filePath = path.resolve(__dirname, '../plugins', `${name}.js`);
+        const filePath = path.join(this.pluginsPath, `${name}.${this.pluginsExtension}`);
 
         if (fs.existsSync(filePath)) {
             const module: Importable<Plugin, Context> = await import(filePath);
@@ -156,7 +159,7 @@ export default class State implements Context {
                 task.fail(`${PluginClass.name} is not constructor`);
             }
         } else {
-            task.skip(`Plugin ${name} not found`);
+            task.fail(`Plugin ${name} not found`);
         }
     }
 }

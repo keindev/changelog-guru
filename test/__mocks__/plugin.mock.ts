@@ -4,7 +4,7 @@ import Commit from '../../src/entities/commit';
 import { Context } from '../../src/entities/state';
 import { ConfigurationOptions } from '../../src/entities/configuration';
 
-export class TestPlugin extends Plugin {
+export default class TestPlugin extends Plugin {
     public getContext(): Context {
         return this.context;
     }

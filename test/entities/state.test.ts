@@ -1,5 +1,5 @@
 import { Task } from 'tasktree-cli/lib/task';
-import State from '../../src/entities/state';
+import { TestState } from '../__mocks__/state.mock';
 import Commit from '../../src/entities/commit';
 import Author from '../../src/entities/author';
 import { Configuration } from '../../src/entities/configuration';
@@ -25,7 +25,7 @@ const getCommit = (id: number, message: string, author: Author): Commit =>
 describe('State', (): void => {
     it('Create', (done): void => {
         config.load(task).then((): void => {
-            const state = new State();
+            const state = new TestState();
             const author1 = getAuthor(0, 'dev1');
             const author2 = getAuthor(1, 'dev2');
             const commit = getCommit(2, 'feat(State): message3', author2);
@@ -58,7 +58,7 @@ describe('State', (): void => {
             expect(ignoredAuthor.isIgnored()).toBeTruthy();
             expect(ignoredCommit.isIgnored()).toBeTruthy();
 
-            state.modify([], config.getOptions()).then((): void => {
+            state.modify([TestState.MOCK_PLUGIN_NAME], config.getOptions()).then((): void => {
                 expect(state.getSections()).toStrictEqual([section]);
 
                 done();
@@ -67,7 +67,7 @@ describe('State', (): void => {
     });
 
     it('Find section', (): void => {
-        const state = new State();
+        const state = new TestState();
         const title = 'header section';
         const section = state.addSection(title, Position.Header);
 
