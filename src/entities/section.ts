@@ -2,6 +2,7 @@ import Commit from './commit';
 import { Compare, Priority, Status } from '../utils/enums';
 
 export enum Position {
+    None = 0,
     Header = 1,
     Body = 2,
     Footer = 3,

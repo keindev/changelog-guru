@@ -14,7 +14,7 @@ import { Level } from '../utils/enums';
 const $tasks = TaskTree.tree();
 
 export interface Context {
-    addSection(title: string, position: Position): Section;
+    addSection(title: string, position: Position): Section | undefined;
     findSection(title: string): Section | undefined;
 }
 
@@ -67,10 +67,10 @@ export default class State implements Context {
         }
     }
 
-    public addSection(title: string, position: Position = Position.Group): Section {
+    public addSection(title: string, position: Position = Position.Group): Section | undefined {
         let section = this.findSection(title);
 
-        if (!section) {
+        if (!section && Key.unify(title)) {
             section = new Section(title, position);
             this.sections.push(section);
         }

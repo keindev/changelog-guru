@@ -36,17 +36,18 @@ export default class ScopePlugin extends Plugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const commitScope: string | undefined = commit.getScope();
+        const scope = commit.getScope();
 
-        if (commitScope) {
+        if (scope) {
             const { scopes, onlyConfigured } = this;
             let accent: string | undefined;
 
-            commitScope.split(',').forEach((scope): void => {
-                accent = Key.inMap(scope, scopes);
+            scope.split(',').forEach((item): void => {
+                accent = Key.inMap(item, scopes);
 
-                if (!accent && !onlyConfigured) accent = scope;
-                if (accent) commit.addAccent(accent.trim());
+                if (accent || (!onlyConfigured && item.length)) {
+                    commit.addAccent((accent || item).trim());
+                }
             });
         }
     }

@@ -6,6 +6,10 @@ export default class Key {
         return key.trim().toLowerCase();
     }
 
+    public static unique<T>(list: T[]): T[] {
+        return [...new Set(list)];
+    }
+
     public static inArray(key: string | undefined, list: string[]): boolean {
         if (typeof key !== 'string') return false;
         if (!list.length) return false;

@@ -24,9 +24,11 @@ export default class SectionPlugin extends Plugin {
                         if (Array.isArray(types)) {
                             const section = this.context.addSection(name, Position.Body);
 
-                            types.forEach((type: string): void => {
-                                this.blocks.set(Key.unify(type), section);
-                            });
+                            if (section) {
+                                types.forEach((type: string): void => {
+                                    this.blocks.set(Key.unify(type), section);
+                                });
+                            }
                         }
                     });
                 }
@@ -40,7 +42,9 @@ export default class SectionPlugin extends Plugin {
         if (type) {
             const section = Key.inMap(type, this.blocks);
 
-            if (section) section.add(commit);
+            if (section) {
+                section.add(commit);
+            }
         }
     }
 }
