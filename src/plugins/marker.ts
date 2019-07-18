@@ -63,7 +63,7 @@ export default class MarkerPlugin extends Plugin {
 
                 if (match && match.groups && typeof match.groups.name === 'string') {
                     const { name, value } = match.groups;
-                    const key: string | undefined = Key.getEqualy(name, names);
+                    const key: string | undefined = Key.getEqual(name, names);
                     let section: Section | undefined = key ? markers.get(key) : undefined;
 
                     switch (key) {

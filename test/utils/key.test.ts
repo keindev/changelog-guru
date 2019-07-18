@@ -37,12 +37,12 @@ describe('Key', (): void => {
         expect(Key.inMap('test', items)).toBeUndefined();
     });
 
-    it('getEqualy', (): void => {
+    it('getEqual', (): void => {
         const list = ['feat', 'fear', 'feed', 'fix'];
 
-        expect(Key.getEqualy('feat', list)).toBe('feat');
-        expect(Key.getEqualy('fear', list)).toBe('feat');
-        expect(Key.getEqualy('fuel', list)).toBeUndefined();
+        expect(Key.getEqual('feat', list)).toBe('feat');
+        expect(Key.getEqual('fear', list)).toBe('feat');
+        expect(Key.getEqual('fuel', list)).toBeUndefined();
     });
 
     it('isEqual', (): void => {

@@ -23,7 +23,7 @@ export abstract class Provider {
     protected branch: string = 'master';
 
     public constructor(type: ServiceProvider, url: string) {
-        const pathname: string[] = new URL(url).pathname.split('/');
+        const pathname = new URL(url).pathname.split('/');
 
         this.type = type;
         this.repository = path.basename(pathname.pop() as string, `.${Provider.TYPE}`);
@@ -34,8 +34,8 @@ export abstract class Provider {
         const task = $tasks.add('Initializing git provider');
 
         if (filePath && fs.existsSync(filePath)) {
-            const buffer: Buffer = fs.readFileSync(filePath);
-            const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
+            const buffer = fs.readFileSync(filePath);
+            const match = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
 
             if (match) {
                 [, this.branch] = match;

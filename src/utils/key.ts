@@ -41,7 +41,7 @@ export default class Key {
         return map.get(uniqueKey);
     }
 
-    public static getEqualy(key: string, list: string[]): string | undefined {
+    public static getEqual(key: string, list: string[]): string | undefined {
         return list.find((item): boolean => Key.isEqual(item, key));
     }
 

@@ -5,7 +5,6 @@ import Changelog from './changelog';
 const $tasks = TaskTree.tree();
 
 $tasks.start();
-
 commander.version(process.env.npm_package_version || '', '-v, --version').description('Git changelog generator');
 commander.parse(process.argv);
 
