@@ -286,9 +286,9 @@
     "@types/yargs" "^12.0.9"
 
 "@octokit/endpoint@^5.1.0":
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-5.3.0.tgz#7c4a8d74e88176206817bf513b63b1859a84c475"
-  integrity sha512-D7u80EdZHlHzYl81PgoKXFFIl121eLahKI6WFvuhwE4ih+U+YWrE1fGiH9eybr8l3mGgZ9iITYGBR+7UR5S9QA==
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/@octokit/endpoint/-/endpoint-5.3.1.tgz#4a1714c7d35c1ed074e898c5f4a9897541581f79"
+  integrity sha512-4mKqSQfeTRFpQMUGIUG1ewdQT64b2YpvjG2dE1x7nhQupdI/AjdgdcIsmPtRFEXlih/uLQLRWJL4FrivpQdC7A==
   dependencies:
     deepmerge "4.0.0"
     is-plain-object "^3.0.0"
@@ -317,9 +317,9 @@
     universal-user-agent "^3.0.0"
 
 "@octokit/rest@^16.28.4":
-  version "16.28.4"
-  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-16.28.4.tgz#2f8ef08305033bc91256530d6a3c98eada700660"
-  integrity sha512-ZBsfD46t3VNkwealxm5zloVgQta8d8o4KYBR/hMAZ582IgjmSDKZdkjyv5w37IUCM3tcPZWKUT+kml9pEIC2GA==
+  version "16.28.5"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-16.28.5.tgz#56a5a37fc45a6520199189ac3e5eb09420c0ef6f"
+  integrity sha512-W8hHSm6103c+lNdTuQBMKdZNDCOFFXJdatj92g2d6Hqk134EMDHRc02QWI/Fs1WGnWZ8Leb0QFbXPKO2njeevQ==
   dependencies:
     "@octokit/request" "^5.0.0"
     "@octokit/request-error" "^1.0.2"
@@ -1392,10 +1392,10 @@ eslint-plugin-import@^2.18.0:
     read-pkg-up "^2.0.0"
     resolve "^1.11.0"
 
-eslint-plugin-jest@^22.10.0:
-  version "22.10.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-22.10.0.tgz#a22be77f4dc692808b88ead0059620bda299a97d"
-  integrity sha512-iBEWJn60Z5bctcjacymUnOQ3xN3gdvGOy3tDHpalAa99r4+jwH0CvICsIIHBNXNlJxuklkbx+wxr49tXk6M0tg==
+eslint-plugin-jest@^22.11.1:
+  version "22.11.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-22.11.1.tgz#04b586e2fddd07e55900a381255d6b3d9242ae87"
+  integrity sha512-kPF1Nmr5xMLz6DT7qEttz0TTeyx1x6SozIkNO9y4F2yxuWjHMp/e70fo742pR3y0MewgXQQMIIXeSKLB66iO7Q==
 
 eslint-scope@^4.0.0, eslint-scope@^4.0.3:
   version "4.0.3"
@@ -1980,11 +1980,12 @@ http-signature@~1.2.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-husky@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-3.0.0.tgz#de63821a7049dc412b1afd753c259e2f6e227562"
-  integrity sha512-lKMEn7bRK+7f5eWPNGclDVciYNQt0GIkAQmhKl+uHP1qFzoN0h92kmH9HZ8PCwyVA2EQPD8KHf0FYWqnTxau+Q==
+husky@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-3.0.1.tgz#06152c28e129622b05fa09c494209de8cf2dfb59"
+  integrity sha512-PXBv+iGKw23GHUlgELRlVX9932feFL407/wHFwtsGeArp0dDM4u+/QusSQwPKxmNgjpSL+ustbOdQ2jetgAZbA==
   dependencies:
+    chalk "^2.4.2"
     cosmiconfig "^5.2.1"
     execa "^1.0.0"
     get-stdin "^7.0.0"
@@ -4283,9 +4284,9 @@ static-extend@^0.1.1:
     object-copy "^0.1.0"
 
 stdout-update@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/stdout-update/-/stdout-update-1.3.3.tgz#17f82e6e94ab91d6e1e7dc4e0e2974717956e3d8"
-  integrity sha512-0wXwgHfX9H9EM34APfnjqhLEs8gY9QLTAdQkaTwqEh1germbm0B4cyRnQs1RkfBwYn3gwBXYHmzLYetiqUNm3g==
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/stdout-update/-/stdout-update-1.3.4.tgz#292681d1eaac5509f71690123fe8721c5ca973cf"
+  integrity sha512-GSMjUkdIfUPbBAGOkO+17FXhYx3xuXv0fpbHxyIY6HK9Kb4oLXGOFGtbmhvtroWv4tmgxJ2BrABq6tagKUyNvQ==
   dependencies:
     ansi-escapes "^4.2.0"
     ansi-styles "^4.0.0"
