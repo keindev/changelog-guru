@@ -34,35 +34,40 @@ describe('State', (): void => {
             const ignoredAuthor = getAuthor(2, 'dependabot-preview[bot]');
             const ignoredCommit = getCommit(3, 'build(deps): ignore this message', ignoredAuthor);
 
-            state.addCommit(getCommit(0, 'test(State): message1', author1), author1);
-            state.addCommit(getCommit(1, 'test(State): message2', author1), author1);
-            section.add(commit);
-            state.addCommit(commit, author2);
-            state.addCommit(ignoredCommit, ignoredAuthor);
-            state.setLevels(config.getLevels());
+            expect(section).toBeDefined();
+            expect(emptySection).toBeDefined();
 
-            expect(state.getAuthors()).toStrictEqual([author1, author2, ignoredAuthor]);
-            expect(state.getSections()).toStrictEqual([section, emptySection]);
-            expect(ignoredAuthor.isIgnored()).toBeFalsy();
-            expect(ignoredCommit.isIgnored()).toBeFalsy();
+            if (section && emptySection) {
+                state.addCommit(getCommit(0, 'test(State): message1', author1), author1);
+                state.addCommit(getCommit(1, 'test(State): message2', author1), author1);
+                section.add(commit);
+                state.addCommit(commit, author2);
+                state.addCommit(ignoredCommit, ignoredAuthor);
+                state.setLevels(config.getLevels());
 
-            commit.setLevel(Level.Major);
-            state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
-            state.ignoreCommits(
-                config.getFilters(FilterType.CommitType),
-                config.getFilters(FilterType.CommitScope),
-                config.getFilters(FilterType.CommitSubject)
-            );
+                expect(state.getAuthors()).toStrictEqual([author1, author2, ignoredAuthor]);
+                expect(state.getSections()).toStrictEqual([section, emptySection]);
+                expect(ignoredAuthor.isIgnored()).toBeFalsy();
+                expect(ignoredCommit.isIgnored()).toBeFalsy();
 
-            expect(state.getChangesLevels()).toStrictEqual([1, 0, 3]);
-            expect(ignoredAuthor.isIgnored()).toBeTruthy();
-            expect(ignoredCommit.isIgnored()).toBeTruthy();
+                commit.setLevel(Level.Major);
+                state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
+                state.ignoreCommits(
+                    config.getFilters(FilterType.CommitType),
+                    config.getFilters(FilterType.CommitScope),
+                    config.getFilters(FilterType.CommitSubject)
+                );
 
-            state.modify([TestState.MOCK_PLUGIN_NAME], config.getOptions()).then((): void => {
-                expect(state.getSections()).toStrictEqual([section]);
+                expect(state.getChangesLevels()).toStrictEqual([1, 0, 3]);
+                expect(ignoredAuthor.isIgnored()).toBeTruthy();
+                expect(ignoredCommit.isIgnored()).toBeTruthy();
 
-                done();
-            });
+                state.modify([TestState.MOCK_PLUGIN_NAME], config.getOptions()).then((): void => {
+                    expect(state.getSections()).toStrictEqual([section]);
+
+                    done();
+                });
+            }
         });
     });
 
@@ -71,7 +76,11 @@ describe('State', (): void => {
         const title = 'header section';
         const section = state.addSection(title, Position.Header);
 
-        expect(state.findSection(title)).toStrictEqual(section);
-        expect(state.findSection('')).toBeUndefined();
+        expect(section).toBeDefined();
+
+        if (section) {
+            expect(state.findSection(title)).toStrictEqual(section);
+            expect(state.findSection('')).toBeUndefined();
+        }
     });
 });
