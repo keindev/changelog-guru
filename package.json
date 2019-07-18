@@ -42,14 +42,14 @@
         "node": ">=10.0.0"
     },
     "dependencies": {
-        "@octokit/rest": "^16.28.4",
+        "@octokit/rest": "^16.28.5",
         "commander": "^2.20.0",
         "cosmiconfig": "^5.2.1",
         "dotenv": "^8.0.0",
         "findup-sync": "^4.0.0",
         "read-pkg": "^5.2.0",
         "semver": "^6.2.0",
-        "tasktree-cli": "^1.2.1",
+        "tasktree-cli": "^1.2.2",
         "write-pkg": "^4.0.0"
     },
     "devDependencies": {
