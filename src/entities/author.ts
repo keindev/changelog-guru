@@ -4,7 +4,7 @@ export interface AuthorOptions {
     avatar: string;
 }
 
-export default class Author {
+export class Author {
     public static AVATAR_SIZE = 40;
     public static SIZE_PARAMETER_NAME = 'size';
     public static NAME_PREFIX = '@';

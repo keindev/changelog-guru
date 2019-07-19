@@ -3,7 +3,7 @@ import { Configuration } from '../../src/entities/configuration';
 import { FilterType, Level } from '../../src/utils/enums';
 
 describe('Config', (): void => {
-    it('Create & load', (done): void => {
+    it('Default', (done): void => {
         const config = new Configuration();
         const task = new Task('test configuration loading');
 

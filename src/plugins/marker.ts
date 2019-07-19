@@ -1,11 +1,11 @@
 import { Task } from 'tasktree-cli/lib/task';
-import Commit from '../entities/commit';
-import Plugin from '../entities/plugin';
-import Key from '../utils/key';
-import Section, { Position } from '../entities/section';
+import { Commit } from '../entities/commit';
+import { Plugin } from '../entities/plugin';
+import { Section, Position } from '../entities/section';
 import { ConfigurationOptions } from '../entities/configuration';
 import { Option, OptionValue } from '../utils/types';
 import { Status } from '../utils/enums';
+import Key from '../utils/key';
 
 enum Marker {
     // !break - indicates major changes breaking backward compatibility

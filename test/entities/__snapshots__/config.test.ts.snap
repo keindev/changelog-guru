@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Config Create & load 1`] = `
+exports[`Config Default 1`] = `
 Object {
   "ignore": Object {
     "authors": Array [

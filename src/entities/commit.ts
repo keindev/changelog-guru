@@ -7,7 +7,7 @@ export interface CommitOptions {
     author: string;
 }
 
-export default class Commit {
+export class Commit {
     public static LINE_SEPARATOR = '\n';
     public static SHORT_HASH_LENGTH = 7;
 

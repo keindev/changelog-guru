@@ -6,17 +6,21 @@ jest.mock('write-pkg', (): (() => Promise<void>) => (): Promise<void> => {
 });
 
 describe('Package', (): void => {
-    it('Create', (done): void => {
+    it('Default', (done): void => {
         const pkg = new Package();
-        const version: string = semver.valid(pkg.getVersion()) || '';
+        const version = semver.valid(pkg.getVersion());
 
-        expect(pkg.getRepository()).toBe('git+https://github.com/keindev/changelog-guru.git');
-        expect(version.length).toBeGreaterThanOrEqual(5);
+        expect(version).not.toBeNull();
 
-        pkg.incrementVersion(1, 0, 0).then((): void => {
-            expect(semver.major(pkg.getVersion())).toBeGreaterThan(semver.major(version));
+        if (version) {
+            expect(pkg.getRepository()).toBe('git+https://github.com/keindev/changelog-guru.git');
+            expect(version.length).toBeGreaterThanOrEqual(5);
 
-            done();
-        });
+            pkg.incrementVersion(1, 0, 0).then((): void => {
+                expect(semver.major(pkg.getVersion())).toBeGreaterThan(semver.major(version));
+
+                done();
+            });
+        }
     });
 });

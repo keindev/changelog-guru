@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
-import Section from '../entities/section';
+import { Section } from '../entities/section';
+import { Commit } from '../entities/commit';
+import { Author } from '../entities/author';
 import Markdown from '../utils/markdown';
-import Commit from '../entities/commit';
-import Author from '../entities/author';
 import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();

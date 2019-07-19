@@ -1,8 +1,8 @@
 import Octokit from '@octokit/rest';
 import { TaskTree } from 'tasktree-cli';
+import { Author } from '../entities/author';
+import { Commit } from '../entities/commit';
 import { Provider, ServiceProvider } from './provider';
-import Author from '../entities/author';
-import Commit from '../entities/commit';
 
 const $tasks = TaskTree.tree();
 

@@ -1,44 +1,49 @@
 import { Task } from 'tasktree-cli/lib/task';
-import SectionPlugin, { Configuration as SectionConfiguration } from '../../src/plugins/section';
-import Section from '../../src/entities/section';
-import { TestContext } from '../__mocks__/context.mock';
+import { MockState } from '../__mocks__/state.mock';
 import { Configuration } from '../../src/entities/configuration';
-import Commit from '../../src/entities/commit';
-
-const context = new TestContext();
-const config = new Configuration();
-const plugin = new SectionPlugin(context);
-const task = new Task('test task');
+import { Commit } from '../../src/entities/commit';
+import SectionPlugin, { Configuration as SectionConfiguration } from '../../src/plugins/section';
 
 describe('SectionPlugin', (): void => {
-    it('Create', (done): void => {
+    const context = new MockState();
+    const config = new Configuration();
+    const plugin = new SectionPlugin(context);
+    const task = new Task('test task');
+
+    it('Default', (done): void => {
         config.load(task).then((): void => {
-            plugin.init(config.getOptions() as SectionConfiguration);
+            plugin.init(config.getOptions() as SectionConfiguration).then((): void => {
+                expect(context.getSections().length).toBe(6);
+                expect(context.findSection('Bug Fixes')).toBeDefined();
+                expect(context.findSection('Features')).toBeDefined();
+                expect(context.findSection('Internal changes')).toBeDefined();
+                expect(context.findSection('Performance Improvements')).toBeDefined();
+                expect(context.findSection('Code Refactoring')).toBeDefined();
+                expect(context.findSection('Reverts')).toBeDefined();
 
-            expect(context.sections.size).toBe(6);
-            expect(context.sections.has('Bug Fixes')).toBeTruthy();
-            expect(context.sections.has('Features')).toBeTruthy();
-            expect(context.sections.has('Internal changes')).toBeTruthy();
-            expect(context.sections.has('Performance Improvements')).toBeTruthy();
-            expect(context.sections.has('Code Refactoring')).toBeTruthy();
-            expect(context.sections.has('Reverts')).toBeTruthy();
-
-            done();
+                done();
+            });
         });
     });
 
-    it('Parse commits', (): void => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const section: Section = context.sections.get('Bug Fixes') as any;
-        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
-            timestamp: 0,
-            message: `fix: subject`,
-            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
-            author: 'keindev',
-        });
+    it('Parse commits', (done): void => {
+        const section = context.findSection('Bug Fixes');
 
-        plugin.parse(commit);
+        expect(section).toBeDefined();
 
-        expect(section.getCommits()).toStrictEqual([commit]);
+        if (section) {
+            const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+                timestamp: 0,
+                message: `fix: subject`,
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
+                author: 'keindev',
+            });
+
+            plugin.parse(commit).then((): void => {
+                expect(section.getCommits()).toStrictEqual([commit]);
+
+                done();
+            });
+        }
     });
 });

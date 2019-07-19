@@ -3,8 +3,8 @@ import cosmiconfig from 'cosmiconfig';
 import { Task } from 'tasktree-cli/lib/task';
 import { ServiceProvider } from '../providers/provider';
 import { Option, OptionValue } from '../utils/types';
-import Key from '../utils/key';
 import { Level, FilterType } from '../utils/enums';
+import Key from '../utils/key';
 
 export interface Levels extends Option {
     major?: string[];

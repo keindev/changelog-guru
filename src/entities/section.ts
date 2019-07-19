@@ -1,4 +1,4 @@
-import Commit from './commit';
+import { Commit } from './commit';
 import { Compare, Priority, Status } from '../utils/enums';
 
 export enum Position {
@@ -10,7 +10,7 @@ export enum Position {
     Subsection = 5,
 }
 
-export default class Section {
+export class Section {
     public readonly title: string;
 
     private position: Position;

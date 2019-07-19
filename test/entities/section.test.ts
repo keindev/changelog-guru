@@ -1,11 +1,15 @@
-import Section, { Position } from '../../src/entities/section';
+import { Commit } from '../../src/entities/commit';
+import { Section, Position } from '../../src/entities/section';
 import { Priority, Compare } from '../../src/utils/enums';
-import Commit from '../../src/entities/commit';
 
 describe('Section', (): void => {
-    it('Create', (): void => {
-        const section = new Section('title', Position.Body);
+    let section: Section;
 
+    beforeEach((): void => {
+        section = new Section('title', Position.Body);
+    });
+
+    it('Default', (): void => {
         expect(section.title).toBe('title');
         expect(section.getPosition()).toBe(Position.Body);
         expect(section.getPriority()).toBe(Priority.Default);
@@ -15,8 +19,6 @@ describe('Section', (): void => {
     });
 
     it('Change position', (): void => {
-        const section = new Section('title', Position.Body);
-
         section.setPosition(Position.Body);
         expect(section.getPosition()).toBe(Position.Body);
 
@@ -34,7 +36,6 @@ describe('Section', (): void => {
     });
 
     it('Assign and remove entities', (): void => {
-        const section = new Section('title 1', Position.Body);
         const subsection = new Section('title 2', Position.Body);
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 0,
@@ -88,7 +89,6 @@ describe('Section', (): void => {
     });
 
     it('Relations of sections', (): void => {
-        const section = new Section('a', Position.Body);
         const relations: Map<string, Section> = new Map();
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 0,
@@ -105,13 +105,13 @@ describe('Section', (): void => {
         expect(relations.get(commit.hash)).toStrictEqual(section);
 
         section.assignAsSection(relations);
+
         expect(section.getCommits()).toStrictEqual([]);
         expect(relations.size).toBe(1);
         expect(relations.get(commit.hash)).toStrictEqual(section);
     });
 
     it('Relations of subsections', (): void => {
-        const section = new Section('a', Position.Body);
         const subsection = new Section('b', Position.Body);
         const relations: Map<string, Section> = new Map();
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {

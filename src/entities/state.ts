@@ -2,14 +2,14 @@ import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import Author from './author';
-import Commit from './commit';
-import Plugin from './plugin';
-import Key from '../utils/key';
+import { Author } from './author';
+import { Commit } from './commit';
+import { Plugin } from './plugin';
 import { ConfigurationOptions } from './configuration';
-import Section, { Position } from './section';
+import { Section, Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import { Level } from '../utils/enums';
+import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
@@ -18,13 +18,13 @@ export interface Context {
     findSection(title: string): Section | undefined;
 }
 
-export default class State implements Context {
+export class State implements Context {
     protected pluginsPath: string = path.resolve(__dirname, '../plugins');
     protected pluginsExtension: string = 'js';
 
-    private authors: Map<number, Author> = new Map();
-    private commits: Map<string, Commit> = new Map();
-    private sections: Section[] = [];
+    protected authors: Map<number, Author> = new Map();
+    protected commits: Map<string, Commit> = new Map();
+    protected sections: Section[] = [];
 
     public getSections(): Section[] {
         return this.sections;
@@ -156,7 +156,7 @@ export default class State implements Context {
                     subtask.fail(`${PluginClass.name} is not Plugin class`);
                 }
             } else {
-                task.fail(`${PluginClass.name} is not constructor`);
+                task.fail(`${name} is not constructor`);
             }
         } else {
             task.fail(`Plugin ${name} not found`);

@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { TaskTree } from 'tasktree-cli';
 import findupSync from 'findup-sync';
-import Commit from '../entities/commit';
-import Author from '../entities/author';
+import { TaskTree } from 'tasktree-cli';
+import { Commit } from '../entities/commit';
+import { Author } from '../entities/author';
 
 const $tasks = TaskTree.tree();
 
