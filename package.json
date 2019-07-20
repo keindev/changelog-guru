@@ -1,6 +1,6 @@
 {
     "name": "changelog-guru",
-    "version": "1.0.0",
+    "version": "0.9.0",
     "description": "Git changelog generator",
     "homepage": "https://github.com/keindev/changelog-guru#readme",
     "license": "MIT",
@@ -9,6 +9,7 @@
         "email": "opensource@tagproject.ru"
     },
     "keywords": [
+        "automated",
         "changelog",
         "generator",
         "cli",

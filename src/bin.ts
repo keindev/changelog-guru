@@ -4,11 +4,14 @@ import Changelog from './changelog';
 
 const $tasks = TaskTree.tree();
 
-$tasks.start();
-commander.version(process.env.npm_package_version || '', '-v, --version').description('Git changelog generator');
-commander.parse(process.argv);
+commander
+    .version(process.env.npm_package_version || '', '-v, --version')
+    .usage('[options]')
+    .description('Git changelog generator');
 
-// const command: Command = commander.parse(process.argv);
+commander.parse(process.argv);
+$tasks.start();
+
 const changelog = new Changelog();
 
 changelog.generate().then((): void => {
