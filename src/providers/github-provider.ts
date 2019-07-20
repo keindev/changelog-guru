@@ -1,9 +1,8 @@
 import Octokit from '@octokit/rest';
 import { TaskTree } from 'tasktree-cli';
-import Provider from './provider';
-import Author from '../entities/author';
-import Commit from '../entities/commit';
-import Version from '../utils/version';
+import { Author } from '../entities/author';
+import { Commit } from '../entities/commit';
+import { Provider, ServiceProvider } from './provider';
 
 const $tasks = TaskTree.tree();
 
@@ -12,21 +11,13 @@ export default class GitHubProvider extends Provider {
     private authors: Map<number, Author> = new Map();
 
     public constructor(url: string) {
-        super(url);
-
-        const task = $tasks.add('Initializing GitHub provider');
-
-        if (!process.env.GITHUB_TOKEN) {
-            task.fail('process.env.GITHUB_TOKEN - must be provided');
-        }
+        super(ServiceProvider.GitHub, url);
 
         this.kit = new Octokit({ auth: `token ${process.env.GITHUB_TOKEN || ''}` });
-        task.complete('GitHub provider initialized');
     }
 
     public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {
         const task = $tasks.add(`Loading page #${page.toString()}`);
-
         const { data: commits } = await this.kit.repos.listCommits({
             page,
             since: date,
@@ -39,25 +30,7 @@ export default class GitHubProvider extends Provider {
 
         task.complete(`Page #${page.toString()} loaded (${commits.length.toString()} commits)`);
 
-        return commits.map((response): [Commit, Author] => {
-            const author = this.parseAuthor(response.author);
-            const {
-                commit: {
-                    message,
-                    author: { date: timestamp },
-                },
-                html_url: url,
-                sha,
-            } = response;
-            const commit = new Commit(sha, {
-                timestamp: new Date(timestamp).getTime(),
-                author: author.login,
-                message,
-                url,
-            });
-
-            return [commit, author];
-        });
+        return commits.map((response): [Commit, Author] => this.parseResponse(response));
     }
 
     public async getLatestReleaseDate(): Promise<string> {
@@ -68,11 +41,8 @@ export default class GitHubProvider extends Provider {
 
     public async getVersion(): Promise<string | undefined> {
         const release = await this.getLatestRelease();
-        let version: string | undefined;
 
-        if (release) version = Version.clear(release.tag_name);
-
-        return version;
+        return release ? release.tag_name : undefined;
     }
 
     private async getLatestRelease(): Promise<Octokit.ReposGetLatestReleaseResponse | undefined> {
@@ -87,6 +57,18 @@ export default class GitHubProvider extends Provider {
         }
 
         return release;
+    }
+
+    private parseResponse(response: Octokit.ReposListCommitsResponseItem): [Commit, Author] {
+        const author = this.parseAuthor(response.author);
+        const commit = new Commit(response.sha, {
+            timestamp: new Date(response.commit.author.date).getTime(),
+            author: author.login,
+            message: response.commit.message,
+            url: response.html_url,
+        });
+
+        return [commit, author];
     }
 
     private parseAuthor(response: Octokit.ReposListCommitsResponseItemAuthor): Author {

@@ -2,54 +2,69 @@ import dotenv from 'dotenv';
 import { TaskTree } from 'tasktree-cli';
 import Reader from './io/reader';
 import Writer from './io/writer';
-import Provider, { ProviderName } from './providers/provider';
+import { Provider, ServiceProvider } from './providers/provider';
 import GitHubProvider from './providers/github-provider';
-import { Config } from './entities/config';
-import Package from './entities/package';
-
-dotenv.config();
+import { Configuration } from './entities/configuration';
+import { Package } from './entities/package';
+import { FilterType } from './utils/enums';
 
 const $tasks = TaskTree.tree();
 
 export default class Changelog {
-    private config: Config;
+    private config: Configuration;
     private pkg: Package;
-    private reader: Reader | undefined;
 
     public constructor() {
-        const task = $tasks.add('Reading configuration files');
+        dotenv.config();
 
-        this.config = new Config();
+        this.config = new Configuration();
         this.pkg = new Package();
-        this.reader = this.getReader();
-
-        if (!this.reader) task.fail(`Provider or Reader is not specified (${this.config.getProvider()})`);
-
-        task.complete();
     }
 
     public async generate(): Promise<void> {
-        const { reader, config } = this;
+        const provider = await this.getProvider();
 
-        if (reader) {
-            await config.load();
-
+        if (provider) {
+            const { config } = this;
+            const reader = new Reader(provider);
+            const writer = new Writer();
             const state = await reader.read();
-            const writer = new Writer(this.pkg);
 
-            await state.modify(config);
-            await writer.write(state);
+            state.setLevels(config.getLevels());
+            state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
+            state.ignoreCommits(
+                config.getFilters(FilterType.CommitType),
+                config.getFilters(FilterType.CommitScope),
+                config.getFilters(FilterType.CommitSubject)
+            );
+
+            await state.modify(config.getPlugins(), config.getOptions());
+            await writer.write(state.getAuthors(), state.getSections());
+            await this.pkg.incrementVersion(...state.getChangesLevels());
         }
     }
 
-    private getReader(): Reader | undefined {
+    private async getProvider(): Promise<Provider | undefined> {
         const { config } = this;
+        const task = $tasks.add('Read configuration');
         let provider: Provider | undefined;
-        let reader: Reader | undefined;
 
-        if (config.getProvider() === ProviderName.GitHub) provider = new GitHubProvider(this.pkg.url);
-        if (provider) reader = new Reader(provider);
+        await config.load(task);
 
-        return reader;
+        switch (config.getProvider()) {
+            case ServiceProvider.GitLab:
+                task.fail(`${ServiceProvider.GitLab} - not supported yet`);
+                break;
+            case ServiceProvider.GitHub:
+                provider = new GitHubProvider(this.pkg.getRepository());
+                break;
+            default:
+                task.fail(`Service provider not specified`);
+                break;
+        }
+
+        task.complete('Configuration initialized with:');
+
+        return provider;
     }
 }

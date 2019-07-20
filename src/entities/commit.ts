@@ -7,7 +7,7 @@ export interface CommitOptions {
     author: string;
 }
 
-export default class Commit {
+export class Commit {
     public static LINE_SEPARATOR = '\n';
     public static SHORT_HASH_LENGTH = 7;
 
@@ -56,16 +56,20 @@ export default class Commit {
     }
 
     public static compare(a: Commit, b: Commit): number {
-        const scopeA = a.getScope();
-        const scopeB = b.getScope();
+        const x = a.getScope();
+        const y = b.getScope();
         let result = Compare.Equal;
 
-        if (scopeA && !scopeB) result--;
-        if (!scopeA && scopeB) result++;
-        if (scopeA && scopeB) result = scopeA.localeCompare(scopeB);
+        if (x && !y) result--;
+        if (!x && y) result++;
+        if (x && y) result = x.localeCompare(y);
         if (result === Compare.Equal) result = a.timestamp - b.timestamp;
 
         return result;
+    }
+
+    public static filter(c: Commit): boolean {
+        return !c.isIgnored();
     }
 
     public getAccents(): string[] {
@@ -113,15 +117,15 @@ export default class Commit {
         this.accents.add(text);
     }
 
+    public ignore(): void {
+        this.ignored = true;
+    }
+
     public hasStatus(status: Status): boolean {
         return !!(this.status & status);
     }
 
     public isIgnored(): boolean {
         return this.ignored;
-    }
-
-    public ignore(): void {
-        this.ignored = true;
     }
 }

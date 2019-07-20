@@ -1,10 +1,10 @@
-import Commit from '../entities/commit';
-import Plugin from '../entities/plugin';
-import { ConfigOptions } from '../entities/config';
+import { Commit } from '../entities/commit';
+import { Plugin } from '../entities/plugin';
+import { ConfigurationOptions } from '../entities/configuration';
 import { Option } from '../utils/types';
 import Key from '../utils/key';
 
-export interface Config extends ConfigOptions {
+export interface Configuration extends ConfigurationOptions {
     scopes: {
         only: boolean | undefined;
         list: Option;
@@ -15,7 +15,7 @@ export default class ScopePlugin extends Plugin {
     private scopes: Map<string, string> = new Map();
     private onlyConfigured: boolean = false;
 
-    public async init(config: Config): Promise<void> {
+    public async init(config: Configuration): Promise<void> {
         const { scopes } = config;
 
         if (typeof scopes === 'object') {
@@ -36,17 +36,18 @@ export default class ScopePlugin extends Plugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const commitScope: string | undefined = commit.getScope();
+        const scope = commit.getScope();
 
-        if (commitScope) {
+        if (scope) {
             const { scopes, onlyConfigured } = this;
             let accent: string | undefined;
 
-            commitScope.split(',').forEach((scope): void => {
-                accent = Key.inMap(scope, scopes);
+            scope.split(',').forEach((item): void => {
+                accent = Key.inMap(item, scopes);
 
-                if (!accent && !onlyConfigured) accent = scope;
-                if (accent) commit.addAccent(accent.trim());
+                if (accent || (!onlyConfigured && item.length)) {
+                    commit.addAccent((accent || item).trim());
+                }
             });
         }
     }

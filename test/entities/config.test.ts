@@ -1,11 +1,13 @@
-import { Config } from '../../src/entities/config';
+import { Task } from 'tasktree-cli/lib/task';
+import { Configuration } from '../../src/entities/configuration';
 import { FilterType, Level } from '../../src/utils/enums';
 
 describe('Config', (): void => {
-    it('Create & load', (done): void => {
-        const config = new Config();
+    it('Default', (done): void => {
+        const config = new Configuration();
+        const task = new Task('test configuration loading');
 
-        config.load().then((): void => {
+        config.load(task).then((): void => {
             expect(config.getOptions()).toMatchSnapshot();
 
             expect(config.getFilters(FilterType.AuthorLogin)).toStrictEqual(['dependabot-preview[bot]']);
@@ -13,23 +15,25 @@ describe('Config', (): void => {
             expect(config.getFilters(FilterType.CommitScope)).toStrictEqual(['deps', 'deps-dev']);
             expect(config.getFilters(FilterType.CommitSubject)).toStrictEqual(['merge']);
 
-            expect(config.getLevel('break')).toBe(Level.Major);
-            expect(config.getLevel('feat')).toBe(Level.Minor);
-            expect(config.getLevel('fix')).toBe(Level.Patch);
-            expect(config.getLevel('chore')).toBe(Level.Patch);
-            expect(config.getLevel('refactor')).toBe(Level.Patch);
-            expect(config.getLevel('test')).toBe(Level.Patch);
-            expect(config.getLevel('docs')).toBe(Level.Patch);
-            expect(config.getLevel('build')).toBe(Level.Patch);
-            expect(config.getLevel('types')).toBe(Level.Patch);
-            expect(config.getLevel('style')).toBe(Level.Patch);
-            expect(config.getLevel('workflow')).toBe(Level.Patch);
-            expect(config.getLevel('perf')).toBe(Level.Patch);
-            expect(config.getLevel('revert')).toBe(Level.Patch);
-            expect(config.getLevel('any')).toBe(Level.Patch);
+            const levels = config.getLevels();
+
+            expect(levels.get('break')).toBe(Level.Major);
+            expect(levels.get('feat')).toBe(Level.Minor);
+            expect(levels.get('fix')).toBe(Level.Patch);
+            expect(levels.get('chore')).toBe(Level.Patch);
+            expect(levels.get('refactor')).toBe(Level.Patch);
+            expect(levels.get('test')).toBe(Level.Patch);
+            expect(levels.get('docs')).toBe(Level.Patch);
+            expect(levels.get('build')).toBe(Level.Patch);
+            expect(levels.get('types')).toBe(Level.Patch);
+            expect(levels.get('style')).toBe(Level.Patch);
+            expect(levels.get('workflow')).toBe(Level.Patch);
+            expect(levels.get('perf')).toBe(Level.Patch);
+            expect(levels.get('revert')).toBe(Level.Patch);
 
             expect(config.getPlugins()).toStrictEqual(['marker', 'scope', 'section']);
             expect(config.getProvider()).toBe('github');
+            expect(task.isPending()).toBeTruthy();
 
             done();
         });

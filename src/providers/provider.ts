@@ -1,29 +1,31 @@
 import fs from 'fs';
 import path from 'path';
-import { TaskTree } from 'tasktree-cli';
 import findupSync from 'findup-sync';
-import Commit from '../entities/commit';
-import Author from '../entities/author';
+import { TaskTree } from 'tasktree-cli';
+import { Commit } from '../entities/commit';
+import { Author } from '../entities/author';
 
 const $tasks = TaskTree.tree();
 
-export enum ProviderName {
+export enum ServiceProvider {
     GitHub = 'github',
-    // not supported yet
     GitLab = 'gitlab',
 }
 
-export default abstract class Provider {
+export abstract class Provider {
     public static PAGE_SIZE: number = 100;
     public static TYPE: string = 'git';
+
+    public readonly type: ServiceProvider;
 
     protected repository: string;
     protected owner: string;
     protected branch: string = 'master';
 
-    public constructor(url: string) {
-        const pathname: string[] = new URL(url).pathname.split('/');
+    public constructor(type: ServiceProvider, url: string) {
+        const pathname = new URL(url).pathname.split('/');
 
+        this.type = type;
         this.repository = path.basename(pathname.pop() as string, `.${Provider.TYPE}`);
         this.owner = pathname.pop() as string;
 
@@ -32,8 +34,8 @@ export default abstract class Provider {
         const task = $tasks.add('Initializing git provider');
 
         if (filePath && fs.existsSync(filePath)) {
-            const buffer: Buffer = fs.readFileSync(filePath);
-            const match: RegExpExecArray | null = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
+            const buffer = fs.readFileSync(filePath);
+            const match = /ref: refs\/heads\/([^\n]+)/.exec(buffer.toString());
 
             if (match) {
                 [, this.branch] = match;
@@ -44,10 +46,11 @@ export default abstract class Provider {
             task.warn(`${pattern} - does not exist`);
         }
 
+        task.log(`Provider: ${this.type}`);
         task.log(`Repository: ${this.repository}`);
         task.log(`Branch: ${this.branch}`);
         task.log(`Owner: ${this.owner}`);
-        task.complete('Git provider initialized:');
+        task.complete('Git provider:');
     }
 
     abstract async getCommits(date: string, page: number): Promise<[Commit, Author][]>;

@@ -1,11 +1,15 @@
 {
     "name": "changelog-guru",
-    "version": "1.0.0",
+    "version": "0.9.0",
     "description": "Git changelog generator",
     "homepage": "https://github.com/keindev/changelog-guru#readme",
     "license": "MIT",
-    "author": "Daniil Ryazanov <opensource@tagproject.ru>",
+    "author": {
+        "name": "Daniil Ryazanov",
+        "email": "opensource@tagproject.ru"
+    },
     "keywords": [
+        "automated",
         "changelog",
         "generator",
         "cli",
@@ -22,7 +26,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/keindev/changelog-guru.git"
+        "url": "git+https://github.com/keindev/changelog-guru.git"
     },
     "bugs": {
         "url": "https://github.com/keindev/changelog-guru/issues"
@@ -32,7 +36,6 @@
         "lint": "eslint src/**/*.ts",
         "test": "jest",
         "debug": "node --nolazy --inspect-brk=9229 bin/changelog",
-        "precommit": "npm-run-all clean test",
         "build:ts": "tsc",
         "build": "npm-run-all clean test build:*"
     },
@@ -40,14 +43,14 @@
         "node": ">=10.0.0"
     },
     "dependencies": {
-        "@octokit/rest": "^16.28.3",
+        "@octokit/rest": "^16.28.5",
         "commander": "^2.20.0",
         "cosmiconfig": "^5.2.1",
         "dotenv": "^8.0.0",
-        "findup-sync": "^3.0.0",
+        "findup-sync": "^4.0.0",
         "read-pkg": "^5.2.0",
         "semver": "^6.2.0",
-        "tasktree-cli": "^1.2.1",
+        "tasktree-cli": "^1.2.2",
         "write-pkg": "^4.0.0"
     },
     "devDependencies": {
@@ -55,18 +58,16 @@
         "@types/dotenv": "^6.1.1",
         "@types/findup-sync": "^2.0.2",
         "@types/jest": "^24.0.15",
-        "@types/node": "^12.6.2",
-        "@types/read-pkg": "^4.0.0",
+        "@types/node": "^12.6.8",
         "@types/semver": "^6.0.1",
-        "@types/write-pkg": "^3.1.0",
-        "@typescript-eslint/eslint-plugin": "^1.11.0",
-        "@typescript-eslint/parser": "^1.11.0",
-        "eslint": "5.16.0",
+        "@typescript-eslint/eslint-plugin": "^1.12.0",
+        "@typescript-eslint/parser": "^1.12.0",
+        "eslint": "6.0.1",
         "eslint-config-airbnb-base": "13.2.0",
         "eslint-config-prettier": "^6.0.0",
-        "eslint-plugin-import": "^2.18.0",
-        "eslint-plugin-jest": "^22.7.2",
-        "husky": "^3.0.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-jest": "^22.12.0",
+        "husky": "^3.0.1",
         "jest": "^24.8.0",
         "npm-run-all": "^4.1.5",
         "prettier": "^1.18.2",

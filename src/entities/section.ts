@@ -1,7 +1,8 @@
-import Commit from './commit';
-import { Compare, Priority } from '../utils/enums';
+import { Commit } from './commit';
+import { Compare, Priority, Status } from '../utils/enums';
 
 export enum Position {
+    None = 0,
     Header = 1,
     Body = 2,
     Footer = 3,
@@ -9,7 +10,7 @@ export enum Position {
     Subsection = 5,
 }
 
-export default class Section {
+export class Section {
     public readonly title: string;
 
     private position: Position;
@@ -30,12 +31,16 @@ export default class Section {
         return result;
     }
 
-    public setPosition(position: Position): void {
-        this.position = position;
+    public static filter(s: Section): boolean {
+        return !(s.getPosition() === Position.Subsection || s.isEmpty());
     }
 
     public getPosition(): Position {
         return this.position;
+    }
+
+    public setPosition(position: Position): void {
+        this.position = position;
     }
 
     public getSections(sort: boolean = true): Section[] {
@@ -44,17 +49,26 @@ export default class Section {
         return sort ? sections.sort(Section.compare) : sections;
     }
 
-    public getCommits(sort: boolean = true): Commit[] {
-        const commits = [...this.commits.values()].filter((commit): boolean => !commit.isIgnored());
+    public getCommits(sort: boolean = true, onlyVisible: boolean = false): Commit[] {
+        const commits = [...this.commits.values()].filter(Commit.filter);
 
-        return sort ? commits.sort((a, b): number => a.timestamp - b.timestamp) : commits;
+        if (sort) commits.sort(Commit.compare);
+
+        return onlyVisible ? commits.filter((commit): boolean => !commit.hasStatus(Status.Hidden)) : commits;
     }
 
-    public isEmpty(): boolean {
-        return !this.sections.size && !this.commits.size;
+    public getPriority(): number {
+        if (this.priority === Priority.Default) {
+            this.priority = this.getCommits().reduce(
+                (acc, commit): number => acc + commit.getPriority(),
+                Priority.Default
+            );
+        }
+
+        return this.priority;
     }
 
-    public assign(entity: Commit | Section): void {
+    public add(entity: Commit | Section): void {
         if (entity instanceof Commit) this.assignEntity(entity.hash, entity, this.commits);
         if (entity instanceof Section) {
             this.assignEntity(entity.title, entity, this.sections);
@@ -70,16 +84,39 @@ export default class Section {
         }
     }
 
-    // FIXME: consider subsections!
-    public getPriority(): number {
-        if (this.priority === Priority.Default) {
-            this.priority = this.getCommits().reduce(
-                (acc, commit): number => acc + commit.getPriority(),
-                Priority.Default
-            );
-        }
+    public isEmpty(): boolean {
+        return !this.sections.size && !this.commits.size;
+    }
 
-        return this.priority;
+    public assignAsSubsection(relations: Map<string, Section>): void {
+        const commits = this.getCommits();
+        let parent: Section | undefined;
+
+        if (commits.length) {
+            parent = relations.get(commits[0].hash);
+
+            if (parent) parent.add(this);
+
+            commits.forEach((commit): void => {
+                parent = relations.get(commit.hash);
+
+                if (parent) parent.remove(commit);
+
+                relations.set(commit.hash, this);
+            });
+        }
+    }
+
+    public assignAsSection(relations: Map<string, Section>): void {
+        const commits = this.getCommits();
+
+        commits.forEach((commit): void => {
+            if (relations.has(commit.hash)) {
+                this.remove(commit);
+            } else {
+                relations.set(commit.hash, this);
+            }
+        });
     }
 
     private assignEntity<T>(key: string, value: T, map: Map<string, T>): void {

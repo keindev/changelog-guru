@@ -1,16 +1,16 @@
 import { Task } from 'tasktree-cli/lib/task';
-import Commit from '../entities/commit';
-import Plugin from '../entities/plugin';
-import Key from '../utils/key';
-import Section, { Position } from '../entities/section';
-import { ConfigOptions } from '../entities/config';
+import { Commit } from '../entities/commit';
+import { Plugin } from '../entities/plugin';
+import { Section, Position } from '../entities/section';
+import { ConfigurationOptions } from '../entities/configuration';
 import { Option, OptionValue } from '../utils/types';
 import { Status } from '../utils/enums';
+import Key from '../utils/key';
 
 enum Marker {
     // !break - indicates major changes breaking backward compatibility
     Breaking = 'break',
-    // !deprecate- place a commit title to special section with deprecated propertyes
+    // !deprecate- place a commit title to special section with deprecated properties
     Deprecated = 'deprecated',
     // !group(NAME) - creates a group of commits with the <NAME>
     Grouped = 'group',
@@ -20,53 +20,68 @@ enum Marker {
     Important = 'important',
 }
 
-export interface Config extends ConfigOptions {
+export interface Configuration extends ConfigurationOptions {
     markers: Option;
 }
 
 export default class MarkerPlugin extends Plugin {
-    private static EXPRESSION: RegExp = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
+    private static EXPRESSION = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
 
-    private markers: Map<string, Section> = new Map();
+    private markers: string[] = [];
+    private sections: Map<string, Section> = new Map();
 
-    public async init(config: Config): Promise<void> {
+    public async init(config: Configuration): Promise<void> {
         const { markers } = config;
 
+        this.sections = new Map();
+        this.markers = [];
+
         if (typeof markers === 'object') {
-            Object.values(Marker).forEach((name: string): void => {
-                const title: Option | OptionValue = markers[name];
+            let position: Position | undefined;
+            let title: Option | OptionValue;
+
+            Key.unique(Object.values(Marker)).forEach((name): void => {
+                title = markers[name];
 
                 if (typeof title === 'string') {
-                    let position: Position | undefined;
-
-                    if (name === Marker.Breaking || name === Marker.Deprecated) position = Position.Header;
-                    if (name === Marker.Important) position = Position.Body;
-
-                    if (typeof position !== 'undefined') {
-                        this.markers.set(name, this.context.addSection(title, position));
+                    switch (name) {
+                        case Marker.Breaking:
+                        case Marker.Deprecated:
+                            position = Position.Header;
+                            break;
+                        case Marker.Important:
+                            position = Position.Body;
+                            break;
+                        case Marker.Grouped:
+                        case Marker.Hidden:
+                        default:
+                            position = Position.None;
+                            break;
                     }
+
+                    this.appendMarker(name, title, position);
                 }
             });
         }
     }
 
     public async parse(commit: Commit, task: Task): Promise<void> {
-        const { markers } = this;
-        const names: string[] = [...markers.keys(), Marker.Hidden, Marker.Grouped];
-        const getGroup = (name: string): Section => this.context.addSection(name, Position.Group);
         const expression = MarkerPlugin.EXPRESSION;
         let match: RegExpExecArray | null;
+        let marker: string | undefined;
+        let section: Section | undefined;
 
         commit.body.forEach((line): void => {
             do {
                 match = expression.exec(line);
 
-                if (match && match.groups && typeof match.groups.name === 'string') {
+                if (match && match.groups && match.groups.name) {
                     const { name, value } = match.groups;
-                    const key: string | undefined = Key.getEqualy(name, names);
-                    let section: Section | undefined = key ? markers.get(key) : undefined;
 
-                    switch (key) {
+                    marker = Key.getEqual(name, this.markers);
+                    section = marker ? this.sections.get(marker) : undefined;
+
+                    switch (marker) {
                         case Marker.Breaking:
                             commit.setStatus(Status.BreakingChanges);
                             break;
@@ -80,16 +95,28 @@ export default class MarkerPlugin extends Plugin {
                             commit.setStatus(Status.Important);
                             break;
                         case Marker.Grouped:
-                            if (typeof value === 'string') section = getGroup(value);
+                            section = this.context.addSection(value, Position.Group);
                             break;
                         default:
                             task.warn(`Marker ${name} is not available`);
                             break;
                     }
 
-                    if (section instanceof Section) section.assign(commit);
+                    if (section) section.add(commit);
                 }
             } while (match && expression.lastIndex);
         });
+    }
+
+    private appendMarker(name: string, title: string, position: Position): void {
+        this.markers.push(name);
+
+        if (position !== Position.None) {
+            const section = this.context.addSection(title, position);
+
+            if (section) {
+                this.sections.set(name, section);
+            }
+        }
     }
 }

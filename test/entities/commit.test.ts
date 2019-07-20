@@ -1,9 +1,9 @@
-import Commit from '../../src/entities/commit';
+import { Commit } from '../../src/entities/commit';
 import { Level, Priority, Status, Compare } from '../../src/utils/enums';
 
-let commit: Commit;
-
 describe('Commit', (): void => {
+    let commit: Commit;
+
     beforeEach((): void => {
         commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 21,
@@ -13,7 +13,7 @@ describe('Commit', (): void => {
         });
     });
 
-    it('Create', (): void => {
+    it('Default', (): void => {
         expect(commit.hash).toBe('b816518030dace1b91838ae0abd56fa88eba19f0');
         expect(commit.timestamp).toBe(21);
         expect(commit.url).toBe(
@@ -21,7 +21,6 @@ describe('Commit', (): void => {
         );
         expect(commit.author).toBe('keindev');
         expect(commit.subject).toBe('subject');
-        expect(commit.body.length).toBe(4);
         expect(commit.body).toStrictEqual(['', 'body', '', 'footer']);
         expect(commit.getLevel()).toBe(Level.Patch);
         expect(commit.getPriority()).toBe(Priority.Default);
@@ -31,7 +30,7 @@ describe('Commit', (): void => {
         expect(commit.getShortHash()).toBe('b816518');
     });
 
-    it('Modify level', (): void => {
+    it('Change level', (): void => {
         expect(commit.getLevel()).toBe(Level.Patch);
 
         commit.setLevel(Level.Patch);
@@ -50,7 +49,7 @@ describe('Commit', (): void => {
         expect(commit.getLevel()).toBe(Level.Patch);
     });
 
-    it('Modify status', (): void => {
+    it('Change status', (): void => {
         expect(commit.getLevel()).toBe(Level.Patch);
         expect(commit.getPriority()).toBe(Priority.Default);
         expect(commit.hasStatus(Status.Default)).toBeTruthy();
@@ -107,15 +106,17 @@ describe('Commit', (): void => {
         expect(commit.getAccents()).toStrictEqual(['test 1', 'test 2']);
     });
 
-    it('Ignore commit', (): void => {
+    it('Ignore & filter', (): void => {
         expect(commit.isIgnored()).toBeFalsy();
+        expect(Commit.filter(commit)).toBeTruthy();
 
         commit.ignore();
 
         expect(commit.isIgnored()).toBeTruthy();
+        expect(Commit.filter(commit)).toBeFalsy();
     });
 
-    it('Compare commits', (): void => {
+    it('Compare', (): void => {
         const commit1 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 0,
             message: `feat(Test): subject\n\nbody\n\nfooter`,

@@ -2,80 +2,55 @@ import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import Author from './author';
-import Commit from './commit';
-import Plugin from './plugin';
-import Key from '../utils/key';
-import { Config, ConfigOptions } from './config';
-import Section, { Position } from './section';
+import { Author } from './author';
+import { Commit } from './commit';
+import { Plugin } from './plugin';
+import { ConfigurationOptions } from './configuration';
+import { Section, Position } from './section';
 import { Constructable, Importable } from '../utils/types';
-import Version from '../utils/version';
-import { FilterType } from '../utils/enums';
+import { Level } from '../utils/enums';
+import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
 export interface Context {
+    addSection(title: string, position: Position): Section | undefined;
     findSection(title: string): Section | undefined;
-    addSection(title: string, position: Position): Section;
 }
 
-export default class State implements Context {
-    private authors: Map<number, Author> = new Map();
-    private commits: Map<string, Commit> = new Map();
-    private sections: Section[] = [];
-    private version: string;
+export class State implements Context {
+    protected pluginsPath: string = path.resolve(__dirname, '../plugins');
+    protected pluginsExtension: string = 'js';
 
-    public constructor(version: string = Version.DEFAULT) {
-        this.version = version;
-    }
-
-    private static matchSubsectionWith(section: Section, relations: Map<string, Section>): void {
-        const commits = section.getCommits();
-        let parent: Section | undefined;
-
-        if (commits.length) {
-            parent = relations.get(commits[0].hash);
-
-            if (parent) parent.assign(section);
-
-            commits.forEach((commit): void => {
-                parent = relations.get(commit.hash);
-
-                if (parent) parent.remove(commit);
-
-                relations.set(commit.hash, section);
-            });
-        }
-    }
-
-    private static matchSectionWith(section: Section, relations: Map<string, Section>): void {
-        const commits = section.getCommits();
-
-        commits.forEach((commit): void => {
-            if (relations.has(commit.hash)) {
-                section.remove(commit);
-            } else {
-                relations.set(commit.hash, section);
-            }
-        });
-    }
-
-    public setVersion(version: string): void {
-        const newVersion = Version.clear(version);
-
-        if (!!newVersion && Version.greaterThan(newVersion, this.version)) this.version = newVersion;
-    }
-
-    public getVersion(): string {
-        return this.version;
-    }
+    protected authors: Map<number, Author> = new Map();
+    protected commits: Map<string, Commit> = new Map();
+    protected sections: Section[] = [];
 
     public getSections(): Section[] {
         return this.sections;
     }
 
     public getAuthors(): Author[] {
-        return [...this.authors.values()].sort((a, b): number => b.getContribution() - a.getContribution());
+        return [...this.authors.values()].filter(Author.filter).sort(Author.compare);
+    }
+
+    public getChangesLevels(): [number, number, number] {
+        const changes: [number, number, number] = [0, 0, 0];
+
+        this.commits.forEach((commit): void => {
+            changes[commit.getLevel() - 1]++;
+        });
+
+        return changes;
+    }
+
+    public setLevels(levels: Map<string, Level>): void {
+        let type: string | undefined;
+
+        this.commits.forEach((commit): void => {
+            type = commit.getType();
+            commit.setLevel(type ? Key.inMap(type, levels) || Level.Patch : Level.Patch);
+        });
     }
 
     public addCommit(commit: Commit, author: Author): void {
@@ -84,61 +59,38 @@ export default class State implements Context {
         if (!commits.has(commit.hash)) {
             commits.set(commit.hash, commit);
 
-            const actualAuthor = authors.get(author.id);
-
-            if (actualAuthor) {
-                actualAuthor.increaseContribution();
+            if (authors.has(author.id)) {
+                author.increaseContribution();
             } else {
                 authors.set(author.id, author);
             }
         }
     }
 
-    public addSection(title: string, position: Position = Position.Group): Section {
+    public addSection(title: string, position: Position = Position.Group): Section | undefined {
         let section = this.findSection(title);
 
-        if (typeof section === 'undefined') {
-            this.sections.push((section = new Section(title, position)));
+        if (!section && Key.unify(title)) {
+            section = new Section(title, position);
+            this.sections.push(section);
         }
 
         return section;
     }
 
     public findSection(title: string): Section | undefined {
-        return this.sections.find((s): boolean => Key.isEqual(s.title, title));
+        return this.sections.find((section): boolean => Key.isEqual(section.title, title));
     }
 
-    public async modify(config: Config): Promise<void> {
-        const task = $tasks.add('Modify release state');
-        const plugins = config.getPlugins();
-        const options = config.getOptions();
-
-        this.ignoreAuthors(config);
-        this.ignoreCommits(config);
-        this.updateCommitsTypes(config);
-
-        await Promise.all(plugins.map((p): Promise<void> => this.importPlugin(p, options, task)));
-
-        this.updateSections();
-        this.updateVersion();
-        task.complete();
-    }
-
-    private ignoreAuthors(config: Config): void {
-        const list = config.getFilters(FilterType.AuthorLogin);
-
+    public ignoreAuthors(filters: string[]): void {
         this.authors.forEach((author): void => {
-            if (list.indexOf(author.login) >= 0) {
+            if (filters.indexOf(author.login) >= 0) {
                 author.ignore();
             }
         });
     }
 
-    private ignoreCommits(config: Config): void {
-        const types = config.getFilters(FilterType.CommitType);
-        const scopes = config.getFilters(FilterType.CommitScope);
-        const subjects = config.getFilters(FilterType.CommitSubject);
-
+    public ignoreCommits(types: string[], scopes: string[], subjects: string[]): void {
         this.commits.forEach((commit): void => {
             if (
                 subjects.some((item): boolean => commit.subject.includes(item)) ||
@@ -150,56 +102,39 @@ export default class State implements Context {
         });
     }
 
-    private updateSections(): void {
-        const task = $tasks.add('Build sections tree');
+    public async modify(plugins: string[], options: ConfigurationOptions): Promise<void> {
+        const task = $tasks.add('Modify release state');
+
+        await Promise.all(plugins.map((plugin): Promise<void> => this.modifyWithPlugin(plugin, options, task)));
+        this.rebuildSectionsTree();
+        task.complete();
+    }
+
+    private rebuildSectionsTree(): void {
+        const task = $tasks.add('Rebuild sections tree');
         const sections = this.sections.sort(Section.compare);
 
         if (sections.length) {
             const relations: Map<string, Section> = new Map();
 
-            sections.forEach((s): void => {
-                if (s.getPosition() === Position.Group) {
-                    State.matchSubsectionWith(s, relations);
+            sections.forEach((section): void => {
+                if (section.getPosition() === Position.Group) {
+                    section.assignAsSubsection(relations);
                 } else {
-                    State.matchSectionWith(s, relations);
+                    section.assignAsSection(relations);
                 }
             });
         }
 
         this.sections = sections
-            .filter((s): boolean => s.getPosition() !== Position.Subsection && !!s.getPriority() && !s.isEmpty())
+            .filter(Section.filter)
             .sort(Section.compare)
             .reverse();
         task.complete();
     }
 
-    private updateCommitsTypes(config: Config): void {
-        let type: string | undefined;
-
-        this.commits.forEach((commit): void => {
-            type = commit.getType();
-
-            if (type) commit.setLevel(config.getLevel(type));
-        });
-    }
-
-    private updateVersion(): void {
-        const task = $tasks.add('Calculate release version');
-        const changes: [number, number, number] = [0, 0, 0];
-
-        this.commits.forEach((c): void => {
-            changes[c.getLevel() - 1]++;
-        });
-
-        const version = Version.update(this.version, ...changes);
-
-        this.setVersion(version);
-        task.log(`Release version: ${version}`);
-        task.complete();
-    }
-
-    private async importPlugin(name: string, options: ConfigOptions, task: Task): Promise<void> {
-        const filePath = path.resolve(__dirname, '../plugins', `${name}.js`);
+    private async modifyWithPlugin(name: string, options: ConfigurationOptions, task: Task): Promise<void> {
+        const filePath = path.join(this.pluginsPath, `${name}.${this.pluginsExtension}`);
 
         if (fs.existsSync(filePath)) {
             const module: Importable<Plugin, Context> = await import(filePath);
@@ -221,10 +156,10 @@ export default class State implements Context {
                     subtask.fail(`${PluginClass.name} is not Plugin class`);
                 }
             } else {
-                task.fail(`${PluginClass.name} is not constructor`);
+                task.fail(`${name} is not constructor`);
             }
         } else {
-            task.skip(`Plugin ${name} not found`);
+            task.fail(`Plugin ${name} not found`);
         }
     }
 }

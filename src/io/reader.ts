@@ -1,6 +1,6 @@
 import { TaskTree } from 'tasktree-cli';
-import Provider from '../providers/provider';
-import State from '../entities/state';
+import { Provider } from '../providers/provider';
+import { State } from '../entities/state';
 
 const $tasks = TaskTree.tree();
 
@@ -12,28 +12,30 @@ export default class Reader {
     }
 
     public async read(): Promise<State> {
-        const task = $tasks.add('Getting release state information');
-        const version: string | undefined = await this.provider.getVersion();
-        const state: State = new State(version);
-        const date: string = await this.provider.getLatestReleaseDate();
+        const { provider } = this;
+        const task = $tasks.add('Loading a release state...');
+        const state = new State();
+        const date = await provider.getLatestReleaseDate();
+        const version = await provider.getVersion();
 
         task.log(`Last release date: ${date}`);
         task.log(`Last release version: ${version || '-'}`);
-        task.log(`Release version: ${state.getVersion()}`);
-        await this.readCommits(date, state);
-        task.complete(`Release information`);
+        await this.loadCommits(date, state);
+        task.complete(`Release information:`);
 
         return state;
     }
 
-    private async readCommits(date: string, state: State, pageNumber: number = 0): Promise<void> {
+    private async loadCommits(date: string, state: State, pageNumber: number = 0): Promise<void> {
         const commits = await this.provider.getCommits(date, pageNumber + 1);
         const { length } = commits;
 
         if (length) {
             commits.forEach((entities): void => state.addCommit(...entities));
 
-            if (length === Provider.PAGE_SIZE) await this.readCommits(date, state, pageNumber + 1);
+            if (length === Provider.PAGE_SIZE) {
+                await this.loadCommits(date, state, pageNumber + 1);
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ export interface AuthorOptions {
     avatar: string;
 }
 
-export default class Author {
+export class Author {
     public static AVATAR_SIZE = 40;
     public static SIZE_PARAMETER_NAME = 'size';
     public static NAME_PREFIX = '@';
@@ -24,6 +24,14 @@ export default class Author {
         this.avatar = options.avatar;
 
         this.increaseContribution();
+    }
+
+    public static compare(a: Author, b: Author): number {
+        return b.getContribution() - a.getContribution();
+    }
+
+    public static filter(a: Author): boolean {
+        return !a.isIgnored();
     }
 
     public getAvatar(size: number = Author.AVATAR_SIZE): string {

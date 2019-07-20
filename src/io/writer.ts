@@ -1,87 +1,92 @@
 import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
-import { Task } from 'tasktree-cli/lib/task';
-import State from '../entities/state';
-import Package from '../entities/package';
-import Version from '../utils/version';
-import Section from '../entities/section';
+import { Section } from '../entities/section';
+import { Commit } from '../entities/commit';
+import { Author } from '../entities/author';
 import Markdown from '../utils/markdown';
-import Commit from '../entities/commit';
-import Author from '../entities/author';
-import { Status } from '../utils/enums';
 import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
 export default class Writer {
     public static FILE_NAME = 'CHANGELOG.md';
-    public static LINE_DELIMITER = '\n';
+    public static LINE_SEPARATOR = '\n';
+    public static ITEM_SEPARATOR = ', ';
+    public static WORD_SEPARATOR = ' ';
 
-    private pkg: Package;
+    private data: string[] = [];
+    private filePath: string;
 
-    public constructor(pkg: Package) {
-        this.pkg = pkg;
+    public constructor() {
+        this.filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
     }
 
-    private static renderAuthors(authors: Author[]): string {
+    private static renderCommitAccents(accents: string[]): string {
         const result: string[] = [];
 
-        authors.forEach((author): void => {
-            if (!author.isIgnored()) {
-                result.push(Markdown.link(Markdown.image(author.toString(), author.getAvatar()), author.url));
-            }
+        accents.forEach((accent: string): void => {
+            result.push(Markdown.capitalize(accent));
         });
 
-        return [Markdown.title('Contributors'), result.join('')].join(Writer.LINE_DELIMITER);
+        return Markdown.bold(`[${result.join(Writer.ITEM_SEPARATOR)}]`);
     }
 
-    private static renderSection(section: Section, level: number): string {
-        const result: string[] = [Markdown.title(section.title, level)];
+    public async write(authors: Author[], sections: Section[]): Promise<void> {
+        const task = $tasks.add('Writing new changelog...');
+
+        this.data = [];
+        sections.forEach((section): void => {
+            this.renderSection(section, Markdown.DEFAULT_HEADER_LEVEL);
+        });
+        this.renderAuthors(authors);
+        await fs.promises.writeFile(this.filePath, this.data.join(Writer.WORD_SEPARATOR));
+        task.complete('Changelog updated!');
+    }
+
+    private renderSection(section: Section, level: number): void {
+        const { data } = this;
         const sections = section.getSections();
-        const commits = section.getCommits();
+        const commits = section.getCommits(true, true);
+
+        data.push(Markdown.title(section.title, level));
 
         if (sections.length) {
-            result.push(
-                ...sections.reverse().map((s): string => Writer.renderSection(s, level + 1)),
-                Markdown.title('Others', level + 1)
-            );
+            sections.reverse().forEach((item): void => {
+                this.renderSection(item, level + 1);
+            });
+
+            if (commits.length) data.push(Markdown.title('Others', level + 1));
         }
 
         if (commits.length) {
-            const uniqueList: Map<string, Commit | Commit[]> = new Map();
-            let mirrors: Commit | Commit[] | undefined;
+            const groups: Map<string, Commit | Commit[]> = new Map();
+            let group: Commit | Commit[] | undefined;
 
-            commits
-                .sort(Commit.compare)
-                .filter((commit): boolean => !commit.hasStatus(Status.Hidden))
-                .forEach((commit): void => {
-                    mirrors = Key.inMap(commit.subject, uniqueList);
+            commits.forEach((commit): void => {
+                group = Key.inMap(commit.subject, groups);
 
-                    if (mirrors) {
-                        if (Array.isArray(mirrors)) {
-                            mirrors.push(commit);
-                        } else {
-                            uniqueList.set(mirrors.subject, [mirrors, commit]);
-                        }
+                if (group) {
+                    if (Array.isArray(group)) {
+                        group.push(commit);
                     } else {
-                        uniqueList.set(commit.subject, commit);
+                        groups.set(group.subject, [group, commit]);
                     }
-                });
-
-            result.push(
-                Markdown.list(
-                    [...uniqueList.values()].map((commit): string => {
-                        return Array.isArray(commit) ? Writer.renderCommitMirrors(commit) : Writer.renderCommit(commit);
-                    })
-                )
-            );
+                } else {
+                    groups.set(commit.subject, commit);
+                }
+            });
+            groups.forEach((item): void => {
+                if (Array.isArray(item)) {
+                    this.renderMirrorCommits(item);
+                } else {
+                    this.renderCommit(item);
+                }
+            });
         }
-
-        return result.join(Writer.LINE_DELIMITER);
     }
 
-    private static renderCommitMirrors(commits: Commit[]): string {
+    private renderMirrorCommits(commits: Commit[]): void {
         const result: string[] = [];
         const accents: Set<string> = new Set();
         const links: string[] = [];
@@ -94,56 +99,34 @@ export default class Writer {
             links.push(Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url));
         });
 
-        if (accents.size) {
-            result.push(...[...accents.values()].map((a): string => Markdown.bold(`[${Markdown.capitalize(a)}]`)));
-        }
+        if (accents.size) result.push(Writer.renderCommitAccents([...accents.values()]));
 
-        result.push(Markdown.capitalize(commits[0].subject), ' ', links.join(' '));
-
-        return result.join('');
+        result.push(Markdown.capitalize(commits[0].subject), ...links);
+        this.data.push(Markdown.listItem(result.join(Writer.WORD_SEPARATOR)));
     }
 
-    private static renderCommit(commit: Commit): string {
+    private renderCommit(commit: Commit): void {
         const result: string[] = [];
         const accents = commit.getAccents();
 
-        if (accents.length) {
-            result.push(Markdown.bold(`[${accents.map((a): string => Markdown.capitalize(a)).join(', ')}]`));
-        }
+        if (accents.length) result.push(Writer.renderCommitAccents(accents));
 
         result.push(
             Markdown.capitalize(commit.subject),
-            ' ',
             Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url)
         );
 
-        return result.join('');
+        this.data.push(Markdown.listItem(result.join(Writer.WORD_SEPARATOR)));
     }
 
-    public async write(state: State): Promise<void> {
-        const task = $tasks.add('Write changelog');
-        const authors = state.getAuthors();
-        const data = state.getSections().map((s): string => Writer.renderSection(s, Markdown.DEFAULT_HEADER_LEVEL));
+    private renderAuthors(authors: Author[]): void {
+        const { data } = this;
 
-        data.push(Markdown.line(), Writer.renderAuthors(authors));
-
-        await fs.promises.writeFile(path.resolve(process.cwd(), Writer.FILE_NAME), data.join(Writer.LINE_DELIMITER));
-        await this.updatePackage(state, task);
-
-        task.complete();
-    }
-
-    private async updatePackage(state: State, task: Task): Promise<void> {
-        const { pkg } = this;
-        const v1 = state.getVersion();
-        const v2 = pkg.getVersion();
-        const subtask = task.add(`Update package version to ${v1}`);
-
-        if (!v2 || Version.greaterThan(v1, v2)) {
-            await pkg.update(v1);
-            subtask.complete();
-        } else {
-            subtask.skip(`Current package version is greater (${v2})`);
-        }
+        data.push(Markdown.line(), Markdown.title('Contributors'));
+        data.push(
+            authors
+                .map((author): string => Markdown.imageLink(author.getName(), author.getAvatar(), author.url))
+                .join(Writer.WORD_SEPARATOR)
+        );
     }
 }

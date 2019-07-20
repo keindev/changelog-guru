@@ -1,18 +1,18 @@
-import Commit from '../entities/commit';
-import Plugin from '../entities/plugin';
-import { ConfigOptions } from '../entities/config';
-import Key from '../utils/key';
+import { Commit } from '../entities/commit';
+import { Plugin } from '../entities/plugin';
+import { ConfigurationOptions } from '../entities/configuration';
 import { Option, OptionValue } from '../utils/types';
-import Section, { Position } from '../entities/section';
+import { Section, Position } from '../entities/section';
+import Key from '../utils/key';
 
-export interface Config extends ConfigOptions {
+export interface Configuration extends ConfigurationOptions {
     sections: Option;
 }
 
 export default class SectionPlugin extends Plugin {
     private blocks: Map<string, Section> = new Map();
 
-    public async init(config: Config): Promise<void> {
+    public async init(config: Configuration): Promise<void> {
         const { sections } = config;
 
         if (Array.isArray(sections)) {
@@ -24,9 +24,11 @@ export default class SectionPlugin extends Plugin {
                         if (Array.isArray(types)) {
                             const section = this.context.addSection(name, Position.Body);
 
-                            types.forEach((type: string): void => {
-                                this.blocks.set(Key.unify(type), section);
-                            });
+                            if (section) {
+                                types.forEach((type: string): void => {
+                                    this.blocks.set(Key.unify(type), section);
+                                });
+                            }
                         }
                     });
                 }
@@ -40,7 +42,9 @@ export default class SectionPlugin extends Plugin {
         if (type) {
             const section = Key.inMap(type, this.blocks);
 
-            if (section) section.assign(commit);
+            if (section) {
+                section.add(commit);
+            }
         }
     }
 }
