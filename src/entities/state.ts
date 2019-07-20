@@ -34,6 +34,10 @@ export class State implements Context {
         return [...this.authors.values()].filter(Author.filter).sort(Author.compare);
     }
 
+    public getCommits(): Commit[] {
+        return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
+    }
+
     public getChangesLevels(): [number, number, number] {
         const changes: [number, number, number] = [0, 0, 0];
 
