@@ -112,7 +112,7 @@ export default class MarkerPlugin extends Plugin {
         this.markers.push(name);
 
         if (position !== Position.None) {
-            const section = this.context.addSection(title, position);
+            const section = this.context.addSection(title, position, true);
 
             if (section) {
                 this.sections.set(name, section);

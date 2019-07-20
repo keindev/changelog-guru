@@ -22,7 +22,7 @@ export default class SectionPlugin extends Plugin {
                         const types: OptionValue = block[name];
 
                         if (Array.isArray(types)) {
-                            const section = this.context.addSection(name, Position.Body);
+                            const section = this.context.addSection(name, Position.Body, true);
 
                             if (section) {
                                 types.forEach((type: string): void => {
