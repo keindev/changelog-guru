@@ -1,4 +1,4 @@
-import Writer from '../../src/io/writer';
+import { Writer } from '../../../src/io/writer';
 
 export class MockWriter extends Writer {
     public __filePath(): string {

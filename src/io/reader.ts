@@ -4,7 +4,7 @@ import { State } from '../entities/state';
 
 const $tasks = TaskTree.tree();
 
-export default class Reader {
+export class Reader {
     private provider: Provider;
 
     public constructor(provider: Provider) {

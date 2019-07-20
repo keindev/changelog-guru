@@ -1,5 +1,5 @@
 import { ServiceProvider } from '../../src/providers/provider';
-import { MockProvider } from '../__mocks__/provider.mock';
+import { MockProvider } from '../__mocks__/providers/provider.mock';
 
 describe('Provider', (): void => {
     it('Default (github)', (): void => {

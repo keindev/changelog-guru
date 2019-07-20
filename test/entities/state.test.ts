@@ -1,5 +1,5 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/state.mock';
+import { MockState } from '../__mocks__/entities/state.mock';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { Configuration } from '../../src/entities/configuration';

@@ -1,4 +1,4 @@
-import { MockWriter } from '../__mocks__/writer.mock';
+import { MockWriter } from '../__mocks__/io/writer.mock';
 import { Section, Position } from '../../src/entities/section';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';

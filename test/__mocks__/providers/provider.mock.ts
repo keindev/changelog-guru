@@ -1,7 +1,7 @@
-import { Commit } from '../../src/entities/commit';
-import { Author } from '../../src/entities/author';
-import { Package } from '../../src/entities/package';
-import { Provider } from '../../src/providers/provider';
+import { Commit } from '../../../src/entities/commit';
+import { Author } from '../../../src/entities/author';
+import { Package } from '../../../src/entities/package';
+import { Provider } from '../../../src/providers/provider';
 
 export class MockProvider extends Provider {
     public __getRepository(): string {

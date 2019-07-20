@@ -9,7 +9,7 @@ import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
-export default class Writer {
+export class Writer {
     public static FILE_NAME = 'CHANGELOG.md';
     public static LINE_SEPARATOR = '\n';
     public static ITEM_SEPARATOR = ', ';
