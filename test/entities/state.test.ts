@@ -1,5 +1,5 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/state.mock';
+import { MockState } from '../__mocks__/entities/state.mock';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { Configuration } from '../../src/entities/configuration';
@@ -48,6 +48,7 @@ describe('State', (): void => {
                 state.setLevels(config.getLevels());
 
                 expect(state.getAuthors()).toStrictEqual([author1, author2, author3]);
+                expect(state.getCommits()).toStrictEqual([commit4, commit2, commit3, commit1]);
                 expect(state.getSections()).toStrictEqual([section1, section2]);
                 expect(author3.isIgnored()).toBeFalsy();
                 expect(commit4.isIgnored()).toBeFalsy();
@@ -63,6 +64,8 @@ describe('State', (): void => {
                 expect(state.getChangesLevels()).toStrictEqual([1, 0, 3]);
                 expect(author3.isIgnored()).toBeTruthy();
                 expect(commit4.isIgnored()).toBeTruthy();
+                expect(state.getAuthors()).toStrictEqual([author1, author2]);
+                expect(state.getCommits()).toStrictEqual([commit2, commit3, commit1]);
 
                 state.modify([MockState.MOCK_PLUGIN_NAME], config.getOptions()).then((): void => {
                     expect(state.getSections()).toStrictEqual([section1]);

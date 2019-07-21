@@ -14,7 +14,7 @@ import Key from '../utils/key';
 const $tasks = TaskTree.tree();
 
 export interface Context {
-    addSection(title: string, position: Position): Section | undefined;
+    addSection(title: string, position: Position, attach?: boolean): Section | undefined;
     findSection(title: string): Section | undefined;
 }
 
@@ -32,6 +32,10 @@ export class State implements Context {
 
     public getAuthors(): Author[] {
         return [...this.authors.values()].filter(Author.filter).sort(Author.compare);
+    }
+
+    public getCommits(): Commit[] {
+        return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
     }
 
     public getChangesLevels(): [number, number, number] {
@@ -67,11 +71,11 @@ export class State implements Context {
         }
     }
 
-    public addSection(title: string, position: Position = Position.Group): Section | undefined {
+    public addSection(title: string, position: Position = Position.Group, attach?: boolean): Section | undefined {
         let section = this.findSection(title);
 
         if (!section && Key.unify(title)) {
-            section = new Section(title, position);
+            section = new Section(title, position, attach ? this.sections.length : Section.DEFAULT_INDEX);
             this.sections.push(section);
         }
 
@@ -126,10 +130,7 @@ export class State implements Context {
             });
         }
 
-        this.sections = sections
-            .filter(Section.filter)
-            .sort(Section.compare)
-            .reverse();
+        this.sections = sections.filter(Section.filter).sort(Section.compare);
         task.complete();
     }
 

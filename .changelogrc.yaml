@@ -39,8 +39,8 @@ scopes:
         theme: Themes
         api: API
 sections:
-    - Bug Fixes: [fix]
     - Features: [feat]
+    - Bug Fixes: [fix]
     - Internal changes: [types, workflow, build, test, chore, docs]
     - Performance Improvements: [perf]
     - Code Refactoring: [refactor]

@@ -9,14 +9,14 @@ import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
-export default class Writer {
+export class Writer {
     public static FILE_NAME = 'CHANGELOG.md';
     public static LINE_SEPARATOR = '\n';
     public static ITEM_SEPARATOR = ', ';
     public static WORD_SEPARATOR = ' ';
 
-    private data: string[] = [];
-    private filePath: string;
+    protected data: string[] = [];
+    protected filePath: string;
 
     public constructor() {
         this.filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
@@ -40,8 +40,16 @@ export default class Writer {
             this.renderSection(section, Markdown.DEFAULT_HEADER_LEVEL);
         });
         this.renderAuthors(authors);
-        await fs.promises.writeFile(this.filePath, this.data.join(Writer.WORD_SEPARATOR));
+        await this.writeFile();
         task.complete('Changelog updated!');
+    }
+
+    protected async writeFile(): Promise<void> {
+        await fs.promises.writeFile(this.filePath, this.getData());
+    }
+
+    protected getData(): string {
+        return this.data.join(Writer.LINE_SEPARATOR);
     }
 
     private renderSection(section: Section, level: number): void {

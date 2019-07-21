@@ -6,7 +6,7 @@ import { Provider, ServiceProvider } from './provider';
 
 const $tasks = TaskTree.tree();
 
-export default class GitHubProvider extends Provider {
+export class GitHubProvider extends Provider {
     private kit: Octokit;
     private authors: Map<number, Author> = new Map();
 

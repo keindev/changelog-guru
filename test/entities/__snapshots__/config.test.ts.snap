@@ -61,13 +61,13 @@ Object {
   },
   "sections": Array [
     Object {
-      "Bug Fixes": Array [
-        "fix",
+      "Features": Array [
+        "feat",
       ],
     },
     Object {
-      "Features": Array [
-        "feat",
+      "Bug Fixes": Array [
+        "fix",
       ],
     },
     Object {
