@@ -1,17 +1,68 @@
 import Octokit from '@octokit/rest';
+import { GraphQLClient } from 'graphql-request';
+import { Variables } from 'graphql-request/dist/src/types';
+import { Task } from 'tasktree-cli/lib/task';
 import { TaskTree } from 'tasktree-cli';
 import { Author } from '../entities/author';
 import { Commit } from '../entities/commit';
-import { Provider, ServiceProvider } from './provider';
+import { Provider, ServiceProvider, Release } from './provider';
 
 const $tasks = TaskTree.tree();
 
+/*
+    const query = `
+        query GetPackage($owner: String!, $repository: String!, $expression: String!) {
+            repository(owner: $owner, name: $repository) {
+                package: object(expression: $expression) {
+                    ... on Blob {
+                        text
+                    }
+                }
+            }
+        }
+    `;
+
+    const variables = {
+        owner: 'keindev',
+        repository: 'changelog-guru',
+        expression: '131d1d42d6dfef92350bd506003ae808e9bbfd22:package.json',
+    };
+
+    try {
+        const data = await graphQLClient.request(query, variables);
+        console.log(JSON.stringify(data, undefined, 2));
+    } catch (e) {
+        task.error(e, true);
+    }
+*/
+
+interface GitHubRequestOptions {
+    variables?: Variables;
+    task?: Task;
+}
+
+interface GitHubResponseRelease {
+    release: {
+        nodes: Release[];
+    };
+}
+
 export class GitHubProvider extends Provider {
+    private endpoint = 'https://api.github.com/graphql';
     private kit: Octokit;
     private authors: Map<number, Author> = new Map();
+    private graphQLClient: GraphQLClient;
+    private release: Release | undefined;
 
     public constructor(url: string) {
         super(ServiceProvider.GitHub, url);
+
+        this.graphQLClient = new GraphQLClient(this.endpoint, {
+            method: 'POST',
+            headers: {
+                authorization: `token ${process.env.GITHUB_TOKEN || ''}`,
+            },
+        });
 
         this.kit = new Octokit({ auth: `token ${process.env.GITHUB_TOKEN || ''}` });
     }
@@ -33,30 +84,55 @@ export class GitHubProvider extends Provider {
         return commits.map((response): [Commit, Author] => this.parseResponse(response));
     }
 
-    public async getLatestReleaseDate(): Promise<string> {
-        const release = await this.getLatestRelease();
+    public async getLastRelease(): Promise<Release> {
+        if (!this.release) {
+            const response: GitHubResponseRelease = await this.requestData(/* GraphQL */ `
+                query GetRelease($owner: String!, $repository: String!) {
+                    repository(owner: $owner, name: $repository) {
+                        release: releases(last: 1) {
+                            nodes {
+                                tag: tagName
+                                date: publishedAt
+                            }
+                        }
+                    }
+                }
+            `);
 
-        return release ? release.published_at : new Date(0).toISOString();
-    }
-
-    public async getVersion(): Promise<string | undefined> {
-        const release = await this.getLatestRelease();
-
-        return release ? release.tag_name : undefined;
-    }
-
-    private async getLatestRelease(): Promise<Octokit.ReposGetLatestReleaseResponse | undefined> {
-        const repository: Octokit.ReposListReleasesParams = { repo: this.repository, owner: this.owner };
-        const { data: list } = await this.kit.repos.listReleases(repository);
-        let release: Octokit.ReposGetLatestReleaseResponse | undefined;
-
-        if (list.length) {
-            const response = await this.kit.repos.getLatestRelease(repository);
-
-            release = response.data;
+            if (response && response.release.nodes.length) {
+                [this.release] = response.release.nodes;
+            } else {
+                this.release = {
+                    tag: undefined,
+                    date: new Date(0).toISOString(),
+                };
+            }
         }
 
-        return release;
+        return this.release;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private async requestData(query: string, options: GitHubRequestOptions = {}): Promise<any> {
+        try {
+            const { repository } = await this.graphQLClient.request(
+                query,
+                Object.assign(options.variables || {}, {
+                    owner: this.owner,
+                    repository: this.repository,
+                })
+            );
+
+            return repository;
+        } catch (err) {
+            if (options && options.task) {
+                options.task.error(err, true);
+            } else {
+                $tasks.add('GraphQLClient: request error!').error(err, true);
+            }
+        }
+
+        return undefined;
     }
 
     private parseResponse(response: Octokit.ReposListCommitsResponseItem): [Commit, Author] {
@@ -82,3 +158,54 @@ export class GitHubProvider extends Provider {
         return authors.get(id) as Author;
     }
 }
+
+/*
+query GetCommitObjectId: String!, $repository: String!, $branch: String!) {
+  repository(owner: $owner, name: $repository) {
+    ref(qualifiedName: $branch) {
+      target {
+        ... on Commit {
+          oid
+        }
+      }
+    }
+  }
+}
+*/
+
+/*
+query GetCommits($owner: String!, $repository: String!, $branch: String!) {
+  repository(owner: $owner, name: $repository) {
+    ref(qualifiedName: $branch) {
+      target {
+        ... on Commit {
+          id
+          oid
+          history(since: "1970-01-01T00:00:00.000Z", after: "be11a9e465627aebbc8222e9186a8fac43b4f3cd 0") {
+            pageInfo {
+              hasPreviousPage
+              hasNextPage
+              endCursor
+            }
+            edges {
+              node {
+                oid
+                messageHeadline
+                messageBody
+                author {
+                  user {
+                    login
+                  }
+                  name
+                  email
+                  date
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+*/

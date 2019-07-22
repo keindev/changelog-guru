@@ -15,11 +15,10 @@ export class Reader {
         const { provider } = this;
         const task = $tasks.add('Loading a release state...');
         const state = new State();
-        const date = await provider.getLatestReleaseDate();
-        const version = await provider.getVersion();
+        const { date, tag } = await provider.getLastRelease();
 
         task.log(`Last release date: ${date}`);
-        task.log(`Last release version: ${version || '-'}`);
+        task.log(`Last release tag: ${tag}`);
         await this.loadCommits(date, state);
         task.complete(`Release information:`);
 

@@ -1,7 +1,7 @@
 import { Commit } from '../../../src/entities/commit';
 import { Author } from '../../../src/entities/author';
 import { Package } from '../../../src/entities/package';
-import { Provider } from '../../../src/providers/provider';
+import { Provider, Release } from '../../../src/providers/provider';
 
 export class MockProvider extends Provider {
     public readonly __commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19ff', {
@@ -35,12 +35,10 @@ export class MockProvider extends Provider {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    public async getVersion(): Promise<string | undefined> {
-        return Promise.resolve(Package.DEFAULT_VERSION);
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    public async getLatestReleaseDate(): Promise<string> {
-        return Promise.resolve(new Date(0).toISOString());
+    public async getLastRelease(): Promise<Release> {
+        return Promise.resolve({
+            tag: Package.DEFAULT_VERSION,
+            date: new Date(0).toISOString(),
+        });
     }
 }
