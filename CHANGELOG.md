@@ -32,6 +32,7 @@
 - Reworked plugins, added a Levenshtein distance compare algorithm [`6c45621`](https://github.com/keindev/changelog-guru/commit/6c456218d0a6ccd698e56e3cb1f024e56db57844)
 - Add sections tree & commit list render [`9d3bc70`](https://github.com/keindev/changelog-guru/commit/9d3bc7004cb591eb3c5db11b5d4c3fec5540b2cb)
 - Add ignore option for commit subjects [`2323938`](https://github.com/keindev/changelog-guru/commit/232393822be1f40971484b31b3d763c33ac807a3)
+- Add -p option, for bump package :zap: [`508d073`](https://github.com/keindev/changelog-guru/commit/508d073f3ae344c48bd8bb4e9d960d9103907c2b)
 ## Bug Fixes
 - **[Commit]**  Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
 - **[Config]**  Fix error with Level.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
