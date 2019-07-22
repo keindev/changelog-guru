@@ -21,7 +21,7 @@ export default class Changelog {
         this.pkg = new Package();
     }
 
-    public async generate(): Promise<void> {
+    public async generate(bump: boolean = false): Promise<void> {
         const provider = await this.getProvider();
 
         if (provider) {
@@ -40,7 +40,10 @@ export default class Changelog {
 
             await state.modify(config.getPlugins(), config.getOptions());
             await writer.write(state.getAuthors(), state.getSections());
-            await this.pkg.incrementVersion(...state.getChangesLevels());
+
+            if (bump) {
+                await this.pkg.incrementVersion(...state.getChangesLevels());
+            }
         }
     }
 

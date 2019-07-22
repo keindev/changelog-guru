@@ -43,6 +43,7 @@
 - **[State]**  Added section list sorting after modify with plugins [`f85afda`](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
 - **[State]**  Add check for existence of plugin file [`e2064ca`](https://github.com/keindev/changelog-guru/commit/e2064ca5abb9d099503d98a95b614e7dcc356201)
 - **[State]**  Add import task skip if plug not exist [`6b9c9fd`](https://github.com/keindev/changelog-guru/commit/6b9c9fdb1abd6935f388f9e6d9a2c01d8514a152)
+- **[State, Section]**  Fix sections sorting [`7740999`](https://github.com/keindev/changelog-guru/commit/77409996c382f83f49ce58f673da71b963732536)
 - **[Writer]**  Fix error with output md [`fe88997`](https://github.com/keindev/changelog-guru/commit/fe889978149da0b4b760c70eb3eade80d2761821)
 - Rewrite reader, test github api [`dfea14d`](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae) [`a5b847f`](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
 - Add author avatar size [`f2107a2`](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)
