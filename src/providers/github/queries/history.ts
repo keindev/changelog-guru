@@ -81,7 +81,7 @@ export class HistoryQuery extends Query {
                         header: messageHeadline
                         body: messageBody
                         url
-                        date: authoredDate
+                        date: pushedDate
                         author {
                             avatar: avatarUrl
                             user {
