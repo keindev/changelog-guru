@@ -25,7 +25,7 @@ export default class Changelog {
         const provider = await this.getProvider();
 
         if (provider) {
-            const { config } = this;
+            const { config, pkg } = this;
             const reader = new Reader(provider);
             const writer = new Writer();
             const state = await reader.read();
@@ -42,7 +42,7 @@ export default class Changelog {
             await writer.write(state.getAuthors(), state.getSections());
 
             if (bump) {
-                await this.pkg.incrementVersion(...state.getChangesLevels());
+                await pkg.incrementVersion(...state.getChangesLevels());
             }
         }
     }

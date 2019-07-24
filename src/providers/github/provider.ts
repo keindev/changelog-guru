@@ -1,10 +1,12 @@
 import { GraphQLClient } from 'graphql-request';
+import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import { Author } from '../../entities/author';
 import { Commit } from '../../entities/commit';
 import { Provider, ServiceProvider, Release } from '../provider';
 import { ReleaseQuery } from './queries/release';
 import { HistoryQuery, GitHubResponseHistoryCommit, GitHubResponseHistoryAuthor } from './queries/history';
+import { PackageQuery } from './queries/package';
 
 const $tasks = TaskTree.tree();
 
@@ -15,6 +17,7 @@ export class GitHubProvider extends Provider {
     private cursor: string | undefined;
     private releaseQuery: ReleaseQuery;
     private historyQuery: HistoryQuery;
+    private packageQuery: PackageQuery;
 
     public constructor(url: string) {
         super(ServiceProvider.GitHub, url);
@@ -33,6 +36,7 @@ export class GitHubProvider extends Provider {
 
         this.releaseQuery = new ReleaseQuery(client, variables);
         this.historyQuery = new HistoryQuery(client, variables);
+        this.packageQuery = new PackageQuery(client, variables);
     }
 
     public async getCommits(date: string, pageIndex: number): Promise<[Commit, Author][]> {
@@ -63,6 +67,19 @@ export class GitHubProvider extends Provider {
         }
 
         return this.release;
+    }
+
+    public async getPrevPackage(): Promise<PackageJson | undefined> {
+        const { packageQuery: query } = this;
+        const release = await this.getLastRelease();
+        const commit = await query.getPackageChanges(release.date);
+        let data: PackageJson | undefined;
+
+        if (commit) {
+            data = await query.getPackageFrom(commit);
+        }
+
+        return data;
     }
 
     private async getCursor(position: number): Promise<string | undefined> {

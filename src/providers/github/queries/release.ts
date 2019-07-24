@@ -1,7 +1,7 @@
 import { Query } from './query';
 import { Release } from '../../provider';
 
-interface GitHubResponseRelease {
+export interface GitHubResponseRelease {
     release: {
         nodes: Release[];
     };

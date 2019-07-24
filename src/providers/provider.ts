@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import getUserAgent from 'universal-user-agent';
 import findupSync from 'findup-sync';
+import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import { Commit } from '../entities/commit';
 import { Author } from '../entities/author';
@@ -64,4 +65,5 @@ export abstract class Provider {
 
     abstract async getLastRelease(): Promise<Release>;
     abstract async getCommits(date: string, page: number): Promise<[Commit, Author][]>;
+    abstract async getPrevPackage(): Promise<PackageJson | undefined>;
 }

@@ -62,4 +62,23 @@ export class Package {
             task.fail(`New package version [${next}] is invalid or less (see https://semver.org/)`);
         }
     }
+    /*
+    public async getBumpedPackages(provider: Provider): Promise<string[]> {
+        const pkg = await provider.getPrevPackage();
+
+        if (pkg) {
+            https://docs.npmjs.com/files/package.json#license
+            https://docs.npmjs.com/files/package.json#dependencies
+            https://docs.npmjs.com/files/package.json#devdependencies
+            https://docs.npmjs.com/files/package.json#peerdependencies
+            https://docs.npmjs.com/files/package.json#bundleddependencies
+            https://docs.npmjs.com/files/package.json#optionaldependencies
+            https://docs.npmjs.com/files/package.json#engines
+            https://docs.npmjs.com/files/package.json#os
+            https://docs.npmjs.com/files/package.json#cpu
+        }
+
+        return [];
+    }
+    */
 }

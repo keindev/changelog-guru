@@ -9,10 +9,10 @@
 - Added debug loging for State & Reader [`0e9f10c`](https://github.com/keindev/changelog-guru/commit/0e9f10c025b094fc2ca84c5c4f2adda7921f511e)
 - Added debug loging for IO, Entities & Middleware [`7ae4e11`](https://github.com/keindev/changelog-guru/commit/7ae4e11d0956f95282e65c93daf829db78ed35c0)
 - Added Entity class for better debug [`777e32a`](https://github.com/keindev/changelog-guru/commit/777e32a9082549e46c7bb6390af7bc2ca6949c4b)
+### GraphQL
+- **[API]**  Replace @octokit/rest by graphql [`aabcdbd`](https://github.com/keindev/changelog-guru/commit/aabcdbd20a00ceecf9c2bd89a0608e5c3e07b565) [`84aeb3b`](https://github.com/keindev/changelog-guru/commit/84aeb3bafa599e96c5ef6418d817289b716fbdc4)
 ### Subsections & Groups
 - **[Section]**  Added new SectionBlock type - Group [`e1e837c`](https://github.com/keindev/changelog-guru/commit/e1e837ccf41fd543af77bf2595bca97adfecb0d7)
-### GraphQL
-- **[API]**  Replace @octokit/rest by graphql [`aabcdbd`](https://github.com/keindev/changelog-guru/commit/aabcdbd20a00ceecf9c2bd89a0608e5c3e07b565)
 ### Others
 - **[Config]**  Use cosmiconfig for load config file [`833e950`](https://github.com/keindev/changelog-guru/commit/833e95021ad46296d52c1b70cbf21879377f9bc8)
 - **[Config]**  Rename config file [`a34b824`](https://github.com/keindev/changelog-guru/commit/a34b824b2b5cc152b586e5b6df7b374e3a27983c)
@@ -38,6 +38,7 @@
 ## Bug Fixes
 - **[Commit]**  Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
 - **[Config]**  Fix error with Level.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
+- **[HistoryQuery]**  Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
 - **[Plugins]**  Add export for Config interfaces [`949d2cc`](https://github.com/keindev/changelog-guru/commit/949d2cc1ab65191f1c35a73b0e5cbceb6ac9c88d)
 - **[Provider]**  Fix findup cwd [`e9e5df6`](https://github.com/keindev/changelog-guru/commit/e9e5df6c5966915db9af7f24326b2edc421f69f1)
 - **[Provider]**  Set default branch to master [`7953e81`](https://github.com/keindev/changelog-guru/commit/7953e81a59deb8d472bea8c41f30f7a09ab2eb82)
