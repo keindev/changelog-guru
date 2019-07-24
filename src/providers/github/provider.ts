@@ -100,3 +100,28 @@ export class GitHubProvider extends Provider {
         return authors.get(id) as Author;
     }
 }
+
+/*
+    const query = `
+        query GetPackage($owner: String!, $repository: String!, $expression: String!) {
+            repository(owner: $owner, name: $repository) {
+                package: object(expression: $expression) {
+                    ... on Blob {
+                        text
+                    }
+                }
+            }
+        }
+    `;
+    const variables = {
+        owner: 'keindev',
+        repository: 'changelog-guru',
+        expression: '131d1d42d6dfef92350bd506003ae808e9bbfd22:package.json',
+    };
+    try {
+        const data = await graphQLClient.request(query, variables);
+        console.log(JSON.stringify(data, undefined, 2));
+    } catch (e) {
+        task.error(e, true);
+    }
+*/

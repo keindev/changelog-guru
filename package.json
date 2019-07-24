@@ -49,7 +49,7 @@
         "findup-sync": "^4.0.0",
         "graphql-request": "^1.8.2",
         "read-pkg": "^5.2.0",
-        "semver": "^6.2.0",
+        "semver": "^6.3.0",
         "tasktree-cli": "^1.2.2",
         "universal-user-agent": "^3.0.0",
         "write-pkg": "^4.0.0"
