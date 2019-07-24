@@ -39,7 +39,7 @@ export class GitHubProvider extends Provider {
         this.packageQuery = new PackageQuery(client, variables);
     }
 
-    public async getCommits(date: string, pageIndex: number): Promise<[Commit, Author][]> {
+    public async getCommits(pageIndex: number): Promise<[Commit, Author][]> {
         const task = $tasks.add(`Loading page #${pageIndex + 1}`);
         const release = await this.getLastRelease();
         let cursor: string | undefined;
@@ -51,7 +51,7 @@ export class GitHubProvider extends Provider {
         const commits = await this.historyQuery.getCommits(release.date, GitHubProvider.PAGE_SIZE, cursor);
         const pairs = commits.map((commit): [Commit, Author] => this.parseResponse(commit));
 
-        task.complete(`Page #${pageIndex} loaded (${commits.length} commits)`);
+        task.complete(`Page #${pageIndex + 1} loaded (${commits.length} commits)`);
 
         return pairs;
     }
@@ -69,14 +69,18 @@ export class GitHubProvider extends Provider {
         return this.release;
     }
 
-    public async getPrevPackage(): Promise<PackageJson | undefined> {
+    public async getPrevPackage(): Promise<PackageJson> {
+        const task = $tasks.add(`Loading previous package.json...`);
         const { packageQuery: query } = this;
         const release = await this.getLastRelease();
         const commit = await query.getPackageChanges(release.date);
-        let data: PackageJson | undefined;
+        let data: PackageJson = {};
 
         if (commit) {
             data = await query.getPackageFrom(commit);
+            task.complete('Previous package.json loaded');
+        } else {
+            task.skip('Previous package.json is not found');
         }
 
         return data;

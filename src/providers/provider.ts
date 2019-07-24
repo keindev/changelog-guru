@@ -64,6 +64,6 @@ export abstract class Provider {
     }
 
     abstract async getLastRelease(): Promise<Release>;
-    abstract async getCommits(date: string, page: number): Promise<[Commit, Author][]>;
-    abstract async getPrevPackage(): Promise<PackageJson | undefined>;
+    abstract async getCommits(page: number): Promise<[Commit, Author][]>;
+    abstract async getPrevPackage(): Promise<PackageJson>;
 }

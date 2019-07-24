@@ -1,5 +1,5 @@
 import { Commit } from '../entities/commit';
-import { Plugin } from '../entities/plugin';
+import { CommitPlugin } from '../entities/plugin';
 import { ConfigurationOptions } from '../entities/configuration';
 import { Option } from '../utils/types';
 import Key from '../utils/key';
@@ -11,7 +11,7 @@ export interface Configuration extends ConfigurationOptions {
     };
 }
 
-export default class ScopePlugin extends Plugin {
+export default class ScopePlugin extends CommitPlugin {
     private scopes: Map<string, string> = new Map();
     private onlyConfigured: boolean = false;
 

@@ -84,7 +84,7 @@ export class Commit {
         return this.type;
     }
 
-    public getPriority(): number {
+    public getPriority(): Priority {
         let priority = Priority.Default;
 
         if (this.hasStatus(Status.BreakingChanges)) priority += Priority.High;

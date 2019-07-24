@@ -1,5 +1,5 @@
 import { Commit } from '../entities/commit';
-import { Plugin } from '../entities/plugin';
+import { CommitPlugin } from '../entities/plugin';
 import { ConfigurationOptions } from '../entities/configuration';
 import { Option, OptionValue } from '../utils/types';
 import { Section, Position } from '../entities/section';
@@ -9,7 +9,7 @@ export interface Configuration extends ConfigurationOptions {
     sections: Option;
 }
 
-export default class SectionPlugin extends Plugin {
+export default class SectionPlugin extends CommitPlugin {
     private blocks: Map<string, Section> = new Map();
 
     public async init(config: Configuration): Promise<void> {

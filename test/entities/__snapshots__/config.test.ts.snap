@@ -2,6 +2,9 @@
 
 exports[`Config Default 1`] = `
 Object {
+  "attention": Object {
+    "title": "Important Changes",
+  },
   "ignore": Object {
     "authors": Array [
       "dependabot-preview[bot]",
@@ -46,6 +49,7 @@ Object {
     "important": "Important Internal Changes",
   },
   "plugins": Array [
+    "attention",
     "marker",
     "scope",
     "section",

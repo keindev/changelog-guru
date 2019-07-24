@@ -1,6 +1,6 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { Commit } from '../entities/commit';
-import { Plugin } from '../entities/plugin';
+import { CommitPlugin } from '../entities/plugin';
 import { Section, Position } from '../entities/section';
 import { ConfigurationOptions } from '../entities/configuration';
 import { Option, OptionValue } from '../utils/types';
@@ -24,7 +24,7 @@ export interface Configuration extends ConfigurationOptions {
     markers: Option;
 }
 
-export default class MarkerPlugin extends Plugin {
+export default class MarkerPlugin extends CommitPlugin {
     private static EXPRESSION = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
 
     private markers: string[] = [];

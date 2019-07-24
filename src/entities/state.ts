@@ -4,16 +4,22 @@ import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
 import { Author } from './author';
 import { Commit } from './commit';
-import { Plugin } from './plugin';
+import { Plugin, CommitPlugin, StatePlugin, PluginType } from './plugin';
 import { ConfigurationOptions } from './configuration';
 import { Section, Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import { Level } from '../utils/enums';
 import Key from '../utils/key';
+import { License } from './license';
 
 const $tasks = TaskTree.tree();
 
+export interface PackageChanges {
+    license: boolean;
+}
+
 export interface Context {
+    getLicense(): License | undefined;
     addSection(title: string, position: Position, attach?: boolean): Section | undefined;
     findSection(title: string): Section | undefined;
 }
@@ -25,6 +31,7 @@ export class State implements Context {
     protected authors: Map<number, Author> = new Map();
     protected commits: Map<string, Commit> = new Map();
     protected sections: Section[] = [];
+    protected license: License | undefined;
 
     public getSections(): Section[] {
         return this.sections;
@@ -36,6 +43,10 @@ export class State implements Context {
 
     public getCommits(): Commit[] {
         return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
+    }
+
+    public getLicense(): License | undefined {
+        return this.license;
     }
 
     public getChangesLevels(): [number, number, number] {
@@ -80,6 +91,10 @@ export class State implements Context {
         }
 
         return section;
+    }
+
+    public setLicense(id: string, prev?: string): void {
+        this.license = new License(id, prev);
     }
 
     public findSection(title: string): Section | undefined {
@@ -138,24 +153,38 @@ export class State implements Context {
         const filePath = path.join(this.pluginsPath, `${name}.${this.pluginsExtension}`);
 
         if (fs.existsSync(filePath)) {
-            const module: Importable<Plugin, Context> = await import(filePath);
-            const PluginClass: Constructable<Plugin, Context> = module.default;
+            const module: Importable<PluginType, Context> = await import(filePath);
+            const PluginClass: Constructable<PluginType, Context> = module.default;
 
             task.log(`${name} plugin imported`);
 
             if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
                 const plugin = new PluginClass(this);
                 const subtask = task.add(`Changing state with ${PluginClass.name}`);
-                const commits = [...this.commits.values()];
 
                 if (plugin instanceof Plugin) {
                     await plugin.init(options);
-                    await Promise.all(commits.map((commit): Promise<void> => plugin.parse(commit, subtask)));
-
-                    subtask.complete();
                 } else {
                     subtask.fail(`${PluginClass.name} is not Plugin class`);
                 }
+
+                switch (true) {
+                    case plugin instanceof CommitPlugin:
+                        await Promise.all(
+                            [...this.commits.values()].map(
+                                (commit): Promise<void> => (plugin as CommitPlugin).parse(commit, subtask)
+                            )
+                        );
+                        break;
+                    case plugin instanceof StatePlugin:
+                        await (plugin as StatePlugin).modify(subtask);
+                        break;
+                    default:
+                        subtask.fail(`${PluginClass.name} - state modification with this plugin is not available yet`);
+                        break;
+                }
+
+                subtask.complete();
             } else {
                 task.fail(`${name} is not constructor`);
             }

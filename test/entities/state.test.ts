@@ -67,7 +67,7 @@ describe('State', (): void => {
                 expect(state.getAuthors()).toStrictEqual([author1, author2]);
                 expect(state.getCommits()).toStrictEqual([commit2, commit3, commit1]);
 
-                state.modify([MockState.MOCK_PLUGIN_NAME], config.getOptions()).then((): void => {
+                state.modify(MockState.MOCK_PLUGINS, config.getOptions()).then((): void => {
                     expect(state.getSections()).toStrictEqual([section1]);
 
                     done();

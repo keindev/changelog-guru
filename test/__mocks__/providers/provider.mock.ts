@@ -1,3 +1,4 @@
+import { PackageJson } from 'read-pkg';
 import { Commit } from '../../../src/entities/commit';
 import { Author } from '../../../src/entities/author';
 import { Package } from '../../../src/entities/package';
@@ -31,7 +32,7 @@ export class MockProvider extends Provider {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {
+    public async getCommits(page: number): Promise<[Commit, Author][]> {
         return Promise.resolve([[this.__commit, this.__author]]);
     }
 
@@ -40,6 +41,13 @@ export class MockProvider extends Provider {
         return Promise.resolve({
             tag: Package.DEFAULT_VERSION,
             date: new Date(0).toISOString(),
+        });
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    public async getPrevPackage(): Promise<PackageJson> {
+        return Promise.resolve({
+            license: 'MIT',
         });
     }
 }

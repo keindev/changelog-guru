@@ -28,7 +28,7 @@ export default class Changelog {
             const { config, pkg } = this;
             const reader = new Reader(provider);
             const writer = new Writer();
-            const state = await reader.read();
+            const state = await reader.read(pkg);
 
             state.setLevels(config.getLevels());
             state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));

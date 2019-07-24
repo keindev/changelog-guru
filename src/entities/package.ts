@@ -7,6 +7,7 @@ const $tasks = TaskTree.tree();
 
 export class Package {
     public static DEFAULT_VERSION = '0.0.1';
+    public static DEFAULT_LICENSE = '';
     public static DEFAULT_REPOSITORY = '';
 
     private data: readPkg.PackageJson;
@@ -16,6 +17,7 @@ export class Package {
 
         this.data = readPkg.sync({ normalize: false });
 
+        if (!this.data.license) task.fail('Package license is not specified');
         if (!this.data.version) task.fail('Package version is not specified');
         if (!this.data.repository) task.fail('Package repository url is not specified');
 
@@ -43,6 +45,10 @@ export class Package {
             : Package.DEFAULT_VERSION;
     }
 
+    public getLicense(): string {
+        return this.data.license || Package.DEFAULT_LICENSE;
+    }
+
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {
         const task = $tasks.add(`Updating package version`);
         const current = this.getVersion();
@@ -62,23 +68,4 @@ export class Package {
             task.fail(`New package version [${next}] is invalid or less (see https://semver.org/)`);
         }
     }
-    /*
-    public async getBumpedPackages(provider: Provider): Promise<string[]> {
-        const pkg = await provider.getPrevPackage();
-
-        if (pkg) {
-            https://docs.npmjs.com/files/package.json#license
-            https://docs.npmjs.com/files/package.json#dependencies
-            https://docs.npmjs.com/files/package.json#devdependencies
-            https://docs.npmjs.com/files/package.json#peerdependencies
-            https://docs.npmjs.com/files/package.json#bundleddependencies
-            https://docs.npmjs.com/files/package.json#optionaldependencies
-            https://docs.npmjs.com/files/package.json#engines
-            https://docs.npmjs.com/files/package.json#os
-            https://docs.npmjs.com/files/package.json#cpu
-        }
-
-        return [];
-    }
-    */
 }

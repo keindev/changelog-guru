@@ -1,6 +1,6 @@
 ---
 provider: github
-plugins: [marker, scope, section]
+plugins: [attention, marker, scope, section]
 levels:
     major:
         - break
@@ -18,7 +18,8 @@ levels:
         - workflow
         - perf
         - revert
-
+attention:
+    title: 'Important Changes'
 # List of available markers
 markers:
     # !important - place a commit title to special section on top of changelog

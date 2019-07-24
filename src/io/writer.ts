@@ -56,6 +56,7 @@ export class Writer {
         const { data } = this;
         const sections = section.getSections();
         const commits = section.getCommits(true, true);
+        const messages = section.getMessages();
 
         data.push(Markdown.title(section.title, level));
 
@@ -65,6 +66,10 @@ export class Writer {
             });
 
             if (commits.length) data.push(Markdown.title('Others', level + 1));
+        }
+
+        if (messages.length) {
+            data.push(...messages.map((message): string => message.text));
         }
 
         if (commits.length) {
