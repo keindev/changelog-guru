@@ -11,8 +11,3 @@ export interface Importable<T, C> {
 export interface Option {
     [key: string]: Option | OptionValue;
 }
-
-export interface Values {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
-}

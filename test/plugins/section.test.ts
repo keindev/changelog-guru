@@ -34,7 +34,7 @@ describe('SectionPlugin', (): void => {
         if (section) {
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
                 timestamp: 0,
-                message: `fix: subject`,
+                header: 'fix: subject',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
                 author: 'keindev',
             });

@@ -32,7 +32,8 @@ describe('MarkerPlugin', (): void => {
         if (section) {
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
                 timestamp: 0,
-                message: `feat(Jest): subject\n\n!important`,
+                header: 'feat(Jest): subject',
+                body: `\n\n!important`,
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
                 author: 'keindev',
             });
@@ -56,7 +57,8 @@ describe('MarkerPlugin', (): void => {
         if (section) {
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
                 timestamp: 0,
-                message: `feat(Jest): subject\n\n!deprecated`,
+                header: 'feat(Jest): subject',
+                body: '\n\n!deprecated',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
                 author: 'keindev',
             });
@@ -80,7 +82,8 @@ describe('MarkerPlugin', (): void => {
         if (section) {
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
                 timestamp: 0,
-                message: `feat(Jest): subject\n\n!break`,
+                header: 'feat(Jest): subject',
+                body: '\n\n!break',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f3',
                 author: 'keindev',
             });
@@ -99,7 +102,8 @@ describe('MarkerPlugin', (): void => {
     it('!hide marker', (done): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
             timestamp: 0,
-            message: `feat(Jest): subject\n\n!hide`,
+            header: 'feat(Jest): subject',
+            body: '\n\n!hide',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f4',
             author: 'keindev',
         });
@@ -116,7 +120,8 @@ describe('MarkerPlugin', (): void => {
     it('!group marker', (done): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f5', {
             timestamp: 0,
-            message: `feat(Jest): subject\n\n!group(Jest markers test)`,
+            header: 'feat(Jest): subject',
+            body: '\n\n!group(Jest markers test)',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f5',
             author: 'keindev',
         });

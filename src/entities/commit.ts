@@ -2,7 +2,8 @@ import { Level, Status, Priority, Compare } from '../utils/enums';
 
 export interface CommitOptions {
     timestamp: number;
-    message: string;
+    header: string;
+    body?: string;
     url: string;
     author: string;
 }
@@ -26,31 +27,26 @@ export class Commit {
     private ignored = false;
 
     public constructor(hash: string, options: CommitOptions) {
-        const lines = options.message.split(Commit.LINE_SEPARATOR).map((l): string => l.trim());
-        const header = lines.shift();
-
         this.hash = hash;
         this.timestamp = options.timestamp;
-        this.body = lines;
+        this.body = options.body ? options.body.split(Commit.LINE_SEPARATOR).map((l): string => l.trim()) : [];
         this.url = options.url;
         this.author = options.author;
 
-        if (header) {
-            const match = header.match(
-                // <type>(<scope>): <subject>
-                /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
-            );
+        const match = options.header.match(
+            // <type>(<scope>): <subject>
+            /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
+        );
 
-            if (match) {
-                const { groups } = match;
+        if (match) {
+            const { groups } = match;
 
-                if (groups) {
-                    const { type, scope, subject } = groups;
+            if (groups) {
+                const { type, scope, subject } = groups;
 
-                    if (type) this.type = type.trim();
-                    if (scope) this.scope = scope.trim();
-                    if (subject) this.subject = subject.trim();
-                }
+                if (type) this.type = type.trim();
+                if (scope) this.scope = scope.trim();
+                if (subject) this.subject = subject.trim();
             }
         }
     }

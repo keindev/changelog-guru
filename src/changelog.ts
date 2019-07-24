@@ -3,7 +3,7 @@ import { TaskTree } from 'tasktree-cli';
 import { Reader } from './io/reader';
 import { Writer } from './io/writer';
 import { Provider, ServiceProvider } from './providers/provider';
-import { GitHubProvider } from './providers/github-provider';
+import { GitHubProvider } from './providers/github/provider';
 import { Configuration } from './entities/configuration';
 import { Package } from './entities/package';
 import { FilterType } from './utils/enums';

@@ -4,13 +4,15 @@
 - Rethought class "Process" [`9fee65e`](https://github.com/keindev/changelog-guru/commit/9fee65edb1367e2d7a0ef914612f08bfd92b409b)
 - Changes in the process of logging task states [`b40e13f`](https://github.com/keindev/changelog-guru/commit/b40e13f2cde4fb283ecad8ab4e960fd0581dfca7)
 - Added task loging to Providers & conf readers [`da4a964`](https://github.com/keindev/changelog-guru/commit/da4a9648e347355c44bb624dc4ffd3329309b302)
-- Added information methods to Task, fix some bugs with display tree [`54b4952`](https://github.com/keindev/changelog-guru/commit/54b49526b1ac69bbf8c3b42cad840c01f6743ea9)
+- Added information methods to Task, fix some bugs with displ… [`54b4952`](https://github.com/keindev/changelog-guru/commit/54b49526b1ac69bbf8c3b42cad840c01f6743ea9)
 ### Debug mode
 - Added debug loging for State & Reader [`0e9f10c`](https://github.com/keindev/changelog-guru/commit/0e9f10c025b094fc2ca84c5c4f2adda7921f511e)
 - Added debug loging for IO, Entities & Middleware [`7ae4e11`](https://github.com/keindev/changelog-guru/commit/7ae4e11d0956f95282e65c93daf829db78ed35c0)
 - Added Entity class for better debug [`777e32a`](https://github.com/keindev/changelog-guru/commit/777e32a9082549e46c7bb6390af7bc2ca6949c4b)
 ### Subsections & Groups
 - **[Section]**  Added new SectionBlock type - Group [`e1e837c`](https://github.com/keindev/changelog-guru/commit/e1e837ccf41fd543af77bf2595bca97adfecb0d7)
+### GraphQL
+- **[API]**  Replace @octokit/rest by graphql [`aabcdbd`](https://github.com/keindev/changelog-guru/commit/aabcdbd20a00ceecf9c2bd89a0608e5c3e07b565)
 ### Others
 - **[Config]**  Use cosmiconfig for load config file [`833e950`](https://github.com/keindev/changelog-guru/commit/833e95021ad46296d52c1b70cbf21879377f9bc8)
 - **[Config]**  Rename config file [`a34b824`](https://github.com/keindev/changelog-guru/commit/a34b824b2b5cc152b586e5b6df7b374e3a27983c)
@@ -88,6 +90,7 @@
 - **[Changelog]**  Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1)
 - **[Config]**  Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 - **[Marker]**  Add eslint disable no-explicit-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
+- **[Media]**  Update logo [`089b444`](https://github.com/keindev/changelog-guru/commit/089b4440e2386ef56a9cc187b56dc9b1d265439a)
 - **[Mocks]**  Rename mocks folder to __mocks__ [`3185f07`](https://github.com/keindev/changelog-guru/commit/3185f07091721aa929679e4a833d3ac80e384b3a)
 - **[Package]**  Update dependencies [`54e6330`](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f) [`1fbed44`](https://github.com/keindev/changelog-guru/commit/1fbed44925822a89fdb3cb8ceef460ac3b4fb77c) [`839d042`](https://github.com/keindev/changelog-guru/commit/839d04201466025bad2269548a4ca5be2f81593c)
 - **[Package]**  Normalize package info [`a13d7e0`](https://github.com/keindev/changelog-guru/commit/a13d7e046c1368b1b880e6df6ce9949ef0381c34)

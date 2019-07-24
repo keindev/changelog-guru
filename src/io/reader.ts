@@ -25,15 +25,15 @@ export class Reader {
         return state;
     }
 
-    private async loadCommits(date: string, state: State, pageNumber: number = 0): Promise<void> {
-        const commits = await this.provider.getCommits(date, pageNumber + 1);
+    private async loadCommits(date: string, state: State, pageIndex: number = 0): Promise<void> {
+        const commits = await this.provider.getCommits(date, pageIndex);
         const { length } = commits;
 
         if (length) {
             commits.forEach((entities): void => state.addCommit(...entities));
 
             if (length === Provider.PAGE_SIZE) {
-                await this.loadCommits(date, state, pageNumber + 1);
+                await this.loadCommits(date, state, pageIndex + 1);
             }
         }
     }

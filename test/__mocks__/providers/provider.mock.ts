@@ -6,7 +6,8 @@ import { Provider, Release } from '../../../src/providers/provider';
 export class MockProvider extends Provider {
     public readonly __commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19ff', {
         timestamp: 1,
-        message: `feat(Jest): subject\n\nbody\n\nfooter`,
+        header: 'feat(Jest): subject',
+        body: '\n\nbody\n\nfooter',
         url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19ff',
         author: 'keindev',
     });
