@@ -1,7 +1,7 @@
 import { Reader } from '../../src/io/reader';
 import { MockProvider } from '../__mocks__/providers/provider.mock';
 import { ServiceProvider } from '../../src/providers/provider';
-import { Package } from '../../src/entities/package';
+import { Package } from '../../src/entities/package/package';
 
 describe('Writer', (): void => {
     it('Default', (done): void => {

@@ -31,3 +31,10 @@ export enum FilterType {
     CommitScope = 2,
     CommitSubject = 3,
 }
+
+export enum Modification {
+    Unchanged = 1,
+    Added = 2,
+    Updated = 3,
+    Removed = 4,
+}

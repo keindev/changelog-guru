@@ -1,7 +1,7 @@
 import { PackageJson } from 'read-pkg';
 import { Commit } from '../../../src/entities/commit';
 import { Author } from '../../../src/entities/author';
-import { Package } from '../../../src/entities/package';
+import { Package } from '../../../src/entities/package/package';
 import { Provider, Release } from '../../../src/providers/provider';
 
 export class MockProvider extends Provider {

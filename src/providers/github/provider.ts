@@ -62,6 +62,8 @@ export class GitHubProvider extends Provider {
 
             this.release = response || {
                 tag: undefined,
+                // FIXME: remove test date
+                // date: '2019-04-26T22:27:36Z',
                 date: new Date(0).toISOString(),
             };
         }

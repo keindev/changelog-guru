@@ -1,7 +1,7 @@
 import { TaskTree } from 'tasktree-cli';
 import { Provider } from '../providers/provider';
 import { State } from '../entities/state';
-import { Package } from '../entities/package';
+import { Package } from '../entities/package/package';
 
 const $tasks = TaskTree.tree();
 
@@ -44,12 +44,10 @@ export class Reader {
         const data = await this.provider.getPrevPackage();
 
         state.setLicense(pkg.getLicense(), data.license);
+        state.setEngines(pkg.getEngines(), data.engines);
 
         /*
-    public async getBumpedPackages(provider: Provider): Promise<string[]> {
-
-
-        if (pkg) {
+            TODO: add this ->
             https://docs.npmjs.com/files/package.json#license
             https://docs.npmjs.com/files/package.json#dependencies
             https://docs.npmjs.com/files/package.json#devdependencies
@@ -59,10 +57,6 @@ export class Reader {
             https://docs.npmjs.com/files/package.json#engines
             https://docs.npmjs.com/files/package.json#os
             https://docs.npmjs.com/files/package.json#cpu
-        }
-
-        return [];
-    }
-    */
+        */
     }
 }

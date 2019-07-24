@@ -10,16 +10,14 @@ import { Section, Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import { Level } from '../utils/enums';
 import Key from '../utils/key';
-import { License } from './license';
+import { License } from './package/license';
+import { Engine, PackageEngine } from './package/engine';
 
 const $tasks = TaskTree.tree();
 
-export interface PackageChanges {
-    license: boolean;
-}
-
 export interface Context {
     getLicense(): License | undefined;
+    getEngine(): Engine | undefined;
     addSection(title: string, position: Position, attach?: boolean): Section | undefined;
     findSection(title: string): Section | undefined;
 }
@@ -32,6 +30,7 @@ export class State implements Context {
     protected commits: Map<string, Commit> = new Map();
     protected sections: Section[] = [];
     protected license: License | undefined;
+    protected engine: Engine | undefined;
 
     public getSections(): Section[] {
         return this.sections;
@@ -47,6 +46,10 @@ export class State implements Context {
 
     public getLicense(): License | undefined {
         return this.license;
+    }
+
+    public getEngine(): Engine | undefined {
+        return this.engine;
     }
 
     public getChangesLevels(): [number, number, number] {
@@ -95,6 +98,10 @@ export class State implements Context {
 
     public setLicense(id: string, prev?: string): void {
         this.license = new License(id, prev);
+    }
+
+    public setEngines(engine?: PackageEngine, prev?: PackageEngine): void {
+        this.engine = new Engine(engine, prev);
     }
 
     public findSection(title: string): Section | undefined {

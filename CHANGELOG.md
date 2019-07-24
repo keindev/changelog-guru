@@ -11,12 +11,13 @@ Source code now under `MIT` license.
 - Added debug loging for State & Reader [`0e9f10c`](https://github.com/keindev/changelog-guru/commit/0e9f10c025b094fc2ca84c5c4f2adda7921f511e)
 - Added debug loging for IO, Entities & Middleware [`7ae4e11`](https://github.com/keindev/changelog-guru/commit/7ae4e11d0956f95282e65c93daf829db78ed35c0)
 - Added Entity class for better debug [`777e32a`](https://github.com/keindev/changelog-guru/commit/777e32a9082549e46c7bb6390af7bc2ca6949c4b)
+### Package info
+- **[Attention]**  Add attention plugin [`bc60b94`](https://github.com/keindev/changelog-guru/commit/bc60b949fbeddc9c148b83fa73929aae917e8155)
+- **[Package]**  Add of receipt info about changes in package [`b2407bd`](https://github.com/keindev/changelog-guru/commit/b2407bdf737626f9800570591b21ccc3e67e6034)
 ### GraphQL
 - **[API]**  Replace @octokit/rest by graphql [`aabcdbd`](https://github.com/keindev/changelog-guru/commit/aabcdbd20a00ceecf9c2bd89a0608e5c3e07b565) [`84aeb3b`](https://github.com/keindev/changelog-guru/commit/84aeb3bafa599e96c5ef6418d817289b716fbdc4)
 ### Subsections & Groups
 - **[Section]**  Added new SectionBlock type - Group [`e1e837c`](https://github.com/keindev/changelog-guru/commit/e1e837ccf41fd543af77bf2595bca97adfecb0d7)
-### Package info
-- **[Package]**  Add of receipt info about changes in package [`b2407bd`](https://github.com/keindev/changelog-guru/commit/b2407bdf737626f9800570591b21ccc3e67e6034)
 ### Others
 - **[Config]**  Use cosmiconfig for load config file [`833e950`](https://github.com/keindev/changelog-guru/commit/833e95021ad46296d52c1b70cbf21879377f9bc8)
 - **[Config]**  Rename config file [`a34b824`](https://github.com/keindev/changelog-guru/commit/a34b824b2b5cc152b586e5b6df7b374e3a27983c)

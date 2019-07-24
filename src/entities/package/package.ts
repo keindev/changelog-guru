@@ -2,6 +2,7 @@ import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
 import * as semver from 'semver';
 import { TaskTree } from 'tasktree-cli';
+import { PackageEngine } from './engine';
 
 const $tasks = TaskTree.tree();
 
@@ -47,6 +48,10 @@ export class Package {
 
     public getLicense(): string {
         return this.data.license || Package.DEFAULT_LICENSE;
+    }
+
+    public getEngines(): PackageEngine | undefined {
+        return this.data.engines;
     }
 
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {

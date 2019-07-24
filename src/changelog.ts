@@ -5,7 +5,7 @@ import { Writer } from './io/writer';
 import { Provider, ServiceProvider } from './providers/provider';
 import { GitHubProvider } from './providers/github/provider';
 import { Configuration } from './entities/configuration';
-import { Package } from './entities/package';
+import { Package } from './entities/package/package';
 import { FilterType } from './utils/enums';
 
 const $tasks = TaskTree.tree();
