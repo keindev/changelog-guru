@@ -6,6 +6,7 @@ import { Message } from '../entities/message';
 import { Writer } from '../io/writer';
 import { Level } from '../utils/enums';
 import Markdown from '../utils/markdown';
+import { PackageDependencyType } from '../entities/package/dependency';
 
 export interface Configuration extends ConfigurationOptions {
     attention: {
@@ -28,27 +29,44 @@ export default class AttentionPlugin extends StatePlugin {
         const { section } = this;
 
         if (section) {
-            const license = this.context.getLicense();
+            this.addLicenseAttention(section, task);
+            this.addEngineAttention(section, task);
+        }
+    }
 
-            if (license && license.isChanged) {
-                let text: string;
+    private addLicenseAttention(section: Section, task: Task): void {
+        const license = this.context.getLicense();
 
-                if (license.prev) {
-                    task.warn(`License changed from ${license.prev} to ${license.id}.`);
-                    text = [
-                        `License changed from ${Markdown.wrap(license.prev)} to ${Markdown.wrap(license.id)}.`,
-                        `You can check it in ${Markdown.link(
-                            'the full list of SPDX license IDs.',
-                            'https://spdx.org/licenses/'
-                        )}`,
-                    ].join(Writer.WORD_SEPARATOR);
-                } else {
-                    text = `Source code now under ${Markdown.wrap(license.id)} license.`;
-                    task.log(text);
-                }
+        if (license && license.isChanged) {
+            // TODO: make title configurable
+            const subsection = new Section('License', Position.Subsection);
+            let text: string;
 
-                section.add(new Message(text, Level.Major));
+            if (license.prev) {
+                task.warn(`License changed from ${license.prev} to ${license.id}.`);
+                text = [
+                    `License changed from ${Markdown.wrap(license.prev)} to ${Markdown.wrap(license.id)}.`,
+                    `You can check it in ${Markdown.link(
+                        'the full list of SPDX license IDs.',
+                        'https://spdx.org/licenses/'
+                    )}`,
+                ].join(Writer.WORD_SEPARATOR);
+            } else {
+                text = `Source code now under ${Markdown.wrap(license.id)} license.`;
+                task.log(text);
             }
+
+            subsection.add(new Message(text, Level.Major));
+            section.add(subsection);
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private addEngineAttention(section: Section, task: Task): void {
+        const engine = this.context.getDependencies(PackageDependencyType.Engines);
+
+        if (engine) {
+            // TODO: add attentions
         }
     }
 }

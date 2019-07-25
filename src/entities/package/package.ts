@@ -2,7 +2,7 @@ import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
 import * as semver from 'semver';
 import { TaskTree } from 'tasktree-cli';
-import { PackageEngine } from './engine';
+import { PackageDependency, PackageDependencyType } from './dependency';
 
 const $tasks = TaskTree.tree();
 
@@ -50,8 +50,19 @@ export class Package {
         return this.data.license || Package.DEFAULT_LICENSE;
     }
 
-    public getEngines(): PackageEngine | undefined {
-        return this.data.engines;
+    public getDependencies(type: PackageDependencyType): PackageDependency | undefined {
+        let dependency: PackageDependency | undefined;
+
+        switch (type) {
+            case PackageDependencyType.Engines:
+                dependency = this.data.engines;
+                break;
+            default:
+                dependency = undefined;
+                break;
+        }
+
+        return dependency;
     }
 
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {

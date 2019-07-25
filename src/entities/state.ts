@@ -11,13 +11,13 @@ import { Constructable, Importable } from '../utils/types';
 import { Level } from '../utils/enums';
 import Key from '../utils/key';
 import { License } from './package/license';
-import { Engine, PackageEngine } from './package/engine';
+import { PackageDependencyType, Dependency } from './package/dependency';
 
 const $tasks = TaskTree.tree();
 
 export interface Context {
     getLicense(): License | undefined;
-    getEngine(): Engine | undefined;
+    getDependencies(type: PackageDependencyType): Dependency | undefined;
     addSection(title: string, position: Position, attach?: boolean): Section | undefined;
     findSection(title: string): Section | undefined;
 }
@@ -30,7 +30,7 @@ export class State implements Context {
     protected commits: Map<string, Commit> = new Map();
     protected sections: Section[] = [];
     protected license: License | undefined;
-    protected engine: Engine | undefined;
+    protected dependencies: Map<PackageDependencyType, Dependency> = new Map();
 
     public getSections(): Section[] {
         return this.sections;
@@ -48,8 +48,8 @@ export class State implements Context {
         return this.license;
     }
 
-    public getEngine(): Engine | undefined {
-        return this.engine;
+    public getDependencies(type: PackageDependencyType): Dependency | undefined {
+        return this.dependencies.get(type);
     }
 
     public getChangesLevels(): [number, number, number] {
@@ -100,8 +100,8 @@ export class State implements Context {
         this.license = new License(id, prev);
     }
 
-    public setEngines(engine?: PackageEngine, prev?: PackageEngine): void {
-        this.engine = new Engine(engine, prev);
+    public setDependencies(dependencies: Map<PackageDependencyType, Dependency>): void {
+        this.dependencies = dependencies;
     }
 
     public findSection(title: string): Section | undefined {

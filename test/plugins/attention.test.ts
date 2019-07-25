@@ -2,6 +2,7 @@ import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/entities/state.mock';
 import { Configuration } from '../../src/entities/configuration';
 import { Level } from '../../src/utils/enums';
+import { Message } from '../../src/entities/message';
 import AttentionPlugin, { Configuration as AttentionConfiguration } from '../../src/plugins/attention';
 
 describe('AttentionPlugin', (): void => {
@@ -31,9 +32,20 @@ describe('AttentionPlugin', (): void => {
 
         if (section && license) {
             plugin.modify(task).then((): void => {
-                const data = section.getMessages().map((message): [string, number] => [message.text, message.level]);
+                const getData = (l: Message[]): [string, number][] => l.map((m): [string, number] => [m.text, m.level]);
+                const messages = new Map(
+                    section.getSections().map((s): [string, Message[]] => [s.title, s.getMessages()])
+                );
+                const licenseMessages = messages.get('License');
 
-                expect(data).toStrictEqual([[['Source code now under `MIT` license.'].join(''), Level.Major]]);
+                expect(messages.size).toBe(1);
+                expect(licenseMessages).toBeDefined();
+
+                if (licenseMessages) {
+                    expect(getData(licenseMessages)).toStrictEqual([
+                        [['Source code now under `MIT` license.'].join(''), Level.Major],
+                    ]);
+                }
 
                 done();
             });
