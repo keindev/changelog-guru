@@ -106,7 +106,7 @@ export default class AttentionPlugin extends StatePlugin {
     private addDependencyAttentions(section: Section, task: Task): void {
         Object.values(DependencyType)
             .filter(Number)
-            .forEach((dependencyType): void => {
+            .forEach((dependencyType, index): void => {
                 const dependencies = this.context.getDependencies(dependencyType);
                 const attentionType = AttentionPlugin.getAttentionType(dependencyType, task);
 
@@ -117,7 +117,7 @@ export default class AttentionPlugin extends StatePlugin {
                         let text: string;
                         const replace = (l: string, v?: string | SemVer): string =>
                             v ? text.replace(l, Markdown.wrap(v)) : text;
-                        const subsection = new Section(subtitle, Position.Subsection);
+                        const subsection = new Section(subtitle, Position.Subsection, index);
                         const list: string[] = [];
 
                         this.templates.forEach((template, type): void => {

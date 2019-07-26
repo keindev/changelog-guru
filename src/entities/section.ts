@@ -30,7 +30,7 @@ export class Section {
     }
 
     public static compare(a: Section, b: Section): number {
-        let result = a.getPosition() - b.getPosition() || a.index - b.index || a.getPriority() - b.getPriority();
+        let result = a.getPosition() - b.getPosition() || b.index - a.index || a.getPriority() - b.getPriority();
 
         if (result === Compare.Equal) result = a.title.localeCompare(b.title);
 
