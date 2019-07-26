@@ -33,10 +33,10 @@ export enum FilterType {
 }
 
 export enum Modification {
-    Changed = 1,
-    Unchanged = 2,
-    Added = 3,
-    Bumped = 4,
-    Downgraded = 5,
-    Removed = 6,
+    Added = 'added',
+    Bumped = 'bumped',
+    Changed = 'changed',
+    Downgraded = 'downgraded',
+    Removed = 'removed',
+    Unchanged = 'unchanged',
 }

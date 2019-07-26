@@ -1,17 +1,17 @@
 import semver, { SemVer } from 'semver';
 import { Modification, Compare } from '../../utils/enums';
 
-export enum PackageDependencyType {
+export enum DependencyType {
     // https://docs.npmjs.com/files/package.json#engines
     Engines = 1,
     // https://docs.npmjs.com/files/package.json#dependencies
     Dependencies = 2,
     // https://docs.npmjs.com/files/package.json#devdependencies
-    DevDependencies = 3,
+    Dev = 3,
     // https://docs.npmjs.com/files/package.json#peerdependencies
-    Peerdependencies = 4,
+    Peer = 4,
     // https://docs.npmjs.com/files/package.json#optionaldependencies
-    Optionaldependencies = 5,
+    Optional = 5,
 }
 
 export interface PackageDependency {
@@ -23,14 +23,18 @@ export interface DependencyModification {
     type: Modification;
     value?: string;
     prevValue?: string;
-    version?: SemVer | null;
-    prevVersion?: SemVer | null;
+    version?: semver.SemVer;
+    prevVersion?: semver.SemVer;
 }
 
 export class Dependency {
+    public readonly type: DependencyType;
+
     private modifications: Map<string, DependencyModification> = new Map();
 
-    public constructor(deps?: PackageDependency, prev?: PackageDependency) {
+    public constructor(type: DependencyType, deps?: PackageDependency, prev?: PackageDependency) {
+        this.type = type;
+
         if (deps) {
             if (prev) {
                 Object.entries(deps).forEach((tuple: [string, string]): void => {
@@ -39,13 +43,19 @@ export class Dependency {
 
                     if (prevValue) {
                         if (!value.localeCompare(prevValue)) {
-                            this.setChangedModify(tuple, prevValue);
-                        } else {
                             this.setUnchangedModify(tuple);
+                        } else {
+                            this.setChangedModify(tuple, prevValue);
                         }
                     } else {
                         this.setAddedModify(tuple);
                     }
+                });
+
+                Object.entries(prev).forEach((tuple: [string, string]): void => {
+                    const [name] = tuple;
+
+                    if (!deps[name]) this.setRemovedModify(tuple);
                 });
             } else {
                 Object.entries(deps).forEach(this.setAddedModify, this);
@@ -55,12 +65,8 @@ export class Dependency {
         }
     }
 
-    public static compare(a: DependencyModification, b: DependencyModification): number {
-        return a.type - b.type;
-    }
-
-    public getModifications(): DependencyModification[] {
-        return [...this.modifications.values()].sort(Dependency.compare);
+    public getModifications(type: Modification): DependencyModification[] {
+        return [...this.modifications.values()].filter((modification): boolean => modification.type === type);
     }
 
     private setAddedModify([name, value]: [string, string]): void {
@@ -68,7 +74,7 @@ export class Dependency {
             name,
             value,
             type: Modification.Added,
-            version: semver.coerce(value),
+            version: semver.coerce(value) || undefined,
         });
     }
 
@@ -77,26 +83,32 @@ export class Dependency {
             name,
             type: Modification.Removed,
             prevValue: value,
-            prevVersion: semver.coerce(value),
+            prevVersion: semver.coerce(value) || undefined,
         });
     }
 
     private setChangedModify([name, value]: [string, string], prevValue: string): void {
-        const version = semver.coerce(value);
-        const prevVersion = semver.coerce(prevValue);
+        const isNotPath = (v: string): boolean => !(v.includes('\\') || v.includes('/'));
+        let version: SemVer | undefined;
+        let prevVersion: SemVer | undefined;
         let type = Modification.Changed;
 
-        if (version && prevVersion) {
-            switch (semver.compare(version, prevVersion)) {
-                case Compare.More:
-                    type = Modification.Bumped;
-                    break;
-                case Compare.Less:
-                    type = Modification.Downgraded;
-                    break;
-                default:
-                    type = Modification.Unchanged;
-                    break;
+        if (isNotPath(value) && isNotPath(prevValue)) {
+            version = semver.coerce(value) || undefined;
+            prevVersion = semver.coerce(prevValue) || undefined;
+
+            if (version && prevVersion && !value.includes('\\') && !value.includes('/')) {
+                switch (semver.compare(version, prevVersion)) {
+                    case Compare.More:
+                        type = Modification.Bumped;
+                        break;
+                    case Compare.Less:
+                        type = Modification.Downgraded;
+                        break;
+                    default:
+                        type = Modification.Unchanged;
+                        break;
+                }
             }
         }
 
@@ -115,7 +127,7 @@ export class Dependency {
             name,
             value,
             type: Modification.Unchanged,
-            version: semver.coerce(value),
+            version: semver.coerce(value) || undefined,
         });
     }
 }

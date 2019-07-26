@@ -3,7 +3,7 @@ import { MockState } from '../__mocks__/entities/state.mock';
 import { Configuration } from '../../src/entities/configuration';
 import { Commit } from '../../src/entities/commit';
 import { Status } from '../../src/utils/enums';
-import MarkerPlugin, { Configuration as MarkerConfiguration } from '../../src/plugins/marker';
+import MarkerPlugin, { MarkerConfiguration } from '../../src/plugins/marker';
 
 describe('MarkerPlugin', (): void => {
     const config = new Configuration();

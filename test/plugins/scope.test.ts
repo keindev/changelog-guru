@@ -2,7 +2,7 @@ import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/entities/state.mock';
 import { Configuration } from '../../src/entities/configuration';
 import { Commit } from '../../src/entities/commit';
-import ScopePlugin, { Configuration as ScopeConfiguration } from '../../src/plugins/scope';
+import ScopePlugin, { ScopeConfiguration } from '../../src/plugins/scope';
 
 describe('ScopePlugin', (): void => {
     const context = new MockState();

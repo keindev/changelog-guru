@@ -2,9 +2,11 @@ import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
 import * as semver from 'semver';
 import { TaskTree } from 'tasktree-cli';
-import { PackageDependency, PackageDependencyType } from './dependency';
+import { PackageDependency, DependencyType } from './dependency';
 
 const $tasks = TaskTree.tree();
+
+export type PackageDependencyStories = [PackageDependency | undefined, PackageDependency | undefined];
 
 export class Package {
     public static DEFAULT_VERSION = '0.0.1';
@@ -50,19 +52,16 @@ export class Package {
         return this.data.license || Package.DEFAULT_LICENSE;
     }
 
-    public getDependencies(type: PackageDependencyType): PackageDependency | undefined {
-        let dependency: PackageDependency | undefined;
+    public getDependenciesStories(type: DependencyType, prev: readPkg.PackageJson): PackageDependencyStories {
+        const { data } = this;
 
-        switch (type) {
-            case PackageDependencyType.Engines:
-                dependency = this.data.engines;
-                break;
-            default:
-                dependency = undefined;
-                break;
-        }
+        if (type === DependencyType.Engines) return [data.engines, prev.engines];
+        if (type === DependencyType.Dependencies) return [data.dependencies, prev.dependencies];
+        if (type === DependencyType.Dev) return [data.devDependencies, prev.devDependencies];
+        if (type === DependencyType.Peer) return [data.peerDependencies, prev.peerDependencies];
+        if (type === DependencyType.Optional) return [data.optionalDependencies, prev.optionalDependencies];
 
-        return dependency;
+        return [undefined, undefined];
     }
 
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {

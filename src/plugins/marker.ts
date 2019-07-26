@@ -20,7 +20,7 @@ enum Marker {
     Important = 'important',
 }
 
-export interface Configuration extends ConfigurationOptions {
+export interface MarkerConfiguration extends ConfigurationOptions {
     markers: Option;
 }
 
@@ -30,7 +30,7 @@ export default class MarkerPlugin extends CommitPlugin {
     private markers: string[] = [];
     private sections: Map<string, Section> = new Map();
 
-    public async init(config: Configuration): Promise<void> {
+    public async init(config: MarkerConfiguration): Promise<void> {
         const { markers } = config;
 
         this.sections = new Map();

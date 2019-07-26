@@ -9,15 +9,15 @@ import { ConfigurationOptions } from './configuration';
 import { Section, Position } from './section';
 import { Constructable, Importable } from '../utils/types';
 import { Level } from '../utils/enums';
-import Key from '../utils/key';
 import { License } from './package/license';
-import { PackageDependencyType, Dependency } from './package/dependency';
+import { DependencyType, Dependency } from './package/dependency';
+import Key from '../utils/key';
 
 const $tasks = TaskTree.tree();
 
 export interface Context {
     getLicense(): License | undefined;
-    getDependencies(type: PackageDependencyType): Dependency | undefined;
+    getDependencies(type: DependencyType): Dependency | undefined;
     addSection(title: string, position: Position, attach?: boolean): Section | undefined;
     findSection(title: string): Section | undefined;
 }
@@ -30,7 +30,7 @@ export class State implements Context {
     protected commits: Map<string, Commit> = new Map();
     protected sections: Section[] = [];
     protected license: License | undefined;
-    protected dependencies: Map<PackageDependencyType, Dependency> = new Map();
+    protected dependencies: Map<DependencyType, Dependency> = new Map();
 
     public getSections(): Section[] {
         return this.sections;
@@ -48,7 +48,7 @@ export class State implements Context {
         return this.license;
     }
 
-    public getDependencies(type: PackageDependencyType): Dependency | undefined {
+    public getDependencies(type: DependencyType): Dependency | undefined {
         return this.dependencies.get(type);
     }
 
@@ -100,8 +100,8 @@ export class State implements Context {
         this.license = new License(id, prev);
     }
 
-    public setDependencies(dependencies: Map<PackageDependencyType, Dependency>): void {
-        this.dependencies = dependencies;
+    public setDependencies(dependency: Dependency): void {
+        this.dependencies.set(dependency.type, dependency);
     }
 
     public findSection(title: string): Section | undefined {

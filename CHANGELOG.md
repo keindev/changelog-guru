@@ -1,5 +1,39 @@
 ## Important Changes
+### License
 Source code now under `MIT` license.
+### Engine
+- Added **node**  with `>=10.0.0`
+### DevDependencies
+- Added **@types/cosmiconfig**  with `^5.0.3`
+- Added **@types/dotenv**  with `^6.1.1`
+- Added **@types/findup-sync**  with `^2.0.2`
+- Added **@types/jest**  with `^24.0.15`
+- Added **@types/node**  with `^12.6.8`
+- Added **@types/semver**  with `^6.0.1`
+- Added **@typescript-eslint/eslint-plugin**  with `^1.13.0`
+- Added **@typescript-eslint/parser**  with `^1.13.0`
+- Added **eslint**  with `6.1.0`
+- Added **eslint-config-airbnb-base**  with `13.2.0`
+- Added **eslint-config-prettier**  with `^6.0.0`
+- Added **eslint-plugin-import**  with `^2.18.2`
+- Added **eslint-plugin-jest**  with `^22.13.6`
+- Added **husky**  with `^3.0.1`
+- Added **jest**  with `^24.8.0`
+- Added **npm-run-all**  with `^4.1.5`
+- Added **prettier**  with `^1.18.2`
+- Added **ts-jest**  with `^24.0.2`
+- Added **typescript**  with `^3.5.3`
+### Dependencies
+- Added **commander**  with `^2.20.0`
+- Added **cosmiconfig**  with `^5.2.1`
+- Added **dotenv**  with `^8.0.0`
+- Added **findup-sync**  with `^4.0.0`
+- Added **graphql-request**  with `^1.8.2`
+- Added **read-pkg**  with `^5.2.0`
+- Added **semver**  with `^6.3.0`
+- Added **tasktree-cli**  with `^1.2.2`
+- Added **universal-user-agent**  with `^3.0.0`
+- Added **write-pkg**  with `^4.0.0`
 ## Features
 ### Logging
 - Added base logging system a task & statuses [`ba1e7ee`](https://github.com/keindev/changelog-guru/commit/ba1e7eeb4ac0c12044cbbe4ba17337add9f4bef1)
@@ -7,13 +41,15 @@ Source code now under `MIT` license.
 - Changes in the process of logging task states [`b40e13f`](https://github.com/keindev/changelog-guru/commit/b40e13f2cde4fb283ecad8ab4e960fd0581dfca7)
 - Added task loging to Providers & conf readers [`da4a964`](https://github.com/keindev/changelog-guru/commit/da4a9648e347355c44bb624dc4ffd3329309b302)
 - Added information methods to Task, fix some bugs with displ… [`54b4952`](https://github.com/keindev/changelog-guru/commit/54b49526b1ac69bbf8c3b42cad840c01f6743ea9)
+### Package info
+- **[Attention]**  Add attention plugin [`bc60b94`](https://github.com/keindev/changelog-guru/commit/bc60b949fbeddc9c148b83fa73929aae917e8155)
+- **[Package]**  Add of receipt info about changes in package [`b2407bd`](https://github.com/keindev/changelog-guru/commit/b2407bdf737626f9800570591b21ccc3e67e6034)
+- **[Package]**  Add engine comparing [`1c830b9`](https://github.com/keindev/changelog-guru/commit/1c830b9b908db19d9c55565289e292f640c4f8bf)
+- **[Package]**  Add Dependency entity [`0a1b0b7`](https://github.com/keindev/changelog-guru/commit/0a1b0b7426670a8d2eaf3ca2360443c361235a12)
 ### Debug mode
 - Added debug loging for State & Reader [`0e9f10c`](https://github.com/keindev/changelog-guru/commit/0e9f10c025b094fc2ca84c5c4f2adda7921f511e)
 - Added debug loging for IO, Entities & Middleware [`7ae4e11`](https://github.com/keindev/changelog-guru/commit/7ae4e11d0956f95282e65c93daf829db78ed35c0)
 - Added Entity class for better debug [`777e32a`](https://github.com/keindev/changelog-guru/commit/777e32a9082549e46c7bb6390af7bc2ca6949c4b)
-### Package info
-- **[Attention]**  Add attention plugin [`bc60b94`](https://github.com/keindev/changelog-guru/commit/bc60b949fbeddc9c148b83fa73929aae917e8155)
-- **[Package]**  Add of receipt info about changes in package [`b2407bd`](https://github.com/keindev/changelog-guru/commit/b2407bdf737626f9800570591b21ccc3e67e6034)
 ### GraphQL
 - **[API]**  Replace @octokit/rest by graphql [`aabcdbd`](https://github.com/keindev/changelog-guru/commit/aabcdbd20a00ceecf9c2bd89a0608e5c3e07b565) [`84aeb3b`](https://github.com/keindev/changelog-guru/commit/84aeb3bafa599e96c5ef6418d817289b716fbdc4)
 ### Subsections & Groups

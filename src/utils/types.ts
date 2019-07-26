@@ -11,3 +11,5 @@ export interface Importable<T, C> {
 export interface Option {
     [key: string]: Option | OptionValue;
 }
+
+export type ValueOf<T> = T[keyof T];

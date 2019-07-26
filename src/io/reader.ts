@@ -2,7 +2,7 @@ import { TaskTree } from 'tasktree-cli';
 import { Provider } from '../providers/provider';
 import { State } from '../entities/state';
 import { Package } from '../entities/package/package';
-import { PackageDependencyType, Dependency, PackageDependency } from '../entities/package/dependency';
+import { DependencyType, Dependency } from '../entities/package/dependency';
 
 const $tasks = TaskTree.tree();
 
@@ -43,18 +43,12 @@ export class Reader {
 
     private async loadPackage(state: State, pkg: Package): Promise<void> {
         const data = await this.provider.getPrevPackage();
-        const dependencies: Map<PackageDependencyType, Dependency> = new Map();
-        const setDependencies = (type: PackageDependencyType, deps: PackageDependency | undefined): void => {
-            dependencies.set(type, new Dependency(pkg.getDependencies(type), deps));
-        };
 
         state.setLicense(pkg.getLicense(), data.license);
-        setDependencies(PackageDependencyType.Engines, data.engines);
-        setDependencies(PackageDependencyType.Dependencies, data.dependencies);
-        setDependencies(PackageDependencyType.DevDependencies, data.devDependencies);
-        setDependencies(PackageDependencyType.Optionaldependencies, data.optionalDependencies);
-        setDependencies(PackageDependencyType.Peerdependencies, data.peerDependencies);
-        state.setDependencies(dependencies);
+
+        Object.values(DependencyType).forEach((type): void => {
+            state.setDependencies(new Dependency(type, ...pkg.getDependenciesStories(type, data)));
+        });
 
         /*
             TODO: add this ->
