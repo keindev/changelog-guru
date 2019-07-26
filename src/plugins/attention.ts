@@ -124,8 +124,10 @@ export default class AttentionPlugin extends StatePlugin {
                             if (template) {
                                 dependencies.getModifications(type).forEach((modification): void => {
                                     const { name, value, version, prevValue, prevVersion } = modification;
+                                    let link = dependencies.getLink(name);
 
-                                    text = template.replace(AttentionTemplateLiteral.Name, Markdown.bold(name));
+                                    link = Markdown.bold(link ? Markdown.link(name, link) : name);
+                                    text = template.replace(AttentionTemplateLiteral.Name, link);
                                     text = replace(AttentionTemplateLiteral.Value, value);
                                     text = replace(AttentionTemplateLiteral.Version, version);
                                     text = replace(AttentionTemplateLiteral.PrevValue, prevValue);

@@ -84,6 +84,25 @@ describe('License', (): void => {
         ]);
     });
 
+    it('Get npm package links', (): void => {
+        const dependency = new Dependency(
+            DependencyType.Dependencies,
+            {
+                'changelog-guru': '0.9.1',
+                '@types/jest': '^23.3.13',
+            },
+            {
+                'changelog-guru': '0.9.0',
+                '@types/jest': '^24.0.15',
+                '@types/node': '^12.6.8',
+            }
+        );
+
+        expect(dependency.getLink('changelog-guru')).toBe('https://www.npmjs.com/package/changelog-guru/v/0.9.1');
+        expect(dependency.getLink('@types/jest')).toBe('https://www.npmjs.com/package/@types/jest/v/23.3.13');
+        expect(dependency.getLink('@types/node')).toBe('https://www.npmjs.com/package/@types/node/v/12.6.8');
+    });
+
     it('Empty current version dependencies', (): void => {
         const dependency = new Dependency(DependencyType.Dependencies, undefined, { package1: '^1.0.0' });
 

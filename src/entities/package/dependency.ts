@@ -69,6 +69,24 @@ export class Dependency {
         return [...this.modifications.values()].filter((modification): boolean => modification.type === type);
     }
 
+    public getLink(name: string): string | undefined {
+        let link: string | undefined;
+
+        if (this.type !== DependencyType.Engines) {
+            const modification = this.modifications.get(name);
+
+            if (modification && modification.type !== Modification.Changed) {
+                const version = modification.version || modification.prevVersion;
+
+                if (version) {
+                    link = `https://www.npmjs.com/package/${name}/v/${version.version}`;
+                }
+            }
+        }
+
+        return link;
+    }
+
     private setAddedModify([name, value]: [string, string]): void {
         this.modifications.set(name, {
             name,

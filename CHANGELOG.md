@@ -4,36 +4,36 @@ Source code now under `MIT` license.
 ### Engine
 - Added **node**  with `>=10.0.0`
 ### Dependencies
-- Added **commander**  with `^2.20.0`
-- Added **cosmiconfig**  with `^5.2.1`
-- Added **dotenv**  with `^8.0.0`
-- Added **findup-sync**  with `^4.0.0`
-- Added **graphql-request**  with `^1.8.2`
-- Added **read-pkg**  with `^5.2.0`
-- Added **semver**  with `^6.3.0`
-- Added **tasktree-cli**  with `^1.2.2`
-- Added **universal-user-agent**  with `^3.0.0`
-- Added **write-pkg**  with `^4.0.0`
+- Added **[commander](https://www.npmjs.com/package/commander/v/2.20.0)**  with `^2.20.0`
+- Added **[cosmiconfig](https://www.npmjs.com/package/cosmiconfig/v/5.2.1)**  with `^5.2.1`
+- Added **[dotenv](https://www.npmjs.com/package/dotenv/v/8.0.0)**  with `^8.0.0`
+- Added **[findup-sync](https://www.npmjs.com/package/findup-sync/v/4.0.0)**  with `^4.0.0`
+- Added **[graphql-request](https://www.npmjs.com/package/graphql-request/v/1.8.2)**  with `^1.8.2`
+- Added **[read-pkg](https://www.npmjs.com/package/read-pkg/v/5.2.0)**  with `^5.2.0`
+- Added **[semver](https://www.npmjs.com/package/semver/v/6.3.0)**  with `^6.3.0`
+- Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/1.2.2)**  with `^1.2.2`
+- Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/3.0.0)**  with `^3.0.0`
+- Added **[write-pkg](https://www.npmjs.com/package/write-pkg/v/4.0.0)**  with `^4.0.0`
 ### DevDependencies
-- Added **@types/cosmiconfig**  with `^5.0.3`
-- Added **@types/dotenv**  with `^6.1.1`
-- Added **@types/findup-sync**  with `^2.0.2`
-- Added **@types/jest**  with `^24.0.15`
-- Added **@types/node**  with `^12.6.8`
-- Added **@types/semver**  with `^6.0.1`
-- Added **@typescript-eslint/eslint-plugin**  with `^1.13.0`
-- Added **@typescript-eslint/parser**  with `^1.13.0`
-- Added **eslint**  with `6.1.0`
-- Added **eslint-config-airbnb-base**  with `13.2.0`
-- Added **eslint-config-prettier**  with `^6.0.0`
-- Added **eslint-plugin-import**  with `^2.18.2`
-- Added **eslint-plugin-jest**  with `^22.14.0`
-- Added **husky**  with `^3.0.1`
-- Added **jest**  with `^24.8.0`
-- Added **npm-run-all**  with `^4.1.5`
-- Added **prettier**  with `^1.18.2`
-- Added **ts-jest**  with `^24.0.2`
-- Added **typescript**  with `^3.5.3`
+- Added **[@types/cosmiconfig](https://www.npmjs.com/package/@types/cosmiconfig/v/5.0.3)**  with `^5.0.3`
+- Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)**  with `^6.1.1`
+- Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)**  with `^2.0.2`
+- Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.15)**  with `^24.0.15`
+- Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.6.8)**  with `^12.6.8`
+- Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)**  with `^6.0.1`
+- Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/1.13.0)**  with `^1.13.0`
+- Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/1.13.0)**  with `^1.13.0`
+- Added **[eslint](https://www.npmjs.com/package/eslint/v/6.1.0)**  with `6.1.0`
+- Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/13.2.0)**  with `13.2.0`
+- Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.0.0)**  with `^6.0.0`
+- Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)**  with `^2.18.2`
+- Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.14.0)**  with `^22.14.0`
+- Added **[husky](https://www.npmjs.com/package/husky/v/3.0.1)**  with `^3.0.1`
+- Added **[jest](https://www.npmjs.com/package/jest/v/24.8.0)**  with `^24.8.0`
+- Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)**  with `^4.1.5`
+- Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)**  with `^1.18.2`
+- Added **[ts-jest](https://www.npmjs.com/package/ts-jest/v/24.0.2)**  with `^24.0.2`
+- Added **[typescript](https://www.npmjs.com/package/typescript/v/3.5.3)**  with `^3.5.3`
 ## Code Refactoring
 ### Refactoring
 - Reworked plugins, fix some a linter errors [`bdb7a0a`](https://github.com/keindev/changelog-guru/commit/bdb7a0a9cbc57c5aee3ad3b7785f4bb1be5e2c93)
@@ -117,6 +117,7 @@ Source code now under `MIT` license.
 - **[Provider]**  Fix findup cwd [`e9e5df6`](https://github.com/keindev/changelog-guru/commit/e9e5df6c5966915db9af7f24326b2edc421f69f1)
 - **[Provider]**  Set default branch to master [`7953e81`](https://github.com/keindev/changelog-guru/commit/7953e81a59deb8d472bea8c41f30f7a09ab2eb82)
 - **[Scope]**  Add .trim to new accent of commit [`e041b22`](https://github.com/keindev/changelog-guru/commit/e041b22021a9045bdc960da6776cf80ebf126961)
+- **[Section]**  Fix sections sorting by index [`66f61f0`](https://github.com/keindev/changelog-guru/commit/66f61f06d5ad34c05e43051fe43726cd3129dc1e)
 - **[Section, State]**  Add commit tree generation method [`6c819c8`](https://github.com/keindev/changelog-guru/commit/6c819c80096fd1276185ad5d5180ada3965500e9)
 - **[State]**  Added section list sorting after modify with plugins [`f85afda`](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
 - **[State]**  Add check for existence of plugin file [`e2064ca`](https://github.com/keindev/changelog-guru/commit/e2064ca5abb9d099503d98a95b614e7dcc356201)
