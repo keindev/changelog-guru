@@ -2,6 +2,10 @@ export default class Key {
     public static MAX_DIFF_PERCENT: number = 0.2;
     public static MAX_DIFF_DISTANCE: number = 1;
 
+    public static hash(): string {
+        return `f${(~~(Math.random() * 1e8)).toString(16)}`;
+    }
+
     public static unify(key: string): string {
         return key.trim().toLowerCase();
     }

@@ -31,7 +31,7 @@ describe('Config', (): void => {
             expect(levels.get('perf')).toBe(Level.Patch);
             expect(levels.get('revert')).toBe(Level.Patch);
 
-            expect(config.getPlugins()).toStrictEqual(['marker', 'scope', 'section']);
+            expect(config.getPlugins()).toStrictEqual(['attention', 'marker', 'scope', 'section']);
             expect(config.getProvider()).toBe('github');
             expect(task.isPending()).toBeTruthy();
 

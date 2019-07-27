@@ -39,7 +39,7 @@ describe('Section', (): void => {
         const subsection = new Section('title 2', Position.Body);
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 0,
-            message: `feat(test): message`,
+            header: 'feat(test): message',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
@@ -76,7 +76,7 @@ describe('Section', (): void => {
         const section3 = new Section('c', Position.Body);
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 0,
-            message: `feat(test): message`,
+            header: 'feat(test): message',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
@@ -92,7 +92,7 @@ describe('Section', (): void => {
         const relations: Map<string, Section> = new Map();
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 0,
-            message: `feat(test): message`,
+            header: 'feat(test): message',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
@@ -116,7 +116,7 @@ describe('Section', (): void => {
         const relations: Map<string, Section> = new Map();
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 0,
-            message: `feat(test): message`,
+            header: 'feat(test): message',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });

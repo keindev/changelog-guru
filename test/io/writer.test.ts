@@ -17,25 +17,25 @@ describe('Writer', (): void => {
         });
         const commit1 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 1,
-            message: `feat(Section1): subject1`,
+            header: 'feat(Section1): subject1',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
             author: 'keindev',
         });
         const commit2 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
             timestamp: 2,
-            message: `fix(Section2): subject2`,
+            header: 'fix(Section2): subject2',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
             author: 'keindev',
         });
         const commit3 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
             timestamp: 3,
-            message: `feat(Scope1): subject3`,
+            header: 'feat(Scope1): subject3',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f3',
             author: 'keindev',
         });
         const commit4 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
             timestamp: 4,
-            message: `feat(Scope1): subject3`,
+            header: 'feat(Scope1): subject3',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f4',
             author: 'keindev',
         });

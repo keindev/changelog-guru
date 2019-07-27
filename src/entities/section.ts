@@ -1,5 +1,6 @@
 import { Commit } from './commit';
 import { Compare, Priority, Status } from '../utils/enums';
+import { Message } from './message';
 
 export enum Position {
     None = 0,
@@ -20,6 +21,7 @@ export class Section {
     private priority = Priority.Default;
     private commits: Map<string, Commit> = new Map();
     private sections: Map<string, Section> = new Map();
+    private messages: Map<string, Message> = new Map();
 
     public constructor(title: string, position: Position, index: number = Section.DEFAULT_INDEX) {
         this.title = title;
@@ -28,7 +30,7 @@ export class Section {
     }
 
     public static compare(a: Section, b: Section): number {
-        let result = a.getPosition() - b.getPosition() || a.index - b.index || a.getPriority() - b.getPriority();
+        let result = a.getPosition() - b.getPosition() || b.index - a.index || a.getPriority() - b.getPriority();
 
         if (result === Compare.Equal) result = a.title.localeCompare(b.title);
 
@@ -61,19 +63,24 @@ export class Section {
         return onlyVisible ? commits.filter((commit): boolean => !commit.hasStatus(Status.Hidden)) : commits;
     }
 
-    public getPriority(): number {
+    public getMessages(): Message[] {
+        return [...this.messages.values()].filter(Message.filter).sort(Message.compare);
+    }
+
+    public getPriority(): Priority {
         if (this.priority === Priority.Default) {
-            this.priority = this.getCommits().reduce(
-                (acc, commit): number => acc + commit.getPriority(),
-                Priority.Default
+            this.priority = this.getMessages().reduce(
+                (acc, message): number => acc + message.getPriority(),
+                this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), Priority.Default)
             );
         }
 
         return this.priority;
     }
 
-    public add(entity: Commit | Section): void {
+    public add(entity: Commit | Section | Message): void {
         if (entity instanceof Commit) this.assignEntity(entity.hash, entity, this.commits);
+        if (entity instanceof Message) this.assignEntity(entity.hash, entity, this.messages);
         if (entity instanceof Section) {
             this.assignEntity(entity.title, entity, this.sections);
             entity.setPosition(Position.Subsection);
@@ -82,6 +89,7 @@ export class Section {
 
     public remove(entity: Commit | Section): void {
         if (entity instanceof Commit) this.removeEntity(entity.hash, this.commits);
+        if (entity instanceof Message) this.removeEntity(entity.hash, this.messages);
         if (entity instanceof Section) {
             this.removeEntity(entity.title, this.sections);
             entity.setPosition(Position.Group);
@@ -89,7 +97,7 @@ export class Section {
     }
 
     public isEmpty(): boolean {
-        return !this.sections.size && !this.commits.size;
+        return !this.sections.size && !this.commits.size && !this.messages.size;
     }
 
     public assignAsSubsection(relations: Map<string, Section>): void {

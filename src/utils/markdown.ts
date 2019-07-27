@@ -1,5 +1,10 @@
+import { SemVer } from 'semver';
+
 export default class Markdown {
     public static DEFAULT_HEADER_LEVEL = 2;
+    public static LINE_SEPARATOR = '\n';
+    public static ITEM_SEPARATOR = ', ';
+    public static WORD_SEPARATOR = ' ';
 
     public static title(text: string, level: number = Markdown.DEFAULT_HEADER_LEVEL): string {
         return `${'#'.padStart(Math.max(Markdown.DEFAULT_HEADER_LEVEL, level), '#')} ${Markdown.capitalize(text)}`;
@@ -25,7 +30,7 @@ export default class Markdown {
         return `\`\`\`${lang} ${text} \`\`\``;
     }
 
-    public static wrap(text: string): string {
+    public static wrap(text: SemVer | string): string {
         return `\`${text}\``;
     }
 

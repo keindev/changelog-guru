@@ -11,9 +11,6 @@ const $tasks = TaskTree.tree();
 
 export class Writer {
     public static FILE_NAME = 'CHANGELOG.md';
-    public static LINE_SEPARATOR = '\n';
-    public static ITEM_SEPARATOR = ', ';
-    public static WORD_SEPARATOR = ' ';
 
     protected data: string[] = [];
     protected filePath: string;
@@ -29,7 +26,7 @@ export class Writer {
             result.push(Markdown.capitalize(accent));
         });
 
-        return Markdown.bold(`[${result.join(Writer.ITEM_SEPARATOR)}]`);
+        return Markdown.bold(`[${result.join(Markdown.ITEM_SEPARATOR)}]`);
     }
 
     public async write(authors: Author[], sections: Section[]): Promise<void> {
@@ -49,13 +46,14 @@ export class Writer {
     }
 
     protected getData(): string {
-        return this.data.join(Writer.LINE_SEPARATOR);
+        return this.data.join(Markdown.LINE_SEPARATOR);
     }
 
     private renderSection(section: Section, level: number): void {
         const { data } = this;
         const sections = section.getSections();
         const commits = section.getCommits(true, true);
+        const messages = section.getMessages();
 
         data.push(Markdown.title(section.title, level));
 
@@ -65,6 +63,10 @@ export class Writer {
             });
 
             if (commits.length) data.push(Markdown.title('Others', level + 1));
+        }
+
+        if (messages.length) {
+            data.push(...messages.map((message): string => message.text));
         }
 
         if (commits.length) {
@@ -110,7 +112,7 @@ export class Writer {
         if (accents.size) result.push(Writer.renderCommitAccents([...accents.values()]));
 
         result.push(Markdown.capitalize(commits[0].subject), ...links);
-        this.data.push(Markdown.listItem(result.join(Writer.WORD_SEPARATOR)));
+        this.data.push(Markdown.listItem(result.join(Markdown.WORD_SEPARATOR)));
     }
 
     private renderCommit(commit: Commit): void {
@@ -124,7 +126,7 @@ export class Writer {
             Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url)
         );
 
-        this.data.push(Markdown.listItem(result.join(Writer.WORD_SEPARATOR)));
+        this.data.push(Markdown.listItem(result.join(Markdown.WORD_SEPARATOR)));
     }
 
     private renderAuthors(authors: Author[]): void {
@@ -134,7 +136,7 @@ export class Writer {
         data.push(
             authors
                 .map((author): string => Markdown.imageLink(author.getName(), author.getAvatar(), author.url))
-                .join(Writer.WORD_SEPARATOR)
+                .join(Markdown.WORD_SEPARATOR)
         );
     }
 }

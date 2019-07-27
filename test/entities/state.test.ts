@@ -15,9 +15,9 @@ describe('State', (): void => {
             url: `https://github.com/${login}`,
             avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
         });
-    const getCommit = (id: number, message: string, author: Author): Commit =>
+    const getCommit = (id: number, header: string, author: Author): Commit =>
         new Commit(`b816518030dace1b91838ae0abd56fa88eba19f${id}`, {
-            message,
+            header,
             timestamp: 0,
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: author.login,
@@ -67,7 +67,7 @@ describe('State', (): void => {
                 expect(state.getAuthors()).toStrictEqual([author1, author2]);
                 expect(state.getCommits()).toStrictEqual([commit2, commit3, commit1]);
 
-                state.modify([MockState.MOCK_PLUGIN_NAME], config.getOptions()).then((): void => {
+                state.modify(MockState.MOCK_PLUGINS, config.getOptions()).then((): void => {
                     expect(state.getSections()).toStrictEqual([section1]);
 
                     done();

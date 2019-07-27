@@ -31,3 +31,12 @@ export enum FilterType {
     CommitScope = 2,
     CommitSubject = 3,
 }
+
+export enum Modification {
+    Added = 'added',
+    Bumped = 'bumped',
+    Changed = 'changed',
+    Downgraded = 'downgraded',
+    Removed = 'removed',
+    Unchanged = 'unchanged',
+}

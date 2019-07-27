@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import getUserAgent from 'universal-user-agent';
 import findupSync from 'findup-sync';
+import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import { Commit } from '../entities/commit';
 import { Author } from '../entities/author';
@@ -12,6 +14,11 @@ export enum ServiceProvider {
     GitLab = 'gitlab',
 }
 
+export interface Release {
+    tag: string | undefined;
+    date: string;
+}
+
 export abstract class Provider {
     public static PAGE_SIZE: number = 100;
     public static TYPE: string = 'git';
@@ -21,6 +28,8 @@ export abstract class Provider {
     protected repository: string;
     protected owner: string;
     protected branch: string = 'master';
+    protected version = process.env.npm_package_version;
+    protected userAgent: string;
 
     public constructor(type: ServiceProvider, url: string) {
         const pathname = new URL(url).pathname.split('/');
@@ -28,6 +37,7 @@ export abstract class Provider {
         this.type = type;
         this.repository = path.basename(pathname.pop() as string, `.${Provider.TYPE}`);
         this.owner = pathname.pop() as string;
+        this.userAgent = `changelog-guru/${this.version} ${getUserAgent()}`;
 
         const pattern = `.${Provider.TYPE}/HEAD`;
         const filePath = findupSync(pattern, { cwd: process.cwd() });
@@ -53,7 +63,7 @@ export abstract class Provider {
         task.complete('Git provider:');
     }
 
-    abstract async getCommits(date: string, page: number): Promise<[Commit, Author][]>;
-    abstract async getVersion(): Promise<string | undefined>;
-    abstract async getLatestReleaseDate(): Promise<string>;
+    abstract async getLastRelease(): Promise<Release>;
+    abstract async getCommits(page: number): Promise<[Commit, Author][]>;
+    abstract async getPrevPackage(): Promise<PackageJson>;
 }

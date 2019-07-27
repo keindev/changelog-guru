@@ -2,11 +2,15 @@ import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
 import * as semver from 'semver';
 import { TaskTree } from 'tasktree-cli';
+import { PackageDependency, DependencyType } from './dependency';
 
 const $tasks = TaskTree.tree();
 
+export type PackageDependencyStories = [PackageDependency | undefined, PackageDependency | undefined];
+
 export class Package {
     public static DEFAULT_VERSION = '0.0.1';
+    public static DEFAULT_LICENSE = '';
     public static DEFAULT_REPOSITORY = '';
 
     private data: readPkg.PackageJson;
@@ -16,6 +20,7 @@ export class Package {
 
         this.data = readPkg.sync({ normalize: false });
 
+        if (!this.data.license) task.fail('Package license is not specified');
         if (!this.data.version) task.fail('Package version is not specified');
         if (!this.data.repository) task.fail('Package repository url is not specified');
 
@@ -41,6 +46,22 @@ export class Package {
         return version
             ? semver.valid(semver.coerce(version) || Package.DEFAULT_VERSION) || Package.DEFAULT_VERSION
             : Package.DEFAULT_VERSION;
+    }
+
+    public getLicense(): string {
+        return this.data.license || Package.DEFAULT_LICENSE;
+    }
+
+    public getDependenciesStories(type: DependencyType, prev: readPkg.PackageJson): PackageDependencyStories {
+        const { data } = this;
+
+        if (type === DependencyType.Engines) return [data.engines, prev.engines];
+        if (type === DependencyType.Dependencies) return [data.dependencies, prev.dependencies];
+        if (type === DependencyType.Dev) return [data.devDependencies, prev.devDependencies];
+        if (type === DependencyType.Peer) return [data.peerDependencies, prev.peerDependencies];
+        if (type === DependencyType.Optional) return [data.optionalDependencies, prev.optionalDependencies];
+
+        return [undefined, undefined];
     }
 
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {

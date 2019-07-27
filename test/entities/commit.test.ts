@@ -7,7 +7,8 @@ describe('Commit', (): void => {
     beforeEach((): void => {
         commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 21,
-            message: `feat(Jest): subject\n\nbody\n\nfooter`,
+            header: 'feat(Jest): subject',
+            body: '\n\nbody\n\nfooter',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
@@ -21,7 +22,7 @@ describe('Commit', (): void => {
         );
         expect(commit.author).toBe('keindev');
         expect(commit.subject).toBe('subject');
-        expect(commit.body).toStrictEqual(['', 'body', '', 'footer']);
+        expect(commit.body).toStrictEqual(['', '', 'body', '', 'footer']);
         expect(commit.getLevel()).toBe(Level.Patch);
         expect(commit.getPriority()).toBe(Priority.Default);
         expect(commit.getType()).toBe('feat');
@@ -119,25 +120,29 @@ describe('Commit', (): void => {
     it('Compare', (): void => {
         const commit1 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 0,
-            message: `feat(Test): subject\n\nbody\n\nfooter`,
+            header: 'feat(Test): subject',
+            body: '\n\nbody\n\nfooter',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
         const commit2 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
             timestamp: 0,
-            message: `feat(Test): subject\n\nbody\n\nfooter`,
+            header: 'feat(Test): subject',
+            body: '\n\nbody\n\nfooter',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
         const commit3 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
             timestamp: 0,
-            message: `feat: subject\n\nbody\n\nfooter`,
+            header: 'feat: subject',
+            body: '\n\nbody\n\nfooter',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });
         const commit4 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
             timestamp: 1,
-            message: `feat: subject\n\nbody\n\nfooter`,
+            header: 'feat: subject',
+            body: '\n\nbody\n\nfooter',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
             author: 'keindev',
         });

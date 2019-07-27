@@ -1,9 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { Plugin } from '../../../src/entities/plugin';
+import { CommitPlugin } from '../../../src/entities/plugin';
 import { Commit } from '../../../src/entities/commit';
 import { ConfigurationOptions } from '../../../src/entities/configuration';
 
-export default class MockPlugin extends Plugin {
+export default class MockCommitPlugin extends CommitPlugin {
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
     public async init(config: ConfigurationOptions): Promise<void> {
         return Promise.resolve();

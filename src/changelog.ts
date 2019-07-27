@@ -3,9 +3,9 @@ import { TaskTree } from 'tasktree-cli';
 import { Reader } from './io/reader';
 import { Writer } from './io/writer';
 import { Provider, ServiceProvider } from './providers/provider';
-import { GitHubProvider } from './providers/github-provider';
+import { GitHubProvider } from './providers/github/provider';
 import { Configuration } from './entities/configuration';
-import { Package } from './entities/package';
+import { Package } from './entities/package/package';
 import { FilterType } from './utils/enums';
 
 const $tasks = TaskTree.tree();
@@ -21,14 +21,14 @@ export default class Changelog {
         this.pkg = new Package();
     }
 
-    public async generate(): Promise<void> {
+    public async generate(bump: boolean = false): Promise<void> {
         const provider = await this.getProvider();
 
         if (provider) {
-            const { config } = this;
+            const { config, pkg } = this;
             const reader = new Reader(provider);
             const writer = new Writer();
-            const state = await reader.read();
+            const state = await reader.read(pkg);
 
             state.setLevels(config.getLevels());
             state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
@@ -40,7 +40,10 @@ export default class Changelog {
 
             await state.modify(config.getPlugins(), config.getOptions());
             await writer.write(state.getAuthors(), state.getSections());
-            await this.pkg.incrementVersion(...state.getChangesLevels());
+
+            if (bump) {
+                await pkg.incrementVersion(...state.getChangesLevels());
+            }
         }
     }
 

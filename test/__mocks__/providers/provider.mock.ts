@@ -1,12 +1,14 @@
+import { PackageJson } from 'read-pkg';
 import { Commit } from '../../../src/entities/commit';
 import { Author } from '../../../src/entities/author';
-import { Package } from '../../../src/entities/package';
-import { Provider } from '../../../src/providers/provider';
+import { Package } from '../../../src/entities/package/package';
+import { Provider, Release } from '../../../src/providers/provider';
 
 export class MockProvider extends Provider {
     public readonly __commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19ff', {
         timestamp: 1,
-        message: `feat(Jest): subject\n\nbody\n\nfooter`,
+        header: 'feat(Jest): subject',
+        body: '\n\nbody\n\nfooter',
         url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19ff',
         author: 'keindev',
     });
@@ -30,17 +32,22 @@ export class MockProvider extends Provider {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async getCommits(date: string, page: number): Promise<[Commit, Author][]> {
+    public async getCommits(page: number): Promise<[Commit, Author][]> {
         return Promise.resolve([[this.__commit, this.__author]]);
     }
 
     // eslint-disable-next-line class-methods-use-this
-    public async getVersion(): Promise<string | undefined> {
-        return Promise.resolve(Package.DEFAULT_VERSION);
+    public async getLastRelease(): Promise<Release> {
+        return Promise.resolve({
+            tag: Package.DEFAULT_VERSION,
+            date: new Date(0).toISOString(),
+        });
     }
 
     // eslint-disable-next-line class-methods-use-this
-    public async getLatestReleaseDate(): Promise<string> {
-        return Promise.resolve(new Date(0).toISOString());
+    public async getPrevPackage(): Promise<PackageJson> {
+        return Promise.resolve({
+            license: 'MIT',
+        });
     }
 }

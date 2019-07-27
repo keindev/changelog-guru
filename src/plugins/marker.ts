@@ -1,6 +1,6 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { Commit } from '../entities/commit';
-import { Plugin } from '../entities/plugin';
+import { CommitPlugin } from '../entities/plugin';
 import { Section, Position } from '../entities/section';
 import { ConfigurationOptions } from '../entities/configuration';
 import { Option, OptionValue } from '../utils/types';
@@ -20,17 +20,17 @@ enum Marker {
     Important = 'important',
 }
 
-export interface Configuration extends ConfigurationOptions {
+export interface MarkerConfiguration extends ConfigurationOptions {
     markers: Option;
 }
 
-export default class MarkerPlugin extends Plugin {
+export default class MarkerPlugin extends CommitPlugin {
     private static EXPRESSION = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
 
     private markers: string[] = [];
     private sections: Map<string, Section> = new Map();
 
-    public async init(config: Configuration): Promise<void> {
+    public async init(config: MarkerConfiguration): Promise<void> {
         const { markers } = config;
 
         this.sections = new Map();

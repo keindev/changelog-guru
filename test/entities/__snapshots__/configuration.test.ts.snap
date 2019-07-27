@@ -2,6 +2,25 @@
 
 exports[`Config Default 1`] = `
 Object {
+  "attention": Object {
+    "sections": Object {
+      "dependencies": "Dependencies",
+      "devDependencies": "DevDependencies",
+      "engine": "Engine",
+      "license": "License",
+      "optionalDependencies": "OptionalDependencies,",
+      "peerDependencies": "PeerDependencies",
+    },
+    "templates": Object {
+      "added": "Added %name% with %val%",
+      "bumped": "Bumped %name% from %pver% to %ver%",
+      "changed": "Changed %name% from %pval% to %val%",
+      "downgraded": "Downgraded %name% from %pver% to %ver%",
+      "removed": "Removed %name%, with %pval%",
+      "unchanged": "%name% left unchanged, with %val%",
+    },
+    "title": "Important Changes",
+  },
   "ignore": Object {
     "authors": Array [
       "dependabot-preview[bot]",
@@ -23,6 +42,7 @@ Object {
     ],
     "minor": Array [
       "feat",
+      "improve",
     ],
     "patch": Array [
       "fix",
@@ -46,6 +66,7 @@ Object {
     "important": "Important Internal Changes",
   },
   "plugins": Array [
+    "attention",
     "marker",
     "scope",
     "section",
@@ -55,7 +76,9 @@ Object {
     "list": Object {
       "api": "API",
       "core": "Core",
-      "theme": "Themes",
+      "dts": "TypeScript Declaration Improvements",
+      "fc": "Functional Components",
+      "ssr": "Server Side Rendering",
     },
     "only": false,
   },
@@ -63,6 +86,11 @@ Object {
     Object {
       "Features": Array [
         "feat",
+      ],
+    },
+    Object {
+      "Improvements": Array [
+        "improve",
       ],
     },
     Object {

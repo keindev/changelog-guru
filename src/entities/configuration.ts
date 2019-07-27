@@ -2,7 +2,7 @@ import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 import { Task } from 'tasktree-cli/lib/task';
 import { ServiceProvider } from '../providers/provider';
-import { Option, OptionValue } from '../utils/types';
+import { Option, OptionValue, ValueOf } from '../utils/types';
 import { Level, FilterType } from '../utils/enums';
 import Key from '../utils/key';
 
@@ -36,6 +36,16 @@ export class Configuration {
     private levels: Map<string, Level> = new Map();
     private filters: Map<FilterType, string[]> = new Map();
     private options: Option = {};
+
+    public static fillFromEnum<T>(options: Option, enumeration: T, mapping: Map<ValueOf<T>, string>): void {
+        Object.entries(options).forEach(([name, value]: [string, Option | OptionValue]): void => {
+            if (typeof value === 'string') {
+                const type = Object.values(enumeration).find((itemName): boolean => itemName === name);
+
+                if (value && type) mapping.set(type, value);
+            }
+        });
+    }
 
     public getProvider(): ServiceProvider {
         return this.provider || ServiceProvider.GitHub;
