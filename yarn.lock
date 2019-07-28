@@ -1103,6 +1103,11 @@ deep-is@~0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.3.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
   integrity sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
 
+deepmerge@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.0.0.tgz#3e3110ca29205f120d7cb064960a39c3d2087c09"
+  integrity sha512-YZ1rOP5+kHor4hMAH+HRQnBQHg+wvS1un1hAOuIcxcBy0hzcUf6Jg2a1w65kpoOUnurOfZbERwjI1TfZxNjcww==
+
 define-properties@^1.1.2, define-properties@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/define-properties/-/define-properties-1.1.3.tgz#cf88da6cbee26fe6db7094f61d870cbd84cee9f1"
@@ -4349,10 +4354,10 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-tasktree-cli@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/tasktree-cli/-/tasktree-cli-1.2.2.tgz#eb6405c2bf22ffaa40d3d4f38cb53b5d516288c7"
-  integrity sha512-XcGXsdBoJ+LOR+Jj3akgUUCSxlWDkk5DPgn95MtltILtiFomZ7aE5CzBXAE4CJ2g3v8ssxkeTGkzRTZrYmDPuQ==
+tasktree-cli@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/tasktree-cli/-/tasktree-cli-1.2.3.tgz#fc3e9e260a6b510d30f27e8930303a50a2d0c7be"
+  integrity sha512-LmWhMiZzEDC0AHSOEPLLOrBzZFRS1Y5OLFdqaWJFEavtcXNNJ+yqJ3rYOGjXsobAJl2IVfguMG3g2bbw2YUh8w==
   dependencies:
     chalk "^2.4.2"
     color-convert "^2.0.0"

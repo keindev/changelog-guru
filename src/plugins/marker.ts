@@ -112,7 +112,7 @@ export default class MarkerPlugin extends CommitPlugin {
         this.markers.push(name);
 
         if (position !== Position.None) {
-            const section = this.context.addSection(title, position, true);
+            const section = this.context.addSection(title, position);
 
             if (section) {
                 this.sections.set(name, section);

@@ -1,7 +1,6 @@
 ---
 provider: github
-plugins: [attention, marker, scope, section]
-levels:
+changes:
     major:
         - break
     minor:
@@ -19,53 +18,56 @@ levels:
         - workflow
         - perf
         - revert
-attention:
-    title: Important Changes
-    templates:
-        added: 'Added %name% with %val%'
-        changed: 'Changed %name% from %pval% to %val%'
-        bumped: 'Bumped %name% from %pver% to %ver%'
-        downgraded: 'Downgraded %name% from %pver% to %ver%'
-        removed: 'Removed %name%, with %pval%'
-        unchanged: '%name% left unchanged, with %val%'
+output:
+    filePath: CHANGELOG.md
+    exclude:
+        author: ['dependabot-preview[bot]']
+        type: ['build']
+        scope: ['deps', 'deps-dev']
+        subject: ['merge']
+plugins:
+    attention:
+        title: Important Changes
+        templates:
+            added: 'Added %name% with %val%'
+            changed: 'Changed %name% from %pval% to %val%'
+            bumped: 'Bumped %name% from %pver% to %ver%'
+            downgraded: 'Downgraded %name% from %pver% to %ver%'
+            removed: 'Removed %name%, with %pval%'
+            unchanged: '%name% left unchanged, with %val%'
+        sections:
+            license: License
+            engine: Engine
+            dependencies: Dependencies
+            devDependencies: DevDependencies
+            peerDependencies: PeerDependencies
+            optionalDependencies: OptionalDependencies,
+    # List of available markers
+    markers:
+        # !important - place a commit title to special section on top of changelog
+        important: Important Internal Changes
+        # !deprecated - place a commit title to special section with deprecated properties
+        deprecated: DEPRECATIONS
+        # !break - indicates major changes breaking backward compatibility
+        break: BREAKING CHANGES
+        # !hide - hide a commit
+        hide: Hidden commits
+        # !group(NAME) - creates a group of commits with the <NAME>
+        group: Grouped commit
+    # list of major scopes
+    scopes:
+        only: false
+        list:
+            core: Core
+            api: API
+            ssr: Server Side Rendering
+            fc: Functional Components
+            dts: TypeScript Declaration Improvements
     sections:
-        license: License
-        engine: Engine
-        dependencies: Dependencies
-        devDependencies: DevDependencies
-        peerDependencies: PeerDependencies
-        optionalDependencies: OptionalDependencies,
-# List of available markers
-markers:
-    # !important - place a commit title to special section on top of changelog
-    important: Important Internal Changes
-    # !deprecated - place a commit title to special section with deprecated properties
-    deprecated: DEPRECATIONS
-    # !break - indicates major changes breaking backward compatibility
-    break: BREAKING CHANGES
-    # !hide - hide a commit
-    hide: Hidden commits
-    # !group(NAME) - creates a group of commits with the <NAME>
-    group: Grouped commit
-# list of major scopes
-scopes:
-    only: false
-    list:
-        core: Core
-        api: API
-        ssr: Server Side Rendering
-        fc: Functional Components
-        dts: TypeScript Declaration Improvements
-sections:
-    - Features: [feat]
-    - Improvements: [improve]
-    - Bug Fixes: [fix]
-    - Internal changes: [types, workflow, build, test, chore, docs]
-    - Performance Improvements: [perf]
-    - Code Refactoring: [refactor]
-    - Reverts: [revert]
-ignore:
-    authors: ['dependabot-preview[bot]']
-    types: ['build']
-    scopes: ['deps', 'deps-dev']
-    subjects: ['merge']
+        - Features: [feat]
+        - Improvements: [improve]
+        - Bug Fixes: [fix]
+        - Internal changes: [types, workflow, build, test, chore, docs]
+        - Performance Improvements: [perf]
+        - Code Refactoring: [refactor]
+        - Reverts: [revert]

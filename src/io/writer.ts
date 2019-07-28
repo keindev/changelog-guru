@@ -12,41 +12,21 @@ const $tasks = TaskTree.tree();
 export class Writer {
     public static FILE_NAME = 'CHANGELOG.md';
 
-    protected data: string[] = [];
     protected filePath: string;
 
     public constructor() {
         this.filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
     }
 
-    private static renderCommitAccents(accents: string[]): string {
-        const result: string[] = [];
-
-        accents.forEach((accent: string): void => {
-            result.push(Markdown.capitalize(accent));
-        });
-
-        return Markdown.bold(`[${result.join(Markdown.ITEM_SEPARATOR)}]`);
-    }
-
-    public async write(authors: Author[], sections: Section[]): Promise<void> {
+    public async write(sections: Section[], authors: Author[]): Promise<void> {
         const task = $tasks.add('Writing new changelog...');
+        const data = sections.map((section): string => this.renderSection(section, Markdown.DEFAULT_HEADER_LEVEL));
 
-        this.data = [];
-        sections.forEach((section): void => {
-            this.renderSection(section, Markdown.DEFAULT_HEADER_LEVEL);
-        });
         this.renderAuthors(authors);
+
         await this.writeFile();
+
         task.complete('Changelog updated!');
-    }
-
-    protected async writeFile(): Promise<void> {
-        await fs.promises.writeFile(this.filePath, this.getData());
-    }
-
-    protected getData(): string {
-        return this.data.join(Markdown.LINE_SEPARATOR);
     }
 
     private renderSection(section: Section, level: number): void {
@@ -58,7 +38,7 @@ export class Writer {
         data.push(Markdown.title(section.title, level));
 
         if (sections.length) {
-            sections.reverse().forEach((item): void => {
+            sections.forEach((item): void => {
                 this.renderSection(item, level + 1);
             });
 
@@ -66,7 +46,7 @@ export class Writer {
         }
 
         if (messages.length) {
-            data.push(...messages.map((message): string => message.text));
+            data.push(...messages.map((message): string => message.text), Markdown.LINE_SEPARATOR);
         }
 
         if (commits.length) {
@@ -86,6 +66,7 @@ export class Writer {
                     groups.set(commit.subject, commit);
                 }
             });
+
             groups.forEach((item): void => {
                 if (Array.isArray(item)) {
                     this.renderMirrorCommits(item);
@@ -94,6 +75,24 @@ export class Writer {
                 }
             });
         }
+    }
+
+    private static renderCommitAccents(accents: string[]): string {
+        const result: string[] = [];
+
+        accents.forEach((accent: string): void => {
+            result.push(Markdown.capitalize(accent));
+        });
+
+        return Markdown.bold(`[${result.join(Markdown.ITEM_SEPARATOR)}]`);
+    }
+
+    protected async writeFile(): Promise<void> {
+        await fs.promises.writeFile(this.filePath, this.getData());
+    }
+
+    protected getData(): string {
+        return this.data.join(Markdown.LINE_SEPARATOR);
     }
 
     private renderMirrorCommits(commits: Commit[]): void {

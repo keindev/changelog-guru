@@ -12,10 +12,7 @@ export enum Position {
 }
 
 export class Section {
-    public static DEFAULT_INDEX = -1;
-
     public readonly title: string;
-    public readonly index: number;
 
     private position: Position;
     private priority = Priority.Default;
@@ -23,14 +20,13 @@ export class Section {
     private sections: Map<string, Section> = new Map();
     private messages: Map<string, Message> = new Map();
 
-    public constructor(title: string, position: Position, index: number = Section.DEFAULT_INDEX) {
+    public constructor(title: string, position: Position) {
         this.title = title;
         this.position = position;
-        this.index = index;
     }
 
     public static compare(a: Section, b: Section): number {
-        let result = a.getPosition() - b.getPosition() || b.index - a.index || a.getPriority() - b.getPriority();
+        let result = a.getPosition() - b.getPosition() || a.getPriority() - b.getPriority();
 
         if (result === Compare.Equal) result = a.title.localeCompare(b.title);
 

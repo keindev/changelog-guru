@@ -22,7 +22,7 @@ export default class SectionPlugin extends CommitPlugin {
                         const types: OptionValue = block[name];
 
                         if (Array.isArray(types)) {
-                            const section = this.context.addSection(name, Position.Body, true);
+                            const section = this.context.addSection(name, Position.Body);
 
                             if (section) {
                                 types.forEach((type: string): void => {

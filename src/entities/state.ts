@@ -18,7 +18,7 @@ const $tasks = TaskTree.tree();
 export interface Context {
     getLicense(): License | undefined;
     getDependencies(type: DependencyType): Dependency | undefined;
-    addSection(title: string, position: Position, attach?: boolean): Section | undefined;
+    addSection(title: string, position: Position): Section | undefined;
     findSection(title: string): Section | undefined;
 }
 
@@ -85,11 +85,11 @@ export class State implements Context {
         }
     }
 
-    public addSection(title: string, position: Position = Position.Group, attach?: boolean): Section | undefined {
+    public addSection(title: string, position: Position = Position.Group): Section | undefined {
         let section = this.findSection(title);
 
         if (!section && Key.unify(title)) {
-            section = new Section(title, position, attach ? this.sections.length : Section.DEFAULT_INDEX);
+            section = new Section(title, position);
             this.sections.push(section);
         }
 

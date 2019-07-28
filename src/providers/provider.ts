@@ -9,11 +9,6 @@ import { Author } from '../entities/author';
 
 const $tasks = TaskTree.tree();
 
-export enum ServiceProvider {
-    GitHub = 'github',
-    GitLab = 'gitlab',
-}
-
 export interface Release {
     tag: string | undefined;
     date: string;

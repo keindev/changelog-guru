@@ -45,12 +45,13 @@
     "dependencies": {
         "commander": "^2.20.0",
         "cosmiconfig": "^5.2.1",
+        "deepmerge": "^4.0.0",
         "dotenv": "^8.0.0",
         "findup-sync": "^4.0.0",
         "graphql-request": "^1.8.2",
         "read-pkg": "^5.2.0",
         "semver": "^6.3.0",
-        "tasktree-cli": "^1.2.2",
+        "tasktree-cli": "^1.2.3",
         "universal-user-agent": "^3.0.0",
         "write-pkg": "^4.0.0"
     },

@@ -5,6 +5,7 @@ export default class Markdown {
     public static LINE_SEPARATOR = '\n';
     public static ITEM_SEPARATOR = ', ';
     public static WORD_SEPARATOR = ' ';
+    public static EMPTY_SEPARATOR = '';
 
     public static title(text: string, level: number = Markdown.DEFAULT_HEADER_LEVEL): string {
         return `${'#'.padStart(Math.max(Markdown.DEFAULT_HEADER_LEVEL, level), '#')} ${Markdown.capitalize(text)}`;
@@ -19,7 +20,7 @@ export default class Markdown {
     }
 
     public static listItem(text: string): string {
-        return `- ${Markdown.capitalize(text)}`;
+        return `-   ${Markdown.capitalize(text)}`;
     }
 
     public static link(text: string, url: string): string {
@@ -35,7 +36,7 @@ export default class Markdown {
     }
 
     public static line(): string {
-        return '---';
+        return `---`;
     }
 
     public static image(text: string, url: string): string {
