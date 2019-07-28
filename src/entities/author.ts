@@ -1,37 +1,28 @@
-export interface AuthorOptions {
-    login: string;
-    url: string;
-    avatar: string;
-}
+import { Entity } from './entity';
+import { AuthorOptions } from './typings/types';
+import { Priority } from '../typings/enums';
 
-export class Author {
+export class Author extends Entity {
+    public static DEFAULT_CONTRIBUTION = 1;
     public static AVATAR_SIZE = 40;
     public static SIZE_PARAMETER_NAME = 'size';
     public static NAME_PREFIX = '@';
 
-    public readonly id: number;
-    public readonly login: string;
     public readonly url: string;
 
     private avatar: string;
-    private ignored = false;
-    private contribution = 0;
+    private contribution: number;
 
     public constructor(id: number, options: AuthorOptions) {
-        this.id = id;
+        super(`${Author.NAME_PREFIX}${options.login}`);
+
         this.url = options.url;
-        this.login = options.login;
         this.avatar = options.avatar;
-
-        this.increaseContribution();
+        this.contribution = Author.DEFAULT_CONTRIBUTION;
     }
 
-    public static compare(a: Author, b: Author): number {
-        return b.getContribution() - a.getContribution();
-    }
-
-    public static filter(a: Author): boolean {
-        return !a.isIgnored();
+    public getPriority(): Priority {
+        return this.contribution;
     }
 
     public getAvatar(size: number = Author.AVATAR_SIZE): string {
@@ -47,23 +38,7 @@ export class Author {
         return url.toString();
     }
 
-    public getContribution(): number {
-        return this.contribution;
-    }
-
-    public getName(): string {
-        return `${Author.NAME_PREFIX}${this.login}`;
-    }
-
-    public isIgnored(): boolean {
-        return this.ignored;
-    }
-
-    public increaseContribution(): void {
-        this.contribution++;
-    }
-
-    public ignore(): void {
-        this.ignored = true;
+    public increaseContribution(contribution?: number): void {
+        this.contribution += contribution || Author.DEFAULT_CONTRIBUTION;
     }
 }

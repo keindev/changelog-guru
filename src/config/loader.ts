@@ -2,29 +2,28 @@ import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import { TaskTree } from 'tasktree-cli';
-import { Configuration } from './configuration';
-import * as Enums from './enums';
-import * as Types from './types';
+import { Config } from './config';
+import { ServiceProvider, ChangeLevel, ExclusionType } from './typings/enums';
+import { PluginOption } from './typings/types';
 
-const $tasks = TaskTree.tree();
-
-export class ConfigurationLoader {
-    public static DEFAULT_PATH = '../../../.changelogrc.yaml';
+export class Loader {
+    public static MODULE_NAME = 'changelog';
+    public static DEFAULT_CONFIG_PATH = `../../../.changelogrc.yaml`;
     public static DEFAULT_OUTPUT_FILE_NAME = 'CHANGELOG.md';
 
-    private filePath: string = path.join(__dirname, ConfigurationLoader.DEFAULT_PATH);
+    private filePath: string = path.join(__dirname, Loader.DEFAULT_CONFIG_PATH);
     private data: cosmiconfig.Config = {};
 
-    public async load(): Promise<Configuration> {
-        const task = $tasks.add('Reading configuration file...');
+    public async load(): Promise<Config> {
+        const task = TaskTree.tree().add('Reading configuration file...');
         const filePath = await this.loadConfig();
-        let config: Configuration | undefined;
+        let config: Config | undefined;
 
         if (filePath) {
             const { data } = this;
 
-            config = new Configuration({
-                provider: data.provider || Enums.ServiceProvider.GitHub,
+            config = new Config({
+                provider: data.provider || ServiceProvider.GitHub,
                 filePath: this.getOutputFilePath(),
                 types: this.getTypes(),
                 plugins: this.getPlugins(),
@@ -36,7 +35,7 @@ export class ConfigurationLoader {
             task.fail('Default configuration file not found');
         }
 
-        return config as Configuration;
+        return config as Config;
     }
 
     private getOutputFilePath(): string {
@@ -44,11 +43,11 @@ export class ConfigurationLoader {
             data: { output },
         } = this;
 
-        return output && output.filePath ? output.filePath : ConfigurationLoader.DEFAULT_OUTPUT_FILE_NAME;
+        return output && output.filePath ? output.filePath : Loader.DEFAULT_OUTPUT_FILE_NAME;
     }
 
-    private getTypes(): Map<string, Enums.Change> {
-        const types: Map<string, Enums.Change> = new Map();
+    private getTypes(): Map<string, ChangeLevel> {
+        const types: Map<string, ChangeLevel> = new Map();
         const {
             data: { changes },
         } = this;
@@ -56,12 +55,12 @@ export class ConfigurationLoader {
         if (changes) {
             Object.entries<string[]>(changes).forEach(([level, names]): void => {
                 if (Array.isArray(names)) {
-                    if (Object.values(Enums.Change).includes(level)) {
+                    if (Object.values(ChangeLevel).includes(level)) {
                         names.forEach((name): void => {
-                            types.set(name, level as Enums.Change);
+                            types.set(name, level as ChangeLevel);
                         });
                     } else {
-                        $tasks.fail('Unexpected level of changes (expected: major, minor or patch)');
+                        TaskTree.tree().fail('Unexpected level of changes (expected: major, minor or patch)');
                     }
                 }
             });
@@ -70,18 +69,18 @@ export class ConfigurationLoader {
         return types;
     }
 
-    private getExclusions(): Map<Enums.Exclusion, string[]> {
-        const exclusions: Map<Enums.Exclusion, string[]> = new Map();
+    private getExclusions(): Map<ExclusionType, string[]> {
+        const exclusions: Map<ExclusionType, string[]> = new Map();
         const {
             data: { output },
         } = this;
 
         if (output && output.exclude) {
             Object.entries<string[]>(output.exclude).forEach(([name, rules]): void => {
-                if (Object.values(Enums.Exclusion).includes(name)) {
-                    exclusions.set(name as Enums.Exclusion, [...new Set(rules)]);
+                if (Object.values(ExclusionType).includes(name)) {
+                    exclusions.set(name as ExclusionType, [...new Set(rules)]);
                 } else {
-                    $tasks.fail('Unexpected exclusion name');
+                    TaskTree.tree().fail('Unexpected exclusion name');
                 }
             });
         }
@@ -89,19 +88,19 @@ export class ConfigurationLoader {
         return exclusions;
     }
 
-    private getPlugins(): Map<string, Types.PluginOption> {
-        const activePlugins: Map<string, Types.PluginOption> = new Map();
+    private getPlugins(): Map<string, PluginOption> {
+        const activePlugins: Map<string, PluginOption> = new Map();
         const {
             data: { plugins },
         } = this;
 
         if (plugins) {
-            Object.entries<Types.PluginOption>(plugins).forEach(([name, config]): void => {
+            Object.entries<PluginOption>(plugins).forEach(([name, config]): void => {
                 if (config) {
                     activePlugins.set(
                         name,
                         new Proxy(config, {
-                            get(target, fieldName, receiver): Types.PluginOption {
+                            get(target, fieldName, receiver): PluginOption {
                                 return Reflect.get(target, fieldName, receiver);
                             },
                             set(): boolean {
@@ -117,7 +116,7 @@ export class ConfigurationLoader {
     }
 
     private async loadConfig(): Promise<string | undefined> {
-        const explorer = cosmiconfig('changelog');
+        const explorer = cosmiconfig(Loader.MODULE_NAME);
         const externalConfig = await explorer.search();
         const defaultConfig = await explorer.load(this.filePath);
         let filePath: string | undefined;

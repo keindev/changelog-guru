@@ -1,36 +1,12 @@
 import semver, { SemVer } from 'semver';
-import { Modification, Compare } from '../../utils/enums';
-
-export enum DependencyType {
-    // https://docs.npmjs.com/files/package.json#engines
-    Engines = 1,
-    // https://docs.npmjs.com/files/package.json#dependencies
-    Dependencies = 2,
-    // https://docs.npmjs.com/files/package.json#devdependencies
-    Dev = 3,
-    // https://docs.npmjs.com/files/package.json#peerdependencies
-    Peer = 4,
-    // https://docs.npmjs.com/files/package.json#optionaldependencies
-    Optional = 5,
-}
-
-export interface PackageDependency {
-    [x: string]: string;
-}
-
-export interface DependencyModification {
-    name: string;
-    type: Modification;
-    value?: string;
-    prevValue?: string;
-    version?: semver.SemVer;
-    prevVersion?: semver.SemVer;
-}
+import { DependencyType, DependencyModification } from './typings/enums';
+import { PackageDependency, DependencyInfo } from './typings/types';
+import { Compare } from '../typings/enums';
 
 export class Dependency {
     public readonly type: DependencyType;
 
-    private modifications: Map<string, DependencyModification> = new Map();
+    private modifications: Map<string, DependencyInfo> = new Map();
 
     public constructor(type: DependencyType, deps?: PackageDependency, prev?: PackageDependency) {
         this.type = type;
@@ -65,7 +41,7 @@ export class Dependency {
         }
     }
 
-    public getModifications(type: Modification): DependencyModification[] {
+    public getModifications(type: DependencyModification): DependencyInfo[] {
         return [...this.modifications.values()].filter((modification): boolean => modification.type === type);
     }
 
@@ -75,7 +51,7 @@ export class Dependency {
         if (this.type !== DependencyType.Engines) {
             const modification = this.modifications.get(name);
 
-            if (modification && modification.type !== Modification.Changed) {
+            if (modification && modification.type !== DependencyModification.Changed) {
                 const version = modification.version || modification.prevVersion;
 
                 if (version) {
@@ -91,7 +67,7 @@ export class Dependency {
         this.modifications.set(name, {
             name,
             value,
-            type: Modification.Added,
+            type: DependencyModification.Added,
             version: semver.coerce(value) || undefined,
         });
     }
@@ -99,7 +75,7 @@ export class Dependency {
     private setRemovedModify([name, value]: [string, string]): void {
         this.modifications.set(name, {
             name,
-            type: Modification.Removed,
+            type: DependencyModification.Removed,
             prevValue: value,
             prevVersion: semver.coerce(value) || undefined,
         });
@@ -109,7 +85,7 @@ export class Dependency {
         const isNotPath = (v: string): boolean => !(v.includes('\\') || v.includes('/'));
         let version: SemVer | undefined;
         let prevVersion: SemVer | undefined;
-        let type = Modification.Changed;
+        let type = DependencyModification.Changed;
 
         if (isNotPath(value) && isNotPath(prevValue)) {
             version = semver.coerce(value) || undefined;
@@ -118,13 +94,13 @@ export class Dependency {
             if (version && prevVersion && !value.includes('\\') && !value.includes('/')) {
                 switch (semver.compare(version, prevVersion)) {
                     case Compare.More:
-                        type = Modification.Bumped;
+                        type = DependencyModification.Bumped;
                         break;
                     case Compare.Less:
-                        type = Modification.Downgraded;
+                        type = DependencyModification.Downgraded;
                         break;
                     default:
-                        type = Modification.Unchanged;
+                        type = DependencyModification.Unchanged;
                         break;
                 }
             }
@@ -144,7 +120,7 @@ export class Dependency {
         this.modifications.set(name, {
             name,
             value,
-            type: Modification.Unchanged,
+            type: DependencyModification.Unchanged,
             version: semver.coerce(value) || undefined,
         });
     }

@@ -21,10 +21,10 @@ changes:
 output:
     filePath: CHANGELOG.md
     exclude:
-        author: ['dependabot-preview[bot]']
-        type: ['build']
-        scope: ['deps', 'deps-dev']
-        subject: ['merge']
+        authorLogin: ['dependabot-preview[bot]']
+        commitType: ['build']
+        commitScope: ['deps', 'deps-dev']
+        commitSubject: ['merge']
 plugins:
     attention:
         title: Important Changes
@@ -44,16 +44,18 @@ plugins:
             optionalDependencies: OptionalDependencies,
     # List of available markers
     markers:
-        # !important - place a commit title to special section on top of changelog
-        important: Important Internal Changes
-        # !deprecated - place a commit title to special section with deprecated properties
-        deprecated: DEPRECATIONS
-        # !break - indicates major changes breaking backward compatibility
-        break: BREAKING CHANGES
-        # !hide - hide a commit
-        hide: Hidden commits
-        # !group(NAME) - creates a group of commits with the <NAME>
-        group: Grouped commit
+        commit:
+            # !ignore - ignore a commit in output
+            - ignore
+            # !group(NAME) - creates a group of commits with the <NAME>
+            - group
+        section:
+            # !important - place a commit title to special section on top of changelog
+            important: Important Internal Changes
+            # !deprecated - place a commit title to special section with deprecated properties
+            deprecated: DEPRECATIONS
+            # !break - indicates major changes breaking backward compatibility
+            break: BREAKING CHANGES
     # list of major scopes
     scopes:
         only: false

@@ -1,10 +1,9 @@
 import { TaskTree } from 'tasktree-cli';
 import { Provider } from '../providers/provider';
-import { State } from '../entities/state';
-import { Package } from '../entities/package/package';
-import { DependencyType, Dependency } from '../entities/package/dependency';
-
-const $tasks = TaskTree.tree();
+import { State } from '../state/state';
+import { DependencyType } from '../package/typings/enums';
+import { Dependency } from '../package/dependency';
+import { Package } from '../package/package';
 
 export class Reader {
     private provider: Provider;
@@ -13,16 +12,16 @@ export class Reader {
         this.provider = provider;
     }
 
-    public async read(pkg: Package): Promise<State> {
+    public async read(packageInfo: Package): Promise<State> {
         const { provider } = this;
-        const task = $tasks.add('Loading a release state...');
+        const task = TaskTree.tree().add('Loading a release state...');
         const state = new State();
         const { date, tag } = await provider.getLastRelease();
 
         task.log(`Last release date: ${date}`);
         task.log(`Last release tag: ${tag}`);
         await this.loadCommits(state);
-        await this.loadPackage(state, pkg);
+        await this.loadPackage(state, packageInfo);
         task.complete(`Release information:`);
 
         return state;
@@ -41,13 +40,13 @@ export class Reader {
         }
     }
 
-    private async loadPackage(state: State, pkg: Package): Promise<void> {
+    private async loadPackage(state: State, packageInfo: Package): Promise<void> {
         const data = await this.provider.getPrevPackage();
 
-        state.setLicense(pkg.getLicense(), data.license);
+        state.setLicense(packageInfo.getLicense(), data.license);
 
         Object.values(DependencyType).forEach((type): void => {
-            state.setDependencies(new Dependency(type, ...pkg.getDependenciesStories(type, data)));
+            state.setDependencies(new Dependency(type, ...packageInfo.getDependenciesStories(type, data)));
         });
 
         /*

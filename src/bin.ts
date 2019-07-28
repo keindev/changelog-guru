@@ -1,20 +1,22 @@
-import { TaskTree } from 'tasktree-cli';
 import commander from 'commander';
-import Changelog from './changelog';
+import { TaskTree } from 'tasktree-cli';
+import { Changelog } from './changelog';
 
-const $tasks = TaskTree.tree();
+const tasks = TaskTree.tree();
 
 commander
     .version(process.env.npm_package_version || '', '-v, --version')
     .usage('[options]')
-    .option('-p, --package', 'Bump package version in package.json')
+    .option('-b, --bump', 'Bump package version in package.json')
     .description('Git changelog generator')
     .parse(process.argv);
 
-$tasks.start();
+tasks.start();
 
-const changelog = new Changelog();
+const changelog = new Changelog({
+    bumpPackageVersion: commander.bump,
+});
 
-changelog.generate(commander.package).then((): void => {
-    $tasks.stop();
+changelog.generate().then((): void => {
+    tasks.stop();
 });

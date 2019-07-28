@@ -12,6 +12,9 @@ import { Level } from '../utils/enums';
 import { License } from './package/license';
 import { DependencyType, Dependency } from './package/dependency';
 import Key from '../utils/key';
+import { ChangeLevel, ExclusionType } from '../config/typings/enums';
+import { Filter } from './filter';
+import { PluginOption } from '../config/typings/types';
 
 const $tasks = TaskTree.tree();
 
@@ -62,12 +65,20 @@ export class State implements Context {
         return changes;
     }
 
-    public setLevels(levels: Map<string, Level>): void {
-        let type: string | undefined;
+    public setCommitTypes(types: [string, ChangeLevel][]): void {
+        let typeName: string | undefined;
+        let tuple: [string, ChangeLevel] | undefined;
 
         this.commits.forEach((commit): void => {
-            type = commit.getType();
-            commit.setLevel(type ? Key.inMap(type, levels) || Level.Patch : Level.Patch);
+            typeName = commit.getTypeName();
+
+            if (typeName) {
+                tuple = types.find(([name]): boolean => Key.isEqual(typeName as string, name));
+
+                if (tuple) {
+                    commit.setChangeLevel(tuple[1]);
+                }
+            }
         });
     }
 
@@ -108,30 +119,32 @@ export class State implements Context {
         return this.sections.find((section): boolean => Key.isEqual(section.title, title));
     }
 
-    public ignoreAuthors(filters: string[]): void {
-        this.authors.forEach((author): void => {
-            if (filters.indexOf(author.login) >= 0) {
-                author.ignore();
+    public ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
+        exclusions.forEach(([type, rules]): void => {
+            switch (type) {
+                case ExclusionType.AuthorLogin:
+                    Filter.authorsByLogin(this.authors, rules);
+                    break;
+                case ExclusionType.CommitType:
+                    Filter.commitsByType(this.commits, rules);
+                    break;
+                case ExclusionType.CommitScope:
+                    Filter.commitsByScope(this.commits, rules);
+                    break;
+                case ExclusionType.CommitSubject:
+                    Filter.commitsBySubject(this.commits, rules);
+                    break;
+                default:
+                    TaskTree.tree().fail(`Unacceptable entity exclusion type - ${type}`);
+                    break;
             }
         });
     }
 
-    public ignoreCommits(types: string[], scopes: string[], subjects: string[]): void {
-        this.commits.forEach((commit): void => {
-            if (
-                subjects.some((item): boolean => commit.subject.includes(item)) ||
-                Key.inArray(commit.getType(), types) ||
-                Key.inArray(commit.getScope(), scopes)
-            ) {
-                commit.ignore();
-            }
-        });
-    }
-
-    public async modify(plugins: string[], options: ConfigurationOptions): Promise<void> {
+    public async modify(plugins: [string, PluginOption][]): Promise<void> {
         const task = $tasks.add('Modify release state');
 
-        await Promise.all(plugins.map((plugin): Promise<void> => this.modifyWithPlugin(plugin, options, task)));
+        await Promise.all(plugins.map(([name, options]): Promise<void> => this.modifyWithPlugin(name, options, task)));
         this.rebuildSectionsTree();
         task.complete();
     }

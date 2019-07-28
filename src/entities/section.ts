@@ -1,116 +1,107 @@
 import { Commit } from './commit';
-import { Compare, Priority, Status } from '../utils/enums';
 import { Message } from './message';
+import { Priority, Compare } from '../typings/enums';
+import { SectionPosition } from './typings/enums';
+import { Entity } from './entity';
 
-export enum Position {
-    None = 0,
-    Header = 1,
-    Body = 2,
-    Footer = 3,
-    Group = 4,
-    Subsection = 5,
-}
+export class Section extends Entity {
+    private position: SectionPosition;
+    private entities: Map<string, Entity> = new Map();
 
-export class Section {
-    public readonly title: string;
+    public constructor(title: string, position: SectionPosition) {
+        super(title);
 
-    private position: Position;
-    private priority = Priority.Default;
-    private commits: Map<string, Commit> = new Map();
-    private sections: Map<string, Section> = new Map();
-    private messages: Map<string, Message> = new Map();
-
-    public constructor(title: string, position: Position) {
-        this.title = title;
         this.position = position;
     }
 
     public static compare(a: Section, b: Section): number {
-        let result = a.getPosition() - b.getPosition() || a.getPriority() - b.getPriority();
+        let result = b.getPosition() - a.getPosition() || super.compare(a, b);
 
-        if (result === Compare.Equal) result = a.title.localeCompare(b.title);
+        if (result === Compare.Equal) result = a.getName().localeCompare(b.getName());
 
         return result;
     }
 
     public static filter(s: Section): boolean {
-        return !(s.getPosition() === Position.Subsection || s.isEmpty());
+        return super.filter(s) || s.getPosition() !== SectionPosition.Subsection;
     }
 
-    public getPosition(): Position {
+    public getPosition(): SectionPosition {
         return this.position;
     }
 
-    public setPosition(position: Position): void {
+    public setPosition(position: SectionPosition): void {
         this.position = position;
     }
 
-    public getSections(sort: boolean = true): Section[] {
-        const sections = [...this.sections.values()];
+    public getSections(): Section[] {
+        const sections = [...this.entities.values()].filter((value): boolean => value instanceof Section) as Section[];
 
-        return sort ? sections.sort(Section.compare) : sections;
+        return sections.sort(Section.compare);
     }
 
-    public getCommits(sort: boolean = true, onlyVisible: boolean = false): Commit[] {
-        const commits = [...this.commits.values()].filter(Commit.filter);
+    public getCommits(): Commit[] {
+        const commits = [...this.entities.values()].filter((value): boolean => value instanceof Commit) as Commit[];
 
-        if (sort) commits.sort(Commit.compare);
-
-        return onlyVisible ? commits.filter((commit): boolean => !commit.hasStatus(Status.Hidden)) : commits;
+        return commits.sort(Commit.compare);
     }
 
     public getMessages(): Message[] {
-        return [...this.messages.values()].filter(Message.filter).sort(Message.compare);
+        const messages = [...this.entities.values()].filter((value): boolean => value instanceof Message) as Message[];
+
+        return messages.sort(Message.compare);
     }
 
     public getPriority(): Priority {
-        if (this.priority === Priority.Default) {
-            this.priority = this.getMessages().reduce(
-                (acc, message): number => acc + message.getPriority(),
-                this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), Priority.Default)
-            );
+        let priority = super.getPriority();
+
+        if (priority === Priority.Default) {
+            priority = this.getMessages().reduce((acc, message): number => acc + message.getPriority(), priority);
+            priority = this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), priority);
         }
 
-        return this.priority;
+        return priority;
     }
 
     public add(entity: Commit | Section | Message): void {
-        if (entity instanceof Commit) this.assignEntity(entity.hash, entity, this.commits);
-        if (entity instanceof Message) this.assignEntity(entity.hash, entity, this.messages);
-        if (entity instanceof Section) {
-            this.assignEntity(entity.title, entity, this.sections);
-            entity.setPosition(Position.Subsection);
+        const { entities } = this;
+        const name = entity.getName();
+
+        if (!entities.has(name)) {
+            entities.set(name, entity);
+
+            if (entity instanceof Section) {
+                (entity as Section).setPosition(SectionPosition.Subsection);
+            }
         }
     }
 
-    public remove(entity: Commit | Section): void {
-        if (entity instanceof Commit) this.removeEntity(entity.hash, this.commits);
-        if (entity instanceof Message) this.removeEntity(entity.hash, this.messages);
-        if (entity instanceof Section) {
-            this.removeEntity(entity.title, this.sections);
-            entity.setPosition(Position.Group);
+    public remove(entity: Commit | Section | Message): void {
+        if (this.entities.delete(entity.getName())) {
+            if (entity instanceof Section) {
+                (entity as Section).setPosition(SectionPosition.Group);
+            }
         }
     }
 
     public isEmpty(): boolean {
-        return !this.sections.size && !this.commits.size && !this.messages.size;
+        return !this.entities.size;
     }
 
     public assignAsSubsection(relations: Map<string, Section>): void {
         const commits = this.getCommits();
-        let parent: Section | undefined;
 
         if (commits.length) {
-            parent = relations.get(commits[0].hash);
+            let parent = relations.get(commits[0].getName());
 
             if (parent) parent.add(this);
 
             commits.forEach((commit): void => {
-                parent = relations.get(commit.hash);
+                parent = relations.get(commit.getName());
 
                 if (parent) parent.remove(commit);
 
-                relations.set(commit.hash, this);
+                relations.set(commit.getName(), this);
             });
         }
     }
@@ -119,25 +110,11 @@ export class Section {
         const commits = this.getCommits();
 
         commits.forEach((commit): void => {
-            if (relations.has(commit.hash)) {
+            if (relations.has(commit.getName())) {
                 this.remove(commit);
             } else {
-                relations.set(commit.hash, this);
+                relations.set(commit.getName(), this);
             }
         });
-    }
-
-    private assignEntity<T>(key: string, value: T, map: Map<string, T>): void {
-        if (!map.has(key)) {
-            map.set(key, value);
-            this.priority = Priority.Default;
-        }
-    }
-
-    private removeEntity<T>(key: string, map: Map<string, T>): void {
-        if (map.has(key)) {
-            map.delete(key);
-            this.priority = Priority.Default;
-        }
     }
 }

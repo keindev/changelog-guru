@@ -1,22 +1,19 @@
-import readPkg from 'read-pkg';
 import writePkg from 'write-pkg';
-import * as semver from 'semver';
+import readPkg, { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
-import { PackageDependency, DependencyType } from './dependency';
-
-const $tasks = TaskTree.tree();
-
-export type PackageDependencyStories = [PackageDependency | undefined, PackageDependency | undefined];
+import * as semver from 'semver';
+import { DependencyType } from './typings/enums';
+import { PackageDependenciesStories } from './typings/types';
 
 export class Package {
     public static DEFAULT_VERSION = '0.0.1';
     public static DEFAULT_LICENSE = '';
     public static DEFAULT_REPOSITORY = '';
 
-    private data: readPkg.PackageJson;
+    private data: PackageJson;
 
     public constructor() {
-        const task = $tasks.add('Reading package.json');
+        const task = TaskTree.tree().add('Reading package.json');
 
         this.data = readPkg.sync({ normalize: false });
 
@@ -52,7 +49,7 @@ export class Package {
         return this.data.license || Package.DEFAULT_LICENSE;
     }
 
-    public getDependenciesStories(type: DependencyType, prev: readPkg.PackageJson): PackageDependencyStories {
+    public getDependenciesStories(type: DependencyType, prev: readPkg.PackageJson): PackageDependenciesStories {
         const { data } = this;
 
         if (type === DependencyType.Engines) return [data.engines, prev.engines];
@@ -65,7 +62,7 @@ export class Package {
     }
 
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {
-        const task = $tasks.add(`Updating package version`);
+        const task = TaskTree.tree().add(`Updating package version`);
         const current = this.getVersion();
         let next: string | undefined;
 
@@ -74,8 +71,6 @@ export class Package {
         if (!major && !minor && patch) next = semver.inc(current, 'patch') || undefined;
         if (next) {
             this.data.version = next;
-
-            // FIXME: JsonObject(writePkg) incompatible with PackageJson(readPkg)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             await writePkg(this.data as any);
             task.complete(`Package version updated to ${next}`);

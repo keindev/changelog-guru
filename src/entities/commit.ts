@@ -1,33 +1,26 @@
-import { Level, Status, Priority, Compare } from '../utils/enums';
+import { ChangeLevel } from '../config/typings/enums';
+import { CommitOptions } from './typings/types';
+import { CommitStatus } from './typings/enums';
+import { Compare, Priority } from '../typings/enums';
+import { Entity } from './entity';
 
-export interface CommitOptions {
-    timestamp: number;
-    header: string;
-    body?: string;
-    url: string;
-    author: string;
-}
-
-export class Commit {
+export class Commit extends Entity {
     public static LINE_SEPARATOR = '\n';
-    public static SHORT_HASH_LENGTH = 7;
 
     public readonly subject: string = '';
     public readonly body: readonly string[];
     public readonly timestamp: number;
     public readonly url: string;
-    public readonly hash: string;
     public readonly author: string;
 
     private scope: string | undefined;
     private type: string | undefined;
     private accents: Set<string> = new Set();
-    private level = Level.Patch;
-    private status = Status.Default;
-    private ignored = false;
+    private status = CommitStatus.Default;
 
     public constructor(hash: string, options: CommitOptions) {
-        this.hash = hash;
+        super(hash);
+
         this.timestamp = options.timestamp;
         this.body = options.body ? options.body.split(Commit.LINE_SEPARATOR).map((l): string => l.trim()) : [];
         this.url = options.url;
@@ -64,32 +57,24 @@ export class Commit {
         return result;
     }
 
-    public static filter(c: Commit): boolean {
-        return !c.isIgnored();
-    }
-
     public getAccents(): string[] {
         return [...this.accents.values()];
     }
 
-    public getLevel(): Level {
-        return this.level;
+    public addAccent(text: string): void {
+        this.accents.add(text);
     }
 
-    public setLevel(level: Level): void {
-        this.level = level;
-    }
-
-    public getType(): string | undefined {
+    public getTypeName(): string | undefined {
         return this.type;
     }
 
     public getPriority(): Priority {
-        let priority = Priority.Default;
+        let priority = super.getPriority();
 
-        if (this.hasStatus(Status.BreakingChanges)) priority += Priority.High;
-        if (this.hasStatus(Status.Deprecated)) priority += Priority.Medium;
-        if (this.hasStatus(Status.Important)) priority += Priority.Low;
+        if (this.hasStatus(CommitStatus.BreakingChanges)) priority += Priority.High;
+        if (this.hasStatus(CommitStatus.Deprecated)) priority += Priority.Medium;
+        if (this.hasStatus(CommitStatus.Important)) priority += Priority.Low;
 
         return priority;
     }
@@ -98,30 +83,14 @@ export class Commit {
         return this.scope;
     }
 
-    public getShortHash(): string {
-        return this.hash.substr(0, Commit.SHORT_HASH_LENGTH);
-    }
-
-    public setStatus(status: Status): void {
+    public setStatus(status: CommitStatus): void {
         this.status = this.status | status;
 
-        if (this.hasStatus(Status.Deprecated)) this.setLevel(Level.Minor);
-        if (this.hasStatus(Status.BreakingChanges)) this.setLevel(Level.Major);
+        if (this.hasStatus(CommitStatus.Deprecated)) this.setChangeLevel(ChangeLevel.Minor);
+        if (this.hasStatus(CommitStatus.BreakingChanges)) this.setChangeLevel(ChangeLevel.Major);
     }
 
-    public addAccent(text: string): void {
-        this.accents.add(text);
-    }
-
-    public ignore(): void {
-        this.ignored = true;
-    }
-
-    public hasStatus(status: Status): boolean {
+    public hasStatus(status: CommitStatus): boolean {
         return !!(this.status & status);
-    }
-
-    public isIgnored(): boolean {
-        return this.ignored;
     }
 }
