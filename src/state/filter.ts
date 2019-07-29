@@ -3,9 +3,9 @@ import { Commit } from '../entities/commit';
 import Key from '../utils/key';
 
 export class Filter {
-    public static authorsByLogin(authors: Map<number, Author>, rules: string[]): void {
+    public static authorsByLogin(authors: Map<string, Author>, rules: string[]): void {
         authors.forEach((author): void => {
-            if (rules.indexOf(author.login) >= 0) author.ignore();
+            if (rules.indexOf(author.getName()) >= 0) author.ignore();
         });
     }
 

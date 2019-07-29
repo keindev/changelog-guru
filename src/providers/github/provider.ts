@@ -3,17 +3,19 @@ import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import { Author } from '../../entities/author';
 import { Commit } from '../../entities/commit';
-import { Provider, ServiceProvider, Release } from '../provider';
 import { ReleaseQuery } from './queries/release';
 import { HistoryQuery, GitHubResponseHistoryCommit, GitHubResponseHistoryAuthor } from './queries/history';
 import { PackageQuery } from './queries/package';
+import { GitProvider } from '../git-provider';
+import { ReleaseInfo } from '../typings/types';
+import { ServiceProvider } from '../../config/typings/enums';
 
 const $tasks = TaskTree.tree();
 
-export class GitHubProvider extends Provider {
+export class GitHubProvider extends GitProvider {
     private endpoint = 'https://api.github.com/graphql';
     private authors: Map<number, Author> = new Map();
-    private release: Release | undefined;
+    private release: ReleaseInfo | undefined;
     private cursor: string | undefined;
     private releaseQuery: ReleaseQuery;
     private historyQuery: HistoryQuery;
@@ -56,19 +58,17 @@ export class GitHubProvider extends Provider {
         return pairs;
     }
 
-    public async getLastRelease(): Promise<Release> {
+    public async getLastRelease(): Promise<ReleaseInfo> {
         if (!this.release) {
             const response = await this.releaseQuery.getLast();
 
             this.release = response || {
                 tag: undefined,
-                // FIXME: remove test date
-                // date: '2019-04-26T22:27:36Z',
                 date: new Date(0).toISOString(),
             };
         }
 
-        return this.release;
+        return this.release as ReleaseInfo;
     }
 
     public async getPrevPackage(): Promise<PackageJson> {
@@ -102,7 +102,7 @@ export class GitHubProvider extends Provider {
             header: response.header,
             body: response.body,
             timestamp: new Date(response.date).getTime(),
-            author: author.login,
+            author: response.author.user.login,
             url: response.url,
         });
 

@@ -2,34 +2,28 @@ import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import { Author } from './author';
-import { Commit } from './commit';
-import { Plugin, CommitPlugin, StatePlugin, PluginType } from './plugin';
-import { ConfigurationOptions } from './configuration';
-import { Section, Position } from './section';
-import { Constructable, Importable } from '../utils/types';
-import { Level } from '../utils/enums';
-import { License } from './package/license';
-import { DependencyType, Dependency } from './package/dependency';
-import Key from '../utils/key';
 import { ChangeLevel, ExclusionType } from '../config/typings/enums';
 import { Filter } from './filter';
 import { PluginOption } from '../config/typings/types';
+import { StateContext } from './typings/types';
+import { DependencyType } from '../package/typings/enums';
+import { Dependency } from '../package/dependency';
+import { Commit } from '../entities/commit';
+import { Author } from '../entities/author';
+import { Section } from '../entities/section';
+import { License } from '../package/license';
+import { SectionPosition } from '../entities/typings/enums';
+import { BasePlugin } from '../plugins/base-plugin';
+import { CommitPlugin } from '../plugins/commit-plugin';
+import { StatePlugin } from '../plugins/state-plugin';
+import Key from '../utils/key';
+import { PluginType, ImportablePlugin, ConstructablePlugin } from '../plugins/typings/types';
 
-const $tasks = TaskTree.tree();
-
-export interface Context {
-    getLicense(): License | undefined;
-    getDependencies(type: DependencyType): Dependency | undefined;
-    addSection(title: string, position: Position): Section | undefined;
-    findSection(title: string): Section | undefined;
-}
-
-export class State implements Context {
+export class State implements StateContext {
     protected pluginsPath: string = path.resolve(__dirname, '../plugins');
     protected pluginsExtension: string = 'js';
 
-    protected authors: Map<number, Author> = new Map();
+    protected authors: Map<string, Author> = new Map();
     protected commits: Map<string, Commit> = new Map();
     protected sections: Section[] = [];
     protected license: License | undefined;
@@ -47,22 +41,59 @@ export class State implements Context {
         return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
     }
 
+    public addCommit(commit: Commit, author: Author): void {
+        const { commits, authors } = this;
+
+        if (!commits.has(commit.getName())) {
+            commits.set(commit.getName(), commit);
+
+            if (authors.has(author.getName())) {
+                author.increaseContribution();
+            } else {
+                authors.set(author.getName(), author);
+            }
+        }
+    }
+
     public getLicense(): License | undefined {
         return this.license;
+    }
+
+    public setLicense(id: string, prev?: string): void {
+        this.license = new License(id, prev);
     }
 
     public getDependencies(type: DependencyType): Dependency | undefined {
         return this.dependencies.get(type);
     }
 
+    public setDependencies(dependency: Dependency): void {
+        this.dependencies.set(dependency.type, dependency);
+    }
+
     public getChangesLevels(): [number, number, number] {
-        const changes: [number, number, number] = [0, 0, 0];
+        let major = 0;
+        let minor = 0;
+        let patch = 0;
 
         this.commits.forEach((commit): void => {
-            changes[commit.getLevel() - 1]++;
+            switch (commit.getChangeLevel()) {
+                case ChangeLevel.Major:
+                    major++;
+                    break;
+                case ChangeLevel.Minor:
+                    minor++;
+                    break;
+                case ChangeLevel.Patch:
+                    patch++;
+                    break;
+                default:
+                    TaskTree.tree().fail(`Incompatible ChangeLevel - ${commit.getChangeLevel()}`);
+                    break;
+            }
         });
 
-        return changes;
+        return [major, minor, patch];
     }
 
     public setCommitTypes(types: [string, ChangeLevel][]): void {
@@ -82,41 +113,19 @@ export class State implements Context {
         });
     }
 
-    public addCommit(commit: Commit, author: Author): void {
-        const { commits, authors } = this;
+    public addSection(name: string, position: SectionPosition = SectionPosition.Group): Section | undefined {
+        let section = this.findSection(name);
 
-        if (!commits.has(commit.hash)) {
-            commits.set(commit.hash, commit);
-
-            if (authors.has(author.id)) {
-                author.increaseContribution();
-            } else {
-                authors.set(author.id, author);
-            }
-        }
-    }
-
-    public addSection(title: string, position: Position = Position.Group): Section | undefined {
-        let section = this.findSection(title);
-
-        if (!section && Key.unify(title)) {
-            section = new Section(title, position);
+        if (!section && Key.unify(name)) {
+            section = new Section(name, position);
             this.sections.push(section);
         }
 
         return section;
     }
 
-    public setLicense(id: string, prev?: string): void {
-        this.license = new License(id, prev);
-    }
-
-    public setDependencies(dependency: Dependency): void {
-        this.dependencies.set(dependency.type, dependency);
-    }
-
-    public findSection(title: string): Section | undefined {
-        return this.sections.find((section): boolean => Key.isEqual(section.title, title));
+    public findSection(name: string): Section | undefined {
+        return this.sections.find((section): boolean => Key.isEqual(section.getName(), name));
     }
 
     public ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
@@ -142,22 +151,22 @@ export class State implements Context {
     }
 
     public async modify(plugins: [string, PluginOption][]): Promise<void> {
-        const task = $tasks.add('Modify release state');
+        const task = TaskTree.tree().add('Modifying release state...');
 
         await Promise.all(plugins.map(([name, options]): Promise<void> => this.modifyWithPlugin(name, options, task)));
         this.rebuildSectionsTree();
-        task.complete();
+        task.complete('Release status modified');
     }
 
     private rebuildSectionsTree(): void {
-        const task = $tasks.add('Rebuild sections tree');
+        const task = TaskTree.tree().add('Bringing the section tree to a consistent state...');
         const sections = this.sections.sort(Section.compare);
 
         if (sections.length) {
             const relations: Map<string, Section> = new Map();
 
             sections.forEach((section): void => {
-                if (section.getPosition() === Position.Group) {
+                if (section.getPosition() === SectionPosition.Group) {
                     section.assignAsSubsection(relations);
                 } else {
                     section.assignAsSection(relations);
@@ -166,15 +175,16 @@ export class State implements Context {
         }
 
         this.sections = sections.filter(Section.filter).sort(Section.compare);
-        task.complete();
+        task.complete('Section tree is consistently');
     }
 
-    private async modifyWithPlugin(name: string, options: ConfigurationOptions, task: Task): Promise<void> {
+    // TODO: think about it, maybe you should add a PluginLoader?
+    private async modifyWithPlugin(name: string, options: PluginOption, task: Task): Promise<void> {
         const filePath = path.join(this.pluginsPath, `${name}.${this.pluginsExtension}`);
 
         if (fs.existsSync(filePath)) {
-            const module: Importable<PluginType, Context> = await import(filePath);
-            const PluginClass: Constructable<PluginType, Context> = module.default;
+            const module: ImportablePlugin<PluginType, StateContext> = await import(filePath);
+            const PluginClass: ConstructablePlugin<PluginType, StateContext> = module.default;
 
             task.log(`${name} plugin imported`);
 
@@ -182,7 +192,7 @@ export class State implements Context {
                 const plugin = new PluginClass(this);
                 const subtask = task.add(`Changing state with ${PluginClass.name}`);
 
-                if (plugin instanceof Plugin) {
+                if (plugin instanceof BasePlugin) {
                     await plugin.init(options);
                 } else {
                     subtask.fail(`${PluginClass.name} is not Plugin class`);
