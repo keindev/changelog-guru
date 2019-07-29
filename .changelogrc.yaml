@@ -43,7 +43,7 @@ plugins:
             peerDependencies: PeerDependencies
             optionalDependencies: OptionalDependencies,
     # List of available markers
-    markers:
+    marker:
         commit:
             # !ignore - ignore a commit in output
             - ignore
@@ -57,15 +57,15 @@ plugins:
             # !break - indicates major changes breaking backward compatibility
             break: BREAKING CHANGES
     # list of major scopes
-    scopes:
-        only: false
-        list:
+    scope:
+        onlyPresented: false
+        titles:
             core: Core
             api: API
             ssr: Server Side Rendering
             fc: Functional Components
             dts: TypeScript Declaration Improvements
-    sections:
+    section:
         - Features: [feat]
         - Improvements: [improve]
         - Bug Fixes: [fix]

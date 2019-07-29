@@ -1,46 +1,19 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { SemVer } from 'semver';
-import { StatePlugin } from '../entities/plugin';
-import { ConfigurationOptions, Configuration } from '../entities/configuration';
-import { Section, Position } from '../entities/section';
-import { Message } from '../entities/message';
-import { Level, Modification } from '../utils/enums';
-import { DependencyType } from '../entities/package/dependency';
-import Markdown from '../utils/markdown';
-
-export enum AttentionType {
-    License = 'license',
-    Engine = 'engine',
-    Dependencies = 'dependencies',
-    DevDependencies = 'devDependencies',
-    PeerDependencies = 'peerDependencies',
-    OptionalDependencies = 'optionalDependencies',
-}
-
-export enum AttentionTemplateLiteral {
-    Name = '%name%',
-    Version = '%ver%',
-    PrevVersion = '%pver%',
-    Value = '%val%',
-    PrevValue = '%pval%',
-}
-
-export interface AttentionConfiguration extends ConfigurationOptions {
-    attention: {
-        title: string;
-        templates: {
-            [key in Modification]?: string;
-        };
-        sections: {
-            [key in AttentionType]?: string;
-        };
-    };
-}
+import { DependencyModification, DependencyType } from '../../../package/typings/enums';
+import { Section } from '../../../entities/section';
+import { StatePlugin } from '../../state-plugin';
+import { AttentionPluginOptions } from './typings/types';
+import { AttentionType, AttentionTemplateLiteral } from './typings/enums';
+import { SectionPosition } from '../../../entities/typings/enums';
+import Markdown from '../../../utils/markdown';
+import { Message } from '../../../entities/message';
+import { ChangeLevel } from '../../../config/typings/enums';
 
 export default class AttentionPlugin extends StatePlugin {
     private section: Section | undefined;
     private subtitles: Map<AttentionType, string> = new Map();
-    private templates: Map<Modification, string> = new Map();
+    private templates: Map<DependencyModification, string> = new Map();
 
     private static getAttentionType(type: DependencyType, task?: Task): AttentionType | undefined {
         if (type === DependencyType.Engines) return AttentionType.Engine;
@@ -54,16 +27,17 @@ export default class AttentionPlugin extends StatePlugin {
         return undefined;
     }
 
-    public async init(config: AttentionConfiguration): Promise<void> {
+    public async init(config: AttentionPluginOptions): Promise<void> {
         const { attention } = config;
 
-        if (attention) {
-            this.section = this.context.addSection(attention.title, Position.Header);
-            this.subtitles = new Map();
-            this.templates = new Map();
+        this.section = undefined;
+        this.subtitles = new Map();
+        this.templates = new Map();
 
+        if (attention) {
+            this.section = this.context.addSection(attention.title, SectionPosition.Header);
             Configuration.fillFromEnum(attention.sections, AttentionType, this.subtitles);
-            Configuration.fillFromEnum(attention.templates, Modification, this.templates);
+            Configuration.fillFromEnum(attention.templates, DependencyModification, this.templates);
         }
     }
 
@@ -81,24 +55,27 @@ export default class AttentionPlugin extends StatePlugin {
         const subtitle = this.subtitles.get(AttentionType.License);
 
         if (subtitle && license && license.isChanged) {
-            const subsection = new Section(subtitle, Position.Subsection);
-            let text: string;
+            task.warn(`License changed from ${license.prev} to ${license.id}.`);
+
+            const subsection = new Section(subtitle, SectionPosition.Subsection);
+            let message: Message;
 
             if (license.prev) {
-                task.warn(`License changed from ${license.prev} to ${license.id}.`);
-                text = [
-                    `License changed from ${Markdown.wrap(license.prev)} to ${Markdown.wrap(license.id)}.`,
-                    `You can check it in ${Markdown.link(
-                        'the full list of SPDX license IDs.',
-                        'https://spdx.org/licenses/'
-                    )}`,
-                ].join(Markdown.WORD_SEPARATOR);
+                message = new Message(
+                    [
+                        `License changed from ${Markdown.wrap(license.prev)} to ${Markdown.wrap(license.id)}.`,
+                        `You can check it in ${Markdown.link(
+                            'the full list of SPDX license IDs.',
+                            'https://spdx.org/licenses/'
+                        )}`,
+                    ].join(Markdown.WORD_SEPARATOR)
+                );
+                message.setChangeLevel(ChangeLevel.Major);
             } else {
-                text = `Source code now under ${Markdown.wrap(license.id)} license.`;
-                task.log(text);
+                message = new Message(`Source code now under ${Markdown.wrap(license.id)} license.`);
             }
 
-            subsection.add(new Message(text, Level.Major));
+            subsection.add(message);
             section.add(subsection);
         }
     }
@@ -117,7 +94,7 @@ export default class AttentionPlugin extends StatePlugin {
                         let text: string;
                         const replace = (l: string, v?: string | SemVer): string =>
                             v ? text.replace(l, Markdown.wrap(v)) : text;
-                        const subsection = new Section(subtitle, Position.Subsection);
+                        const subsection = new Section(subtitle, SectionPosition.Subsection);
                         const list: string[] = [];
 
                         this.templates.forEach((template, type): void => {
@@ -138,7 +115,7 @@ export default class AttentionPlugin extends StatePlugin {
                         });
 
                         if (list.length) {
-                            subsection.add(new Message(list.join(Markdown.LINE_SEPARATOR), Level.Patch));
+                            subsection.add(new Message(list.join(Markdown.LINE_SEPARATOR)));
                             section.add(subsection);
                             task.log(`${Markdown.capitalize(attentionType)} changed`);
                         }

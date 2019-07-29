@@ -4,7 +4,7 @@ export type Changes = { [key in ChangeLevel]: string[] };
 export type PluginOptionValue = string | boolean | number | string[];
 
 export interface PluginOption {
-    [key: string]: PluginOption | PluginOptionValue;
+    [key: string]: PluginOptionValue | PluginOption | PluginOption[] | undefined;
 }
 
 export interface ConfigurationOptions {
