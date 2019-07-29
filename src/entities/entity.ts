@@ -9,7 +9,7 @@ export class Entity {
     private name: string;
 
     public constructor(name?: string) {
-        this.name = name || `f${(~~(Math.random() * 1e8)).toString(40)}`;
+        this.name = name || `f${(~~(Math.random() * 1e8)).toString(16)}`;
     }
 
     public static compare(a: Entity, b: Entity): number {

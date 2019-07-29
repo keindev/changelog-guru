@@ -1,23 +1,31 @@
 import { PackageJson } from 'read-pkg';
 import { Commit } from '../../../src/entities/commit';
 import { Author } from '../../../src/entities/author';
-import { Package } from '../../../src/entities/package/package';
-import { Provider, Release } from '../../../src/providers/provider';
+import { GitProvider } from '../../../src/providers/git-provider';
+import { ReleaseInfo } from '../../../src/providers/typings/types';
+import { Package } from '../../../src/package/package';
+import { ServiceProvider } from '../../../src/config/typings/enums';
 
-export class MockProvider extends Provider {
-    public readonly __commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19ff', {
-        timestamp: 1,
-        header: 'feat(Jest): subject',
-        body: '\n\nbody\n\nfooter',
-        url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19ff',
-        author: 'keindev',
-    });
+export class MockProvider extends GitProvider {
+    public readonly __author: Author;
+    public readonly __commit: Commit;
 
-    public readonly __author = new Author(1, {
-        login: 'keindev',
-        url: 'https://github.com/keindev',
-        avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
-    });
+    public constructor(type: ServiceProvider, url: string) {
+        super(type, url);
+
+        this.__author = new Author('keindev', {
+            url: 'https://github.com/keindev',
+            avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
+        });
+
+        this.__commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19ff', {
+            timestamp: 1,
+            header: 'feat(Jest): subject',
+            body: '\n\nbody\n\nfooter',
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19ff',
+            author: this.__author,
+        });
+    }
 
     public __getRepository(): string {
         return this.repository;
@@ -32,12 +40,12 @@ export class MockProvider extends Provider {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async getCommits(page: number): Promise<[Commit, Author][]> {
-        return Promise.resolve([[this.__commit, this.__author]]);
+    public async getCommits(page: number): Promise<Commit[]> {
+        return Promise.resolve([this.__commit]);
     }
 
     // eslint-disable-next-line class-methods-use-this
-    public async getLastRelease(): Promise<Release> {
+    public async getLastRelease(): Promise<ReleaseInfo> {
         return Promise.resolve({
             tag: Package.DEFAULT_VERSION,
             date: new Date(0).toISOString(),

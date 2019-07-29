@@ -8,7 +8,6 @@ import { Provider } from './provider';
 
 export abstract class GitProvider extends Provider {
     public static DEFAULT_BRANCH = 'master';
-    public static PAGE_SIZE: number = 100;
     public static TYPE: string = 'git';
 
     protected repository: string;

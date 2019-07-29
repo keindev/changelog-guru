@@ -7,7 +7,7 @@ export interface PluginOption {
     [key: string]: PluginOptionValue | PluginOption | PluginOption[] | undefined;
 }
 
-export interface ConfigurationOptions {
+export interface ConfigOptions {
     provider: ServiceProvider;
     filePath: string;
     types: Map<string, ChangeLevel>;

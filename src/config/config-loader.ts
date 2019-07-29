@@ -6,12 +6,12 @@ import { Config } from './config';
 import { ServiceProvider, ChangeLevel, ExclusionType } from './typings/enums';
 import { PluginOption } from './typings/types';
 
-export class Loader {
+export class ConfigLoader {
     public static MODULE_NAME = 'changelog';
-    public static DEFAULT_CONFIG_PATH = `../../../.changelogrc.yaml`;
+    public static DEFAULT_CONFIG_PATH = `../../.changelogrc.yaml`;
     public static DEFAULT_OUTPUT_FILE_NAME = 'CHANGELOG.md';
 
-    private filePath: string = path.join(__dirname, Loader.DEFAULT_CONFIG_PATH);
+    private filePath: string = path.join(__dirname, ConfigLoader.DEFAULT_CONFIG_PATH);
     private data: cosmiconfig.Config = {};
 
     public async load(): Promise<Config> {
@@ -43,7 +43,7 @@ export class Loader {
             data: { output },
         } = this;
 
-        return output && output.filePath ? output.filePath : Loader.DEFAULT_OUTPUT_FILE_NAME;
+        return output && output.filePath ? output.filePath : ConfigLoader.DEFAULT_OUTPUT_FILE_NAME;
     }
 
     private getTypes(): Map<string, ChangeLevel> {
@@ -116,7 +116,7 @@ export class Loader {
     }
 
     private async loadConfig(): Promise<string | undefined> {
-        const explorer = cosmiconfig(Loader.MODULE_NAME);
+        const explorer = cosmiconfig(ConfigLoader.MODULE_NAME);
         const externalConfig = await explorer.search();
         const defaultConfig = await explorer.load(this.filePath);
         let filePath: string | undefined;

@@ -41,7 +41,7 @@ export class GitHubProvider extends GitProvider {
         this.packageQuery = new PackageQuery(client, variables);
     }
 
-    public async getCommits(pageIndex: number): Promise<[Commit, Author][]> {
+    public async getCommits(pageIndex: number): Promise<Commit[]> {
         const task = $tasks.add(`Loading page #${pageIndex + 1}`);
         const release = await this.getLastRelease();
         let cursor: string | undefined;
@@ -51,11 +51,11 @@ export class GitHubProvider extends GitProvider {
         }
 
         const commits = await this.historyQuery.getCommits(release.date, GitHubProvider.PAGE_SIZE, cursor);
-        const pairs = commits.map((commit): [Commit, Author] => this.parseResponse(commit));
+        const list = commits.map((commit): Commit => this.parseResponse(commit));
 
         task.complete(`Page #${pageIndex + 1} loaded (${commits.length} commits)`);
 
-        return pairs;
+        return list;
     }
 
     public async getLastRelease(): Promise<ReleaseInfo> {
@@ -96,17 +96,17 @@ export class GitHubProvider extends GitProvider {
         return this.cursor ? HistoryQuery.moveCursor(this.cursor, position * GitHubProvider.PAGE_SIZE - 1) : undefined;
     }
 
-    private parseResponse(response: GitHubResponseHistoryCommit): [Commit, Author] {
+    private parseResponse(response: GitHubResponseHistoryCommit): Commit {
         const author = this.parseAuthor(response.author);
         const commit = new Commit(response.hash, {
+            author,
             header: response.header,
             body: response.body,
             timestamp: new Date(response.date).getTime(),
-            author: response.author.user.login,
             url: response.url,
         });
 
-        return [commit, author];
+        return commit;
     }
 
     private parseAuthor(response: GitHubResponseHistoryAuthor): Author {
@@ -117,7 +117,7 @@ export class GitHubProvider extends GitProvider {
         } = response;
 
         if (!authors.has(id)) {
-            authors.set(id, new Author(id, { login, url, avatar }));
+            authors.set(id, new Author(login, { url, avatar }));
         }
 
         return authors.get(id) as Author;

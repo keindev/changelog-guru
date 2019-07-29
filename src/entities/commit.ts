@@ -3,6 +3,7 @@ import { CommitOptions } from './typings/types';
 import { CommitStatus } from './typings/enums';
 import { Compare, Priority } from '../typings/enums';
 import { Entity } from './entity';
+import { Author } from './author';
 
 export class Commit extends Entity {
     public static LINE_SEPARATOR = '\n';
@@ -11,7 +12,7 @@ export class Commit extends Entity {
     public readonly body: readonly string[];
     public readonly timestamp: number;
     public readonly url: string;
-    public readonly author: string;
+    public readonly author: Author;
 
     private scope: string | undefined;
     private type: string | undefined;

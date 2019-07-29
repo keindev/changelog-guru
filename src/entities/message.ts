@@ -10,6 +10,6 @@ export class Message extends Entity {
     }
 
     public isEmpty(): boolean {
-        return !this.text.length;
+        return !this.text.trim().length;
     }
 }

@@ -1,6 +1,6 @@
 import semver from 'semver';
-import { Dependency, DependencyType } from '../../../src/entities/package/dependency';
-import { Modification } from '../../../src/utils/enums';
+import { Dependency } from '../../src/package/dependency';
+import { DependencyType, DependencyModification } from '../../src/package/typings/enums';
 
 describe('License', (): void => {
     it('Default', (): void => {
@@ -23,19 +23,19 @@ describe('License', (): void => {
         );
 
         expect(dependency.type).toBe(DependencyType.Dependencies);
-        expect(dependency.getModifications(Modification.Added)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Added)).toStrictEqual([
             {
                 name: 'package1',
-                type: Modification.Added,
+                type: DependencyModification.Added,
                 value: '^1.0.0',
                 version: semver.coerce('^1.0.0'),
             },
         ]);
 
-        expect(dependency.getModifications(Modification.Bumped)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Bumped)).toStrictEqual([
             {
                 name: 'package2',
-                type: Modification.Bumped,
+                type: DependencyModification.Bumped,
                 value: '^2.0.0',
                 version: semver.coerce('^2.0.0'),
                 prevValue: '^1.9.1',
@@ -43,10 +43,10 @@ describe('License', (): void => {
             },
         ]);
 
-        expect(dependency.getModifications(Modification.Changed)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Changed)).toStrictEqual([
             {
                 name: 'package3',
-                type: Modification.Changed,
+                type: DependencyModification.Changed,
                 value: 'file/path/name1',
                 version: undefined,
                 prevValue: 'file/path/name2',
@@ -54,10 +54,10 @@ describe('License', (): void => {
             },
         ]);
 
-        expect(dependency.getModifications(Modification.Downgraded)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Downgraded)).toStrictEqual([
             {
                 name: 'package4',
-                type: Modification.Downgraded,
+                type: DependencyModification.Downgraded,
                 value: '3.9.0',
                 version: semver.coerce('3.9.0'),
                 prevValue: '^4.0.0',
@@ -65,19 +65,19 @@ describe('License', (): void => {
             },
         ]);
 
-        expect(dependency.getModifications(Modification.Removed)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Removed)).toStrictEqual([
             {
                 name: 'package5',
-                type: Modification.Removed,
+                type: DependencyModification.Removed,
                 prevValue: '^1.0.0',
                 prevVersion: semver.coerce('^1.0.0'),
             },
         ]);
 
-        expect(dependency.getModifications(Modification.Unchanged)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Unchanged)).toStrictEqual([
             {
                 name: 'package6',
-                type: Modification.Unchanged,
+                type: DependencyModification.Unchanged,
                 value: '2.0.0',
                 version: semver.coerce('2.0.0'),
             },
@@ -107,10 +107,10 @@ describe('License', (): void => {
         const dependency = new Dependency(DependencyType.Dependencies, undefined, { package1: '^1.0.0' });
 
         expect(dependency.type).toBe(DependencyType.Dependencies);
-        expect(dependency.getModifications(Modification.Removed)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Removed)).toStrictEqual([
             {
                 name: 'package1',
-                type: Modification.Removed,
+                type: DependencyModification.Removed,
                 prevValue: '^1.0.0',
                 prevVersion: semver.coerce('^1.0.0'),
             },
@@ -121,10 +121,10 @@ describe('License', (): void => {
         const dependency = new Dependency(DependencyType.Dependencies, { package1: '^1.0.0' });
 
         expect(dependency.type).toBe(DependencyType.Dependencies);
-        expect(dependency.getModifications(Modification.Added)).toStrictEqual([
+        expect(dependency.getModifications(DependencyModification.Added)).toStrictEqual([
             {
                 name: 'package1',
-                type: Modification.Added,
+                type: DependencyModification.Added,
                 value: '^1.0.0',
                 version: semver.coerce('^1.0.0'),
             },

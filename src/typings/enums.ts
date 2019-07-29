@@ -7,6 +7,5 @@ export enum Compare {
 export enum Priority {
     High = 1000,
     Medium = 100,
-    Low = 10,
-    Default = 1,
+    Low = 1,
 }

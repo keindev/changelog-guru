@@ -1,6 +1,6 @@
 import { TaskTree } from 'tasktree-cli';
 import { ChangeLevel, ExclusionType, ServiceProvider } from './typings/enums';
-import { ConfigurationOptions, PluginOption } from './typings/types';
+import { ConfigOptions, PluginOption } from './typings/types';
 import { Provider } from '../providers/provider';
 import { GitHubProvider } from '../providers/github/provider';
 
@@ -12,7 +12,7 @@ export class Config {
     private plugins: Map<string, PluginOption>;
     private exclusions: Map<ExclusionType, string[]>;
 
-    public constructor(options: ConfigurationOptions) {
+    public constructor(options: ConfigOptions) {
         this.provider = options.provider;
         this.filePath = options.filePath;
         this.types = options.types;
@@ -37,6 +37,10 @@ export class Config {
         }
 
         return provider as Provider;
+    }
+
+    public getPlugin(name: string): PluginOption | undefined {
+        return this.plugins.get(name);
     }
 
     public getPlugins(): [string, PluginOption][] {

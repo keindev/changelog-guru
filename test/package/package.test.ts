@@ -1,5 +1,5 @@
 import * as semver from 'semver';
-import { Package } from '../../../src/entities/package/package';
+import { Package } from '../../src/package/package';
 
 jest.mock('write-pkg', (): (() => Promise<void>) => (): Promise<void> => {
     return Promise.resolve();

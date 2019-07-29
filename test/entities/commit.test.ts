@@ -1,155 +1,121 @@
 import { Commit } from '../../src/entities/commit';
-import { Level, Priority, Status, Compare } from '../../src/utils/enums';
+import { Author } from '../../src/entities/author';
+import { Compare, Priority } from '../../src/typings/enums';
+import { Entity } from '../../src/entities/entity';
+import { ChangeLevel } from '../../src/config/typings/enums';
+import { CommitStatus } from '../../src/entities/typings/enums';
 
 describe('Commit', (): void => {
-    let commit: Commit;
+    let $author: Author;
+    let $commit: Commit;
 
-    beforeEach((): void => {
-        commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
+    beforeAll((): void => {
+        $author = new Author('keindev', {
+            url: 'https://github.com/keindev',
+            avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
+        });
+        $commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f0', {
             timestamp: 21,
             header: 'feat(Jest): subject',
             body: '\n\nbody\n\nfooter',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-            author: 'keindev',
+            author: $author,
+        });
+    });
+
+    describe('Static', (): void => {
+        it('Compare', (): void => {
+            const a = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+                timestamp: 0,
+                header: 'feat(Test): subject',
+                body: '\n\nbody\n\nfooter',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+                author: $author,
+            });
+            const b = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
+                timestamp: 0,
+                header: 'feat(Test): subject',
+                body: '\n\nbody\n\nfooter',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+                author: $author,
+            });
+            const c = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
+                timestamp: 0,
+                header: 'feat: subject',
+                body: '\n\nbody\n\nfooter',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+                author: $author,
+            });
+            const d = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
+                timestamp: 1,
+                header: 'feat: subject',
+                body: '\n\nbody\n\nfooter',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
+                author: $author,
+            });
+
+            expect(Commit.compare(a, c)).toBe(Compare.Less);
+            expect(Commit.compare(c, d)).toBe(Compare.Less);
+            expect(Commit.compare(a, b)).toBe(Compare.Equal);
+            expect(Commit.compare(c, a)).toBe(Compare.More);
         });
     });
 
     it('Default', (): void => {
-        expect(commit.hash).toBe('b816518030dace1b91838ae0abd56fa88eba19f0');
-        expect(commit.timestamp).toBe(21);
-        expect(commit.url).toBe(
+        expect($commit instanceof Entity).toBeTruthy();
+        expect($commit.timestamp).toBe(21);
+        expect($commit.subject).toBe('subject');
+        expect($commit.body).toStrictEqual(['', '', 'body', '', 'footer']);
+        expect($commit.author).toStrictEqual($author);
+        expect($commit.url).toBe(
             'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0'
         );
-        expect(commit.author).toBe('keindev');
-        expect(commit.subject).toBe('subject');
-        expect(commit.body).toStrictEqual(['', '', 'body', '', 'footer']);
-        expect(commit.getLevel()).toBe(Level.Patch);
-        expect(commit.getPriority()).toBe(Priority.Default);
-        expect(commit.getType()).toBe('feat');
-        expect(commit.getScope()).toBe('Jest');
-        expect(commit.isIgnored()).toBeFalsy();
-        expect(commit.getShortHash()).toBe('b816518');
-    });
-
-    it('Change level', (): void => {
-        expect(commit.getLevel()).toBe(Level.Patch);
-
-        commit.setLevel(Level.Patch);
-        expect(commit.getLevel()).toBe(Level.Patch);
-
-        commit.setLevel(Level.Minor);
-        expect(commit.getLevel()).toBe(Level.Minor);
-
-        commit.setLevel(Level.Major);
-        expect(commit.getLevel()).toBe(Level.Major);
-
-        commit.setLevel(Level.Minor);
-        expect(commit.getLevel()).toBe(Level.Minor);
-
-        commit.setLevel(Level.Patch);
-        expect(commit.getLevel()).toBe(Level.Patch);
+        expect($commit.getTypeName()).toBe('feat');
+        expect($commit.getScope()).toBe('Jest');
     });
 
     it('Change status', (): void => {
-        expect(commit.getLevel()).toBe(Level.Patch);
-        expect(commit.getPriority()).toBe(Priority.Default);
-        expect(commit.hasStatus(Status.Default)).toBeTruthy();
-        expect(commit.hasStatus(Status.BreakingChanges)).toBeFalsy();
-        expect(commit.hasStatus(Status.Deprecated)).toBeFalsy();
-        expect(commit.hasStatus(Status.Hidden)).toBeFalsy();
-        expect(commit.hasStatus(Status.Important)).toBeFalsy();
+        expect($commit.getChangeLevel()).toBe(ChangeLevel.Patch);
+        expect($commit.getPriority()).toBe(Priority.Low);
+        expect($commit.hasStatus(CommitStatus.Default)).toBeTruthy();
+        expect($commit.hasStatus(CommitStatus.BreakingChanges)).toBeFalsy();
+        expect($commit.hasStatus(CommitStatus.Deprecated)).toBeFalsy();
+        expect($commit.hasStatus(CommitStatus.Important)).toBeFalsy();
 
-        commit.setStatus(Status.Default);
-        expect(commit.getLevel()).toBe(Level.Patch);
-        expect(commit.getPriority()).toBe(Priority.Default);
-        expect(commit.hasStatus(Status.Default)).toBeTruthy();
+        $commit.setStatus(CommitStatus.Default);
+        expect($commit.getChangeLevel()).toBe(ChangeLevel.Patch);
+        expect($commit.getPriority()).toBe(Priority.Low);
+        expect($commit.hasStatus(CommitStatus.Default)).toBeTruthy();
 
-        commit.setStatus(Status.Important);
-        expect(commit.getLevel()).toBe(Level.Patch);
-        expect(commit.getPriority()).toBe(Priority.Default + Priority.Low);
-        expect(commit.hasStatus(Status.Default)).toBeTruthy();
-        expect(commit.hasStatus(Status.Important)).toBeTruthy();
+        $commit.setStatus(CommitStatus.Important);
+        expect($commit.getChangeLevel()).toBe(ChangeLevel.Patch);
+        expect($commit.getPriority()).toBe(Priority.Low + Priority.Low);
+        expect($commit.hasStatus(CommitStatus.Default)).toBeTruthy();
+        expect($commit.hasStatus(CommitStatus.Important)).toBeTruthy();
 
-        commit.setStatus(Status.Hidden);
-        expect(commit.getLevel()).toBe(Level.Patch);
-        expect(commit.getPriority()).toBe(Priority.Default + Priority.Low);
-        expect(commit.hasStatus(Status.Default)).toBeTruthy();
-        expect(commit.hasStatus(Status.Hidden)).toBeTruthy();
-        expect(commit.hasStatus(Status.Important)).toBeTruthy();
+        $commit.setStatus(CommitStatus.Deprecated);
+        expect($commit.getChangeLevel()).toBe(ChangeLevel.Minor);
+        expect($commit.getPriority()).toBe(Priority.Low + Priority.Low + Priority.Medium);
+        expect($commit.hasStatus(CommitStatus.Default)).toBeTruthy();
+        expect($commit.hasStatus(CommitStatus.Deprecated)).toBeTruthy();
+        expect($commit.hasStatus(CommitStatus.Important)).toBeTruthy();
 
-        commit.setStatus(Status.Deprecated);
-        expect(commit.getLevel()).toBe(Level.Minor);
-        expect(commit.getPriority()).toBe(Priority.Default + Priority.Low + Priority.Medium);
-        expect(commit.hasStatus(Status.Default)).toBeTruthy();
-        expect(commit.hasStatus(Status.Deprecated)).toBeTruthy();
-        expect(commit.hasStatus(Status.Hidden)).toBeTruthy();
-        expect(commit.hasStatus(Status.Important)).toBeTruthy();
-        expect(commit.getLevel()).toBe(Level.Minor);
-
-        commit.setStatus(Status.BreakingChanges);
-        expect(commit.getLevel()).toBe(Level.Major);
-        expect(commit.getPriority()).toBe(Priority.Default + Priority.Low + Priority.Medium + Priority.High);
-        expect(commit.hasStatus(Status.Default)).toBeTruthy();
-        expect(commit.hasStatus(Status.BreakingChanges)).toBeTruthy();
-        expect(commit.hasStatus(Status.Deprecated)).toBeTruthy();
-        expect(commit.hasStatus(Status.Hidden)).toBeTruthy();
-        expect(commit.hasStatus(Status.Important)).toBeTruthy();
+        $commit.setStatus(CommitStatus.BreakingChanges);
+        expect($commit.getChangeLevel()).toBe(ChangeLevel.Major);
+        expect($commit.getPriority()).toBe(Priority.Low + Priority.Low + Priority.Medium + Priority.High);
+        expect($commit.hasStatus(CommitStatus.Default)).toBeTruthy();
+        expect($commit.hasStatus(CommitStatus.BreakingChanges)).toBeTruthy();
+        expect($commit.hasStatus(CommitStatus.Deprecated)).toBeTruthy();
+        expect($commit.hasStatus(CommitStatus.Important)).toBeTruthy();
     });
 
     it('Accents', (): void => {
-        expect(commit.getAccents()).toStrictEqual([]);
+        expect($commit.getAccents()).toStrictEqual([]);
 
-        commit.addAccent('test 1');
-        expect(commit.getAccents()).toStrictEqual(['test 1']);
+        $commit.addAccent('test 1');
+        $commit.addAccent('test 1');
+        $commit.addAccent('test 2');
 
-        commit.addAccent('test 1');
-        commit.addAccent('test 2');
-        expect(commit.getAccents()).toStrictEqual(['test 1', 'test 2']);
-    });
-
-    it('Ignore & filter', (): void => {
-        expect(commit.isIgnored()).toBeFalsy();
-        expect(Commit.filter(commit)).toBeTruthy();
-
-        commit.ignore();
-
-        expect(commit.isIgnored()).toBeTruthy();
-        expect(Commit.filter(commit)).toBeFalsy();
-    });
-
-    it('Compare', (): void => {
-        const commit1 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
-            timestamp: 0,
-            header: 'feat(Test): subject',
-            body: '\n\nbody\n\nfooter',
-            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-            author: 'keindev',
-        });
-        const commit2 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
-            timestamp: 0,
-            header: 'feat(Test): subject',
-            body: '\n\nbody\n\nfooter',
-            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-            author: 'keindev',
-        });
-        const commit3 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
-            timestamp: 0,
-            header: 'feat: subject',
-            body: '\n\nbody\n\nfooter',
-            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-            author: 'keindev',
-        });
-        const commit4 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
-            timestamp: 1,
-            header: 'feat: subject',
-            body: '\n\nbody\n\nfooter',
-            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-            author: 'keindev',
-        });
-
-        expect(Commit.compare(commit1, commit3)).toBe(Compare.Less);
-        expect(Commit.compare(commit3, commit4)).toBe(Compare.Less);
-        expect(Commit.compare(commit1, commit2)).toBe(Compare.Equal);
-        expect(Commit.compare(commit3, commit1)).toBe(Compare.More);
+        expect($commit.getAccents()).toStrictEqual(['test 1', 'test 2']);
     });
 });

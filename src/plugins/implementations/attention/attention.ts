@@ -9,6 +9,7 @@ import { SectionPosition } from '../../../entities/typings/enums';
 import Markdown from '../../../utils/markdown';
 import { Message } from '../../../entities/message';
 import { ChangeLevel } from '../../../config/typings/enums';
+import { ConfigUtils } from '../../../config/utils';
 
 export default class AttentionPlugin extends StatePlugin {
     private section: Section | undefined;
@@ -36,8 +37,8 @@ export default class AttentionPlugin extends StatePlugin {
 
         if (attention) {
             this.section = this.context.addSection(attention.title, SectionPosition.Header);
-            Configuration.fillFromEnum(attention.sections, AttentionType, this.subtitles);
-            Configuration.fillFromEnum(attention.templates, DependencyModification, this.templates);
+            ConfigUtils.fillFromEnum(attention.sections, AttentionType, this.subtitles);
+            ConfigUtils.fillFromEnum(attention.templates, DependencyModification, this.templates);
         }
     }
 

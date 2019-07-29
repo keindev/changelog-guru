@@ -9,13 +9,15 @@ export class Author extends Entity {
     public static NAME_PREFIX = '@';
 
     public readonly url: string;
+    public readonly login: string;
 
     private avatar: string;
     private contribution: number;
 
-    public constructor(id: number, options: AuthorOptions) {
-        super(`${Author.NAME_PREFIX}${options.login}`);
+    public constructor(login: string, options: AuthorOptions) {
+        super(`${Author.NAME_PREFIX}${login}`);
 
+        this.login = login;
         this.url = options.url;
         this.avatar = options.avatar;
         this.contribution = Author.DEFAULT_CONTRIBUTION;

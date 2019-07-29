@@ -32,7 +32,7 @@ export class Reader {
         const { length } = commits;
 
         if (length) {
-            commits.forEach((entities): void => state.addCommit(...entities));
+            commits.forEach((commit): void => state.addCommit(commit));
 
             if (length === Provider.PAGE_SIZE) {
                 await this.loadCommits(state, pageIndex + 1);

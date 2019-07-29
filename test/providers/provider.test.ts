@@ -1,5 +1,5 @@
-import { ServiceProvider } from '../../src/providers/provider';
 import { MockProvider } from '../__mocks__/providers/provider.mock';
+import { ServiceProvider } from '../../src/config/typings/enums';
 
 describe('Provider', (): void => {
     it('Default (github)', (): void => {

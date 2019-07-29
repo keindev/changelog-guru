@@ -5,7 +5,7 @@ import { Writer } from './io/writer';
 import { Provider } from './providers/provider';
 import { Config } from './config/config';
 import { Package } from './package/package';
-import { Loader } from './config/loader';
+import { ConfigLoader } from './config/config-loader';
 import { State } from './state/state';
 
 export interface ChangelogOptions {
@@ -32,7 +32,7 @@ export class Changelog {
 
     private async getConfig(): Promise<[Config, Provider]> {
         const task = TaskTree.tree().add('Read configuration');
-        const loader = new Loader();
+        const loader = new ConfigLoader();
         const config = await loader.load();
         const provider = await config.getProvider(this.package.getRepository());
 

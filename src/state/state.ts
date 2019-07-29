@@ -20,7 +20,7 @@ import Key from '../utils/key';
 import { PluginType, ImportablePlugin, ConstructablePlugin } from '../plugins/typings/types';
 
 export class State implements StateContext {
-    protected pluginsPath: string = path.resolve(__dirname, '../plugins');
+    protected pluginsPath: string = path.resolve(__dirname, '../plugins/implementations');
     protected pluginsExtension: string = 'js';
 
     protected authors: Map<string, Author> = new Map();
@@ -41,10 +41,12 @@ export class State implements StateContext {
         return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
     }
 
-    public addCommit(commit: Commit, author: Author): void {
+    public addCommit(commit: Commit): void {
         const { commits, authors } = this;
 
         if (!commits.has(commit.getName())) {
+            const { author } = commit;
+
             commits.set(commit.getName(), commit);
 
             if (authors.has(author.getName())) {
@@ -180,7 +182,7 @@ export class State implements StateContext {
 
     // TODO: think about it, maybe you should add a PluginLoader?
     private async modifyWithPlugin(name: string, options: PluginOption, task: Task): Promise<void> {
-        const filePath = path.join(this.pluginsPath, `${name}.${this.pluginsExtension}`);
+        const filePath = path.join(this.pluginsPath, name, `${name}.${this.pluginsExtension}`);
 
         if (fs.existsSync(filePath)) {
             const module: ImportablePlugin<PluginType, StateContext> = await import(filePath);

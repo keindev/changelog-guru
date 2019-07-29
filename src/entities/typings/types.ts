@@ -1,5 +1,6 @@
+import { Author } from '../author';
+
 export interface AuthorOptions {
-    login: string;
     url: string;
     avatar: string;
 }
@@ -9,7 +10,5 @@ export interface CommitOptions {
     header: string;
     body?: string;
     url: string;
-    author: string;
+    author: Author;
 }
-
-

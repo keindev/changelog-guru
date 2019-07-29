@@ -56,6 +56,7 @@ export class Section extends Entity {
         let priority = super.getPriority();
 
         if (priority === Priority.Default) {
+            priority = this.getSections().reduce((acc, section): number => acc + section.getPriority(), priority);
             priority = this.getMessages().reduce((acc, message): number => acc + message.getPriority(), priority);
             priority = this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), priority);
         }

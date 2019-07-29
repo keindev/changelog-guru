@@ -1,4 +1,4 @@
-import { License } from '../../../src/entities/package/license';
+import { License } from '../../src/package/license';
 
 describe('License', (): void => {
     it('Default', (): void => {
