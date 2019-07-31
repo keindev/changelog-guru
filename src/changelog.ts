@@ -7,20 +7,17 @@ import { Config } from './config/config';
 import { Package } from './package/package';
 import { ConfigLoader } from './config/config-loader';
 import { State } from './state/state';
-
-export interface ChangelogOptions {
-    bumpPackageVersion?: boolean;
-}
+import { ChangelogOptions } from './typings/types';
 
 export class Changelog {
     private options: ChangelogOptions;
     private package: Package;
 
-    public constructor(options: ChangelogOptions) {
+    public constructor(options?: ChangelogOptions) {
         dotenv.config();
 
         this.package = new Package();
-        this.options = options;
+        this.options = options || {};
     }
 
     public async generate(): Promise<void> {
@@ -32,7 +29,7 @@ export class Changelog {
 
     private async getConfig(): Promise<[Config, Provider]> {
         const task = TaskTree.tree().add('Read configuration');
-        const loader = new ConfigLoader();
+        const loader = new ConfigLoader(this.options);
         const config = await loader.load();
         const provider = await config.getProvider(this.package.getRepository());
 
@@ -57,7 +54,7 @@ export class Changelog {
 
         await writer.write(state.getSections(), state.getAuthors());
 
-        if (this.options.bumpPackageVersion) {
+        if (this.options.bump) {
             await this.package.incrementVersion(...state.getChangesLevels());
         }
     }

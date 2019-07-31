@@ -4,7 +4,7 @@ import deepmerge from 'deepmerge';
 import { TaskTree } from 'tasktree-cli';
 import { Config } from './config';
 import { ServiceProvider, ChangeLevel, ExclusionType } from './typings/enums';
-import { PluginOption } from './typings/types';
+import { PluginOption, ConfigLoaderOptions } from './typings/types';
 
 export class ConfigLoader {
     public static MODULE_NAME = 'changelog';
@@ -13,6 +13,11 @@ export class ConfigLoader {
 
     private filePath: string = path.join(__dirname, ConfigLoader.DEFAULT_CONFIG_PATH);
     private data: cosmiconfig.Config = {};
+    private options: ConfigLoaderOptions;
+
+    public constructor(options?: ConfigLoaderOptions) {
+        this.options = options || {};
+    }
 
     public async load(): Promise<Config> {
         const task = TaskTree.tree().add('Reading configuration file...');
@@ -20,14 +25,14 @@ export class ConfigLoader {
         let config: Config | undefined;
 
         if (filePath) {
-            const { data } = this;
+            const { data, options } = this;
 
             config = new Config({
-                provider: data.provider || ServiceProvider.GitHub,
-                filePath: this.getOutputFilePath(),
-                types: this.getTypes(),
+                provider: options.provider || data.provider || ServiceProvider.GitHub,
+                filePath: options.filePath || this.getOutputFilePath(),
+                types: options.types && options.types.size ? options.types : this.getTypes(),
+                exclusions: options.exclusions && options.exclusions.size ? options.exclusions : this.getExclusions(),
                 plugins: this.getPlugins(),
-                exclusions: this.getExclusions(),
             });
 
             task.complete(`Config file: ${path.relative(process.cwd(), filePath)}`);

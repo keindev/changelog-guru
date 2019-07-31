@@ -7,10 +7,17 @@ export interface PluginOption {
     [key: string]: PluginOptionValue | PluginOption | PluginOption[] | undefined;
 }
 
+export interface ConfigLoaderOptions {
+    provider?: ServiceProvider;
+    filePath?: string;
+    types?: Map<string, ChangeLevel>;
+    exclusions?: Map<ExclusionType, string[]>;
+}
+
 export interface ConfigOptions {
     provider: ServiceProvider;
     filePath: string;
     types: Map<string, ChangeLevel>;
-    plugins: Map<string, PluginOption>;
     exclusions: Map<ExclusionType, string[]>;
+    plugins: Map<string, PluginOption>;
 }
