@@ -26,7 +26,21 @@ yarn add changelog-guru
 npm install changelog-guru
 ```
 
-### Configuration
+## Usage
+
+### Commit structure
+
+Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
+
+Create `CHANGELOG.md`:
+
+`changelog`
+
+Create `CHANGELOG.md` and bump package version in your `package.json` file:
+
+`changelog -p`
+
+## Configuration
 
 > Changelog-guru uses [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and you can configure the module in any way you like described in the documentation.
 
@@ -38,12 +52,41 @@ All options can be configured in the configuration file, this is where `changelo
 -   `changelog` property in `package.json`
 -   `changelog.config.js` file exporting a JS object
 
+For example see [.changelogrc.yaml](.changelogrc.yaml). Also you can use `changelog-guru` with [default](.changelogrc.default.yaml) configuration.
+
+### Provider
+
+| Default  | CLI Override          | API Override         |
+| -------- | --------------------- | -------------------- |
+| `github` | `--provider <string>` | `provider: <string>` |
+
+The type of service provider to receive information about the project. To set the type of service you want to use, you must:
+
+-   Set `provider: github` or `provider: gitlab` in your configuration file, it's all.
+-   Make sure the provider token is available as an environment variable.
+
 Example:
 
+```
+export GITHUB_TOKEN="f941e0..."
+
+export GITLAB_TOKEN="f941e0..."
+```
+
+> Changelog-guru uses [dotenv](https://www.npmjs.com/package/dotenv) and you can loads environment variables from a `.env`
+
+### Levels of changes
+
+| Default     | CLI Override              | API Override      |
+| ----------- | ------------------------- | ----------------- |
+| _see below_ | `--changes-major <items>` | `major: string[]` |
+| _see below_ | `--changes-minor <items>` | `minor: string[]` |
+| _see below_ | `--changes-patch <items>` | `patch: string[]` |
+
+Default level of changes:
+
 ```YAML
-provider: github
-plugins: [attention, marker, scope, section]
-levels:
+changes:
     major:
         - break
     minor:
@@ -61,90 +104,15 @@ levels:
         - workflow
         - perf
         - revert
-attention:
-    title: Important Changes
-    templates:
-        added: 'Added %name% with %val%'
-        changed: 'Changed %name% from %pval% to %val%'
-        bumped: 'Bumped %name% from %pver% to %ver%'
-        downgraded: 'Downgraded %name% from %pver% to %ver%'
-        removed: 'Removed %name%, with %pval%'
-        unchanged: '%name% left unchanged, with %val%'
-    sections:
-        license: License
-        engine: Engine
-        dependencies: Dependencies
-        devDependencies: DevDependencies
-        peerDependencies: PeerDependencies
-        optionalDependencies: OptionalDependencies,
-# List of available markers
-markers:
-    # !important - place a commit title to special section on top of changelog
-    important: Important Internal Changes
-    # !deprecated - place a commit title to special section with deprecated properties
-    deprecated: DEPRECATIONS
-    # !break - indicates major changes breaking backward compatibility
-    break: BREAKING CHANGES
-    # !hide - hide a commit
-    hide: Hidden commits
-    # !group(NAME) - creates a group of commits with the <NAME>
-    group: Grouped commit
-# list of major scopes
-scopes:
-    only: false
-    list:
-        core: Core
-        api: API
-        ssr: Server Side Rendering
-        fc: Functional Components
-        dts: TypeScript Declaration Improvements
-sections:
-    - Features: [feat]
-    - Improvements: [improve]
-    - Bug Fixes: [fix]
-    - Internal changes: [types, workflow, build, test, chore, docs]
-    - Performance Improvements: [perf]
-    - Code Refactoring: [refactor]
-    - Reverts: [revert]
-ignore:
-    authors: ['dependabot-preview[bot]']
-    types: ['build']
-    scopes: ['deps', 'deps-dev']
-    subjects: ['merge']
 ```
 
-Also you can use `changelog-guru` with default configuration.
-
-#### Provider
-
-> Changelog-guru uses [dotenv](https://www.npmjs.com/package/dotenv) and you can loads environment variables from a `.env`
-
--   Set `provider: github` or `provider: gitlab` in your configuration file, it's all.
--   Make sure the token is available as an environment variable. Example:
+For a list of change types by level, see [SemVer](https://semver.org/). The commits with the specified types will be distributed by change levels. For example:
 
 ```
-export GITHUB_TOKEN="f941e0..."
 
-export GITLAB_TOKEN="f941e0..."
-```
-
-#### Plugins
-
-##### Attention
-
-##### Marker
-
-##### Scope
-
-##### Section
-
-#### Levels
-
-List of change types by level. See [SemVer](https://semver.org/). The commits with the specified types will be distributed by change levels. For example:
-
-```
 // Commit message with MINOR changes
 feat(Core): add awesome feature
+
 ```
 
 The following types of changes are defined by default:
@@ -167,17 +135,63 @@ The following types of changes are defined by default:
     -   `perf` - performance improvements
     -   `revert` - reverted changes
 
-## Usage
+### Output options
 
-Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
+Parameters of the output file. Specify the path to the file and the excluded entities.
 
-Create `CHANGELOG.md`:
+Default output options:
 
-`changelog`
+```YAML
+output:
+    filePath: CHANGELOG.md
+    exclude:
+        authorLogin: ['dependabot-preview[bot]']
+        commitType: ['build']
+        commitScope: ['deps', 'deps-dev']
+        commitSubject: ['merge']
+```
 
-Create `CHANGELOG.md` and bump package version in your `package.json` file:
+#### filePath
 
-`changelog -p`
+File path to write change log to it.
+
+| Default        | CLI Override      | API Override       |
+| -------------- | ----------------- | ------------------ |
+| `CHANGELOG.md` | `--output <path>` | `filePath: string` |
+
+#### exclude
+
+One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors. To find out about other ways to ignore commits, see the section [Plugins](#plugins)
+
+| Default                                 | CLI Override                 | API Override              |
+| --------------------------------------- | ---------------------------- | ------------------------- |
+| _[see output example](#output-options)_ | `--exclude-authors<items>`   | `authorLogin: string[]`   |
+| _[see output example](#output-options)_ | `--exclude-types <items>`    | `commitType: string[]`    |
+| _[see output example](#output-options)_ | `--exclude-scopes <items>`   | `commitScope: string[]`   |
+| _[see output example](#output-options)_ | `--exclude-subjects <items>` | `commitSubject: string[]` |
+
+-   **authorLogin**: Excludes authors with the listed logins from the output file.
+-   **commitType**: Excludes commits with the listed [types](#commit-structure) from the output file.
+-   **commitScope**: Excludes commits with the listed [scopes](#commit-structure) from the output file.
+-   **commitSubject**: Excludes commits with the listed [subjects](#commit-structure) from the output file.
+
+### Other CLI options
+
+| Default | CLI             | Description                                                                                                                                      |
+| ------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `false` | `--bump`        | Based on data about changes made in the project, forms the next version number and bumps it in `package.json`, see [SemVer](https://semver.org/) |
+| -       | `-v, --version` | Show `changelog-guru` package version                                                                                                            |
+| -       | `--help`        | Show `changelog-guru` cli options help                                                                                                           |
+
+### Plugins
+
+#### Attention
+
+#### Marker
+
+#### Scope
+
+#### Section
 
 ## License
 
