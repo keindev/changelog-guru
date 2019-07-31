@@ -28,17 +28,56 @@ npm install changelog-guru
 
 ## Usage
 
-### Commit structure
-
 Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
 
 Create `CHANGELOG.md`:
 
-`changelog`
+```
 
-Create `CHANGELOG.md` and bump package version in your `package.json` file:
+changelog [options]
 
-`changelog -p`
+```
+
+### Goals
+
+-   allow generating `CHANGELOG.md` by script
+-   allow ignoring commits
+-   provide better information when browsing the history
+
+### Format of the commit message
+
+```
+<type>(<scope>): <subject>
+<markers>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+#### Type
+
+The type of [changes](#levels-of-changes) made by this commit, such as `feat` or `fix`.
+
+#### Scope
+
+Scope could be anything specifying place of the commit change.
+
+#### Subject
+
+> Any line of the commit message cannot be longer 100 characters! This allows the message to be easier to read on github as well as in various git tools.
+
+Subject line contains succinct description of the change.
+
+#### Markers
+
+> See the [Marker plugin](#marker) section for a more detailed description.
+
+Control markers of the form `!<name>`, allow you to group, ignore or increase the priority of commits in the change log
+
+#### Body & Footer
+
+All that allows you to write a conscience.
 
 ## Configuration
 
