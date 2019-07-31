@@ -4,6 +4,14 @@
 
 # Important Changes
 
+## Engine
+
+-   Added **node** with `>=10.0.0`
+
+## License
+
+Source code now under `MIT` license.
+
 ## Dependencies
 
 -   Added **[commander](https://www.npmjs.com/package/commander/v/2.20.0)** with `^2.20.0`
@@ -39,14 +47,6 @@
 -   Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)** with `^1.18.2`
 -   Added **[ts-jest](https://www.npmjs.com/package/ts-jest/v/24.0.2)** with `^24.0.2`
 -   Added **[typescript](https://www.npmjs.com/package/typescript/v/3.5.3)** with `^3.5.3`
-
-## Engine
-
--   Added **node** with `>=10.0.0`
-
-## License
-
-Source code now under `MIT` license.
 
 # Features
 
@@ -104,6 +104,45 @@ Source code now under `MIT` license.
 -   Add ignore option for commit subjects [`2323938`](https://github.com/keindev/changelog-guru/commit/232393822be1f40971484b31b3d763c33ac807a3)
 -   Add \-p option, for bump package :zap: [`508d073`](https://github.com/keindev/changelog-guru/commit/508d073f3ae344c48bd8bb4e9d960d9103907c2b)
 
+# Improvements
+
+-   **[Package]** Add npm package links to output [`0b8097c`](https://github.com/keindev/changelog-guru/commit/0b8097c2d14363929f216bcf2e5c127b5a6128ba)
+
+# Bug Fixes
+
+-   **[Commit]** Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
+-   **[Config]** Fix error with Level\.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
+-   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
+-   **[Plugins]** Add export for Config interfaces [`949d2cc`](https://github.com/keindev/changelog-guru/commit/949d2cc1ab65191f1c35a73b0e5cbceb6ac9c88d)
+-   **[Provider]** Fix findup cwd [`e9e5df6`](https://github.com/keindev/changelog-guru/commit/e9e5df6c5966915db9af7f24326b2edc421f69f1)
+-   **[Provider]** Set default branch to master [`7953e81`](https://github.com/keindev/changelog-guru/commit/7953e81a59deb8d472bea8c41f30f7a09ab2eb82)
+-   **[Scope]** Add \.trim to new accent of commit [`e041b22`](https://github.com/keindev/changelog-guru/commit/e041b22021a9045bdc960da6776cf80ebf126961)
+-   **[Section]** Fix sections sorting by index [`66f61f0`](https://github.com/keindev/changelog-guru/commit/66f61f06d5ad34c05e43051fe43726cd3129dc1e)
+-   **[Section, State]** Add commit tree generation method [`6c819c8`](https://github.com/keindev/changelog-guru/commit/6c819c80096fd1276185ad5d5180ada3965500e9)
+-   **[State]** Added section list sorting after modify with plugins [`f85afda`](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
+-   **[State]** Add check for existence of plugin file [`e2064ca`](https://github.com/keindev/changelog-guru/commit/e2064ca5abb9d099503d98a95b614e7dcc356201)
+-   **[State]** Add import task skip if plug not exist [`6b9c9fd`](https://github.com/keindev/changelog-guru/commit/6b9c9fdb1abd6935f388f9e6d9a2c01d8514a152)
+-   **[State, Section]** Fix sections sorting [`7740999`](https://github.com/keindev/changelog-guru/commit/77409996c382f83f49ce58f673da71b963732536)
+-   **[Writer]** Fix error with output md [`fe88997`](https://github.com/keindev/changelog-guru/commit/fe889978149da0b4b760c70eb3eade80d2761821)
+-   Rewrite reader, test github api [`dfea14d`](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae) [`a5b847f`](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
+-   Add author avatar size [`f2107a2`](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)
+-   Added missing Commit type [`0ceac52`](https://github.com/keindev/changelog-guru/commit/0ceac527bef36747930de4e91df52acd46017cdd)
+-   Fixed commit parsing [`8de6944`](https://github.com/keindev/changelog-guru/commit/8de6944e8ac88bc96b8a3e83117ac506f36e7736)
+-   Fixed regular expressions [`4529371`](https://github.com/keindev/changelog-guru/commit/452937153e7cd3582002c1538af00bfd23e37eed)
+-   Fixed parsing & modify commits [`3125893`](https://github.com/keindev/changelog-guru/commit/3125893812639b832e1933bec6eb616e7de62f54)
+-   Spinner rotation bug fixed [`5df31f1`](https://github.com/keindev/changelog-guru/commit/5df31f15da9d59bd71ea67d89ad7b628786589e9)
+-   Add version information from package and last release [`3ba83c8`](https://github.com/keindev/changelog-guru/commit/3ba83c818ecd0566f077b969a05c3de2279803dc)
+-   Pkg version management [`41b7652`](https://github.com/keindev/changelog-guru/commit/41b7652a3fcab0d0e812e91745897e82300b2495)
+-   Add writer, fix state tree [`4a792a4`](https://github.com/keindev/changelog-guru/commit/4a792a4e0b487611611962cd60861b794d5e0562)
+-   Add commit ref in output [`0bd34b4`](https://github.com/keindev/changelog-guru/commit/0bd34b47bfe986e95f2f04abc3702773fcf9558c)
+-   Add commit links & "Contributors" section [`2764e83`](https://github.com/keindev/changelog-guru/commit/2764e83b47d9c0ed0a3ca7848476bda28e5f17c9)
+-   Rename 'types' to 'levels' in conf file [`8dce766`](https://github.com/keindev/changelog-guru/commit/8dce7666f5bb5a0a9d2cb6b13721bd1bee912bdc)
+-   Fix multy page loading [`23d9f81`](https://github.com/keindev/changelog-guru/commit/23d9f8133d53716e09b0882069c0c0f0347b0eac)
+-   Fix blank section output [`4a6876d`](https://github.com/keindev/changelog-guru/commit/4a6876df0413bb761bd54e85474fdd047fb29d46)
+-   Add 'wrap' method for inline code [`6b22bdc`](https://github.com/keindev/changelog-guru/commit/6b22bdc1a0a2d9fbcede53b3b41f5127a452e2b0)
+-   Oops, add Author test [`d849ff4`](https://github.com/keindev/changelog-guru/commit/d849ff413b80687d46f0204701e3690745aaa9de)
+-   Fix bug with getting major status [`081e498`](https://github.com/keindev/changelog-guru/commit/081e498528b463ff867b380d0deedd3b11707196)
+
 # Internal changes
 
 ## Tests
@@ -160,45 +199,6 @@ Source code now under `MIT` license.
 -   Fix grammar [`1fa5490`](https://github.com/keindev/changelog-guru/commit/1fa54905ea4311c9881a6372067b322ef8a8caff)
 -   Refactor tests [`8f68df3`](https://github.com/keindev/changelog-guru/commit/8f68df378e1f9e024ddebbc3a58f44cb59995ce6)
 
-# Improvements
-
--   **[Package]** Add npm package links to output [`0b8097c`](https://github.com/keindev/changelog-guru/commit/0b8097c2d14363929f216bcf2e5c127b5a6128ba)
-
-# Bug Fixes
-
--   **[Commit]** Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
--   **[Config]** Fix error with Level\.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
--   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
--   **[Plugins]** Add export for Config interfaces [`949d2cc`](https://github.com/keindev/changelog-guru/commit/949d2cc1ab65191f1c35a73b0e5cbceb6ac9c88d)
--   **[Provider]** Fix findup cwd [`e9e5df6`](https://github.com/keindev/changelog-guru/commit/e9e5df6c5966915db9af7f24326b2edc421f69f1)
--   **[Provider]** Set default branch to master [`7953e81`](https://github.com/keindev/changelog-guru/commit/7953e81a59deb8d472bea8c41f30f7a09ab2eb82)
--   **[Scope]** Add \.trim to new accent of commit [`e041b22`](https://github.com/keindev/changelog-guru/commit/e041b22021a9045bdc960da6776cf80ebf126961)
--   **[Section]** Fix sections sorting by index [`66f61f0`](https://github.com/keindev/changelog-guru/commit/66f61f06d5ad34c05e43051fe43726cd3129dc1e)
--   **[Section, State]** Add commit tree generation method [`6c819c8`](https://github.com/keindev/changelog-guru/commit/6c819c80096fd1276185ad5d5180ada3965500e9)
--   **[State]** Added section list sorting after modify with plugins [`f85afda`](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
--   **[State]** Add check for existence of plugin file [`e2064ca`](https://github.com/keindev/changelog-guru/commit/e2064ca5abb9d099503d98a95b614e7dcc356201)
--   **[State]** Add import task skip if plug not exist [`6b9c9fd`](https://github.com/keindev/changelog-guru/commit/6b9c9fdb1abd6935f388f9e6d9a2c01d8514a152)
--   **[State, Section]** Fix sections sorting [`7740999`](https://github.com/keindev/changelog-guru/commit/77409996c382f83f49ce58f673da71b963732536)
--   **[Writer]** Fix error with output md [`fe88997`](https://github.com/keindev/changelog-guru/commit/fe889978149da0b4b760c70eb3eade80d2761821)
--   Rewrite reader, test github api [`dfea14d`](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae) [`a5b847f`](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
--   Add author avatar size [`f2107a2`](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)
--   Added missing Commit type [`0ceac52`](https://github.com/keindev/changelog-guru/commit/0ceac527bef36747930de4e91df52acd46017cdd)
--   Fixed commit parsing [`8de6944`](https://github.com/keindev/changelog-guru/commit/8de6944e8ac88bc96b8a3e83117ac506f36e7736)
--   Fixed regular expressions [`4529371`](https://github.com/keindev/changelog-guru/commit/452937153e7cd3582002c1538af00bfd23e37eed)
--   Fixed parsing & modify commits [`3125893`](https://github.com/keindev/changelog-guru/commit/3125893812639b832e1933bec6eb616e7de62f54)
--   Spinner rotation bug fixed [`5df31f1`](https://github.com/keindev/changelog-guru/commit/5df31f15da9d59bd71ea67d89ad7b628786589e9)
--   Add version information from package and last release [`3ba83c8`](https://github.com/keindev/changelog-guru/commit/3ba83c818ecd0566f077b969a05c3de2279803dc)
--   Pkg version management [`41b7652`](https://github.com/keindev/changelog-guru/commit/41b7652a3fcab0d0e812e91745897e82300b2495)
--   Add writer, fix state tree [`4a792a4`](https://github.com/keindev/changelog-guru/commit/4a792a4e0b487611611962cd60861b794d5e0562)
--   Add commit ref in output [`0bd34b4`](https://github.com/keindev/changelog-guru/commit/0bd34b47bfe986e95f2f04abc3702773fcf9558c)
--   Add commit links & "Contributors" section [`2764e83`](https://github.com/keindev/changelog-guru/commit/2764e83b47d9c0ed0a3ca7848476bda28e5f17c9)
--   Rename 'types' to 'levels' in conf file [`8dce766`](https://github.com/keindev/changelog-guru/commit/8dce7666f5bb5a0a9d2cb6b13721bd1bee912bdc)
--   Fix multy page loading [`23d9f81`](https://github.com/keindev/changelog-guru/commit/23d9f8133d53716e09b0882069c0c0f0347b0eac)
--   Fix blank section output [`4a6876d`](https://github.com/keindev/changelog-guru/commit/4a6876df0413bb761bd54e85474fdd047fb29d46)
--   Add 'wrap' method for inline code [`6b22bdc`](https://github.com/keindev/changelog-guru/commit/6b22bdc1a0a2d9fbcede53b3b41f5127a452e2b0)
--   Oops, add Author test [`d849ff4`](https://github.com/keindev/changelog-guru/commit/d849ff413b80687d46f0204701e3690745aaa9de)
--   Fix bug with getting major status [`081e498`](https://github.com/keindev/changelog-guru/commit/081e498528b463ff867b380d0deedd3b11707196)
-
 # Code Refactoring
 
 ## Refactoring
@@ -224,6 +224,7 @@ Source code now under `MIT` license.
 -   **[Utils]** Refactor utils [`223640e`](https://github.com/keindev/changelog-guru/commit/223640e0bd34c2dcbe6a462dd7ec1e4dce41e330)
 -   **[Writer]** Refactor changelog writing [`fb26fd3`](https://github.com/keindev/changelog-guru/commit/fb26fd3a901fc0a73fdb6375d6ee521cf0f57725)
 -   **[Writer]** Refactor writer methods [`e5e199b`](https://github.com/keindev/changelog-guru/commit/e5e199b6c620988b943c8b34e7075a29868ce8ac)
+-   **[Writer, Test]** Finish refactor Stage 2 [`a9cc160`](https://github.com/keindev/changelog-guru/commit/a9cc160b679deae6e9a14ef1dd363b6ae5bc003d)
 -   Rework reader structure, add git & cli classes [`187d35d`](https://github.com/keindev/changelog-guru/commit/187d35dc1436afaa290a4a7cda4926e6eebd0c26)
 -   Add linter, begin fix lint errors [`6f6c614`](https://github.com/keindev/changelog-guru/commit/6f6c614cc5b0d700d8725a6ceeb2b4519be8b6a4)
 -   Lint free code, rework classes model [`c45d7f3`](https://github.com/keindev/changelog-guru/commit/c45d7f3aed91bb54886f21c57cf22296418c072d)

@@ -16,8 +16,8 @@ describe('Entity', (): void => {
 
             b.setChangeLevel(ChangeLevel.Minor);
 
-            expect(Entity.compare(a, b)).toBeGreaterThanOrEqual(Compare.More);
-            expect(Entity.compare(b, a)).toBeLessThanOrEqual(Compare.Less);
+            expect(Entity.compare(a, b)).toBe(Compare.More);
+            expect(Entity.compare(b, a)).toBe(Compare.Less);
             expect(Entity.compare(a, a)).toBe(Compare.Equal);
         });
 

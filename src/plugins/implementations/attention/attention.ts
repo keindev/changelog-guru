@@ -5,7 +5,7 @@ import { Section } from '../../../entities/section';
 import { StatePlugin } from '../../state-plugin';
 import { AttentionPluginOptions } from './typings/types';
 import { AttentionType, AttentionTemplateLiteral } from './typings/enums';
-import { SectionPosition } from '../../../entities/typings/enums';
+import { SectionPosition, SectionOrder } from '../../../entities/typings/enums';
 import Markdown from '../../../utils/markdown';
 import { Message } from '../../../entities/message';
 import { ChangeLevel } from '../../../config/typings/enums';
@@ -33,8 +33,12 @@ export default class AttentionPlugin extends StatePlugin {
         this.templates = new Map();
 
         this.section = this.context.addSection(config.title, SectionPosition.Header);
-        ConfigUtils.fillFromEnum(config.sections, AttentionType, this.subtitles);
-        ConfigUtils.fillFromEnum(config.templates, DependencyModification, this.templates);
+
+        if (this.section) {
+            this.section.setOrder(SectionOrder.Min);
+            ConfigUtils.fillFromEnum(config.sections, AttentionType, this.subtitles);
+            ConfigUtils.fillFromEnum(config.templates, DependencyModification, this.templates);
+        }
     }
 
     public async modify(task: Task): Promise<void> {
@@ -79,7 +83,7 @@ export default class AttentionPlugin extends StatePlugin {
     private addDependencyAttentions(section: Section, task: Task): void {
         Object.values(DependencyType)
             .filter(Number)
-            .forEach((dependencyType): void => {
+            .forEach((dependencyType, index): void => {
                 const dependencies = this.context.getDependencies(dependencyType);
                 const attentionType = AttentionPlugin.getAttentionType(dependencyType, task);
 
@@ -111,6 +115,7 @@ export default class AttentionPlugin extends StatePlugin {
                         });
 
                         if (list.length) {
+                            subsection.setOrder(index);
                             subsection.add(new Message(list.join(Markdown.LINE_SEPARATOR)));
                             section.add(subsection);
                             task.log(`${Markdown.capitalize(attentionType)} changed`);

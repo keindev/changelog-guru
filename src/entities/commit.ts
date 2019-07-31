@@ -45,17 +45,17 @@ export class Commit extends Entity {
         }
     }
 
-    public static compare(a: Commit, b: Commit): number {
+    public static compare(a: Commit, b: Commit): Compare {
         const x = a.getScope();
         const y = b.getScope();
-        let result = Compare.Equal;
+        let result = super.compare(a, b);
 
         if (x && !y) result--;
         if (!x && y) result++;
         if (x && y) result = x.localeCompare(y);
         if (result === Compare.Equal) result = a.timestamp - b.timestamp;
 
-        return result;
+        return Math.min(Math.max(result, Compare.Less), Compare.More);
     }
 
     public getAccents(): string[] {

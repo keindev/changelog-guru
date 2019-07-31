@@ -13,3 +13,9 @@ export enum SectionPosition {
     Body = 4,
     Header = 5,
 }
+
+export enum SectionOrder {
+    Default = 0,
+    Max = Number.MAX_SAFE_INTEGER,
+    Min = Number.MIN_SAFE_INTEGER,
+}

@@ -13,11 +13,12 @@ export default class SectionPlugin extends CommitPlugin {
 
         let section: Section | undefined;
 
-        Object.entries(config).forEach(([name, types]): void => {
+        Object.entries(config).forEach(([name, types], index): void => {
             if (Array.isArray(types)) {
                 section = this.context.addSection(name, SectionPosition.Body);
 
                 if (section) {
+                    section.setOrder(index + 1);
                     types.forEach((type: string): void => {
                         this.blocks.set(Key.unify(type), section as Section);
                     });

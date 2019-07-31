@@ -5,7 +5,7 @@ import { CommitPlugin } from '../../commit-plugin';
 import { Section } from '../../../entities/section';
 import { Commit } from '../../../entities/commit';
 import { MarkerType } from './typings/enums';
-import { CommitStatus, SectionPosition } from '../../../entities/typings/enums';
+import { CommitStatus, SectionPosition, SectionOrder } from '../../../entities/typings/enums';
 import Key from '../../../utils/key';
 
 export default class MarkerPlugin extends CommitPlugin {
@@ -51,6 +51,7 @@ export default class MarkerPlugin extends CommitPlugin {
                 const section = this.context.addSection(title, position);
 
                 if (section) {
+                    section.setOrder(SectionOrder.Min);
                     this.markers.add(type as MarkerType);
                     this.sections.set(type as MarkerType, section);
                 }

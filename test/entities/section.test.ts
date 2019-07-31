@@ -1,5 +1,5 @@
 import { Section } from '../../src/entities/section';
-import { SectionPosition } from '../../src/entities/typings/enums';
+import { SectionPosition, SectionOrder } from '../../src/entities/typings/enums';
 import { Priority, Compare } from '../../src/typings/enums';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
@@ -36,13 +36,20 @@ describe('Section', (): void => {
             a.add($commit);
             b.add($message);
 
-            expect(Section.compare(a, b)).toBeLessThanOrEqual(Compare.Less);
-            expect(Section.compare(b, a)).toBeGreaterThanOrEqual(Compare.More);
+            expect(Section.compare(a, b)).toBe(Compare.Less);
+            expect(Section.compare(b, a)).toBe(Compare.More);
             expect(Section.compare(a, a)).toBe(Compare.Equal);
 
             $commit.setChangeLevel(ChangeLevel.Major);
 
-            expect(Section.compare(a, b)).toBeLessThanOrEqual(Compare.More);
+            expect(Section.compare(a, b)).toBe(Compare.Less);
+
+            a.remove($commit);
+            b.setOrder(SectionOrder.Min);
+
+            expect(a.getOrder()).toBe(SectionOrder.Default);
+            expect(b.getOrder()).toBe(SectionOrder.Min);
+            expect(Section.compare(a, b)).toBe(Compare.More);
         });
 
         it('Filter', (): void => {

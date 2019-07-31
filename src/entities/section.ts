@@ -1,10 +1,11 @@
 import { Commit } from './commit';
 import { Message } from './message';
 import { Priority, Compare } from '../typings/enums';
-import { SectionPosition } from './typings/enums';
+import { SectionPosition, SectionOrder } from './typings/enums';
 import { Entity } from './entity';
 
 export class Section extends Entity {
+    private index: number = SectionOrder.Default;
     private position: SectionPosition;
     private entities: Map<string, Entity> = new Map();
 
@@ -14,12 +15,20 @@ export class Section extends Entity {
         this.position = position;
     }
 
-    public static compare(a: Section, b: Section): number {
-        let result = b.getPosition() - a.getPosition() || super.compare(a, b);
+    public static compare(a: Section, b: Section): Compare {
+        let result = b.getPosition() - a.getPosition() || a.getOrder() - b.getOrder() || super.compare(a, b);
 
         if (result === Compare.Equal) result = a.getName().localeCompare(b.getName());
 
-        return result;
+        return Math.min(Math.max(result, Compare.Less), Compare.More);
+    }
+
+    public getOrder(): SectionOrder | number {
+        return this.index;
+    }
+
+    public setOrder(index: SectionOrder | number): void {
+        this.index = index;
     }
 
     public getPosition(): SectionPosition {
@@ -51,9 +60,11 @@ export class Section extends Entity {
     public getPriority(): Priority {
         let priority = super.getPriority();
 
-        priority = this.getSections().reduce((acc, section): number => acc + section.getPriority(), priority);
-        priority = this.getMessages().reduce((acc, message): number => acc + message.getPriority(), priority);
-        priority = this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), priority);
+        if (this.entities.size) {
+            priority = this.getSections().reduce((acc, section): number => acc + section.getPriority(), priority);
+            priority = this.getMessages().reduce((acc, message): number => acc + message.getPriority(), priority);
+            priority = this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), priority);
+        }
 
         return priority;
     }

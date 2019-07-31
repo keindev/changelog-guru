@@ -1,4 +1,4 @@
-import { Priority } from '../typings/enums';
+import { Priority, Compare } from '../typings/enums';
 import { ChangeLevel } from '../config/typings/enums';
 
 export class Entity {
@@ -12,8 +12,10 @@ export class Entity {
         this.name = name || `f${(~~(Math.random() * 1e8)).toString(16)}`;
     }
 
-    public static compare(a: Entity, b: Entity): number {
-        return b.getPriority() - a.getPriority();
+    public static compare(a: Entity, b: Entity): Compare {
+        const result = b.getPriority() - a.getPriority();
+
+        return Math.min(Math.max(result, Compare.Less), Compare.More);
     }
 
     public static filter(e: Entity): boolean {
