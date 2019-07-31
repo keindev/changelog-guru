@@ -8,7 +8,7 @@ import { PluginOption } from './typings/types';
 
 export class ConfigLoader {
     public static MODULE_NAME = 'changelog';
-    public static DEFAULT_CONFIG_PATH = `../../.changelogrc.yaml`;
+    public static DEFAULT_CONFIG_PATH = `../../.changelogrc.default.yaml`;
     public static DEFAULT_OUTPUT_FILE_NAME = 'CHANGELOG.md';
 
     private filePath: string = path.join(__dirname, ConfigLoader.DEFAULT_CONFIG_PATH);
