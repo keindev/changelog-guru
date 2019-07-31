@@ -66,10 +66,10 @@ plugins:
             fc: Functional Components
             dts: TypeScript Declaration Improvements
     section:
-        - Features: [feat]
-        - Improvements: [improve]
-        - Bug Fixes: [fix]
-        - Internal changes: [types, workflow, build, test, chore, docs]
-        - Performance Improvements: [perf]
-        - Code Refactoring: [refactor]
-        - Reverts: [revert]
+        Features: [feat]
+        Improvements: [improve]
+        Bug Fixes: [fix]
+        Internal changes: [types, workflow, build, test, chore, docs]
+        Performance Improvements: [perf]
+        Code Refactoring: [refactor]
+        Reverts: [revert]

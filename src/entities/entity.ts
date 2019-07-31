@@ -17,7 +17,7 @@ export class Entity {
     }
 
     public static filter(e: Entity): boolean {
-        return !(e.isEmpty() && e.isIgnored());
+        return !e.isEmpty() && !e.isIgnored();
     }
 
     public getName(): string {

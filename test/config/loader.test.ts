@@ -10,7 +10,7 @@ describe('ConfigLoader', (): void => {
             expect(config.getExclusions()).toMatchSnapshot();
             expect(config.getPlugins()).toMatchSnapshot();
 
-            config.getProvider('test').then((provider): void => {
+            config.getProvider('git+https://github.com/keindev/changelog-guru.git').then((provider): void => {
                 expect(provider instanceof GitHubProvider).toBeTruthy();
 
                 done();

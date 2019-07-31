@@ -176,7 +176,10 @@ export class State implements StateContext {
             });
         }
 
-        this.sections = sections.filter(Section.filter).sort(Section.compare);
+        this.sections = sections
+            .filter(Section.filter)
+            .filter((section): boolean => section.getPosition() !== SectionPosition.Subsection)
+            .sort(Section.compare);
         task.complete('Section tree is consistently');
     }
 
@@ -218,10 +221,12 @@ export class State implements StateContext {
 
                 subtask.complete();
             } else {
-                task.fail(`${name} is not constructor`);
+                throw new Error('2222');
+                // task.fail(`${name} is not constructor`);
             }
         } else {
-            task.fail(`Plugin ${name} not found`);
+            throw new Error(`${1111} ${filePath}`);
+            // task.fail(`Plugin ${name} not found`);
         }
     }
 }

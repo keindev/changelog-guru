@@ -22,10 +22,6 @@ export class Section extends Entity {
         return result;
     }
 
-    public static filter(s: Section): boolean {
-        return super.filter(s) || s.getPosition() !== SectionPosition.Subsection;
-    }
-
     public getPosition(): SectionPosition {
         return this.position;
     }
@@ -55,11 +51,9 @@ export class Section extends Entity {
     public getPriority(): Priority {
         let priority = super.getPriority();
 
-        if (priority === Priority.Default) {
-            priority = this.getSections().reduce((acc, section): number => acc + section.getPriority(), priority);
-            priority = this.getMessages().reduce((acc, message): number => acc + message.getPriority(), priority);
-            priority = this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), priority);
-        }
+        priority = this.getSections().reduce((acc, section): number => acc + section.getPriority(), priority);
+        priority = this.getMessages().reduce((acc, message): number => acc + message.getPriority(), priority);
+        priority = this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), priority);
 
         return priority;
     }

@@ -1,6 +1,6 @@
 import { MockState } from '../__mocks__/entities/state.mock';
 import { ConfigLoader } from '../../src/config/config-loader';
-import { ScopePluginOptions } from '../../src/plugins/implementations/scope/typings/types';
+import { ScopePluginOptions, ScopeTitles } from '../../src/plugins/implementations/scope/typings/types';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import ScopePlugin from '../../src/plugins/implementations/scope/scope';
@@ -56,15 +56,18 @@ describe('ScopePlugin', (): void => {
                     author: $author,
                 });
 
-                (options as ScopePluginOptions).scope.onlyPresented = true;
+                $plugin
+                    .init({
+                        onlyPresented: true,
+                        titles: options.titles as ScopeTitles,
+                    })
+                    .then((): void => {
+                        $plugin.parse(commit).then((): void => {
+                            expect(commit.getAccents()).toStrictEqual(['Core']);
 
-                $plugin.init(options as ScopePluginOptions).then((): void => {
-                    $plugin.parse(commit).then((): void => {
-                        expect(commit.getAccents()).toStrictEqual(['Core']);
-
-                        done();
+                            done();
+                        });
                     });
-                });
             } else {
                 throw new Error('ScopePlugin config not found!');
             }

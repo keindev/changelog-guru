@@ -1,16 +1,20 @@
 import { Writer } from '../../../src/io/writer';
 
 export class MockWriter extends Writer {
+    private __data: string | undefined;
+
     public __filePath(): string {
         return this.filePath;
     }
 
-    public __getData(): string {
-        return this.getData();
+    public __getData(): string | undefined {
+        return this.__data;
     }
 
     // eslint-disable-next-line class-methods-use-this
-    protected async writeFile(): Promise<void> {
+    protected async writeFile(data: string): Promise<void> {
+        this.__data = data;
+
         await Promise.resolve();
     }
 }

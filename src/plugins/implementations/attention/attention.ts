@@ -29,17 +29,12 @@ export default class AttentionPlugin extends StatePlugin {
     }
 
     public async init(config: AttentionPluginOptions): Promise<void> {
-        const { attention } = config;
-
-        this.section = undefined;
         this.subtitles = new Map();
         this.templates = new Map();
 
-        if (attention) {
-            this.section = this.context.addSection(attention.title, SectionPosition.Header);
-            ConfigUtils.fillFromEnum(attention.sections, AttentionType, this.subtitles);
-            ConfigUtils.fillFromEnum(attention.templates, DependencyModification, this.templates);
-        }
+        this.section = this.context.addSection(config.title, SectionPosition.Header);
+        ConfigUtils.fillFromEnum(config.sections, AttentionType, this.subtitles);
+        ConfigUtils.fillFromEnum(config.templates, DependencyModification, this.templates);
     }
 
     public async modify(task: Task): Promise<void> {

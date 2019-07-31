@@ -33,25 +33,21 @@ describe('Section', (): void => {
             const a = new Section('a', SectionPosition.Body);
             const b = new Section('b', SectionPosition.Body);
 
-            expect(Section.compare(a, b)).toBe(Compare.Less);
-            expect(Section.compare(b, a)).toBe(Compare.More);
-            expect(Section.compare(a, a)).toBe(Compare.Equal);
-
             a.add($commit);
             b.add($message);
 
-            expect($commit.getChangeLevel()).toBe(ChangeLevel.Patch);
-            expect($message.getChangeLevel()).toBe(ChangeLevel.Patch);
-            expect(Section.compare(a, b)).toBe(Compare.Equal);
+            expect(Section.compare(a, b)).toBeLessThanOrEqual(Compare.Less);
+            expect(Section.compare(b, a)).toBeGreaterThanOrEqual(Compare.More);
+            expect(Section.compare(a, a)).toBe(Compare.Equal);
 
             $commit.setChangeLevel(ChangeLevel.Major);
 
-            expect(Section.compare(a, b)).toBe(Compare.More);
+            expect(Section.compare(a, b)).toBeLessThanOrEqual(Compare.More);
         });
 
         it('Filter', (): void => {
-            const a = new Section('a', SectionPosition.Subsection);
-            const b = new Section('b', SectionPosition.Body);
+            const a = new Section('a', SectionPosition.Body);
+            const b = new Section('b', SectionPosition.Subsection);
 
             b.add($commit);
 
@@ -108,7 +104,7 @@ describe('Section', (): void => {
         );
 
         $section.remove($message);
-        expect($section.getCommits()).toStrictEqual([]);
+        expect($section.getMessages()).toStrictEqual([]);
         expect($section.getPriority()).toBe(Priority.Low + subsection.getPriority() + $commit.getPriority());
 
         $section.remove($commit);

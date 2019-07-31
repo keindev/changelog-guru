@@ -6,11 +6,7 @@ export type MarkerSectionModifiers = {
     [key in MarkerType.Breaking | MarkerType.Deprecated | MarkerType.Important]: string;
 };
 
-export interface MarkerOption extends PluginOption {
+export interface MarkerPluginOptions extends PluginOption {
     commit: MarkerCommitModifiers;
     section: MarkerSectionModifiers;
-}
-
-export interface MarkerPluginOptions extends PluginOption {
-    marker: MarkerOption;
 }

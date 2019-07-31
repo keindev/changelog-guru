@@ -84,6 +84,10 @@ export class Commit extends Entity {
         return this.scope;
     }
 
+    public getSubject(): string {
+        return this.subject;
+    }
+
     public setStatus(status: CommitStatus): void {
         this.status = this.status | status;
 

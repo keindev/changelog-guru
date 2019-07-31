@@ -8,20 +8,10 @@ export default class ScopePlugin extends CommitPlugin {
     private titles: Map<string, string> = new Map();
 
     public async init(config: ScopePluginOptions): Promise<void> {
-        const { scope } = config;
-
-        this.onlyPresented = false;
-        this.titles = new Map();
-
-        if (scope) {
-            this.onlyPresented = !!scope.onlyPresented;
-
-            if (scope.titles) {
-                this.titles = new Map(
-                    Object.entries(scope.titles).map(([name, title]): [string, string] => [Key.unify(name), title])
-                );
-            }
-        }
+        this.onlyPresented = !!config.onlyPresented;
+        this.titles = new Map(
+            Object.entries(config.titles).map(([name, title]): [string, string] => [Key.unify(name), title])
+        );
     }
 
     public async parse(commit: Commit): Promise<void> {

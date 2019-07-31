@@ -11,58 +11,51 @@ import Key from '../../../utils/key';
 export default class MarkerPlugin extends CommitPlugin {
     private static EXPRESSION = /!(?<type>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
 
-    private markers: MarkerType[] = [];
+    private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 
     public async init(config: MarkerPluginOptions): Promise<void> {
-        const { marker } = config;
-
-        this.markers = [];
+        this.markers = new Set();
         this.sections = new Map();
 
-        if (marker) {
-            if (Array.isArray(marker.commit)) {
-                marker.commit.forEach((type): void => {
-                    switch (type) {
-                        case MarkerType.Ignore:
-                        case MarkerType.Grouped:
-                            this.markers.push(type);
-                            break;
-                        default:
-                            TaskTree.tree().fail(`Unexpected marker type - ${type}`);
-                            break;
-                    }
-                });
+        config.commit.forEach((type): void => {
+            switch (type) {
+                case MarkerType.Ignore:
+                case MarkerType.Grouped:
+                    this.markers.add(type);
+                    break;
+                default:
+                    TaskTree.tree().fail(`Unexpected marker type - ${type}`);
+                    break;
+            }
+        });
+
+        let position: SectionPosition = SectionPosition.None;
+
+        Object.entries(config.section).forEach(([type, title]): void => {
+            switch (type) {
+                case MarkerType.Breaking:
+                case MarkerType.Deprecated:
+                    position = SectionPosition.Header;
+                    break;
+                case MarkerType.Important:
+                    position = SectionPosition.Body;
+                    break;
+                default:
+                    position = SectionPosition.None;
+                    TaskTree.tree().fail(`Unexpected marker type - ${type}`);
+                    break;
             }
 
-            if (marker.section) {
-                let position: SectionPosition = SectionPosition.None;
+            if (position !== SectionPosition.None) {
+                const section = this.context.addSection(title, position);
 
-                Object.entries(marker.section).forEach(([type, title]): void => {
-                    switch (type) {
-                        case MarkerType.Breaking:
-                        case MarkerType.Deprecated:
-                            position = SectionPosition.Header;
-                            break;
-                        case MarkerType.Important:
-                            position = SectionPosition.Body;
-                            break;
-                        default:
-                            position = SectionPosition.None;
-                            TaskTree.tree().fail(`Unexpected marker type - ${type}`);
-                            break;
-                    }
-
-                    if (position !== SectionPosition.None) {
-                        const section = this.context.addSection(title, position);
-
-                        if (section) {
-                            this.sections.set(type as MarkerType, section);
-                        }
-                    }
-                });
+                if (section) {
+                    this.markers.add(type as MarkerType);
+                    this.sections.set(type as MarkerType, section);
+                }
             }
-        }
+        });
     }
 
     public async parse(commit: Commit, task: Task): Promise<void> {
@@ -75,10 +68,10 @@ export default class MarkerPlugin extends CommitPlugin {
             do {
                 match = expression.exec(line);
 
-                if (match && match.groups && match.groups.name) {
+                if (match && match.groups && match.groups.type) {
                     const { type, value } = match.groups;
 
-                    marker = Key.getEqual(type, this.markers) as MarkerType | undefined;
+                    marker = Key.getEqual(type, [...this.markers]) as MarkerType | undefined;
 
                     if (marker) {
                         section = this.sections.get(marker);

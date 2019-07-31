@@ -16,7 +16,7 @@ describe('Config', (): void => {
         expect(config.getPlugins()).toStrictEqual([['test', {}]]);
         expect(config.getTypes()).toStrictEqual([['feat', ChangeLevel.Minor], ['fix', ChangeLevel.Patch]]);
 
-        config.getProvider('test').then((provider): void => {
+        config.getProvider('git+https://github.com/keindev/changelog-guru.git').then((provider): void => {
             expect(provider instanceof GitHubProvider).toBeTruthy();
 
             done();

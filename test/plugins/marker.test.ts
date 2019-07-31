@@ -113,7 +113,7 @@ describe('MarkerPlugin', (): void => {
         }
     });
 
-    it('!hide marker', (done): void => {
+    it('!ignore marker', (done): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
             timestamp: 0,
             header: 'feat(Jest): subject',

@@ -95,14 +95,14 @@ describe('Commit', (): void => {
 
         $commit.setStatus(CommitStatus.Deprecated);
         expect($commit.getChangeLevel()).toBe(ChangeLevel.Minor);
-        expect($commit.getPriority()).toBe(Priority.Low + Priority.Low + Priority.Medium);
+        expect($commit.getPriority()).toBe(Priority.Low + Priority.Medium + Priority.Medium);
         expect($commit.hasStatus(CommitStatus.Default)).toBeTruthy();
         expect($commit.hasStatus(CommitStatus.Deprecated)).toBeTruthy();
         expect($commit.hasStatus(CommitStatus.Important)).toBeTruthy();
 
         $commit.setStatus(CommitStatus.BreakingChanges);
         expect($commit.getChangeLevel()).toBe(ChangeLevel.Major);
-        expect($commit.getPriority()).toBe(Priority.Low + Priority.Low + Priority.Medium + Priority.High);
+        expect($commit.getPriority()).toBe(Priority.Low + Priority.Medium + Priority.High + Priority.High);
         expect($commit.hasStatus(CommitStatus.Default)).toBeTruthy();
         expect($commit.hasStatus(CommitStatus.BreakingChanges)).toBeTruthy();
         expect($commit.hasStatus(CommitStatus.Deprecated)).toBeTruthy();

@@ -146,88 +146,46 @@ Array [
   ],
   Array [
     "section",
-    Array [
-      Object {
-        "Features": Array [
-          "feat",
-        ],
-      },
-      Object {
-        "Improvements": Array [
-          "improve",
-        ],
-      },
-      Object {
-        "Bug Fixes": Array [
-          "fix",
-        ],
-      },
-      Object {
-        "Internal changes": Array [
-          "types",
-          "workflow",
-          "build",
-          "test",
-          "chore",
-          "docs",
-        ],
-      },
-      Object {
-        "Performance Improvements": Array [
-          "perf",
-        ],
-      },
-      Object {
-        "Code Refactoring": Array [
-          "refactor",
-        ],
-      },
-      Object {
-        "Reverts": Array [
-          "revert",
-        ],
-      },
-      Object {
-        "Features": Array [
-          "feat",
-        ],
-      },
-      Object {
-        "Improvements": Array [
-          "improve",
-        ],
-      },
-      Object {
-        "Bug Fixes": Array [
-          "fix",
-        ],
-      },
-      Object {
-        "Internal changes": Array [
-          "types",
-          "workflow",
-          "build",
-          "test",
-          "chore",
-          "docs",
-        ],
-      },
-      Object {
-        "Performance Improvements": Array [
-          "perf",
-        ],
-      },
-      Object {
-        "Code Refactoring": Array [
-          "refactor",
-        ],
-      },
-      Object {
-        "Reverts": Array [
-          "revert",
-        ],
-      },
-    ],
+    Object {
+      "Bug Fixes": Array [
+        "fix",
+        "fix",
+      ],
+      "Code Refactoring": Array [
+        "refactor",
+        "refactor",
+      ],
+      "Features": Array [
+        "feat",
+        "feat",
+      ],
+      "Improvements": Array [
+        "improve",
+        "improve",
+      ],
+      "Internal changes": Array [
+        "types",
+        "workflow",
+        "build",
+        "test",
+        "chore",
+        "docs",
+        "types",
+        "workflow",
+        "build",
+        "test",
+        "chore",
+        "docs",
+      ],
+      "Performance Improvements": Array [
+        "perf",
+        "perf",
+      ],
+      "Reverts": Array [
+        "revert",
+        "revert",
+      ],
+    },
   ],
 ]
 `;
