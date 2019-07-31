@@ -10,7 +10,7 @@
 
 Automated changelog generator:package::zap::clipboard:
 
-> Absolutely customizable a release changelog with helpful plugins
+> Absolutely [customizable](#configuration) a release changelog with helpful [plugins](#plugins)
 
 ## Install
 
@@ -209,10 +209,10 @@ One way to filter output by ignoring commits with a given type, scope, subject, 
 | _[see output example](#output-options)_ | `--exclude-scopes <items>`   | `commitScope: string[]`   |
 | _[see output example](#output-options)_ | `--exclude-subjects <items>` | `commitSubject: string[]` |
 
--   **authorLogin**: Excludes authors with the listed logins from the output file.
--   **commitType**: Excludes commits with the listed [types](#commit-structure) from the output file.
--   **commitScope**: Excludes commits with the listed [scopes](#commit-structure) from the output file.
--   **commitSubject**: Excludes commits with the listed [subjects](#commit-structure) from the output file.
+-   **authorLogin** - excludes authors with the listed logins from the output file
+-   **commitType** - excludes commits with the listed [types](#commit-structure) from the output file
+-   **commitScope** - excludes commits with the listed [scopes](#commit-structure) from the output file
+-   **commitSubject** - excludes commits with the listed [subjects](#commit-structure) from the output file
 
 ### Other CLI options
 
@@ -224,7 +224,74 @@ One way to filter output by ignoring commits with a given type, scope, subject, 
 
 ### Plugins
 
+All plugin settings are described in the special section `plugins` of the configuration as follows:
+
+```YAML
+plugins:
+    <plugin name>:
+        <plugins option>
+        ...
+        <plugins option>
+```
+
 #### Attention
+
+Base plugin enabled by default. Displays information about changes to [package.json](https://docs.npmjs.com/files/package.json) in the change log. Checks the following sections:
+
+-   [license](https://docs.npmjs.com/files/package.json#license)
+-   [engines](https://docs.npmjs.com/files/package.json#engines)
+-   [dependencies](https://docs.npmjs.com/files/package.json#dependencies)
+-   [devDependencies](https://docs.npmjs.com/files/package.json#devdependencies)
+-   [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
+-   [optionalDependencies](https://docs.npmjs.com/files/package.json#optionaldependencies)
+
+Default options:
+
+```YAML
+attention:
+    title: Important Changes
+    templates:
+        added: 'Added %name% with %val%'
+        changed: 'Changed %name% from %pval% to %val%'
+        bumped: 'Bumped %name% from %pver% to %ver%'
+        downgraded: 'Downgraded %name% from %pver% to %ver%'
+        removed: 'Removed %name%, with %pval%'
+    sections:
+        license: License
+        engines: Engines
+        dependencies: Dependencies
+        devDependencies: DevDependencies
+        peerDependencies: PeerDependencies
+        optionalDependencies: OptionalDependencies,
+```
+
+##### Title
+
+Default: `Important Changes`
+
+The name of the main section in which all other sections will be placed with changes by types.
+
+##### Templates
+
+The change message templates:
+
+-   **added** - added Dependencies
+-   **changed** - dependencies whose value is not `SemVer` and has been changed
+-   **bumped** - dependencies whose version was bumped
+-   **downgraded** - dependencies whose version was downgraded
+-   **removed** - removed dependencies
+
+Literals available for substitution in Templates:
+
+-   `%name%` - dependency name
+-   `%ver%` - semantic version of dependency, for example `1.9.3`
+-   `%pver%` - previous semantic version of dependency
+-   `%val%` - dependency version, for example `^1.9.3`
+-   `%pval%` - previous dependency version
+
+##### Sections
+
+Section names with dependency changes.
 
 #### Marker
 
