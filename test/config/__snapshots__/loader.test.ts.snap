@@ -99,7 +99,7 @@ Array [
       "sections": Object {
         "dependencies": "Dependencies",
         "devDependencies": "DevDependencies",
-        "engine": "Engine",
+        "engines": "Engines",
         "license": "License",
         "optionalDependencies": "OptionalDependencies,",
         "peerDependencies": "PeerDependencies",
@@ -110,7 +110,6 @@ Array [
         "changed": "Changed %name% from %pval% to %val%",
         "downgraded": "Downgraded %name% from %pver% to %ver%",
         "removed": "Removed %name%, with %pval%",
-        "unchanged": "%name% left unchanged, with %val%",
       },
       "title": "Important Changes",
     },

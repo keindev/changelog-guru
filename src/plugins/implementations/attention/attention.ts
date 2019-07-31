@@ -17,7 +17,7 @@ export default class AttentionPlugin extends StatePlugin {
     private templates: Map<DependencyModification, string> = new Map();
 
     private static getAttentionType(type: DependencyType, task?: Task): AttentionType | undefined {
-        if (type === DependencyType.Engines) return AttentionType.Engine;
+        if (type === DependencyType.Engines) return AttentionType.Engines;
         if (type === DependencyType.Dependencies) return AttentionType.Dependencies;
         if (type === DependencyType.Dev) return AttentionType.DevDependencies;
         if (type === DependencyType.Peer) return AttentionType.PeerDependencies;

@@ -1,6 +1,6 @@
 export enum AttentionType {
     License = 'license',
-    Engine = 'engine',
+    Engines = 'engines',
     Dependencies = 'dependencies',
     DevDependencies = 'devDependencies',
     PeerDependencies = 'peerDependencies',

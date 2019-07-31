@@ -34,10 +34,9 @@ plugins:
             bumped: 'Bumped %name% from %pver% to %ver%'
             downgraded: 'Downgraded %name% from %pver% to %ver%'
             removed: 'Removed %name%, with %pval%'
-            unchanged: '%name% left unchanged, with %val%'
         sections:
             license: License
-            engine: Engine
+            engines: Engines
             dependencies: Dependencies
             devDependencies: DevDependencies
             peerDependencies: PeerDependencies
