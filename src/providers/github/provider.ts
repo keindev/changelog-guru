@@ -4,11 +4,12 @@ import { TaskTree } from 'tasktree-cli';
 import { Author } from '../../entities/author';
 import { Commit } from '../../entities/commit';
 import { ReleaseQuery } from './queries/release';
-import { HistoryQuery, GitHubResponseHistoryCommit, GitHubResponseHistoryAuthor } from './queries/history';
+import { HistoryQuery } from './queries/history';
 import { PackageQuery } from './queries/package';
 import { GitProvider } from '../git-provider';
 import { ReleaseInfo } from '../typings/types';
 import { ServiceProvider } from '../../config/typings/enums';
+import { GitHubResponseHistoryCommit, GitHubResponseHistoryAuthor } from './typings/types';
 
 const $tasks = TaskTree.tree();
 

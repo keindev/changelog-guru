@@ -1,11 +1,6 @@
 import { Query } from './query';
 import { ReleaseInfo } from '../../typings/types';
-
-export interface GitHubResponseRelease {
-    release: {
-        nodes: ReleaseInfo[];
-    };
-}
+import { GitHubResponseRelease } from '../typings/types';
 
 export class ReleaseQuery extends Query {
     public async getLast(): Promise<ReleaseInfo | undefined> {
