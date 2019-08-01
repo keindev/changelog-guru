@@ -116,11 +116,11 @@ export GITLAB_TOKEN="f941e0..."
 
 ### Levels of changes
 
-| Default     | CLI Override              | API Override      |
-| ----------- | ------------------------- | ----------------- |
-| _see below_ | `--changes-major <items>` | `major: string[]` |
-| _see below_ | `--changes-minor <items>` | `minor: string[]` |
-| _see below_ | `--changes-patch <items>` | `patch: string[]` |
+| Default     | CLI Override      | API Override      |
+| ----------- | ----------------- | ----------------- |
+| _see below_ | `--major <items>` | `major: string[]` |
+| _see below_ | `--minor <items>` | `minor: string[]` |
+| _see below_ | `--patch <items>` | `patch: string[]` |
 
 Default level of changes:
 
@@ -202,12 +202,12 @@ File path to write change log to it.
 
 One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors. To find out about other ways to ignore commits, see the section [Plugins](#plugins)
 
-| Default                                 | CLI Override                 | API Override              |
-| --------------------------------------- | ---------------------------- | ------------------------- |
-| _[see output example](#output-options)_ | `--exclude-authors<items>`   | `authorLogin: string[]`   |
-| _[see output example](#output-options)_ | `--exclude-types <items>`    | `commitType: string[]`    |
-| _[see output example](#output-options)_ | `--exclude-scopes <items>`   | `commitScope: string[]`   |
-| _[see output example](#output-options)_ | `--exclude-subjects <items>` | `commitSubject: string[]` |
+| Default                                 | CLI Override              | API Override              |
+| --------------------------------------- | ------------------------- | ------------------------- |
+| _[see output example](#output-options)_ | `--excl-authors<items>`   | `authorLogin: string[]`   |
+| _[see output example](#output-options)_ | `--excl-types <items>`    | `commitType: string[]`    |
+| _[see output example](#output-options)_ | `--excl-scopes <items>`   | `commitScope: string[]`   |
+| _[see output example](#output-options)_ | `--excl-subjects <items>` | `commitSubject: string[]` |
 
 -   **authorLogin** - excludes authors with the listed logins from the output file
 -   **commitType** - excludes commits with the listed [types](#commit-structure) from the output file
