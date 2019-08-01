@@ -105,6 +105,7 @@ Source code now under `MIT` license.
 -   Add sections tree & commit list render [`9d3bc70`](https://github.com/keindev/changelog-guru/commit/9d3bc7004cb591eb3c5db11b5d4c3fec5540b2cb)
 -   Add ignore option for commit subjects [`2323938`](https://github.com/keindev/changelog-guru/commit/232393822be1f40971484b31b3d763c33ac807a3)
 -   Add \-p option, for bump package :zap: [`508d073`](https://github.com/keindev/changelog-guru/commit/508d073f3ae344c48bd8bb4e9d960d9103907c2b)
+-   Add \-\-branch option [`06c4371`](https://github.com/keindev/changelog-guru/commit/06c4371fd611e3356bdc9d9c41639dd5c09c2340)
 
 # Improvements
 
@@ -235,6 +236,7 @@ Source code now under `MIT` license.
 -   **[Plugins]** Refactor marker, scope, section [`9dae755`](https://github.com/keindev/changelog-guru/commit/9dae755b749dcac1694674d892bf7d809fe5aadb)
 -   **[ScopePlugin]** Rename title to names [`e817fac`](https://github.com/keindev/changelog-guru/commit/e817facd15024a3133c7888ae844b7e6ea98c87f)
 -   **[State]** Change principle of working with state [`297f3e9`](https://github.com/keindev/changelog-guru/commit/297f3e987fb3804aa7e39ba9c6213d03b9f40d4e)
+-   **[State]** Remove logs for imports [`e83e7d9`](https://github.com/keindev/changelog-guru/commit/e83e7d9070ebf821a5c131e5d9725814b5fd72ac)
 -   **[Utils]** Refactor utils [`223640e`](https://github.com/keindev/changelog-guru/commit/223640e0bd34c2dcbe6a462dd7ec1e4dce41e330)
 -   **[Writer]** Refactor changelog writing [`fb26fd3`](https://github.com/keindev/changelog-guru/commit/fb26fd3a901fc0a73fdb6375d6ee521cf0f57725)
 -   **[Writer]** Refactor writer methods [`e5e199b`](https://github.com/keindev/changelog-guru/commit/e5e199b6c620988b943c8b34e7075a29868ce8ac)

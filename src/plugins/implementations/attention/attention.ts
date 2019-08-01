@@ -75,6 +75,7 @@ export default class AttentionPlugin extends StatePlugin {
                 message = new Message(`Source code now under ${Markdown.wrap(license.id)} license.`);
             }
 
+            message.escape();
             subsection.add(message);
             section.add(subsection);
         }
@@ -115,8 +116,11 @@ export default class AttentionPlugin extends StatePlugin {
                         });
 
                         if (list.length) {
+                            const message = new Message(list.join(Markdown.LINE_SEPARATOR));
+
+                            message.escape();
                             subsection.setOrder(index);
-                            subsection.add(new Message(list.join(Markdown.LINE_SEPARATOR)));
+                            subsection.add(message);
                             section.add(subsection);
                             task.log(`${Markdown.capitalize(attentionType)} changed`);
                         }

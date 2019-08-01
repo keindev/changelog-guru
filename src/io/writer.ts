@@ -43,15 +43,18 @@ export class Writer {
         const accents: string[] = [];
         const links: string[] = [];
         let subject: string;
+        let isEscaped: boolean;
 
         if (Array.isArray(group)) {
             subject = group[0].getSubject();
+            isEscaped = group[0].isEscaped();
             group.forEach((commit): void => {
                 accents.push(...commit.getAccents());
                 links.push(Markdown.commitLink(commit.getShortName(), commit.url));
             });
         } else {
             subject = group.getSubject();
+            isEscaped = group.isEscaped();
             accents.push(...group.getAccents());
             links.push(Markdown.commitLink(group.getShortName(), group.url));
         }
@@ -64,7 +67,7 @@ export class Writer {
             );
         }
 
-        output.push(Markdown.escape(Markdown.capitalize(subject)), ...links);
+        output.push(isEscaped ? Markdown.capitalize(subject) : Markdown.escape(Markdown.capitalize(subject)), ...links);
 
         return Markdown.listItem(output.join(Markdown.WORD_SEPARATOR));
     }
@@ -95,7 +98,12 @@ export class Writer {
         const output = [Markdown.title(section.getName(), level)];
 
         if (messages.length) {
-            output.push(...messages.map((message): string => message.text), Markdown.EMPTY_SEPARATOR);
+            output.push(
+                ...messages.map((message): string =>
+                    message.isEscaped ? message.text : Markdown.escape(message.text)
+                ),
+                Markdown.EMPTY_SEPARATOR
+            );
         }
 
         if (sections.length) {
