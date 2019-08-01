@@ -1,10 +1,11 @@
 # BREAKING CHANGES
 
+-   **[Bin]** Chg cli options read [`cc71af8`](https://github.com/keindev/changelog-guru/commit/cc71af8811d0728077828f34e2c16c4fb43e6f27)
 -   **[Entities]** Refactoring stage 2 \(30%\) [`965b162`](https://github.com/keindev/changelog-guru/commit/965b162e44a7b30acab9a0002b7fec2d5a23ff68)
 
 # Important Changes
 
-## Engine
+## Engines
 
 -   Added **node** with `>=10.0.0`
 
@@ -32,7 +33,7 @@ Source code now under `MIT` license.
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
 -   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.16)** with `^24.0.16`
--   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.6.8)** with `^12.6.8`
+-   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.6.9)** with `^12.6.9`
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/1.13.0)** with `^1.13.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/1.13.0)** with `^1.13.0`
@@ -40,7 +41,7 @@ Source code now under `MIT` license.
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/13.2.0)** with `13.2.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.0.0)** with `^6.0.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
--   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.14.0)** with `^22.14.0`
+-   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.14.1)** with `^22.14.1`
 -   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.2)** with `^3.0.2`
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.8.0)** with `^24.8.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
@@ -82,6 +83,7 @@ Source code now under `MIT` license.
 
 ## Others
 
+-   **[CLI]** Add cli options [`981323d`](https://github.com/keindev/changelog-guru/commit/981323dbc043d5140fa79ced2882b432e28c73d2)
 -   **[Config]** Use cosmiconfig for load config file [`833e950`](https://github.com/keindev/changelog-guru/commit/833e95021ad46296d52c1b70cbf21879377f9bc8)
 -   **[Config]** Rename config file [`a34b824`](https://github.com/keindev/changelog-guru/commit/a34b824b2b5cc152b586e5b6df7b374e3a27983c)
 -   **[Filters]** Add commit and author filter [`c32e377`](https://github.com/keindev/changelog-guru/commit/c32e37721cfb746a52a9fcb05b2591e250229677)
@@ -110,6 +112,7 @@ Source code now under `MIT` license.
 
 # Bug Fixes
 
+-   **[AttentionPlugin]** Rename engine to engines [`ad9b186`](https://github.com/keindev/changelog-guru/commit/ad9b186dd129dce0395f9b14dae2c39d08e28b70)
 -   **[Commit]** Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
 -   **[Config]** Fix error with Level\.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
 -   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
@@ -118,6 +121,7 @@ Source code now under `MIT` license.
 -   **[Provider]** Set default branch to master [`7953e81`](https://github.com/keindev/changelog-guru/commit/7953e81a59deb8d472bea8c41f30f7a09ab2eb82)
 -   **[Scope]** Add \.trim to new accent of commit [`e041b22`](https://github.com/keindev/changelog-guru/commit/e041b22021a9045bdc960da6776cf80ebf126961)
 -   **[Section]** Fix sections sorting by index [`66f61f0`](https://github.com/keindev/changelog-guru/commit/66f61f06d5ad34c05e43051fe43726cd3129dc1e)
+-   **[Section]** Fix entity sort, add sections order [`49ab17c`](https://github.com/keindev/changelog-guru/commit/49ab17c5148e4e411b15e08671daf3d8dc329ed7)
 -   **[Section, State]** Add commit tree generation method [`6c819c8`](https://github.com/keindev/changelog-guru/commit/6c819c80096fd1276185ad5d5180ada3965500e9)
 -   **[State]** Added section list sorting after modify with plugins [`f85afda`](https://github.com/keindev/changelog-guru/commit/f85afda8443a3a593dbc3220da8a78ea007a209c)
 -   **[State]** Add check for existence of plugin file [`e2064ca`](https://github.com/keindev/changelog-guru/commit/e2064ca5abb9d099503d98a95b614e7dcc356201)
@@ -171,15 +175,22 @@ Source code now under `MIT` license.
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 -   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
+-   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
 -   **[Marker]** Add eslint disable no\-explicit\-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
 -   **[Media]** Update logo [`089b444`](https://github.com/keindev/changelog-guru/commit/089b4440e2386ef56a9cc187b56dc9b1d265439a)
 -   **[Mocks]** Rename mocks folder to \_\_mocks\_\_ [`3185f07`](https://github.com/keindev/changelog-guru/commit/3185f07091721aa929679e4a833d3ac80e384b3a)
 -   **[Package]** Update dependencies [`54e6330`](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f) [`1fbed44`](https://github.com/keindev/changelog-guru/commit/1fbed44925822a89fdb3cb8ceef460ac3b4fb77c) [`839d042`](https://github.com/keindev/changelog-guru/commit/839d04201466025bad2269548a4ca5be2f81593c)
 -   **[Package]** Normalize package info [`a13d7e0`](https://github.com/keindev/changelog-guru/commit/a13d7e046c1368b1b880e6df6ce9949ef0381c34)
+-   **[Provider]** Add tests for provider queries [`cf3e85d`](https://github.com/keindev/changelog-guru/commit/cf3e85dc7a852f0e2f44550a3889c9d557fb7053)
 -   **[Reader]** Add test for Reader [`a64e5fc`](https://github.com/keindev/changelog-guru/commit/a64e5fcd0c53bcfbab59229c21582cf6fe42e53d)
 -   **[Readme]** Add library description [`6c6056b`](https://github.com/keindev/changelog-guru/commit/6c6056bad2976582eae3a0a7a64816827082797a)
 -   **[Readme]** Add cdn logo link, add npm badges [`129c449`](https://github.com/keindev/changelog-guru/commit/129c44945deae630f2903c1249e37a60d96f8aee)
 -   **[Readme]** Add package description [`7901da6`](https://github.com/keindev/changelog-guru/commit/7901da6798d486597d5ee58258080f97cef3de82)
+-   **[README]** Add usage & configuration sections [`2b30a05`](https://github.com/keindev/changelog-guru/commit/2b30a05f9f16db7bfd26fffde1e1920ea23e33c3)
+-   **[README]** Fix usage section [`4efa55d`](https://github.com/keindev/changelog-guru/commit/4efa55dc9f85c7f59e80ed4cd503eed41e93421f)
+-   **[README]** Add Attention plugin description [`4baa0d0`](https://github.com/keindev/changelog-guru/commit/4baa0d058ff377916a36977978aace0a4bf3013c)
+-   **[README]** Add desc for Section & Scope plugins [`0511c38`](https://github.com/keindev/changelog-guru/commit/0511c389150d6c70553ad8266cc426d1552aef49)
+-   **[README]** Add marker plugin description [`021db83`](https://github.com/keindev/changelog-guru/commit/021db83a0cf4086a90f6c1b36cd65af76bb11a39)
 -   **[Section]** Add tests for relations [`cdcc792`](https://github.com/keindev/changelog-guru/commit/cdcc792fef88b1b346fc85ad984075ccf64ace71)
 -   **[State]** Update test for State [`429d204`](https://github.com/keindev/changelog-guru/commit/429d20427b05211e8ee6bbf269ed4fe2ce94fa54)
 -   **[State]** Fix test error with addSection [`77d6b7a`](https://github.com/keindev/changelog-guru/commit/77d6b7aa9aed4a144d8a4a61f86cfe81cd2e59a6)
@@ -216,10 +227,13 @@ Source code now under `MIT` license.
 -   **[Config]** Rename config to configuration [`b4c7a8e`](https://github.com/keindev/changelog-guru/commit/b4c7a8e5eea8bd516deda29a7ee7aa5a0539bfaf)
 -   **[Config]** Fix path to conf in mocks [`afd6461`](https://github.com/keindev/changelog-guru/commit/afd64616e7a21be343ff7ade8fe69249061a3999)
 -   **[Configuration]** Refatoring stage 2 [`5eb3f13`](https://github.com/keindev/changelog-guru/commit/5eb3f13c1344ed9209e33fe410b1bbe93e8b7ce3)
+-   **[GitProvider]** Add typings forlder [`c93830e`](https://github.com/keindev/changelog-guru/commit/c93830e75544c216963cdb8512ccc764142cfa46)
 -   **[Imports]** Refactor entities imports [`eae085d`](https://github.com/keindev/changelog-guru/commit/eae085db8c7ad86bf18df3c21893c26509766a05)
+-   **[MarkerPlugin]** Rename config fields [`bb38146`](https://github.com/keindev/changelog-guru/commit/bb381460578d16f9be561824b4af181da2cef19c)
 -   **[Package]** Refactor pkg & versioning upd [`38f947f`](https://github.com/keindev/changelog-guru/commit/38f947f7440c100ddfe68a16e569ec9b9bcb7d92)
 -   **[Plugin, Provider, Plugins, Tests]** Refactor Stage 2 \(60%\) [`6efd31e`](https://github.com/keindev/changelog-guru/commit/6efd31e5e209d1db555b34a15f365b8d5ad18277) [`78b29d4`](https://github.com/keindev/changelog-guru/commit/78b29d485cf0f952e4f08f7c4d70826047167fbc) [`c69e36c`](https://github.com/keindev/changelog-guru/commit/c69e36cf05a80734009ebada019864a77dd3b249)
 -   **[Plugins]** Refactor marker, scope, section [`9dae755`](https://github.com/keindev/changelog-guru/commit/9dae755b749dcac1694674d892bf7d809fe5aadb)
+-   **[ScopePlugin]** Rename title to names [`e817fac`](https://github.com/keindev/changelog-guru/commit/e817facd15024a3133c7888ae844b7e6ea98c87f)
 -   **[State]** Change principle of working with state [`297f3e9`](https://github.com/keindev/changelog-guru/commit/297f3e987fb3804aa7e39ba9c6213d03b9f40d4e)
 -   **[Utils]** Refactor utils [`223640e`](https://github.com/keindev/changelog-guru/commit/223640e0bd34c2dcbe6a462dd7ec1e4dce41e330)
 -   **[Writer]** Refactor changelog writing [`fb26fd3`](https://github.com/keindev/changelog-guru/commit/fb26fd3a901fc0a73fdb6375d6ee521cf0f57725)
