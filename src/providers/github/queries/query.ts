@@ -2,8 +2,6 @@ import { GraphQLClient } from 'graphql-request';
 import { Variables } from 'graphql-request/dist/src/types';
 import { TaskTree } from 'tasktree-cli';
 
-const $tasks = TaskTree.tree();
-
 export class Query {
     protected client: GraphQLClient;
     protected variables: Variables;
@@ -20,7 +18,9 @@ export class Query {
         try {
             data = await this.client.request(query, Object.assign(variables, this.variables));
         } catch (err) {
-            $tasks.add('GraphQLClient: request error!').error(err, true);
+            TaskTree.tree()
+                .add('GraphQLClient: request error!')
+                .error(err, true);
         }
 
         return data ? data.repository : undefined;

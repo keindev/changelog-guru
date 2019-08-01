@@ -19,6 +19,7 @@ node_modules/
 .prettierrc
 .travis.yml
 .yarnclean
+.changelogrc.yaml
 jest.config.js
 tsconfig.json
 yarn.lock

@@ -10,7 +10,7 @@
 
 Automated changelog generator:package::zap::clipboard:
 
-> Absolutely customizable a release changelog with helpful plugins
+> Absolutely [customizable](#configuration) a release changelog with helpful [plugins](#plugins)
 
 ## Install
 
@@ -26,7 +26,60 @@ yarn add changelog-guru
 npm install changelog-guru
 ```
 
-### Configuration
+## Usage
+
+Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
+
+Create `CHANGELOG.md`:
+
+```
+
+changelog [options]
+
+```
+
+### Goals
+
+-   allow generating `CHANGELOG.md` by script
+-   allow ignoring commits
+-   provide better information when browsing the history
+
+### Format of the commit message
+
+```
+<type>(<scope>): <subject>
+<markers>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+#### Type
+
+The type of [changes](#levels-of-changes) made by this commit, such as `feat` or `fix`.
+
+#### Scope
+
+Scope could be anything specifying place of the commit change.
+
+#### Subject
+
+> Any line of the commit message cannot be longer 100 characters! This allows the message to be easier to read on github as well as in various git tools.
+
+Subject line contains succinct description of the change.
+
+#### Markers
+
+> See the [Marker plugin](#marker) section for a more detailed description.
+
+Control markers of the form `!<name>`, allow you to group, ignore or increase the priority of commits in the change log
+
+#### Body & Footer
+
+All that allows you to write a conscience.
+
+## Configuration
 
 > Changelog-guru uses [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and you can configure the module in any way you like described in the documentation.
 
@@ -38,12 +91,41 @@ All options can be configured in the configuration file, this is where `changelo
 -   `changelog` property in `package.json`
 -   `changelog.config.js` file exporting a JS object
 
+For example see [.changelogrc.yaml](.changelogrc.yaml). Also you can use `changelog-guru` with [default](.changelogrc.default.yaml) configuration.
+
+### Provider
+
+| Default  | CLI Override          | API Override         |
+| -------- | --------------------- | -------------------- |
+| `github` | `--provider <string>` | `provider: <string>` |
+
+The type of service provider to receive information about the project. To set the type of service you want to use, you must:
+
+-   Set `provider: github` or `provider: gitlab` in your configuration file, it's all.
+-   Make sure the provider token is available as an environment variable.
+
 Example:
 
+```
+export GITHUB_TOKEN="f941e0..."
+
+export GITLAB_TOKEN="f941e0..."
+```
+
+> Changelog-guru uses [dotenv](https://www.npmjs.com/package/dotenv) and you can loads environment variables from a `.env`
+
+### Levels of changes
+
+| Default     | CLI Override      | API Override      |
+| ----------- | ----------------- | ----------------- |
+| _see below_ | `--major <items>` | `major: string[]` |
+| _see below_ | `--minor <items>` | `minor: string[]` |
+| _see below_ | `--patch <items>` | `patch: string[]` |
+
+Default level of changes:
+
 ```YAML
-provider: github
-plugins: [attention, marker, scope, section]
-levels:
+changes:
     major:
         - break
     minor:
@@ -61,90 +143,15 @@ levels:
         - workflow
         - perf
         - revert
-attention:
-    title: Important Changes
-    templates:
-        added: 'Added %name% with %val%'
-        changed: 'Changed %name% from %pval% to %val%'
-        bumped: 'Bumped %name% from %pver% to %ver%'
-        downgraded: 'Downgraded %name% from %pver% to %ver%'
-        removed: 'Removed %name%, with %pval%'
-        unchanged: '%name% left unchanged, with %val%'
-    sections:
-        license: License
-        engine: Engine
-        dependencies: Dependencies
-        devDependencies: DevDependencies
-        peerDependencies: PeerDependencies
-        optionalDependencies: OptionalDependencies,
-# List of available markers
-markers:
-    # !important - place a commit title to special section on top of changelog
-    important: Important Internal Changes
-    # !deprecated - place a commit title to special section with deprecated properties
-    deprecated: DEPRECATIONS
-    # !break - indicates major changes breaking backward compatibility
-    break: BREAKING CHANGES
-    # !hide - hide a commit
-    hide: Hidden commits
-    # !group(NAME) - creates a group of commits with the <NAME>
-    group: Grouped commit
-# list of major scopes
-scopes:
-    only: false
-    list:
-        core: Core
-        api: API
-        ssr: Server Side Rendering
-        fc: Functional Components
-        dts: TypeScript Declaration Improvements
-sections:
-    - Features: [feat]
-    - Improvements: [improve]
-    - Bug Fixes: [fix]
-    - Internal changes: [types, workflow, build, test, chore, docs]
-    - Performance Improvements: [perf]
-    - Code Refactoring: [refactor]
-    - Reverts: [revert]
-ignore:
-    authors: ['dependabot-preview[bot]']
-    types: ['build']
-    scopes: ['deps', 'deps-dev']
-    subjects: ['merge']
 ```
 
-Also you can use `changelog-guru` with default configuration.
-
-#### Provider
-
-> Changelog-guru uses [dotenv](https://www.npmjs.com/package/dotenv) and you can loads environment variables from a `.env`
-
--   Set `provider: github` or `provider: gitlab` in your configuration file, it's all.
--   Make sure the token is available as an environment variable. Example:
+For a list of change types by level, see [SemVer](https://semver.org/). The commits with the specified types will be distributed by change levels. For example:
 
 ```
-export GITHUB_TOKEN="f941e0..."
 
-export GITLAB_TOKEN="f941e0..."
-```
-
-#### Plugins
-
-##### Attention
-
-##### Marker
-
-##### Scope
-
-##### Section
-
-#### Levels
-
-List of change types by level. See [SemVer](https://semver.org/). The commits with the specified types will be distributed by change levels. For example:
-
-```
 // Commit message with MINOR changes
 feat(Core): add awesome feature
+
 ```
 
 The following types of changes are defined by default:
@@ -167,17 +174,216 @@ The following types of changes are defined by default:
     -   `perf` - performance improvements
     -   `revert` - reverted changes
 
-## Usage
+### Output options
 
-Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
+Parameters of the output file. Specify the path to the file and the excluded entities.
 
-Create `CHANGELOG.md`:
+Default output options:
 
-`changelog`
+```YAML
+output:
+    filePath: CHANGELOG.md
+    exclude:
+        authorLogin: ['dependabot-preview[bot]']
+        commitType: ['build']
+        commitScope: ['deps', 'deps-dev']
+        commitSubject: ['merge']
+```
 
-Create `CHANGELOG.md` and bump package version in your `package.json` file:
+#### filePath
 
-`changelog -p`
+File path to write change log to it.
+
+| Default        | CLI Override      | API Override       |
+| -------------- | ----------------- | ------------------ |
+| `CHANGELOG.md` | `--output <path>` | `filePath: string` |
+
+#### exclude
+
+One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors. To find out about other ways to ignore commits, see the section [Plugins](#plugins)
+
+| Default                                 | CLI Override              | API Override              |
+| --------------------------------------- | ------------------------- | ------------------------- |
+| _[see output example](#output-options)_ | `--excl-authors<items>`   | `authorLogin: string[]`   |
+| _[see output example](#output-options)_ | `--excl-types <items>`    | `commitType: string[]`    |
+| _[see output example](#output-options)_ | `--excl-scopes <items>`   | `commitScope: string[]`   |
+| _[see output example](#output-options)_ | `--excl-subjects <items>` | `commitSubject: string[]` |
+
+-   **authorLogin** - excludes authors with the listed logins from the output file
+-   **commitType** - excludes commits with the listed [types](#commit-structure) from the output file
+-   **commitScope** - excludes commits with the listed [scopes](#commit-structure) from the output file
+-   **commitSubject** - excludes commits with the listed [subjects](#commit-structure) from the output file
+
+### Other CLI options
+
+| Default | CLI             | Description                                                                                                                                      |
+| ------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `false` | `--bump`        | Based on data about changes made in the project, forms the next version number and bumps it in `package.json`, see [SemVer](https://semver.org/) |
+| -       | `-v, --version` | Show `changelog-guru` package version                                                                                                            |
+| -       | `--help`        | Show `changelog-guru` cli options help                                                                                                           |
+
+### Plugins
+
+All plugin settings are described in the special section `plugins` of the configuration as follows:
+
+```YAML
+plugins:
+    <plugin name>:
+        <plugins option>
+        ...
+        <plugins option>
+```
+
+#### Attention
+
+Base plugin enabled by default. Displays information about changes to [package.json](https://docs.npmjs.com/files/package.json) in the change log. Checks the following sections:
+
+-   [license](https://docs.npmjs.com/files/package.json#license)
+-   [engines](https://docs.npmjs.com/files/package.json#engines)
+-   [dependencies](https://docs.npmjs.com/files/package.json#dependencies)
+-   [devDependencies](https://docs.npmjs.com/files/package.json#devdependencies)
+-   [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
+-   [optionalDependencies](https://docs.npmjs.com/files/package.json#optionaldependencies)
+
+Default options:
+
+```YAML
+attention:
+    title: Important Changes
+    templates:
+        added: 'Added %name% with %val%'
+        changed: 'Changed %name% from %pval% to %val%'
+        bumped: 'Bumped %name% from %pver% to %ver%'
+        downgraded: 'Downgraded %name% from %pver% to %ver%'
+        removed: 'Removed %name%, with %pval%'
+    sections:
+        license: License
+        engines: Engines
+        dependencies: Dependencies
+        devDependencies: DevDependencies
+        peerDependencies: PeerDependencies
+        optionalDependencies: OptionalDependencies,
+```
+
+##### Title
+
+Default: `Important Changes`
+
+The name of the main section in which all other sections will be placed with changes by types.
+
+##### Templates
+
+The change message templates:
+
+-   **added** - added Dependencies
+-   **changed** - dependencies whose value is not `SemVer` and has been changed
+-   **bumped** - dependencies whose version was bumped
+-   **downgraded** - dependencies whose version was downgraded
+-   **removed** - removed dependencies
+
+Literals available for substitution in Templates:
+
+-   `%name%` - dependency name
+-   `%ver%` - semantic version of dependency, for example `1.9.3`
+-   `%pver%` - previous semantic version of dependency
+-   `%val%` - dependency version, for example `^1.9.3`
+-   `%pval%` - previous dependency version
+
+##### Sections
+
+Section names with dependency changes.
+
+#### Marker
+
+Base plugin enabled by default. Allows you to add additional useful information to the commit, for example, about breaking changes. Or allows you to hide the commit from the change log.
+
+Two types of markers are available, action markers and join markers.
+
+Default options:
+
+```YAML
+marker:
+    actions:
+        - ignore
+        - group
+    joins:
+        important: Important Internal Changes
+        deprecated: DEPRECATIONS
+        break: BREAKING CHANGES
+```
+
+##### Actions
+
+Action markers performs operations on commits when building a change log:
+
+-   `!ignore` - ignore a commit in output
+-   `!group(<name>)` - creates a group of commits with the `<name>`
+
+##### Joins
+
+Join markers combine commits in sections. Configured as follows:
+
+```
+<marker name>: <section title>
+```
+
+The following markers are available:
+
+-   `!important` - place a commit title to special section on top of changelog
+-   `!deprecated` - place a commit title to special section with deprecated properties
+-   `!break` - indicates major changes breaking backward compatibility
+
+#### Scope
+
+Base plugin enabled by default. Renames areas and abbreviations to a more human-readable format.
+
+Default options:
+
+```YAML
+scope:
+    onlyPresented: false
+    names:
+        cr: Core
+        api: API
+        ssr: Server Side Rendering
+        fc: Functional Components
+        dts: TypeScript Declaration Improvements
+```
+
+##### onlyPresented
+
+Default: `false`
+
+In the case of true will only rename the specified names.
+
+##### names
+
+List of abbreviations and their human-readable versions. Configured as follows:
+
+```
+<abbreviated name>: <human-readable name>
+```
+
+#### Section
+
+Base plugin enabled by default. Distributes commits with the specified types into sections. Configured as follows:
+
+```
+<section name>: [commit types]
+```
+
+Default options:
+
+```YAML
+section:
+    Features: [feat]
+    Improvements: [improve]
+    Bug Fixes: [fix]
+    Internal changes: [types, workflow, build, test, chore, docs]
+    Performance Improvements: [perf]
+    Code Refactoring: [refactor]
+    Reverts: [revert]
+```
 
 ## License
 

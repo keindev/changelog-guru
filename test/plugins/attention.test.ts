@@ -1,51 +1,61 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/entities/state.mock';
-import { Configuration } from '../../src/entities/configuration';
-import { Dependency, DependencyType } from '../../src/entities/package/dependency';
-import AttentionPlugin, { AttentionConfiguration } from '../../src/plugins/attention';
-import { Level } from '../../src/utils/enums';
+import { ConfigLoader } from '../../src/config/config-loader';
+import AttentionPlugin from '../../src/plugins/implementations/attention/attention';
+import { AttentionPluginOptions } from '../../src/plugins/implementations/attention/typings/types';
+import { ChangeLevel } from '../../src/config/typings/enums';
+import { Dependency } from '../../src/package/dependency';
+import { DependencyType } from '../../src/package/typings/enums';
 
 describe('AttentionPlugin', (): void => {
-    let config: Configuration;
-    let context: MockState;
-    let plugin: AttentionPlugin;
-    let task: Task;
+    let $loader: ConfigLoader;
+    let $context: MockState;
+    let $plugin: AttentionPlugin;
+    let $task: Task;
 
     beforeEach((done): void => {
-        config = new Configuration();
-        context = new MockState();
-        plugin = new AttentionPlugin(context);
-        task = new Task('test task');
+        $loader = new ConfigLoader();
+        $context = new MockState();
+        $plugin = new AttentionPlugin($context);
+        $task = new Task('test task');
 
-        config.load(task).then((): void => {
-            plugin.init(config.getOptions() as AttentionConfiguration).then((): void => {
-                done();
-            });
+        $loader.load().then((config): void => {
+            const options = config.getPlugin('attention');
+
+            if (options) {
+                $plugin.init(options as AttentionPluginOptions).then((): void => {
+                    done();
+                });
+            } else {
+                throw new Error('AttentionPlugin config not found!');
+            }
         });
     });
 
     it('Default', (): void => {
-        expect(context.getSections().length).toBe(1);
-        expect(context.findSection('Important Changes')).toBeDefined();
+        expect($context.getSections().length).toBe(1);
+        expect($context.findSection('Important Changes')).toBeDefined();
     });
 
     it('Changed license', (done): void => {
-        context.setLicense('MIT', undefined);
+        $context.setLicense('MIT', undefined);
 
-        const section = context.findSection('Important Changes');
-        const license = context.getLicense();
+        const section = $context.findSection('Important Changes');
+        const license = $context.getLicense();
 
         expect(section).toBeDefined();
         expect(license).toBeDefined();
 
         if (section && license) {
-            plugin.modify(task).then((): void => {
+            $plugin.modify($task).then((): void => {
                 const [subsection] = section.getSections();
 
                 expect(subsection).toBeDefined();
-                expect(subsection.title).toBe('License');
+                expect(subsection.getName()).toBe('License');
                 expect(
-                    subsection.getMessages().map((message): [Level, string] => [message.level, message.text])
+                    subsection
+                        .getMessages()
+                        .map((message): [ChangeLevel, string] => [message.getChangeLevel(), message.text])
                 ).toMatchSnapshot();
 
                 done();
@@ -54,7 +64,7 @@ describe('AttentionPlugin', (): void => {
     });
 
     it('Changed dependencies', (done): void => {
-        context.setDependencies(
+        $context.setDependencies(
             new Dependency(
                 DependencyType.Dependencies,
                 {
@@ -66,18 +76,20 @@ describe('AttentionPlugin', (): void => {
             )
         );
 
-        const section = context.findSection('Important Changes');
+        const section = $context.findSection('Important Changes');
 
         expect(section).toBeDefined();
 
         if (section) {
-            plugin.modify(task).then((): void => {
+            $plugin.modify($task).then((): void => {
                 const [subsection] = section.getSections();
 
                 expect(subsection).toBeDefined();
-                expect(subsection.title).toBe('Dependencies');
+                expect(subsection.getName()).toBe('Dependencies');
                 expect(
-                    subsection.getMessages().map((message): [Level, string] => [message.level, message.text])
+                    subsection
+                        .getMessages()
+                        .map((message): [ChangeLevel, string] => [message.getChangeLevel(), message.text])
                 ).toMatchSnapshot();
 
                 done();

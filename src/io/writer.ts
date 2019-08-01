@@ -6,137 +6,110 @@ import { Commit } from '../entities/commit';
 import { Author } from '../entities/author';
 import Markdown from '../utils/markdown';
 import Key from '../utils/key';
-
-const $tasks = TaskTree.tree();
+import { Message } from '../entities/message';
 
 export class Writer {
     public static FILE_NAME = 'CHANGELOG.md';
 
-    protected data: string[] = [];
     protected filePath: string;
 
     public constructor() {
         this.filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
     }
 
-    private static renderCommitAccents(accents: string[]): string {
-        const result: string[] = [];
+    private static groupCommits(commits: Commit[]): (Commit | Commit[])[] {
+        const groups: Map<string, Commit | Commit[]> = new Map();
+        let group: Commit | Commit[] | undefined;
 
-        accents.forEach((accent: string): void => {
-            result.push(Markdown.capitalize(accent));
+        commits.forEach((commit): void => {
+            group = Key.inMap(commit.subject, groups);
+
+            if (group) {
+                if (Array.isArray(group)) {
+                    group.push(commit);
+                } else {
+                    groups.set(group.subject, [group, commit]);
+                }
+            } else {
+                groups.set(commit.subject, commit);
+            }
         });
 
-        return Markdown.bold(`[${result.join(Markdown.ITEM_SEPARATOR)}]`);
+        return [...groups.values()];
     }
 
-    public async write(authors: Author[], sections: Section[]): Promise<void> {
-        const task = $tasks.add('Writing new changelog...');
+    private static renderCommit(group: Commit | Commit[]): string {
+        const output: string[] = [];
+        const accents: string[] = [];
+        const links: string[] = [];
+        let subject: string;
 
-        this.data = [];
-        sections.forEach((section): void => {
-            this.renderSection(section, Markdown.DEFAULT_HEADER_LEVEL);
-        });
-        this.renderAuthors(authors);
-        await this.writeFile();
+        if (Array.isArray(group)) {
+            subject = group[0].getSubject();
+            group.forEach((commit): void => {
+                accents.push(...commit.getAccents());
+                links.push(Markdown.commitLink(commit.getShortName(), commit.url));
+            });
+        } else {
+            subject = group.getSubject();
+            accents.push(...group.getAccents());
+            links.push(Markdown.commitLink(group.getShortName(), group.url));
+        }
+
+        if (accents.length) {
+            output.push(
+                Markdown.bold(
+                    `[${[...new Set(accents.values())].map(Markdown.capitalize).join(Markdown.ITEM_SEPARATOR)}]`
+                )
+            );
+        }
+
+        output.push(Markdown.escape(Markdown.capitalize(subject)), ...links);
+
+        return Markdown.listItem(output.join(Markdown.WORD_SEPARATOR));
+    }
+
+    private static renderAuthors(authors: Author[]): string {
+        return [Markdown.line(), Markdown.title('Contributors'), ...authors.map(Markdown.authorLink)].join(
+            Markdown.LINE_SEPARATOR
+        );
+    }
+
+    public async write(sections: Section[], authors: Author[]): Promise<void> {
+        const task = TaskTree.tree().add('Writing new changelog...');
+        const data = sections.map((subsection): string => this.renderSection(subsection));
+
+        data.push(Writer.renderAuthors(authors), Markdown.EMPTY_SEPARATOR);
+        await this.writeFile(data.join(Markdown.LINE_SEPARATOR));
         task.complete('Changelog updated!');
     }
 
-    protected async writeFile(): Promise<void> {
-        await fs.promises.writeFile(this.filePath, this.getData());
+    protected async writeFile(data: string): Promise<void> {
+        await fs.promises.writeFile(this.filePath, data);
     }
 
-    protected getData(): string {
-        return this.data.join(Markdown.LINE_SEPARATOR);
-    }
-
-    private renderSection(section: Section, level: number): void {
-        const { data } = this;
-        const sections = section.getSections();
-        const commits = section.getCommits(true, true);
-        const messages = section.getMessages();
-
-        data.push(Markdown.title(section.title, level));
-
-        if (sections.length) {
-            sections.reverse().forEach((item): void => {
-                this.renderSection(item, level + 1);
-            });
-
-            if (commits.length) data.push(Markdown.title('Others', level + 1));
-        }
+    private renderSection(section: Section, level: number = Markdown.DEFAULT_HEADER_LEVEL): string {
+        const sections = section.getSections().filter(Section.filter);
+        const commits = section.getCommits().filter(Commit.filter);
+        const messages = section.getMessages().filter(Message.filter);
+        const output = [Markdown.title(section.getName(), level)];
 
         if (messages.length) {
-            data.push(...messages.map((message): string => message.text));
+            output.push(...messages.map((message): string => message.text), Markdown.EMPTY_SEPARATOR);
+        }
+
+        if (sections.length) {
+            output.push(...sections.map((subsection): string => this.renderSection(subsection, level + 1)));
+
+            if (commits.length) {
+                output.push(Markdown.title('Others', level + 1));
+            }
         }
 
         if (commits.length) {
-            const groups: Map<string, Commit | Commit[]> = new Map();
-            let group: Commit | Commit[] | undefined;
-
-            commits.forEach((commit): void => {
-                group = Key.inMap(commit.subject, groups);
-
-                if (group) {
-                    if (Array.isArray(group)) {
-                        group.push(commit);
-                    } else {
-                        groups.set(group.subject, [group, commit]);
-                    }
-                } else {
-                    groups.set(commit.subject, commit);
-                }
-            });
-            groups.forEach((item): void => {
-                if (Array.isArray(item)) {
-                    this.renderMirrorCommits(item);
-                } else {
-                    this.renderCommit(item);
-                }
-            });
+            output.push(...Writer.groupCommits(commits).map(Writer.renderCommit), Markdown.EMPTY_SEPARATOR);
         }
-    }
 
-    private renderMirrorCommits(commits: Commit[]): void {
-        const result: string[] = [];
-        const accents: Set<string> = new Set();
-        const links: string[] = [];
-
-        commits.forEach((commit): void => {
-            commit.getAccents().forEach((accent): void => {
-                accents.add(accent);
-            });
-
-            links.push(Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url));
-        });
-
-        if (accents.size) result.push(Writer.renderCommitAccents([...accents.values()]));
-
-        result.push(Markdown.capitalize(commits[0].subject), ...links);
-        this.data.push(Markdown.listItem(result.join(Markdown.WORD_SEPARATOR)));
-    }
-
-    private renderCommit(commit: Commit): void {
-        const result: string[] = [];
-        const accents = commit.getAccents();
-
-        if (accents.length) result.push(Writer.renderCommitAccents(accents));
-
-        result.push(
-            Markdown.capitalize(commit.subject),
-            Markdown.link(Markdown.wrap(commit.getShortHash()), commit.url)
-        );
-
-        this.data.push(Markdown.listItem(result.join(Markdown.WORD_SEPARATOR)));
-    }
-
-    private renderAuthors(authors: Author[]): void {
-        const { data } = this;
-
-        data.push(Markdown.line(), Markdown.title('Contributors'));
-        data.push(
-            authors
-                .map((author): string => Markdown.imageLink(author.getName(), author.getAvatar(), author.url))
-                .join(Markdown.WORD_SEPARATOR)
-        );
+        return output.join(Markdown.LINE_SEPARATOR);
     }
 }

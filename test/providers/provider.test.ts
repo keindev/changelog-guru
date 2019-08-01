@@ -1,16 +1,46 @@
-import { ServiceProvider } from '../../src/providers/provider';
-import { MockProvider } from '../__mocks__/providers/provider.mock';
+import dotenv from 'dotenv';
+import { ServiceProvider } from '../../src/config/typings/enums';
+import { GitHubProvider } from '../../src/providers/github/provider';
+import { GitProvider } from '../../src/providers/git-provider';
 
 describe('Provider', (): void => {
-    it('Default (github)', (): void => {
-        const provider = new MockProvider(ServiceProvider.GitHub, 'https://github.com/keindev/changelog-guru.git');
+    let $provider: GitProvider;
 
-        expect(provider.type).toBe(ServiceProvider.GitHub);
-        // eslint-disable-next-line no-underscore-dangle
-        expect(provider.__getRepository()).toBe('changelog-guru');
-        // eslint-disable-next-line no-underscore-dangle
-        expect(provider.__getOwner()).toBe('keindev');
-        // eslint-disable-next-line no-underscore-dangle
-        expect(provider.__getBranch().length).toBeGreaterThanOrEqual(3);
+    beforeAll((): void => {
+        dotenv.config();
+    });
+
+    describe('GitHub', (): void => {
+        beforeAll((): void => {
+            $provider = new GitHubProvider('https://github.com/keindev/changelog-guru.git');
+        });
+
+        it('Default', (): void => {
+            expect($provider.type).toBe(ServiceProvider.GitHub);
+        });
+
+        it('Get commits', (done): void => {
+            $provider.getCommits(1).then((commits): void => {
+                expect(commits).toBeDefined();
+
+                done();
+            });
+        });
+
+        it('Get last release', (done): void => {
+            $provider.getLastRelease().then((releaseInfo): void => {
+                expect(releaseInfo).toBeDefined();
+
+                done();
+            });
+        });
+
+        it('Get previous package info', (done): void => {
+            $provider.getPrevPackage().then((packageInfo): void => {
+                expect(packageInfo).toBeDefined();
+
+                done();
+            });
+        });
     });
 });

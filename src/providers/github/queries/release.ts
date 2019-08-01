@@ -1,14 +1,9 @@
 import { Query } from './query';
-import { Release } from '../../provider';
-
-export interface GitHubResponseRelease {
-    release: {
-        nodes: Release[];
-    };
-}
+import { ReleaseInfo } from '../../typings/types';
+import { GitHubResponseRelease } from '../typings/types';
 
 export class ReleaseQuery extends Query {
-    public async getLast(): Promise<Release | undefined> {
+    public async getLast(): Promise<ReleaseInfo | undefined> {
         const response: GitHubResponseRelease = await this.execute(/* GraphQL */ `
             query GetRelease($owner: String!, $repository: String!) {
                 repository(owner: $owner, name: $repository) {

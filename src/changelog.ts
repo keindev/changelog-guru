@@ -2,72 +2,60 @@ import dotenv from 'dotenv';
 import { TaskTree } from 'tasktree-cli';
 import { Reader } from './io/reader';
 import { Writer } from './io/writer';
-import { Provider, ServiceProvider } from './providers/provider';
-import { GitHubProvider } from './providers/github/provider';
-import { Configuration } from './entities/configuration';
-import { Package } from './entities/package/package';
-import { FilterType } from './utils/enums';
+import { Provider } from './providers/provider';
+import { Config } from './config/config';
+import { Package } from './package/package';
+import { ConfigLoader } from './config/config-loader';
+import { State } from './state/state';
+import { ChangelogOptions } from './typings/types';
 
-const $tasks = TaskTree.tree();
+export class Changelog {
+    private options: ChangelogOptions;
+    private package: Package;
 
-export default class Changelog {
-    private config: Configuration;
-    private pkg: Package;
-
-    public constructor() {
+    public constructor(options?: ChangelogOptions) {
         dotenv.config();
 
-        this.config = new Configuration();
-        this.pkg = new Package();
+        this.package = new Package();
+        this.options = options || {};
     }
 
-    public async generate(bump: boolean = false): Promise<void> {
-        const provider = await this.getProvider();
+    public async generate(): Promise<void> {
+        const [config, provider] = await this.getConfig();
+        const state = await this.readState(config, provider);
 
-        if (provider) {
-            const { config, pkg } = this;
-            const reader = new Reader(provider);
-            const writer = new Writer();
-            const state = await reader.read(pkg);
-
-            state.setLevels(config.getLevels());
-            state.ignoreAuthors(config.getFilters(FilterType.AuthorLogin));
-            state.ignoreCommits(
-                config.getFilters(FilterType.CommitType),
-                config.getFilters(FilterType.CommitScope),
-                config.getFilters(FilterType.CommitSubject)
-            );
-
-            await state.modify(config.getPlugins(), config.getOptions());
-            await writer.write(state.getAuthors(), state.getSections());
-
-            if (bump) {
-                await pkg.incrementVersion(...state.getChangesLevels());
-            }
-        }
+        await this.writeState(state);
     }
 
-    private async getProvider(): Promise<Provider | undefined> {
-        const { config } = this;
-        const task = $tasks.add('Read configuration');
-        let provider: Provider | undefined;
-
-        await config.load(task);
-
-        switch (config.getProvider()) {
-            case ServiceProvider.GitLab:
-                task.fail(`${ServiceProvider.GitLab} - not supported yet`);
-                break;
-            case ServiceProvider.GitHub:
-                provider = new GitHubProvider(this.pkg.getRepository());
-                break;
-            default:
-                task.fail(`Service provider not specified`);
-                break;
-        }
+    private async getConfig(): Promise<[Config, Provider]> {
+        const task = TaskTree.tree().add('Read configuration');
+        const loader = new ConfigLoader(this.options);
+        const config = await loader.load();
+        const provider = await config.getProvider(this.package.getRepository());
 
         task.complete('Configuration initialized with:');
 
-        return provider;
+        return [config, provider];
+    }
+
+    private async readState(config: Config, provider: Provider): Promise<State> {
+        const reader = new Reader(provider);
+        const state = await reader.read(this.package);
+
+        state.setCommitTypes(config.getTypes());
+        state.ignoreEntities(config.getExclusions());
+        await state.modify(config.getPlugins());
+
+        return state;
+    }
+
+    private async writeState(state: State): Promise<void> {
+        const writer = new Writer();
+
+        await writer.write(state.getSections(), state.getAuthors());
+
+        if (this.options.bump) {
+            await this.package.incrementVersion(...state.getChangesLevels());
+        }
     }
 }

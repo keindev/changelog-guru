@@ -1,58 +1,76 @@
-import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/entities/state.mock';
-import { Configuration } from '../../src/entities/configuration';
+import { ConfigLoader } from '../../src/config/config-loader';
+import { ScopePluginOptions, ScopeNames } from '../../src/plugins/implementations/scope/typings/types';
 import { Commit } from '../../src/entities/commit';
-import ScopePlugin, { ScopeConfiguration } from '../../src/plugins/scope';
+import { Author } from '../../src/entities/author';
+import ScopePlugin from '../../src/plugins/implementations/scope/scope';
 
 describe('ScopePlugin', (): void => {
-    const context = new MockState();
-    const task = new Task('test task');
-    let config: Configuration;
-    let plugin: ScopePlugin;
+    const $context = new MockState();
+    const $author = new Author('keindev', {
+        url: 'https://github.com/keindev',
+        avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
+    });
+    let $loader: ConfigLoader;
+    let $plugin: ScopePlugin;
 
     beforeEach((): void => {
-        config = new Configuration();
-        plugin = new ScopePlugin(context);
+        $loader = new ConfigLoader();
+        $plugin = new ScopePlugin($context);
     });
 
-    it('Any scopes', (done): void => {
-        config.load(task).then((): void => {
-            const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
-                timestamp: 0,
-                header: 'feat(Core, Jest 1, Jest 2): subject',
-                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
-                author: 'keindev',
-            });
+    it('Default', (done): void => {
+        $loader.load().then((config): void => {
+            const options = config.getPlugin('scope');
 
-            plugin.init(config.getOptions() as ScopeConfiguration).then((): void => {
-                plugin.parse(commit).then((): void => {
-                    expect(commit.getAccents()).toStrictEqual(['Core', 'Jest 1', 'Jest 2']);
-
-                    done();
+            if (options) {
+                const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+                    timestamp: 0,
+                    header: 'feat(Core, Jest 1, Jest 2): subject',
+                    url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
+                    author: $author,
                 });
-            });
+
+                $plugin.init(options as ScopePluginOptions).then((): void => {
+                    $plugin.parse(commit).then((): void => {
+                        expect(commit.getAccents()).toStrictEqual(['Core', 'Jest 1', 'Jest 2']);
+
+                        done();
+                    });
+                });
+            } else {
+                throw new Error('ScopePlugin config not found!');
+            }
         });
     });
 
-    it('Strict scopes', (done): void => {
-        config.load(task).then((): void => {
-            const options = config.getOptions();
-            const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
-                timestamp: 0,
-                header: 'feat(Core, Jest 1, Jest 2): subject',
-                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
-                author: 'keindev',
-            });
+    it('Only presented in config', (done): void => {
+        $loader.load().then((config): void => {
+            const options = config.getPlugin('scope');
 
-            (options as ScopeConfiguration).scopes.only = true;
-
-            plugin.init(options as ScopeConfiguration).then((): void => {
-                plugin.parse(commit).then((): void => {
-                    expect(commit.getAccents()).toStrictEqual(['Core']);
-
-                    done();
+            if (options) {
+                const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+                    timestamp: 0,
+                    header: 'feat(Core, Jest 1, Jest 2): subject',
+                    url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
+                    author: $author,
                 });
-            });
+
+                $plugin
+                    .init({
+                        onlyPresented: true,
+                        names: options.names as ScopeNames,
+                    })
+                    .then((): void => {
+                        $plugin.parse(commit).then((): void => {
+                            expect(commit.getAccents()).toStrictEqual(['Core']);
+
+                            done();
+                        });
+                    });
+            } else {
+                throw new Error('ScopePlugin config not found!');
+            }
         });
     });
 });

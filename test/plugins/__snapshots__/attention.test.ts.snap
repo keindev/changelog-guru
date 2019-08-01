@@ -3,8 +3,8 @@
 exports[`AttentionPlugin Changed dependencies 1`] = `
 Array [
   Array [
-    3,
-    "- Bumped **[test](https://www.npmjs.com/package/test/v/1.1.0)**  from \`1.0.0\` to \`1.1.0\`",
+    "patch",
+    "-   Bumped **[test](https://www.npmjs.com/package/test/v/1.1.0)** from \`1.0.0\` to \`1.1.0\`",
   ],
 ]
 `;
@@ -12,7 +12,7 @@ Array [
 exports[`AttentionPlugin Changed license 1`] = `
 Array [
   Array [
-    1,
+    "patch",
     "Source code now under \`MIT\` license.",
   ],
 ]

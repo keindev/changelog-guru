@@ -1,25 +1,6 @@
 import { PackageJson } from 'read-pkg';
 import { Query } from './query';
-
-export interface GitHubResponsePackageCommit {
-    hash: string;
-}
-
-export interface GitHubResponsePackageNodes {
-    branch: {
-        target: {
-            history: {
-                commits: GitHubResponsePackageCommit[];
-            };
-        };
-    };
-}
-
-export interface GitHubResponsePackageData {
-    package: {
-        text: string;
-    };
-}
+import { GitHubResponsePackageCommit, GitHubResponsePackageNodes, GitHubResponsePackageData } from '../typings/types';
 
 export class PackageQuery extends Query {
     public async getPackageChanges(date: string): Promise<GitHubResponsePackageCommit | undefined> {
