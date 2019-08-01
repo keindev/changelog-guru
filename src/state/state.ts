@@ -191,8 +191,6 @@ export class State implements StateContext {
             const module: ImportablePlugin<PluginType, StateContext> = await import(filePath);
             const PluginClass: ConstructablePlugin<PluginType, StateContext> = module.default;
 
-            task.log(`${name} plugin imported`);
-
             if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
                 const plugin = new PluginClass(this);
                 const subtask = task.add(`Changing state with ${PluginClass.name}`);
@@ -221,12 +219,10 @@ export class State implements StateContext {
 
                 subtask.complete();
             } else {
-                throw new Error('2222');
-                // task.fail(`${name} is not constructor`);
+                task.fail(`${name} is not constructor`);
             }
         } else {
-            throw new Error(`${1111} ${filePath}`);
-            // task.fail(`Plugin ${name} not found`);
+            task.fail(`Plugin ${name} not found`);
         }
     }
 }
