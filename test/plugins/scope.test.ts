@@ -1,6 +1,6 @@
 import { MockState } from '../__mocks__/entities/state.mock';
 import { ConfigLoader } from '../../src/config/config-loader';
-import { ScopePluginOptions, ScopeTitles } from '../../src/plugins/implementations/scope/typings/types';
+import { ScopePluginOptions, ScopeNames } from '../../src/plugins/implementations/scope/typings/types';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import ScopePlugin from '../../src/plugins/implementations/scope/scope';
@@ -59,7 +59,7 @@ describe('ScopePlugin', (): void => {
                 $plugin
                     .init({
                         onlyPresented: true,
-                        titles: options.titles as ScopeTitles,
+                        names: options.names as ScopeNames,
                     })
                     .then((): void => {
                         $plugin.parse(commit).then((): void => {

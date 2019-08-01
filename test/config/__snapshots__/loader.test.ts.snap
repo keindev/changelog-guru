@@ -133,14 +133,14 @@ Array [
   Array [
     "scope",
     Object {
-      "onlyPresented": false,
-      "titles": Object {
+      "names": Object {
         "api": "API",
         "core": "Core",
         "dts": "TypeScript Declaration Improvements",
         "fc": "Functional Components",
         "ssr": "Server Side Rendering",
       },
+      "onlyPresented": false,
     },
   ],
   Array [

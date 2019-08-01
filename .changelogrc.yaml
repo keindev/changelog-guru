@@ -58,7 +58,7 @@ plugins:
     # list of major scopes
     scope:
         onlyPresented: false
-        titles:
+        names:
             core: Core
             api: API
             ssr: Server Side Rendering

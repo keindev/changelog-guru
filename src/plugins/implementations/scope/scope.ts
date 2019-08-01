@@ -5,12 +5,12 @@ import Key from '../../../utils/key';
 
 export default class ScopePlugin extends CommitPlugin {
     private onlyPresented: boolean = false;
-    private titles: Map<string, string> = new Map();
+    private names: Map<string, string> = new Map();
 
     public async init(config: ScopePluginOptions): Promise<void> {
         this.onlyPresented = !!config.onlyPresented;
-        this.titles = new Map(
-            Object.entries(config.titles).map(([name, title]): [string, string] => [Key.unify(name), title])
+        this.names = new Map(
+            Object.entries(config.names).map(([abbr, name]): [string, string] => [Key.unify(abbr), name])
         );
     }
 
@@ -20,11 +20,11 @@ export default class ScopePlugin extends CommitPlugin {
         if (scope) {
             let accent: string | undefined;
 
-            scope.split(',').forEach((name): void => {
-                accent = Key.inMap(name, this.titles);
+            scope.split(',').forEach((abbr): void => {
+                accent = Key.inMap(abbr, this.names);
 
-                if (accent || (!this.onlyPresented && name.length)) {
-                    commit.addAccent((accent || name).trim());
+                if (accent || (!this.onlyPresented && abbr.length)) {
+                    commit.addAccent((accent || abbr).trim());
                 }
             });
         }

@@ -1,10 +1,10 @@
 import { PluginOption } from '../../../../config/typings/types';
 
-export interface ScopeTitles {
+export interface ScopeNames {
     [key: string]: string;
 }
 
 export interface ScopePluginOptions extends PluginOption {
     onlyPresented: boolean;
-    titles: ScopeTitles;
+    names: ScopeNames;
 }
