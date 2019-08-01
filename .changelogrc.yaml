@@ -43,12 +43,12 @@ plugins:
             optionalDependencies: OptionalDependencies,
     # List of available markers
     marker:
-        commit:
+        actions:
             # !ignore - ignore a commit in output
             - ignore
             # !group(NAME) - creates a group of commits with the <NAME>
             - group
-        section:
+        joins:
             # !important - place a commit title to special section on top of changelog
             important: Important Internal Changes
             # !deprecated - place a commit title to special section with deprecated properties

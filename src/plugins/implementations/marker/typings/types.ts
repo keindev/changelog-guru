@@ -7,6 +7,6 @@ export type MarkerSectionModifiers = {
 };
 
 export interface MarkerPluginOptions extends PluginOption {
-    commit: MarkerCommitModifiers;
-    section: MarkerSectionModifiers;
+    actions: MarkerCommitModifiers;
+    joins: MarkerSectionModifiers;
 }

@@ -117,13 +117,13 @@ Array [
   Array [
     "marker",
     Object {
-      "commit": Array [
+      "actions": Array [
         "ignore",
         "group",
         "ignore",
         "group",
       ],
-      "section": Object {
+      "joins": Object {
         "break": "BREAKING CHANGES",
         "deprecated": "DEPRECATIONS",
         "important": "Important Internal Changes",

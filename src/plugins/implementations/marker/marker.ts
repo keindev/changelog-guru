@@ -18,22 +18,22 @@ export default class MarkerPlugin extends CommitPlugin {
         this.markers = new Set();
         this.sections = new Map();
 
-        config.commit.forEach((type): void => {
-            switch (type) {
+        config.actions.forEach((action): void => {
+            switch (action) {
                 case MarkerType.Ignore:
                 case MarkerType.Grouped:
-                    this.markers.add(type);
+                    this.markers.add(action);
                     break;
                 default:
-                    TaskTree.tree().fail(`Unexpected marker type - ${type}`);
+                    TaskTree.tree().fail(`Unexpected marker type - ${action}`);
                     break;
             }
         });
 
         let position: SectionPosition = SectionPosition.None;
 
-        Object.entries(config.section).forEach(([type, title]): void => {
-            switch (type) {
+        Object.entries(config.joins).forEach(([join, title]): void => {
+            switch (join) {
                 case MarkerType.Breaking:
                 case MarkerType.Deprecated:
                     position = SectionPosition.Header;
@@ -43,7 +43,7 @@ export default class MarkerPlugin extends CommitPlugin {
                     break;
                 default:
                     position = SectionPosition.None;
-                    TaskTree.tree().fail(`Unexpected marker type - ${type}`);
+                    TaskTree.tree().fail(`Unexpected marker type - ${join}`);
                     break;
             }
 
@@ -52,8 +52,8 @@ export default class MarkerPlugin extends CommitPlugin {
 
                 if (section) {
                     section.setOrder(SectionOrder.Min);
-                    this.markers.add(type as MarkerType);
-                    this.sections.set(type as MarkerType, section);
+                    this.markers.add(join as MarkerType);
+                    this.sections.set(join as MarkerType, section);
                 }
             }
         });
