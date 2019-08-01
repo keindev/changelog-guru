@@ -31,7 +31,7 @@ export class Changelog {
         const task = TaskTree.tree().add('Read configuration');
         const loader = new ConfigLoader(this.options);
         const config = await loader.load();
-        const provider = await config.getProvider(this.package.getRepository());
+        const provider = await config.getProvider(this.package.getRepository(), this.options.branch);
 
         task.complete('Configuration initialized with:');
 

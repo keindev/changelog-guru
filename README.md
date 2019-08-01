@@ -216,11 +216,12 @@ One way to filter output by ignoring commits with a given type, scope, subject, 
 
 ### Other CLI options
 
-| Default | CLI             | Description                                                                                                                                      |
-| ------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `false` | `--bump`        | Based on data about changes made in the project, forms the next version number and bumps it in `package.json`, see [SemVer](https://semver.org/) |
-| -       | `-v, --version` | Show `changelog-guru` package version                                                                                                            |
-| -       | `--help`        | Show `changelog-guru` cli options help                                                                                                           |
+| Default                           | CLI             | Description                                                                                                                                      |
+| --------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `false`                           | `--bump`        | Based on data about changes made in the project, forms the next version number and bumps it in `package.json`, see [SemVer](https://semver.org/) |
+| _current branch from .git folder_ | `--branch`      | Set branch by which change log will be generated                                                                                                 |
+| -                                 | `-v, --version` | Show `changelog-guru` package version                                                                                                            |
+| -                                 | `--help`        | Show `changelog-guru` cli options help                                                                                                           |
 
 ### Plugins
 

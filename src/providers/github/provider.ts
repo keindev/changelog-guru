@@ -22,8 +22,8 @@ export class GitHubProvider extends GitProvider {
     private historyQuery: HistoryQuery;
     private packageQuery: PackageQuery;
 
-    public constructor(url: string) {
-        super(ServiceProvider.GitHub, url);
+    public constructor(url: string, branch?: string) {
+        super(ServiceProvider.GitHub, url, branch);
 
         const client = new GraphQLClient(this.endpoint, {
             method: 'POST',

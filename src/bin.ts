@@ -9,6 +9,7 @@ commander
     .version(process.env.npm_package_version || '', '-v, --version')
     .usage('[options]')
     .option('--bump', 'Bump package version in package.json')
+    .option('--branch <value>', 'Set branch by which change log will be generated')
     .option('--provider <value>', 'The type of service provider to receive information about the project')
     .option('--output <value>', 'File path to write change log to it')
     .option('--major <items>', 'The commit types with incompatible API changes', CLI.splitToList)
@@ -28,6 +29,7 @@ const options: ChangelogOptions = {
     provider: commander.provider,
     filePath: commander.output,
     bump: commander.bump,
+    branch: commander.branch,
 };
 
 CLI.appendKeysTo(options.types as NonNullable<typeof options.types>, commander.major, ChangeLevel.Major);

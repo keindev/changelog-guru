@@ -20,7 +20,7 @@ export class Config {
         this.exclusions = options.exclusions;
     }
 
-    public async getProvider(repository: string): Promise<Provider> {
+    public async getProvider(repository: string, branch?: string): Promise<Provider> {
         const tasks = TaskTree.tree();
         let provider: Provider | undefined;
 
@@ -29,7 +29,7 @@ export class Config {
                 tasks.fail(`${ServiceProvider.GitLab} - not supported yet`);
                 break;
             case ServiceProvider.GitHub:
-                provider = new GitHubProvider(repository);
+                provider = new GitHubProvider(repository, branch);
                 break;
             default:
                 tasks.fail(`Service provider not specified`);
