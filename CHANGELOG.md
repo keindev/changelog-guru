@@ -2,6 +2,7 @@
 
 -   **[Bin]** Chg cli options read [`cc71af8`](https://github.com/keindev/changelog-guru/commit/cc71af8811d0728077828f34e2c16c4fb43e6f27)
 -   **[Entities]** Refactoring stage 2 \(30%\) [`965b162`](https://github.com/keindev/changelog-guru/commit/965b162e44a7b30acab9a0002b7fec2d5a23ff68)
+-   **[Package]** Add restrictions rules [`ba5a037`](https://github.com/keindev/changelog-guru/commit/ba5a0374dea8265dcbda5789a996cb525d20855f)
 
 # Important Changes
 
@@ -27,13 +28,13 @@ Source code now under `MIT` license.
 -   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/3.0.0)** with `^3.0.0`
 -   Added **[write-pkg](https://www.npmjs.com/package/write-pkg/v/4.0.0)** with `^4.0.0`
 
-## DevDependencies
+## Dev Dependencies
 
 -   Added **[@types/cosmiconfig](https://www.npmjs.com/package/@types/cosmiconfig/v/5.0.3)** with `^5.0.3`
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
--   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.16)** with `^24.0.16`
--   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.6.9)** with `^12.6.9`
+-   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.17)** with `^24.0.17`
+-   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.0)** with `^12.7.0`
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/1.13.0)** with `^1.13.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/1.13.0)** with `^1.13.0`
@@ -109,6 +110,7 @@ Source code now under `MIT` license.
 
 # Improvements
 
+-   **[Commit]** Add escape flag [`4c83958`](https://github.com/keindev/changelog-guru/commit/4c83958697248a18ec9785cee2a5e0b59a8935eb)
 -   **[Package]** Add npm package links to output [`0b8097c`](https://github.com/keindev/changelog-guru/commit/0b8097c2d14363929f216bcf2e5c127b5a6128ba)
 
 # Bug Fixes
