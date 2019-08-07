@@ -25,7 +25,7 @@ describe('Provider', (): void => {
 
                 done();
             });
-        });
+        }, 10000);
 
         it('Get last release', (done): void => {
             $provider.getLastRelease().then((releaseInfo): void => {
@@ -33,7 +33,7 @@ describe('Provider', (): void => {
 
                 done();
             });
-        });
+        }, 10000);
 
         it('Get previous package info', (done): void => {
             $provider.getPrevPackage().then((packageInfo): void => {
@@ -41,6 +41,6 @@ describe('Provider', (): void => {
 
                 done();
             });
-        });
+        }, 10000);
     });
 });
