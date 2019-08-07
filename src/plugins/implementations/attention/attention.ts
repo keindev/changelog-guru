@@ -1,43 +1,103 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { SemVer } from 'semver';
-import { DependencyModification, DependencyType } from '../../../package/typings/enums';
-import { Section } from '../../../entities/section';
+import { TaskTree } from 'tasktree-cli';
 import { StatePlugin } from '../../state-plugin';
 import { AttentionPluginOptions } from './typings/types';
-import { AttentionType, AttentionTemplateLiteral } from './typings/enums';
 import { SectionPosition, SectionOrder } from '../../../entities/typings/enums';
-import Markdown from '../../../utils/markdown';
-import { Message } from '../../../entities/message';
-import { ChangeLevel } from '../../../config/typings/enums';
 import { ConfigUtils } from '../../../config/utils';
+import { Section } from '../../../entities/section';
+import { Message } from '../../../entities/message';
+import Markdown from '../../../utils/markdown';
+import { ChangeLevel } from '../../../config/typings/enums';
+import { PackageRuleType } from '../../../package/typings/types';
+import { PackageRuleChangeType, DependencyRuleType, RestrictionRuleType } from '../../../package/rules/typings/enums';
+import { AttentionTemplateLiteral } from './typings/enums';
+import { PackageRuleChange } from '../../../package/rules/typings/types';
+import { PackageRule } from '../../../package/rules/package-rule';
 
 export default class AttentionPlugin extends StatePlugin {
     private section: Section | undefined;
-    private subtitles: Map<AttentionType, string> = new Map();
-    private templates: Map<DependencyModification, string> = new Map();
+    private templates: Map<PackageRuleChangeType, string> = new Map();
+    private sections: Set<PackageRuleType> = new Set();
 
-    private static getAttentionType(type: DependencyType, task?: Task): AttentionType | undefined {
-        if (type === DependencyType.Engines) return AttentionType.Engines;
-        if (type === DependencyType.Dependencies) return AttentionType.Dependencies;
-        if (type === DependencyType.Dev) return AttentionType.DevDependencies;
-        if (type === DependencyType.Peer) return AttentionType.PeerDependencies;
-        if (type === DependencyType.Optional) return AttentionType.OptionalDependencies;
+    public static getSubtitle(type: PackageRuleType, task?: Task): string {
+        let subtitle: string | undefined;
 
-        if (task) task.fail('Incompatible PackageDependencyType');
+        switch (type) {
+            case DependencyRuleType.Engines:
+                subtitle = 'Engines';
+                break;
+            case DependencyRuleType.Dependencies:
+                subtitle = 'Dependencies';
+                break;
+            case DependencyRuleType.DevDependencies:
+                subtitle = 'Dev Dependencies';
+                break;
+            case DependencyRuleType.OptionalDependencies:
+                subtitle = 'Optional Dependencies';
+                break;
+            case DependencyRuleType.PeerDependencies:
+                subtitle = 'Peer Dependencies';
+                break;
+            case RestrictionRuleType.BundledDependencies:
+                subtitle = 'Bundled Dependencies';
+                break;
+            case RestrictionRuleType.CPU:
+                subtitle = 'CPU';
+                break;
+            case RestrictionRuleType.OS:
+                subtitle = 'OS';
+                break;
+            default:
+                (task || TaskTree.tree()).fail('Unexpected package rule type!');
+                break;
+        }
 
-        return undefined;
+        return subtitle as string;
+    }
+
+    public static renderTemplate(template: string, change: PackageRuleChange, task?: Task): string {
+        const { name, link } = change;
+        const text = template.replace(/%[a-z]{3,4}%/g, (substring): string => {
+            let result = substring;
+
+            switch (substring) {
+                case AttentionTemplateLiteral.Name:
+                    result = Markdown.bold(link ? Markdown.link(name, link) : name);
+                    break;
+                case AttentionTemplateLiteral.Value:
+                    result = Markdown.wrap(change.value);
+                    break;
+                case AttentionTemplateLiteral.Version:
+                    result = Markdown.wrap(change.version);
+                    break;
+                case AttentionTemplateLiteral.PrevValue:
+                    result = Markdown.wrap(change.prevValue);
+                    break;
+                case AttentionTemplateLiteral.PrevVersion:
+                    result = Markdown.wrap(change.prevVersion);
+                    break;
+                default:
+                    (task || TaskTree.tree()).fail(`Unexpected template literal: ${substring}`);
+                    break;
+            }
+
+            return result;
+        });
+
+        return Markdown.listItem(text);
     }
 
     public async init(config: AttentionPluginOptions): Promise<void> {
-        this.subtitles = new Map();
-        this.templates = new Map();
-
         this.section = this.context.addSection(config.title, SectionPosition.Header);
+        this.templates = new Map();
+        this.sections = new Set();
 
         if (this.section) {
             this.section.setOrder(SectionOrder.Min);
-            ConfigUtils.fillFromEnum(config.sections, AttentionType, this.subtitles);
-            ConfigUtils.fillFromEnum(config.templates, DependencyModification, this.templates);
+            ConfigUtils.fillFromEnum(config.templates, PackageRuleChangeType, this.templates);
+            config.sections.forEach((type): void => {
+                this.sections.add(type);
+            });
         }
     }
 
@@ -45,19 +105,18 @@ export default class AttentionPlugin extends StatePlugin {
         const { section } = this;
 
         if (section) {
-            this.addLicenseAttention(section, task);
-            this.addDependencyAttentions(section, task);
+            this.createLicenseAttention(section, task);
+            this.crateRuleAttention(section, task);
         }
     }
 
-    private addLicenseAttention(section: Section, task: Task): void {
+    private createLicenseAttention(section: Section, task: Task): void {
         const license = this.context.getLicense();
-        const subtitle = this.subtitles.get(AttentionType.License);
 
-        if (subtitle && license && license.isChanged) {
+        if (license && license.isChanged) {
             task.warn(`License changed from ${license.prev} to ${license.id}.`);
 
-            const subsection = new Section(subtitle, SectionPosition.Subsection);
+            const subsection = new Section('License', SectionPosition.Subsection);
             let message: Message;
 
             if (license.prev) {
@@ -81,51 +140,39 @@ export default class AttentionPlugin extends StatePlugin {
         }
     }
 
-    private addDependencyAttentions(section: Section, task: Task): void {
-        Object.values(DependencyType)
-            .filter(Number)
-            .forEach((dependencyType, index): void => {
-                const dependencies = this.context.getDependencies(dependencyType);
-                const attentionType = AttentionPlugin.getAttentionType(dependencyType, task);
+    private crateRuleAttention(section: Section, task: Task): void {
+        let subsection: Section;
+        let message: Message;
+        let rule: PackageRule | undefined;
+        let changes: PackageRuleChange[];
+        let list: string[];
+        let order = 0;
 
-                if (attentionType) {
-                    const subtitle = this.subtitles.get(attentionType);
+        this.sections.forEach((type): void => {
+            rule = this.context.getPackageRule(type);
 
-                    if (subtitle && dependencies) {
-                        let text: string;
-                        const replace = (l: string, v?: string | SemVer): string =>
-                            v ? text.replace(l, Markdown.wrap(v)) : text;
-                        const subsection = new Section(subtitle, SectionPosition.Subsection);
-                        const list: string[] = [];
+            if (rule) {
+                subsection = new Section(AttentionPlugin.getSubtitle(type, task), SectionPosition.Subsection);
+                list = [];
 
-                        this.templates.forEach((template, type): void => {
-                            if (template) {
-                                dependencies.getModifications(type).forEach((modification): void => {
-                                    const { name, value, version, prevValue, prevVersion } = modification;
-                                    let link = dependencies.getLink(name);
+                this.templates.forEach((template, changeType): void => {
+                    changes = (rule as PackageRule).getChanges(changeType);
 
-                                    link = Markdown.bold(link ? Markdown.link(name, link) : name);
-                                    text = template.replace(AttentionTemplateLiteral.Name, link);
-                                    text = replace(AttentionTemplateLiteral.Value, value);
-                                    text = replace(AttentionTemplateLiteral.Version, version);
-                                    text = replace(AttentionTemplateLiteral.PrevValue, prevValue);
-                                    text = replace(AttentionTemplateLiteral.PrevVersion, prevVersion);
-                                    list.push(Markdown.listItem(text));
-                                });
-                            }
-                        });
-
-                        if (list.length) {
-                            const message = new Message(list.join(Markdown.LINE_SEPARATOR));
-
-                            message.escape();
-                            subsection.setOrder(index);
-                            subsection.add(message);
-                            section.add(subsection);
-                            task.log(`${Markdown.capitalize(attentionType)} changed`);
-                        }
+                    if (changes.length) {
+                        list.push(
+                            ...changes.map((change): string => AttentionPlugin.renderTemplate(template, change, task))
+                        );
                     }
+                });
+
+                if (list.length) {
+                    message = new Message(list.join(Markdown.LINE_SEPARATOR));
+                    message.escape();
+                    subsection.setOrder(order++);
+                    subsection.add(message);
+                    section.add(subsection);
                 }
-            });
+            }
+        });
     }
 }

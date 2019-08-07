@@ -6,8 +6,6 @@ import { ChangeLevel, ExclusionType } from '../config/typings/enums';
 import { Filter } from './filter';
 import { PluginOption } from '../config/typings/types';
 import { StateContext } from './typings/types';
-import { DependencyType } from '../package/typings/enums';
-import { Dependency } from '../package/dependency';
 import { Commit } from '../entities/commit';
 import { Author } from '../entities/author';
 import { Section } from '../entities/section';
@@ -18,6 +16,8 @@ import { CommitPlugin } from '../plugins/commit-plugin';
 import { StatePlugin } from '../plugins/state-plugin';
 import Key from '../utils/key';
 import { PluginType, ImportablePlugin, ConstructablePlugin } from '../plugins/typings/types';
+import { PackageRuleType } from '../package/typings/types';
+import { PackageRule } from '../package/rules/package-rule';
 
 export class State implements StateContext {
     protected pluginsPath: string = path.resolve(__dirname, '../plugins/implementations');
@@ -27,7 +27,7 @@ export class State implements StateContext {
     protected commits: Map<string, Commit> = new Map();
     protected sections: Section[] = [];
     protected license: License | undefined;
-    protected dependencies: Map<DependencyType, Dependency> = new Map();
+    protected rules: Map<PackageRuleType, PackageRule> = new Map();
 
     public getSections(): Section[] {
         return this.sections;
@@ -65,12 +65,12 @@ export class State implements StateContext {
         this.license = new License(id, prev);
     }
 
-    public getDependencies(type: DependencyType): Dependency | undefined {
-        return this.dependencies.get(type);
+    public getPackageRule(type: PackageRuleType): PackageRule | undefined {
+        return this.rules.get(type);
     }
 
-    public setDependencies(dependency: Dependency): void {
-        this.dependencies.set(dependency.type, dependency);
+    public setPackageRule(rule: PackageRule): void {
+        this.rules.set(rule.getType(), rule);
     }
 
     public getChangesLevels(): [number, number, number] {

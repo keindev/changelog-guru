@@ -2,8 +2,8 @@ import writePkg from 'write-pkg';
 import readPkg, { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import * as semver from 'semver';
-import { DependencyType } from './typings/enums';
-import { PackageDependenciesStories } from './typings/types';
+import { PackageDependenciesStory, PackageRestrictionsStory } from './typings/types';
+import { DependencyRuleType, RestrictionRuleType } from './rules/typings/enums';
 
 export class Package {
     public static DEFAULT_VERSION = '0.0.1';
@@ -49,16 +49,54 @@ export class Package {
         return this.data.license || Package.DEFAULT_LICENSE;
     }
 
-    public getDependenciesStories(type: DependencyType, prev: readPkg.PackageJson): PackageDependenciesStories {
+    public getDependenciesStory(type: DependencyRuleType, prevState: readPkg.PackageJson): PackageDependenciesStory {
         const { data } = this;
+        let result: PackageDependenciesStory | undefined;
 
-        if (type === DependencyType.Engines) return [data.engines, prev.engines];
-        if (type === DependencyType.Dependencies) return [data.dependencies, prev.dependencies];
-        if (type === DependencyType.Dev) return [data.devDependencies, prev.devDependencies];
-        if (type === DependencyType.Peer) return [data.peerDependencies, prev.peerDependencies];
-        if (type === DependencyType.Optional) return [data.optionalDependencies, prev.optionalDependencies];
+        switch (type) {
+            case DependencyRuleType.Engines:
+                result = [data.engines, prevState.engines];
+                break;
+            case DependencyRuleType.Dependencies:
+                result = [data.dependencies, prevState.dependencies];
+                break;
+            case DependencyRuleType.DevDependencies:
+                result = [data.devDependencies, prevState.devDependencies];
+                break;
+            case DependencyRuleType.PeerDependencies:
+                result = [data.peerDependencies, prevState.peerDependencies];
+                break;
+            case DependencyRuleType.OptionalDependencies:
+                result = [data.optionalDependencies, prevState.optionalDependencies];
+                break;
+            default:
+                TaskTree.tree().fail(`Unexpected dependency group type: ${type}`);
+                break;
+        }
 
-        return [undefined, undefined];
+        return result as PackageDependenciesStory;
+    }
+
+    public getRestrictionsStory(type: RestrictionRuleType, prevState: readPkg.PackageJson): PackageRestrictionsStory {
+        const { data } = this;
+        let result: PackageRestrictionsStory | undefined;
+
+        switch (type) {
+            case RestrictionRuleType.BundledDependencies:
+                result = [data.bundledDependencies, prevState.bundledDependencies];
+                break;
+            case RestrictionRuleType.CPU:
+                result = [data.cpu, prevState.cpu];
+                break;
+            case RestrictionRuleType.OS:
+                result = [data.os, prevState.os];
+                break;
+            default:
+                TaskTree.tree().fail(`Unexpected restriction group type: ${type}`);
+                break;
+        }
+
+        return result as PackageRestrictionsStory;
     }
 
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {

@@ -37,7 +37,7 @@ export default class Markdown {
         return `\`\`\`${lang} ${text} \`\`\``;
     }
 
-    public static wrap(text: SemVer | string): string {
+    public static wrap(text: SemVer | string | undefined): string {
         return `\`${text}\``;
     }
 

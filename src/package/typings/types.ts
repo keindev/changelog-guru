@@ -1,17 +1,10 @@
-import { SemVer } from 'semver';
-import { DependencyModification } from './enums';
+import { DependencyRuleType, RestrictionRuleType } from '../rules/typings/enums';
 
-export type PackageDependenciesStories = [PackageDependency | undefined, PackageDependency | undefined];
+export type PackageRestrictions = string[];
+export type PackageRuleType = DependencyRuleType | RestrictionRuleType;
+export type PackageDependenciesStory = [PackageDependencies | undefined, PackageDependencies | undefined];
+export type PackageRestrictionsStory = [PackageRestrictions | undefined, PackageRestrictions | undefined];
 
-export interface PackageDependency {
+export interface PackageDependencies {
     [key: string]: string;
-}
-
-export interface DependencyInfo {
-    name: string;
-    type: DependencyModification;
-    value?: string;
-    prevValue?: string;
-    version?: SemVer;
-    prevVersion?: SemVer;
 }

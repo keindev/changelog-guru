@@ -4,8 +4,8 @@ import { ConfigLoader } from '../../src/config/config-loader';
 import AttentionPlugin from '../../src/plugins/implementations/attention/attention';
 import { AttentionPluginOptions } from '../../src/plugins/implementations/attention/typings/types';
 import { ChangeLevel } from '../../src/config/typings/enums';
-import { Dependency } from '../../src/package/dependency';
-import { DependencyType } from '../../src/package/typings/enums';
+import { DependencyRule } from '../../src/package/rules/dependency-rule';
+import { DependencyRuleType } from '../../src/package/rules/typings/enums';
 
 describe('AttentionPlugin', (): void => {
     let $loader: ConfigLoader;
@@ -64,9 +64,9 @@ describe('AttentionPlugin', (): void => {
     });
 
     it('Changed dependencies', (done): void => {
-        $context.setDependencies(
-            new Dependency(
-                DependencyType.Dependencies,
+        $context.setPackageRule(
+            new DependencyRule(
+                DependencyRuleType.Dependencies,
                 {
                     test: '^1.1.0',
                 },

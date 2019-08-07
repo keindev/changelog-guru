@@ -1,9 +1,10 @@
 import { TaskTree } from 'tasktree-cli';
 import { Provider } from '../providers/provider';
 import { State } from '../state/state';
-import { DependencyType } from '../package/typings/enums';
-import { Dependency } from '../package/dependency';
 import { Package } from '../package/package';
+import { DependencyRuleType, RestrictionRuleType } from '../package/rules/typings/enums';
+import { DependencyRule } from '../package/rules/dependency-rule';
+import { RestrictionRule } from '../package/rules/restriction-rule';
 
 export class Reader {
     private provider: Provider;
@@ -45,15 +46,12 @@ export class Reader {
 
         state.setLicense(packageInfo.getLicense(), data.license);
 
-        Object.values(DependencyType).forEach((type): void => {
-            state.setDependencies(new Dependency(type, ...packageInfo.getDependenciesStories(type, data)));
+        Object.values(DependencyRuleType).forEach((type): void => {
+            state.setPackageRule(new DependencyRule(type, ...packageInfo.getDependenciesStory(type, data)));
         });
 
-        /*
-            TODO: add this ->
-            // https://docs.npmjs.com/files/package.json#bundleddependencies
-            https://docs.npmjs.com/files/package.json#os
-            https://docs.npmjs.com/files/package.json#cpu
-        */
+        Object.values(RestrictionRuleType).forEach((type): void => {
+            state.setPackageRule(new RestrictionRule(type, ...packageInfo.getRestrictionsStory(type, data)));
+        });
     }
 }

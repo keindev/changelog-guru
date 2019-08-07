@@ -1,12 +1,11 @@
-import { DependencyModification } from '../../../../package/typings/enums';
-import { AttentionType } from './enums';
 import { PluginOption } from '../../../../config/typings/types';
+import { PackageRuleChangeType } from '../../../../package/rules/typings/enums';
+import { PackageRuleType } from '../../../../package/typings/types';
 
-export type AttentionTemplates = { [key in DependencyModification]?: string };
-export type AttentionTypes = { [key in AttentionType]?: string };
+export type AttentionTemplates = { [key in PackageRuleChangeType]?: string };
 
 export interface AttentionPluginOptions extends PluginOption {
     title: string;
     templates: AttentionTemplates;
-    sections: AttentionTypes;
+    sections: PackageRuleType[];
 }

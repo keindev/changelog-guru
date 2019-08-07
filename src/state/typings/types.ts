@@ -1,12 +1,12 @@
 import { License } from '../../package/license';
-import { DependencyType } from '../../package/typings/enums';
-import { Dependency } from '../../package/dependency';
 import { Section } from '../../entities/section';
 import { SectionPosition } from '../../entities/typings/enums';
+import { PackageRuleType } from '../../package/typings/types';
+import { PackageRule } from '../../package/rules/package-rule';
 
 export interface StateContext {
     getLicense(): License | undefined;
-    getDependencies(type: DependencyType): Dependency | undefined;
+    getPackageRule(type: PackageRuleType): PackageRule | undefined;
     addSection(title: string, position: SectionPosition): Section | undefined;
     findSection(title: string): Section | undefined;
 }

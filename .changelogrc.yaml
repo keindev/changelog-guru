@@ -35,12 +35,15 @@ plugins:
             downgraded: 'Downgraded %name% from %pver% to %ver%'
             removed: 'Removed %name%, with %pval%'
         sections:
-            license: License
-            engines: Engines
-            dependencies: Dependencies
-            devDependencies: DevDependencies
-            peerDependencies: PeerDependencies
-            optionalDependencies: OptionalDependencies,
+            - license
+            - os
+            - cpu
+            - engines
+            - dependencies
+            - devDependencies
+            - peerDependencies
+            - optionalDependencies
+            - bundledDependencies
     # List of available markers
     marker:
         actions:
