@@ -242,9 +242,12 @@ Base plugin enabled by default. Displays information about changes to [package.j
 -   [license](https://docs.npmjs.com/files/package.json#license)
 -   [engines](https://docs.npmjs.com/files/package.json#engines)
 -   [dependencies](https://docs.npmjs.com/files/package.json#dependencies)
--   [devDependencies](https://docs.npmjs.com/files/package.json#devdependencies)
--   [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
--   [optionalDependencies](https://docs.npmjs.com/files/package.json#optionaldependencies)
+-   [dev dependencies](https://docs.npmjs.com/files/package.json#devdependencies)
+-   [peer dependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
+-   [optional dependencies](https://docs.npmjs.com/files/package.json#optionaldependencies)
+-   [bundled dependencies](https://docs.npmjs.com/files/package.json#bundleddependencies)
+-   [OS](https://docs.npmjs.com/files/package.json#os)
+-   [CPU](https://docs.npmjs.com/files/package.json#cpu)
 
 Default options:
 
@@ -258,12 +261,15 @@ attention:
         downgraded: 'Downgraded %name% from %pver% to %ver%'
         removed: 'Removed %name%, with %pval%'
     sections:
-        license: License
-        engines: Engines
-        dependencies: Dependencies
-        devDependencies: DevDependencies
-        peerDependencies: PeerDependencies
-        optionalDependencies: OptionalDependencies,
+        - license
+        - os
+        - cpu
+        - engines
+        - dependencies
+        - devDependencies
+        - peerDependencies
+        - optionalDependencies
+        - bundledDependencies
 ```
 
 ##### Title
@@ -292,7 +298,7 @@ Literals available for substitution in Templates:
 
 ##### Sections
 
-Section names with dependency changes.
+List of available for output sections. If you do not want to see a section in the change log, simply remove its name from the list.
 
 #### Marker
 
