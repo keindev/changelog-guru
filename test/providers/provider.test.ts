@@ -4,6 +4,7 @@ import { GitHubProvider } from '../../src/providers/github/provider';
 import { GitProvider } from '../../src/providers/git-provider';
 
 describe('Provider', (): void => {
+    const $date = new Date(0).toISOString();
     let $provider: GitProvider;
 
     beforeAll((): void => {
@@ -20,8 +21,16 @@ describe('Provider', (): void => {
         });
 
         it('Get commits', (done): void => {
-            $provider.getCommits(1).then((commits): void => {
+            $provider.getCommits($date, 1).then((commits): void => {
                 expect(commits).toBeDefined();
+
+                done();
+            });
+        }, 10000);
+
+        it('Get commits count', (done): void => {
+            $provider.getCommitsCount($date).then((count): void => {
+                expect(count).toBeGreaterThanOrEqual(0);
 
                 done();
             });

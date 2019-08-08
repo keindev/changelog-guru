@@ -40,8 +40,13 @@ export class MockProvider extends GitProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async getCommits(page: number): Promise<Commit[]> {
+    public async getCommits(date: string, page: number): Promise<Commit[]> {
         return Promise.resolve([this.__commit]);
+    }
+
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    public async getCommitsCount(date: string): Promise<number> {
+        return Promise.resolve(1);
     }
 
     // eslint-disable-next-line class-methods-use-this
