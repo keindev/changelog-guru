@@ -48,7 +48,7 @@ export default class AttentionPlugin extends StatePlugin {
                 subtitle = 'OS';
                 break;
             default:
-                (task || TaskTree.tree()).fail('Unexpected package rule type!');
+                (task || TaskTree).fail('Unexpected package rule type!');
                 break;
         }
 
@@ -77,7 +77,7 @@ export default class AttentionPlugin extends StatePlugin {
                     result = Markdown.wrap(change.prevVersion);
                     break;
                 default:
-                    (task || TaskTree.tree()).fail(`Unexpected template literal: ${substring}`);
+                    (task || TaskTree).fail(`Unexpected template literal: ${substring}`);
                     break;
             }
 

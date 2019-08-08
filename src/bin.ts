@@ -22,7 +22,7 @@ commander
     .description('Git changelog generator')
     .parse(process.argv);
 
-const tasks = TaskTree.tree();
+const taskTree = TaskTree.tree();
 const options: ChangelogOptions = {
     types: new Map(),
     exclusions: new Map(),
@@ -56,10 +56,10 @@ CLI.appendValuesTo(
     ExclusionType.CommitSubject
 );
 
-tasks.start();
+taskTree.start();
 
 const changelog = new Changelog(options);
 
 changelog.generate().then((): void => {
-    tasks.stop();
+    taskTree.stop();
 });

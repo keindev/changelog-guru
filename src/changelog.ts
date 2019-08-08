@@ -28,7 +28,7 @@ export class Changelog {
     }
 
     private async getConfig(): Promise<[Config, Provider]> {
-        const task = TaskTree.tree().add('Read configuration');
+        const task = TaskTree.add('Read configuration');
         const loader = new ConfigLoader(this.options);
         const config = await loader.load();
         const provider = await config.getProvider(this.package.getRepository(), this.options.branch);

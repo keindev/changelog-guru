@@ -19,7 +19,7 @@ export abstract class GitProvider extends Provider {
     public constructor(type: ServiceProvider, url: string, branch?: string) {
         super(type);
 
-        const task = TaskTree.tree().add('Initializing git provider');
+        const task = TaskTree.add('Initializing git provider');
         const pathname = new URL(url).pathname.split('/');
         const pattern = `.${GitProvider.TYPE}/HEAD`;
 

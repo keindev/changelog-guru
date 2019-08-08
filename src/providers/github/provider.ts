@@ -11,8 +11,6 @@ import { ReleaseInfo } from '../typings/types';
 import { ServiceProvider } from '../../config/typings/enums';
 import { GitHubResponseHistoryCommit, GitHubResponseHistoryAuthor } from './typings/types';
 
-const $tasks = TaskTree.tree();
-
 export class GitHubProvider extends GitProvider {
     private endpoint = 'https://api.github.com/graphql';
     private authors: Map<number, Author> = new Map();
@@ -43,7 +41,7 @@ export class GitHubProvider extends GitProvider {
     }
 
     public async getCommits(pageIndex: number): Promise<Commit[]> {
-        const task = $tasks.add(`Loading page #${pageIndex + 1}`);
+        const task = TaskTree.add(`Loading page #${pageIndex + 1}`);
         const release = await this.getLastRelease();
         let cursor: string | undefined;
 
@@ -73,7 +71,7 @@ export class GitHubProvider extends GitProvider {
     }
 
     public async getPrevPackage(): Promise<PackageJson> {
-        const task = $tasks.add(`Loading previous package.json...`);
+        const task = TaskTree.add(`Loading previous package.json...`);
         const { packageQuery: query } = this;
         const release = await this.getLastRelease();
         const commit = await query.getPackageChanges(release.date);

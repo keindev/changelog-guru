@@ -15,7 +15,7 @@ export class Reader {
 
     public async read(packageInfo: Package): Promise<State> {
         const { provider } = this;
-        const task = TaskTree.tree().add('Loading a release state...');
+        const task = TaskTree.add('Loading a release state...');
         const state = new State();
         const { date, tag } = await provider.getLastRelease();
 

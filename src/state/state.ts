@@ -90,7 +90,7 @@ export class State implements StateContext {
                     patch++;
                     break;
                 default:
-                    TaskTree.tree().fail(`Incompatible ChangeLevel - ${commit.getChangeLevel()}`);
+                    TaskTree.fail(`Incompatible ChangeLevel - ${commit.getChangeLevel()}`);
                     break;
             }
         });
@@ -146,14 +146,14 @@ export class State implements StateContext {
                     Filter.commitsBySubject(this.commits, rules);
                     break;
                 default:
-                    TaskTree.tree().fail(`Unacceptable entity exclusion type - ${type}`);
+                    TaskTree.fail(`Unacceptable entity exclusion type - ${type}`);
                     break;
             }
         });
     }
 
     public async modify(plugins: [string, PluginOption][]): Promise<void> {
-        const task = TaskTree.tree().add('Modifying release state...');
+        const task = TaskTree.add('Modifying release state...');
 
         await Promise.all(plugins.map(([name, options]): Promise<void> => this.modifyWithPlugin(name, options, task)));
         this.rebuildSectionsTree();
@@ -161,7 +161,7 @@ export class State implements StateContext {
     }
 
     private rebuildSectionsTree(): void {
-        const task = TaskTree.tree().add('Bringing the section tree to a consistent state...');
+        const task = TaskTree.add('Bringing the section tree to a consistent state...');
         const sections = this.sections.sort(Section.compare);
 
         if (sections.length) {

@@ -79,7 +79,7 @@ export class Writer {
     }
 
     public async write(sections: Section[], authors: Author[]): Promise<void> {
-        const task = TaskTree.tree().add('Writing new changelog...');
+        const task = TaskTree.add('Writing new changelog...');
         const data = sections.map((subsection): string => this.renderSection(subsection));
 
         data.push(Writer.renderAuthors(authors), Markdown.EMPTY_SEPARATOR);

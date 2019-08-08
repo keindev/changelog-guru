@@ -21,18 +21,17 @@ export class Config {
     }
 
     public async getProvider(repository: string, branch?: string): Promise<Provider> {
-        const tasks = TaskTree.tree();
         let provider: Provider | undefined;
 
         switch (this.provider) {
             case ServiceProvider.GitLab:
-                tasks.fail(`${ServiceProvider.GitLab} - not supported yet`);
+                TaskTree.fail(`${ServiceProvider.GitLab} - not supported yet`);
                 break;
             case ServiceProvider.GitHub:
                 provider = new GitHubProvider(repository, branch);
                 break;
             default:
-                tasks.fail(`Service provider not specified`);
+                TaskTree.fail(`Service provider not specified`);
                 break;
         }
 

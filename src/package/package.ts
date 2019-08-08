@@ -13,7 +13,7 @@ export class Package {
     private data: PackageJson;
 
     public constructor() {
-        const task = TaskTree.tree().add('Reading package.json');
+        const task = TaskTree.add('Reading package.json');
 
         this.data = readPkg.sync({ normalize: false });
 
@@ -70,7 +70,7 @@ export class Package {
                 result = [data.optionalDependencies, prevState.optionalDependencies];
                 break;
             default:
-                TaskTree.tree().fail(`Unexpected dependency group type: ${type}`);
+                TaskTree.fail(`Unexpected dependency group type: ${type}`);
                 break;
         }
 
@@ -92,7 +92,7 @@ export class Package {
                 result = [data.os, prevState.os];
                 break;
             default:
-                TaskTree.tree().fail(`Unexpected restriction group type: ${type}`);
+                TaskTree.fail(`Unexpected restriction group type: ${type}`);
                 break;
         }
 
@@ -100,7 +100,7 @@ export class Package {
     }
 
     public async incrementVersion(major: number, minor: number, patch: number): Promise<void> {
-        const task = TaskTree.tree().add(`Updating package version`);
+        const task = TaskTree.add(`Updating package version`);
         const current = this.getVersion();
         let next: string | undefined;
 

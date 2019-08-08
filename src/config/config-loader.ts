@@ -20,7 +20,7 @@ export class ConfigLoader {
     }
 
     public async load(): Promise<Config> {
-        const task = TaskTree.tree().add('Reading configuration file...');
+        const task = TaskTree.add('Reading configuration file...');
         const filePath = await this.loadConfig();
         let config: Config | undefined;
 
@@ -65,7 +65,7 @@ export class ConfigLoader {
                             types.set(name, level as ChangeLevel);
                         });
                     } else {
-                        TaskTree.tree().fail('Unexpected level of changes (expected: major, minor or patch)');
+                        TaskTree.fail('Unexpected level of changes (expected: major, minor or patch)');
                     }
                 }
             });
@@ -85,7 +85,7 @@ export class ConfigLoader {
                 if (Object.values(ExclusionType).includes(name)) {
                     exclusions.set(name as ExclusionType, [...new Set(rules)]);
                 } else {
-                    TaskTree.tree().fail('Unexpected exclusion name');
+                    TaskTree.fail('Unexpected exclusion name');
                 }
             });
         }

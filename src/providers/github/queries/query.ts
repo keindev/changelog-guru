@@ -18,9 +18,7 @@ export class Query {
         try {
             data = await this.client.request(query, Object.assign(variables, this.variables));
         } catch (err) {
-            TaskTree.tree()
-                .add('GraphQLClient: request error!')
-                .error(err, true);
+            TaskTree.add('GraphQLClient: request error!').error(err, true);
         }
 
         return data ? data.repository : undefined;
