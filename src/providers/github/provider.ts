@@ -40,21 +40,17 @@ export class GitHubProvider extends GitProvider {
         this.packageQuery = new PackageQuery(client, variables);
     }
 
-    public async getCommits(pageIndex: number): Promise<Commit[]> {
-        const task = TaskTree.add(`Loading page #${pageIndex + 1}`);
-        const release = await this.getLastRelease();
-        let cursor: string | undefined;
+    public async getCommits(date: string, pageIndex: number): Promise<Commit[]> {
+        const cursor = pageIndex ? await this.getCursor(pageIndex) : undefined;
+        const commits = await this.historyQuery.getCommits(date, GitHubProvider.PAGE_SIZE, cursor);
 
-        if (pageIndex) {
-            cursor = await this.getCursor(pageIndex);
-        }
+        return commits.map((commit): Commit => this.parseResponse(commit));
+    }
 
-        const commits = await this.historyQuery.getCommits(release.date, GitHubProvider.PAGE_SIZE, cursor);
-        const list = commits.map((commit): Commit => this.parseResponse(commit));
+    public async getCommitsCount(date: string): Promise<number> {
+        const count = await this.historyQuery.getCommitsCount(date);
 
-        task.complete(`Page #${pageIndex + 1} loaded (${commits.length} commits)`);
-
-        return list;
+        return count;
     }
 
     public async getLastRelease(): Promise<ReleaseInfo> {
@@ -71,7 +67,7 @@ export class GitHubProvider extends GitProvider {
     }
 
     public async getPrevPackage(): Promise<PackageJson> {
-        const task = TaskTree.add(`Loading previous package.json...`);
+        const task = TaskTree.add(`Loading previous release package.json state...`);
         const { packageQuery: query } = this;
         const release = await this.getLastRelease();
         const commit = await query.getPackageChanges(release.date);
@@ -79,9 +75,9 @@ export class GitHubProvider extends GitProvider {
 
         if (commit) {
             data = await query.getPackageFrom(commit);
-            task.complete('Previous package.json loaded');
+            task.complete('Previous release package.json state loaded');
         } else {
-            task.skip('Previous package.json is not found');
+            task.skip('The previous release did not contain package.json');
         }
 
         return data;

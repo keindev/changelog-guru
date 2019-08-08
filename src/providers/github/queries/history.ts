@@ -1,5 +1,10 @@
 import { Query } from './query';
-import { GitHubResponseHistoryCursor, GitHubResponseHistoryCommit, GitHubResponseHistoryEdges } from '../typings/types';
+import {
+    GitHubResponseHistoryCursor,
+    GitHubResponseHistoryCommit,
+    GitHubResponseHistoryEdges,
+    GitHubResponseHistoryCommitsCount,
+} from '../typings/types';
 
 export class HistoryQuery extends Query {
     public static moveCursor(cursor: string, position: number): string {
@@ -56,11 +61,11 @@ export class HistoryQuery extends Query {
             }
 
             query GetCommits(
-                $owner: String!
-                $repository: String!
-                $branch: String!
-                $limit: Int!
-                $date: GitTimestamp!
+                $owner: String!,
+                $repository: String!,
+                $branch: String!,
+                $limit: Int!,
+                $date: GitTimestamp!,
                 ${cursorVariable}
             ) {
                 repository(owner: $owner, name: $repository) {
@@ -84,5 +89,30 @@ export class HistoryQuery extends Query {
         );
 
         return response.branch.target.history.edges.map((edge): GitHubResponseHistoryCommit => edge.node);
+    }
+
+    public async getCommitsCount(date: string): Promise<number> {
+        const response: GitHubResponseHistoryCommitsCount = await this.execute(
+            /* GraphQL */ `
+                query GetCommitsCount($owner: String!, $repository: String!, $branch: String!, $date: GitTimestamp!) {
+                    repository(owner: $owner, name: $repository) {
+                        branch: ref(qualifiedName: $branch) {
+                            target {
+                                ... on Commit {
+                                    history(since: $date) {
+                                        count: totalCount
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            `,
+            {
+                date,
+            }
+        );
+
+        return response.branch.target.history.count;
     }
 }

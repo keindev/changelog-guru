@@ -13,6 +13,7 @@ export abstract class Provider {
     }
 
     abstract async getLastRelease(): Promise<ReleaseInfo>;
-    abstract async getCommits(page: number): Promise<Commit[]>;
+    abstract async getCommits(date: string, page: number): Promise<Commit[]>;
+    abstract async getCommitsCount(date: string): Promise<number>;
     abstract async getPrevPackage(): Promise<PackageJson>;
 }

@@ -42,6 +42,16 @@ export interface GitHubResponseHistoryEdges {
     };
 }
 
+export interface GitHubResponseHistoryCommitsCount {
+    branch: {
+        target: {
+            history: {
+                count: number;
+            };
+        };
+    };
+}
+
 export interface GitHubResponsePackageCommit {
     hash: string;
 }
