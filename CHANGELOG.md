@@ -24,7 +24,7 @@ Source code now under `MIT` license.
 -   Added **[graphql-request](https://www.npmjs.com/package/graphql-request/v/1.8.2)** with `^1.8.2`
 -   Added **[read-pkg](https://www.npmjs.com/package/read-pkg/v/5.2.0)** with `^5.2.0`
 -   Added **[semver](https://www.npmjs.com/package/semver/v/6.3.0)** with `^6.3.0`
--   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/1.2.3)** with `^1.2.3`
+-   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/1.2.4)** with `^1.2.4`
 -   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/3.0.0)** with `^3.0.0`
 -   Added **[write-pkg](https://www.npmjs.com/package/write-pkg/v/4.0.0)** with `^4.0.0`
 
@@ -34,16 +34,16 @@ Source code now under `MIT` license.
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
 -   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.17)** with `^24.0.17`
--   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.0)** with `^12.7.0`
+-   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.1)** with `^12.7.1`
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/1.13.0)** with `^1.13.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/1.13.0)** with `^1.13.0`
--   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.1.0)** with `6.1.0`
--   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/13.2.0)** with `13.2.0`
+-   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.1.0)** with `^6.1.0`
+-   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/13.2.0)** with `^13.2.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.0.0)** with `^6.0.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
--   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.14.1)** with `^22.14.1`
--   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.2)** with `^3.0.2`
+-   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.0)** with `^22.15.0`
+-   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.3)** with `^3.0.3`
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.8.0)** with `^24.8.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
 -   Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)** with `^1.18.2`
@@ -112,6 +112,7 @@ Source code now under `MIT` license.
 
 -   **[Commit]** Add escape flag [`4c83958`](https://github.com/keindev/changelog-guru/commit/4c83958697248a18ec9785cee2a5e0b59a8935eb)
 -   **[Package]** Add npm package links to output [`0b8097c`](https://github.com/keindev/changelog-guru/commit/0b8097c2d14363929f216bcf2e5c127b5a6128ba)
+-   **[State]** Change task tree messages struct [`c6c717e`](https://github.com/keindev/changelog-guru/commit/c6c717e36ffcffd0ffc9937f70f2cbfbd700fc4a)
 
 # Bug Fixes
 
@@ -176,7 +177,7 @@ Source code now under `MIT` license.
 ## Others
 
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
--   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
+-   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 -   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
 -   **[Marker]** Add eslint disable no\-explicit\-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
@@ -185,13 +186,14 @@ Source code now under `MIT` license.
 -   **[Package]** Update dependencies [`54e6330`](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f) [`1fbed44`](https://github.com/keindev/changelog-guru/commit/1fbed44925822a89fdb3cb8ceef460ac3b4fb77c) [`839d042`](https://github.com/keindev/changelog-guru/commit/839d04201466025bad2269548a4ca5be2f81593c)
 -   **[Package]** Normalize package info [`a13d7e0`](https://github.com/keindev/changelog-guru/commit/a13d7e046c1368b1b880e6df6ce9949ef0381c34)
 -   **[Provider]** Add tests for provider queries [`cf3e85d`](https://github.com/keindev/changelog-guru/commit/cf3e85dc7a852f0e2f44550a3889c9d557fb7053)
+-   **[Provider]** Increase test timeout [`8a7eab1`](https://github.com/keindev/changelog-guru/commit/8a7eab1ecf99aa28b1c9fced7ca12664c5383364)
 -   **[Reader]** Add test for Reader [`a64e5fc`](https://github.com/keindev/changelog-guru/commit/a64e5fcd0c53bcfbab59229c21582cf6fe42e53d)
 -   **[Readme]** Add library description [`6c6056b`](https://github.com/keindev/changelog-guru/commit/6c6056bad2976582eae3a0a7a64816827082797a)
 -   **[Readme]** Add cdn logo link, add npm badges [`129c449`](https://github.com/keindev/changelog-guru/commit/129c44945deae630f2903c1249e37a60d96f8aee)
 -   **[Readme]** Add package description [`7901da6`](https://github.com/keindev/changelog-guru/commit/7901da6798d486597d5ee58258080f97cef3de82)
 -   **[README]** Add usage & configuration sections [`2b30a05`](https://github.com/keindev/changelog-guru/commit/2b30a05f9f16db7bfd26fffde1e1920ea23e33c3)
 -   **[README]** Fix usage section [`4efa55d`](https://github.com/keindev/changelog-guru/commit/4efa55dc9f85c7f59e80ed4cd503eed41e93421f)
--   **[README]** Add Attention plugin description [`4baa0d0`](https://github.com/keindev/changelog-guru/commit/4baa0d058ff377916a36977978aace0a4bf3013c)
+-   **[README]** Add Attention plugin description [`4baa0d0`](https://github.com/keindev/changelog-guru/commit/4baa0d058ff377916a36977978aace0a4bf3013c) [`7231213`](https://github.com/keindev/changelog-guru/commit/7231213c912ed029add669d770a99835da7967f3)
 -   **[README]** Add desc for Section & Scope plugins [`0511c38`](https://github.com/keindev/changelog-guru/commit/0511c389150d6c70553ad8266cc426d1552aef49)
 -   **[README]** Add marker plugin description [`021db83`](https://github.com/keindev/changelog-guru/commit/021db83a0cf4086a90f6c1b36cd65af76bb11a39)
 -   **[Section]** Add tests for relations [`cdcc792`](https://github.com/keindev/changelog-guru/commit/cdcc792fef88b1b346fc85ad984075ccf64ace71)
@@ -256,6 +258,7 @@ Source code now under `MIT` license.
 -   Rename some Commit methods [`82c987c`](https://github.com/keindev/changelog-guru/commit/82c987c22e938c21a7e8b42b7a4c5ad40b7a5d4a)
 -   Refactor changelog\.generate [`53d3a63`](https://github.com/keindev/changelog-guru/commit/53d3a63b757621959b259b3f942fc9ae37e72f29)
 -   Make some chore changes to entities [`30f3310`](https://github.com/keindev/changelog-guru/commit/30f3310cb9145c468ba3d0478b366769bf7ac705)
+-   Replace tasktree methods call to new api [`daac6c2`](https://github.com/keindev/changelog-guru/commit/daac6c22fa4cb61a2a4924ee9ca75f855741da03)
 
 ---
 
