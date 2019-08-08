@@ -193,31 +193,28 @@ export class State implements StateContext {
 
             if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
                 const plugin = new PluginClass(this);
-                const subtask = task.add(`Changing state with ${PluginClass.name}`);
 
                 if (plugin instanceof BasePlugin) {
                     await plugin.init(options);
                 } else {
-                    subtask.fail(`${PluginClass.name} is not Plugin class`);
+                    task.fail(`${PluginClass.name} is not Plugin class`);
                 }
 
                 switch (true) {
                     case plugin instanceof CommitPlugin:
                         await Promise.all(
                             [...this.commits.values()].map(
-                                (commit): Promise<void> => (plugin as CommitPlugin).parse(commit, subtask)
+                                (commit): Promise<void> => (plugin as CommitPlugin).parse(commit, task)
                             )
                         );
                         break;
                     case plugin instanceof StatePlugin:
-                        await (plugin as StatePlugin).modify(subtask);
+                        await (plugin as StatePlugin).modify(task);
                         break;
                     default:
-                        subtask.fail(`${PluginClass.name} - state modification with this plugin is not available yet`);
+                        task.fail(`${PluginClass.name} - state modification with this plugin is not available yet`);
                         break;
                 }
-
-                subtask.complete();
             } else {
                 task.fail(`${name} is not constructor`);
             }
