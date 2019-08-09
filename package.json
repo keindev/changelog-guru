@@ -43,7 +43,7 @@
         "node": ">=10.0.0"
     },
     "dependencies": {
-        "commander": "^2.20.0",
+        "commander": "^3.0.0",
         "cosmiconfig": "^5.2.1",
         "deepmerge": "^4.0.0",
         "dotenv": "^8.0.0",
