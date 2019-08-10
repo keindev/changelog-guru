@@ -16,7 +16,7 @@ Source code now under `MIT` license.
 
 ## Dependencies
 
--   Added **[commander](https://www.npmjs.com/package/commander/v/2.20.0)** with `^2.20.0`
+-   Added **[command-line-args](https://www.npmjs.com/package/command-line-args/v/5.1.1)** with `^5.1.1`
 -   Added **[cosmiconfig](https://www.npmjs.com/package/cosmiconfig/v/5.2.1)** with `^5.2.1`
 -   Added **[deepmerge](https://www.npmjs.com/package/deepmerge/v/4.0.0)** with `^4.0.0`
 -   Added **[dotenv](https://www.npmjs.com/package/dotenv/v/8.0.0)** with `^8.0.0`
@@ -30,6 +30,7 @@ Source code now under `MIT` license.
 
 ## Dev Dependencies
 
+-   Added **[@types/command-line-args](https://www.npmjs.com/package/@types/command-line-args/v/5.0.0)** with `^5.0.0`
 -   Added **[@types/cosmiconfig](https://www.npmjs.com/package/@types/cosmiconfig/v/5.0.3)** with `^5.0.3`
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
@@ -112,6 +113,7 @@ Source code now under `MIT` license.
 
 -   **[Commit]** Add escape flag [`4c83958`](https://github.com/keindev/changelog-guru/commit/4c83958697248a18ec9785cee2a5e0b59a8935eb)
 -   **[Package]** Add npm package links to output [`0b8097c`](https://github.com/keindev/changelog-guru/commit/0b8097c2d14363929f216bcf2e5c127b5a6128ba)
+-   **[Provider]** Add commits count info [`453ae5c`](https://github.com/keindev/changelog-guru/commit/453ae5c552cf40c8cbdcd35b0b40b32f80e557e7)
 -   **[State]** Change task tree messages struct [`c6c717e`](https://github.com/keindev/changelog-guru/commit/c6c717e36ffcffd0ffc9937f70f2cbfbd700fc4a)
 
 # Bug Fixes
@@ -178,6 +180,7 @@ Source code now under `MIT` license.
 
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 -   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
+-   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b)
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 -   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
 -   **[Marker]** Add eslint disable no\-explicit\-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
@@ -187,6 +190,7 @@ Source code now under `MIT` license.
 -   **[Package]** Normalize package info [`a13d7e0`](https://github.com/keindev/changelog-guru/commit/a13d7e046c1368b1b880e6df6ce9949ef0381c34)
 -   **[Provider]** Add tests for provider queries [`cf3e85d`](https://github.com/keindev/changelog-guru/commit/cf3e85dc7a852f0e2f44550a3889c9d557fb7053)
 -   **[Provider]** Increase test timeout [`8a7eab1`](https://github.com/keindev/changelog-guru/commit/8a7eab1ecf99aa28b1c9fced7ca12664c5383364)
+-   **[Provider, Reader]** Fix test [`aa779f9`](https://github.com/keindev/changelog-guru/commit/aa779f9582a0bf19271dcce21f491417268d7226)
 -   **[Reader]** Add test for Reader [`a64e5fc`](https://github.com/keindev/changelog-guru/commit/a64e5fcd0c53bcfbab59229c21582cf6fe42e53d)
 -   **[Readme]** Add library description [`6c6056b`](https://github.com/keindev/changelog-guru/commit/6c6056bad2976582eae3a0a7a64816827082797a)
 -   **[Readme]** Add cdn logo link, add npm badges [`129c449`](https://github.com/keindev/changelog-guru/commit/129c44945deae630f2903c1249e37a60d96f8aee)

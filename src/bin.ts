@@ -1,65 +1,88 @@
-import commander from 'commander';
 import { TaskTree } from 'tasktree-cli';
+import commandLineArgs, { CommandLineOptions } from 'command-line-args';
+import { Command, CommandName, CommandGenerateOption, CommandLintOption } from './utils/command';
 import { Changelog } from './changelog';
-import { ExclusionType, ChangeLevel } from './config/typings/enums';
 import { ChangelogOptions } from './typings/types';
-import { CLI } from './utils/cli';
+import { ChangeLevel, ExclusionType } from './config/typings/enums';
 
-commander
-    .version(process.env.npm_package_version || '', '-v, --version')
-    .usage('[options]')
-    .option('--bump', 'Bump package version in package.json')
-    .option('--branch <value>', 'Set branch by which change log will be generated')
-    .option('--provider <value>', 'The type of service provider to receive information about the project')
-    .option('--output <value>', 'File path to write change log to it')
-    .option('--major <items>', 'The commit types with incompatible API changes', CLI.splitToList)
-    .option('--minor <items>', 'The commit types with backwards-compatible and added functionality', CLI.splitToList)
-    .option('--patch <items>', 'The commit types with backwards-compatible and bug fixes', CLI.splitToList)
-    .option('--excl-authors <items>', 'Excludes authors with the listed logins from output', CLI.splitToList)
-    .option('--excl-types <items>', 'Excludes commits with the listed types from output', CLI.splitToList)
-    .option('--excl-scopes <items>', 'Excludes commits with the listed scopes from output', CLI.splitToList)
-    .option('--excl-subjects <items>', 'Excludes commits with the listed subjects from output', CLI.splitToList)
-    .description('Git changelog generator')
-    .parse(process.argv);
-
+const mainOptions = commandLineArgs([{ name: 'command', defaultOption: true }], { stopAtFirstUnknown: true });
+// eslint-disable-next-line no-underscore-dangle
+const argv = { argv: mainOptions._unknown || [] };
+const changelog = new Changelog();
 const taskTree = TaskTree.tree();
-const options: ChangelogOptions = {
-    types: new Map(),
-    exclusions: new Map(),
-    provider: commander.provider,
-    filePath: commander.output,
-    bump: commander.bump,
-    branch: commander.branch,
-};
+let commandOptions: CommandLineOptions;
+let changelogOptions: ChangelogOptions;
 
-CLI.appendKeysTo(options.types as NonNullable<typeof options.types>, commander.major, ChangeLevel.Major);
-CLI.appendKeysTo(options.types as NonNullable<typeof options.types>, commander.minor, ChangeLevel.Minor);
-CLI.appendKeysTo(options.types as NonNullable<typeof options.types>, commander.patch, ChangeLevel.Patch);
-CLI.appendValuesTo(
-    options.exclusions as NonNullable<typeof options.exclusions>,
-    commander.exclAuthors,
-    ExclusionType.AuthorLogin
-);
-CLI.appendValuesTo(
-    options.exclusions as NonNullable<typeof options.exclusions>,
-    commander.exclTypes,
-    ExclusionType.CommitType
-);
-CLI.appendValuesTo(
-    options.exclusions as NonNullable<typeof options.exclusions>,
-    commander.exclScopes,
-    ExclusionType.CommitScope
-);
-CLI.appendValuesTo(
-    options.exclusions as NonNullable<typeof options.exclusions>,
-    commander.exclSubjects,
-    ExclusionType.CommitSubject
-);
+async function generate(): Promise<void> {
+    type Types = NonNullable<typeof changelogOptions.types>;
+    type Exclusions = NonNullable<typeof changelogOptions.exclusions>;
 
-taskTree.start();
+    commandOptions = commandLineArgs(Command.getGenerateOptionsDefinition(), argv);
+    changelogOptions = {
+        types: new Map(),
+        exclusions: new Map(),
+        provider: commandOptions[CommandGenerateOption.Provider],
+        filePath: commandOptions[CommandGenerateOption.Output],
+        bump: commandOptions[CommandGenerateOption.Bump],
+        branch: commandOptions[CommandGenerateOption.Branch],
+    };
 
-const changelog = new Changelog(options);
+    const { types, exclusions } = changelogOptions;
 
-changelog.generate().then((): void => {
-    taskTree.stop();
-});
+    Command.appendKeysTo(types as Types, commandOptions[CommandGenerateOption.Major], ChangeLevel.Major);
+    Command.appendKeysTo(types as Types, commandOptions[CommandGenerateOption.Minor], ChangeLevel.Minor);
+    Command.appendKeysTo(types as Types, commandOptions[CommandGenerateOption.Patch], ChangeLevel.Patch);
+
+    Command.appendValuesTo(
+        exclusions as Exclusions,
+        commandOptions[CommandGenerateOption.ExcludeAuthors],
+        ExclusionType.AuthorLogin
+    );
+    Command.appendValuesTo(
+        exclusions as Exclusions,
+        commandOptions[CommandGenerateOption.ExcludeTypes],
+        ExclusionType.CommitType
+    );
+    Command.appendValuesTo(
+        exclusions as Exclusions,
+        commandOptions[CommandGenerateOption.ExcludeScopes],
+        ExclusionType.CommitScope
+    );
+    Command.appendValuesTo(
+        exclusions as Exclusions,
+        commandOptions[CommandGenerateOption.ExcludeSubjects],
+        ExclusionType.CommitSubject
+    );
+
+    changelog.setOptions(changelogOptions);
+    await changelog.generate();
+}
+
+async function lint(): Promise<void> {
+    commandOptions = commandLineArgs(Command.getLintOptionsDefinition(), argv);
+
+    await changelog.lint(commandOptions[CommandLintOption.Message]);
+}
+
+switch (mainOptions.command) {
+    case CommandName.Generate:
+    case CommandName.GenerateAlias:
+        taskTree.start();
+
+        generate().then((): void => {
+            taskTree.stop();
+        });
+        break;
+    case CommandName.Lint:
+    case CommandName.LintAlias:
+        taskTree.start();
+
+        lint().then((): void => {
+            taskTree.stop();
+        });
+        break;
+    default:
+        // eslint-disable-next-line no-console
+        console.log('help');
+        break;
+}

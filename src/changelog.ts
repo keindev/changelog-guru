@@ -20,11 +20,20 @@ export class Changelog {
         this.options = options || {};
     }
 
+    public setOptions(options: ChangelogOptions): void {
+        this.options = options;
+    }
+
     public async generate(): Promise<void> {
         const [config, provider] = await this.getConfig();
         const state = await this.readState(config, provider);
 
         await this.writeState(state);
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    public async lint(text: string | undefined): Promise<boolean> {
+        return Promise.resolve(!!text);
     }
 
     private async getConfig(): Promise<[Config, Provider]> {
