@@ -40,7 +40,7 @@ Source code now under `MIT` license.
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/1.13.0)** with `^1.13.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/1.13.0)** with `^1.13.0`
 -   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.1.0)** with `^6.1.0`
--   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/13.2.0)** with `^13.2.0`
+-   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.0.0)** with `^6.0.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
 -   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.0)** with `^22.15.0`
@@ -111,6 +111,7 @@ Source code now under `MIT` license.
 
 # Improvements
 
+-   **[Cli]** Rewrite to commands to clases [`3f0c2b8`](https://github.com/keindev/changelog-guru/commit/3f0c2b838b2f237423ee84c07ea06eab39dce3d3)
 -   **[Commit]** Add escape flag [`4c83958`](https://github.com/keindev/changelog-guru/commit/4c83958697248a18ec9785cee2a5e0b59a8935eb)
 -   **[Package]** Add npm package links to output [`0b8097c`](https://github.com/keindev/changelog-guru/commit/0b8097c2d14363929f216bcf2e5c127b5a6128ba)
 -   **[Provider]** Add commits count info [`453ae5c`](https://github.com/keindev/changelog-guru/commit/453ae5c552cf40c8cbdcd35b0b40b32f80e557e7)
@@ -121,6 +122,7 @@ Source code now under `MIT` license.
 -   **[AttentionPlugin]** Rename engine to engines [`ad9b186`](https://github.com/keindev/changelog-guru/commit/ad9b186dd129dce0395f9b14dae2c39d08e28b70)
 -   **[Commit]** Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
 -   **[Config]** Fix error with Level\.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
+-   **[Debug]** Fix debug cli commnad [`3296542`](https://github.com/keindev/changelog-guru/commit/3296542ca175f43b07445485f1209fee04368ca9)
 -   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
 -   **[Plugins]** Add export for Config interfaces [`949d2cc`](https://github.com/keindev/changelog-guru/commit/949d2cc1ab65191f1c35a73b0e5cbceb6ac9c88d)
 -   **[Provider]** Fix findup cwd [`e9e5df6`](https://github.com/keindev/changelog-guru/commit/e9e5df6c5966915db9af7f24326b2edc421f69f1)
@@ -133,6 +135,7 @@ Source code now under `MIT` license.
 -   **[State]** Add check for existence of plugin file [`e2064ca`](https://github.com/keindev/changelog-guru/commit/e2064ca5abb9d099503d98a95b614e7dcc356201)
 -   **[State]** Add import task skip if plug not exist [`6b9c9fd`](https://github.com/keindev/changelog-guru/commit/6b9c9fdb1abd6935f388f9e6d9a2c01d8514a152)
 -   **[State, Section]** Fix sections sorting [`7740999`](https://github.com/keindev/changelog-guru/commit/77409996c382f83f49ce58f673da71b963732536)
+-   **[Utils]** Rename CLI to Command [`09b0614`](https://github.com/keindev/changelog-guru/commit/09b06141d88745d9dd0c9410712018503c0c0bc6)
 -   **[Writer]** Fix error with output md [`fe88997`](https://github.com/keindev/changelog-guru/commit/fe889978149da0b4b760c70eb3eade80d2761821)
 -   Rewrite reader, test github api [`dfea14d`](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae) [`a5b847f`](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
 -   Add author avatar size [`f2107a2`](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)

@@ -25,10 +25,10 @@ export abstract class Command {
     private options: Map<string, [string, CommandType]> = new Map();
     private defaultOption: [string, string, CommandType] | undefined = undefined;
 
-    public constructor(name: string, description: string, alias?: string) {
+    public constructor(name: string, alias: string, description: string) {
         this.name = name;
-        this.description = description;
         this.alias = alias;
+        this.description = description;
     }
 
     public static getDefinition(name: string, type: CommandType, defaultOption?: boolean): OptionDefinition {
@@ -61,6 +61,10 @@ export abstract class Command {
             defaultOption,
             type: typeCallback,
         };
+    }
+
+    public isMatched(name: string): boolean {
+        return name === this.name || name === this.alias;
     }
 
     public setOption(name: string, description: string, type: CommandType = CommandType.String): void {

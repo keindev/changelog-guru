@@ -5,14 +5,16 @@ import { Command } from './command';
 export class CommandManager {
     private taskTree = TaskTree.tree();
     private command: Command | undefined;
-    private argv: commandLineArgs.ParseOptions;
+    private argv: commandLineArgs.ParseOptions | undefined;
 
     public constructor(commands: Command[]) {
         const mainOptions = commandLineArgs([{ name: 'command', defaultOption: true }], { stopAtFirstUnknown: true });
 
-        this.command = commands.find((command): boolean => command.name === mainOptions.command);
-        // eslint-disable-next-line no-underscore-dangle
-        this.argv = { argv: mainOptions._unknown || [] };
+        if (mainOptions.command) {
+            this.command = commands.find((command): boolean => command.isMatched(mainOptions.command));
+            // eslint-disable-next-line no-underscore-dangle
+            this.argv = { argv: mainOptions._unknown || [] };
+        }
     }
 
     public isCorrectCommand(): boolean {
