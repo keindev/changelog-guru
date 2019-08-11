@@ -39,17 +39,17 @@ export abstract class GitProvider extends Provider {
                 if (match) {
                     [, this.branch] = match;
                 } else {
-                    task.warn(`${pattern} - ref(s) SHA not found`);
+                    task.warn(`{bold ${pattern}} - ref(s) SHA not found`);
                 }
             } else {
-                task.warn(`${pattern} - does not exist`);
+                task.warn(`{bold ${pattern}} - does not exist`);
             }
         }
 
-        task.log(`Provider: ${this.type}`);
-        task.log(`Repository: ${this.repository}`);
-        task.log(`Branch: ${this.branch}`);
-        task.log(`Owner: ${this.owner}`);
+        task.log(`Provider: {bold ${this.type}}`);
+        task.log(`Repository: {bold ${this.repository}}`);
+        task.log(`Branch: {bold ${this.branch}}`);
+        task.log(`Owner: {bold ${this.owner}}`);
         task.complete('Git provider:');
     }
 }

@@ -49,7 +49,7 @@ export class Changelog {
 
         switch (config.provider) {
             case ServiceProvider.GitLab:
-                TaskTree.fail(`${ServiceProvider.GitLab} - not supported yet`);
+                TaskTree.fail(`{bold ${ServiceProvider.GitLab}} - not supported yet`);
                 break;
             case ServiceProvider.GitHub:
                 provider = new GitHubProvider(repository, branch);

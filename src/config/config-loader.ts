@@ -40,7 +40,7 @@ export class ConfigLoader {
                 plugins: this.getPlugins(),
             });
 
-            task.complete(`Config file: ${path.relative(process.cwd(), filePath)}`);
+            task.complete(`Config file: {bold ${path.relative(process.cwd(), filePath)}}`);
         } else {
             task.fail('Default configuration file not found');
         }

@@ -100,7 +100,7 @@ export class State implements StateContext {
                     patch++;
                     break;
                 default:
-                    TaskTree.fail(`Incompatible ChangeLevel - ${commit.getChangeLevel()}`);
+                    TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.getChangeLevel()}}`);
                     break;
             }
         });
@@ -156,7 +156,7 @@ export class State implements StateContext {
                     Filter.commitsBySubject(this.commits, rules);
                     break;
                 default:
-                    TaskTree.fail(`Unacceptable entity exclusion type - ${type}`);
+                    TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
                     break;
             }
         });
@@ -207,7 +207,7 @@ export class State implements StateContext {
                 if (plugin instanceof BasePlugin) {
                     await plugin.init(options);
                 } else {
-                    task.fail(`${PluginClass.name} is not Plugin class`);
+                    task.fail(`{bold ${PluginClass.name}} is not Plugin class`);
                 }
 
                 switch (true) {
@@ -222,14 +222,14 @@ export class State implements StateContext {
                         await (plugin as StatePlugin).modify(task);
                         break;
                     default:
-                        task.fail(`${PluginClass.name} - state modification with this plugin is not available yet`);
+                        task.fail(`{bold ${PluginClass.name}} - plugin is not available yet`);
                         break;
                 }
             } else {
-                task.fail(`${name} is not constructor`);
+                task.fail(`{bold ${name}} is not constructor`);
             }
         } else {
-            task.fail(`Plugin ${name} not found`);
+            task.fail(`Plugin {bold ${name}} not found`);
         }
     }
 }

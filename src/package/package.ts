@@ -28,8 +28,8 @@ export class Package {
         if (!this.data.version) task.fail('Package version is not specified');
         if (!this.data.repository) task.fail('Package repository url is not specified');
 
-        task.log(`Version: ${this.getVersion()}`);
-        task.log(`Repository: ${this.getRepository()}`);
+        task.log(`Version: {bold ${this.getVersion()}}`);
+        task.log(`Repository: {bold ${this.getRepository()}}`);
         task.complete('Package information:');
     }
 
@@ -77,7 +77,7 @@ export class Package {
                 result = [data.optionalDependencies, prevState.optionalDependencies];
                 break;
             default:
-                TaskTree.fail(`Unexpected dependency group type: ${type}`);
+                TaskTree.fail(`Unexpected dependency group type: {bold ${type}}`);
                 break;
         }
 
@@ -99,7 +99,7 @@ export class Package {
                 result = [data.os, prevState.os];
                 break;
             default:
-                TaskTree.fail(`Unexpected restriction group type: ${type}`);
+                TaskTree.fail(`Unexpected restriction group type: {bold ${type}}`);
                 break;
         }
 
@@ -118,9 +118,9 @@ export class Package {
             this.data.version = next;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             await writePkg(this.data as any);
-            task.complete(`Package version updated to ${next}`);
+            task.complete(`Package version updated to {bold ${next}}`);
         } else {
-            task.fail(`New package version [${next}] is invalid or less (see https://semver.org/)`);
+            task.fail(`New package version {bold.underline ${next}} is invalid or less (see https://semver.org/)`);
         }
     }
 }

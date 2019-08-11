@@ -47,7 +47,7 @@ export class Reader {
         }
 
         await Promise.all(promises);
-        task.complete(`${count} commits loaded`, true);
+        task.complete(`{bold ${count}} commits loaded`, true);
     }
 
     private async loadCommitsPage(index: number, state: State, date: string, bar: Progress): Promise<void> {

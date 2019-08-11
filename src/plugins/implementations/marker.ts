@@ -61,7 +61,7 @@ export default class MarkerPlugin extends CommitPlugin {
                     break;
                 default:
                     position = SectionPosition.None;
-                    TaskTree.fail(`Unexpected marker type - ${join}`);
+                    TaskTree.fail(`Unexpected marker type - {bold ${join}}`);
                     break;
             }
 
@@ -112,7 +112,7 @@ export default class MarkerPlugin extends CommitPlugin {
                                 section = this.context.addSection(value, SectionPosition.Group);
                                 break;
                             default:
-                                task.fail(`Unexpected marker type - ${type}`);
+                                task.fail(`Unexpected marker type - {bold ${type}}`);
                                 break;
                         }
 

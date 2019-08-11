@@ -91,7 +91,7 @@ export default class AttentionPlugin extends StatePlugin {
                     result = Markdown.wrap(change.prevVersion);
                     break;
                 default:
-                    (task || TaskTree).fail(`Unexpected template literal: ${substring}`);
+                    (task || TaskTree).fail(`Unexpected template literal: {bold ${substring}}`);
                     break;
             }
 
@@ -142,7 +142,7 @@ export default class AttentionPlugin extends StatePlugin {
         const license = this.context.getLicense();
 
         if (license && license.isChanged) {
-            task.warn(`License changed from ${license.prev} to ${license.id}.`);
+            task.warn(`License changed from {bold.underline ${license.prev}} to {bold.underline ${license.id}}.`);
 
             const subsection = new Section('License', SectionPosition.Subsection);
             let message: Message;

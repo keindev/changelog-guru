@@ -66,7 +66,7 @@ export class GitHubProvider extends GitProvider {
     }
 
     public async getPrevPackage(): Promise<PackageJson> {
-        const task = TaskTree.add(`Loading previous release package.json state...`);
+        const task = TaskTree.add(`Loading previous release {bold package.json} state...`);
         const { packageQuery: query } = this;
         const release = await this.getLastRelease();
         const commit = await query.getPackageChanges(release.date);
@@ -74,7 +74,7 @@ export class GitHubProvider extends GitProvider {
 
         if (commit) {
             data = await query.getPackageFrom(commit);
-            task.complete('Previous release package.json state loaded');
+            task.complete('Previous release {bold package.json} state loaded');
         } else {
             task.skip('The previous release did not contain package.json');
         }
