@@ -14,10 +14,10 @@ export class GenerateCommand extends Command {
         this.setOption('major', 'The commit types with incompatible API changes', CommandType.List);
         this.setOption('minor', 'The commit types with backwards-compatible and added functionality', CommandType.List);
         this.setOption('patch', 'The commit types with backwards-compatible and bug fixes', CommandType.List);
-        this.setOption('exclAuthors', 'Excludes authors with the listed logins from output', CommandType.List);
-        this.setOption('exclTypes', 'Excludes commits with the listed types from output', CommandType.List);
-        this.setOption('exclScopes', 'Excludes commits with the listed scopes from output', CommandType.List);
-        this.setOption('exclSubjects', 'Excludes commits with the listed subjects from output', CommandType.List);
+        this.setOption('excl-authors', 'Excludes authors with the listed logins from output', CommandType.List);
+        this.setOption('excl-types', 'Excludes commits with the listed types from output', CommandType.List);
+        this.setOption('excl-scopes', 'Excludes commits with the listed scopes from output', CommandType.List);
+        this.setOption('excl-subjects', 'Excludes commits with the listed subjects from output', CommandType.List);
     }
 
     private static appendKeysTo<K, V>(map: Map<K, V>, keys: K[], value: V): void {
@@ -49,10 +49,10 @@ export class GenerateCommand extends Command {
         GenerateCommand.appendKeysTo(types as Types, options.minor, ChangeLevel.Minor);
         GenerateCommand.appendKeysTo(types as Types, options.patch, ChangeLevel.Patch);
 
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options.exclAuthors, ExclusionType.AuthorLogin);
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options.exclTypes, ExclusionType.CommitType);
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options.exclScopes, ExclusionType.CommitScope);
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options.exclSubjects, ExclusionType.CommitSubject);
+        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-authors'], ExclusionType.AuthorLogin);
+        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-types'], ExclusionType.CommitType);
+        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-scopes'], ExclusionType.CommitScope);
+        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-subjects'], ExclusionType.CommitSubject);
 
         const changelog = new Changelog(changelogOptions);
 

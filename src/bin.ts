@@ -7,7 +7,5 @@ const manager = new CommandManager([new GenerateCommand(), new LintCommand()]);
 if (manager.isCorrectCommand()) {
     manager.execute();
 } else {
-    // TODO: help
-    // eslint-disable-next-line no-console
-    console.log('Help');
+    process.stdout.write(manager.help());
 }

@@ -2,10 +2,10 @@ import { OptionDefinition, CommandLineOptions } from 'command-line-args';
 import { ChangelogOptions } from '../../changelog';
 
 export enum CommandType {
-    String = 1,
-    Number = 2,
-    Boolean = 3,
-    List = 4,
+    String = 'string',
+    Number = 'number',
+    Boolean = 'boolean',
+    List = 'string[]',
 }
 
 export abstract class Command {
@@ -63,18 +63,6 @@ export abstract class Command {
         };
     }
 
-    public isMatched(name: string): boolean {
-        return name === this.name || name === this.alias;
-    }
-
-    public setOption(name: string, description: string, type: CommandType = CommandType.String): void {
-        this.options.set(name, [description, type]);
-    }
-
-    public setDefaultOption(name: string, description: string, type: CommandType = CommandType.String): void {
-        this.defaultOption = [name, description, type];
-    }
-
     public getDefinitions(): OptionDefinition[] {
         const definitions = [];
 
@@ -89,6 +77,32 @@ export abstract class Command {
         });
 
         return definitions;
+    }
+
+    public getOptions(): [string, string, CommandType][] {
+        const options: [string, string, CommandType][] = [];
+
+        this.options.forEach(([description, type], name): void => {
+            options.push([name, description, type]);
+        });
+
+        return options;
+    }
+
+    public hasOptions(): boolean {
+        return !!this.options.size;
+    }
+
+    public isMatched(name: string): boolean {
+        return name === this.name || name === this.alias;
+    }
+
+    public setOption(name: string, description: string, type: CommandType = CommandType.String): void {
+        this.options.set(name, [description, type]);
+    }
+
+    public setDefaultOption(name: string, description: string, type: CommandType = CommandType.String): void {
+        this.defaultOption = [name, description, type];
     }
 
     public abstract async execute(options: CommandLineOptions): Promise<void>;
