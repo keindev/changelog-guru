@@ -1,9 +1,8 @@
 import { MockWriter } from '../__mocks__/io/writer.mock';
-import { Commit } from '../../src/entities/commit';
+import { Commit, CommitStatus } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
-import { SectionPosition, CommitStatus } from '../../src/entities/typings/enums';
-import { Section } from '../../src/entities/section';
-import { ChangeLevel } from '../../src/config/typings/enums';
+import { Section, SectionPosition } from '../../src/entities/section';
+import { ChangeLevel } from '../../src/config/config';
 
 describe('Writer', (): void => {
     it('Default', (done): void => {

@@ -1,12 +1,30 @@
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import { MarkerPluginOptions } from './typings/types';
-import { CommitPlugin } from '../../commit-plugin';
-import { Section } from '../../../entities/section';
-import { Commit } from '../../../entities/commit';
-import { MarkerType } from './typings/enums';
-import { CommitStatus, SectionPosition, SectionOrder } from '../../../entities/typings/enums';
-import Key from '../../../utils/key';
+import { PluginOption } from '../../config/config';
+import { CommitPlugin } from '../commit-plugin';
+import { Section, SectionPosition, SectionOrder } from '../../entities/section';
+import { Commit, CommitStatus } from '../../entities/commit';
+import Key from '../../utils/key';
+
+export enum MarkerType {
+    // !break - indicates major changes breaking backward compatibility
+    Breaking = 'break',
+    // !deprecate- place a commit title to special section with deprecated properties
+    Deprecated = 'deprecated',
+    // !group(NAME) - creates a group of commits with the <NAME>
+    Grouped = 'group',
+    // !ignore - ignore a commit in output
+    Ignore = 'ignore',
+    // !important - place a commit title to special section on top of changelog
+    Important = 'important',
+}
+
+export interface MarkerPluginOptions extends PluginOption {
+    actions: (MarkerType.Ignore | MarkerType.Grouped)[];
+    joins: {
+        [key in MarkerType.Breaking | MarkerType.Deprecated | MarkerType.Important]: string;
+    };
+}
 
 export default class MarkerPlugin extends CommitPlugin {
     private static EXPRESSION = /!(?<type>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;

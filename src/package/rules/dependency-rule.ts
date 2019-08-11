@@ -1,9 +1,20 @@
 import semver, { SemVer } from 'semver';
 import { Compare } from '../../typings/enums';
-import { PackageRule } from './package-rule';
-import { DependencyRuleType, PackageRuleChangeType } from './typings/enums';
-import { PackageDependencies } from '../typings/types';
-import { PackageRuleChange } from './typings/types';
+import { PackageRule, PackageRuleChangeType, PackageRuleChange } from './package-rule';
+import { PackageDependencies } from '../package';
+
+export enum DependencyRuleType {
+    // https://docs.npmjs.com/files/package.json#engines
+    Engines = 'engines',
+    // https://docs.npmjs.com/files/package.json#dependencies
+    Dependencies = 'dependencies',
+    // https://docs.npmjs.com/files/package.json#devdependencies
+    DevDependencies = 'devDependencies',
+    // https://docs.npmjs.com/files/package.json#peerdependencies
+    PeerDependencies = 'peerDependencies',
+    // https://docs.npmjs.com/files/package.json#optionaldependencies
+    OptionalDependencies = 'optionalDependencies',
+}
 
 export class DependencyRule extends PackageRule {
     public constructor(type: DependencyRuleType, deps?: PackageDependencies, prev?: PackageDependencies) {

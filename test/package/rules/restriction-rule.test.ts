@@ -1,5 +1,5 @@
-import { RestrictionRule } from '../../../src/package/rules/restriction-rule';
-import { RestrictionRuleType, PackageRuleChangeType } from '../../../src/package/rules/typings/enums';
+import { RestrictionRule, RestrictionRuleType } from '../../../src/package/rules/restriction-rule';
+import { PackageRuleChangeType } from '../../../src/package/rules/package-rule';
 
 describe('RestrictionRule', (): void => {
     it('Default', (): void => {

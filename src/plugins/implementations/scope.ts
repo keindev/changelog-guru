@@ -1,7 +1,16 @@
-import { CommitPlugin } from '../../commit-plugin';
-import { ScopePluginOptions } from './typings/types';
-import { Commit } from '../../../entities/commit';
-import Key from '../../../utils/key';
+import { CommitPlugin } from '../commit-plugin';
+import { Commit } from '../../entities/commit';
+import { PluginOption } from '../../config/config';
+import Key from '../../utils/key';
+
+export interface ScopeNames {
+    [key: string]: string;
+}
+
+export interface ScopePluginOptions extends PluginOption {
+    onlyPresented: boolean;
+    names: ScopeNames;
+}
 
 export default class ScopePlugin extends CommitPlugin {
     private onlyPresented: boolean = false;

@@ -1,6 +1,6 @@
 import semver from 'semver';
-import { DependencyRule } from '../../../src/package/rules/dependency-rule';
-import { DependencyRuleType, PackageRuleChangeType } from '../../../src/package/rules/typings/enums';
+import { DependencyRule, DependencyRuleType } from '../../../src/package/rules/dependency-rule';
+import { PackageRuleChangeType } from '../../../src/package/rules/package-rule';
 
 describe('DependencyRule', (): void => {
     it('Default', (): void => {

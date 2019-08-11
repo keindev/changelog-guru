@@ -1,5 +1,5 @@
-import { StateContext } from '../state/typings/types';
-import { PluginOption } from '../config/typings/types';
+import { StateContext } from '../state/state';
+import { PluginOption } from '../config/config';
 
 export abstract class BasePlugin {
     protected context: StateContext;

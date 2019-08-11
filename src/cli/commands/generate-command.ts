@@ -1,7 +1,7 @@
 import { CommandLineOptions } from 'command-line-args';
 import { Command, CommandType } from './command';
-import { ChangeLevel, ExclusionType } from '../config/typings/enums';
-import { Changelog } from '../changelog';
+import { Changelog } from '../../changelog';
+import { ChangeLevel, ExclusionType } from '../../config/config';
 
 export class GenerateCommand extends Command {
     public constructor() {

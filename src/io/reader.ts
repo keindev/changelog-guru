@@ -3,9 +3,8 @@ import { Progress } from 'tasktree-cli/lib/progress';
 import { Provider } from '../providers/provider';
 import { State } from '../state/state';
 import { Package } from '../package/package';
-import { DependencyRuleType, RestrictionRuleType } from '../package/rules/typings/enums';
-import { DependencyRule } from '../package/rules/dependency-rule';
-import { RestrictionRule } from '../package/rules/restriction-rule';
+import { DependencyRule, DependencyRuleType } from '../package/rules/dependency-rule';
+import { RestrictionRule, RestrictionRuleType } from '../package/rules/restriction-rule';
 
 export class Reader {
     private provider: Provider;

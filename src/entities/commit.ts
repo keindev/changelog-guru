@@ -1,9 +1,22 @@
-import { ChangeLevel } from '../config/typings/enums';
-import { CommitOptions } from './typings/types';
-import { CommitStatus } from './typings/enums';
 import { Compare, Priority } from '../typings/enums';
 import { Entity } from './entity';
 import { Author } from './author';
+import { ChangeLevel } from '../config/config';
+
+export enum CommitStatus {
+    BreakingChanges = 1,
+    Deprecated = 2,
+    Important = 4,
+    Default = 8,
+}
+
+export interface CommitOptions {
+    timestamp: number;
+    header: string;
+    body?: string;
+    url: string;
+    author: Author;
+}
 
 export class Commit extends Entity {
     public static LINE_SEPARATOR = '\n';

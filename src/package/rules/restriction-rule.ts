@@ -1,12 +1,18 @@
-import { PackageRule } from './package-rule';
-import { RestrictionRuleType, PackageRuleChangeType } from './typings/enums';
-import { PackageRestrictions } from '../typings/types';
-import { PackageRuleChange } from './typings/types';
+import { PackageRule, PackageRuleChange, PackageRuleChangeType } from './package-rule';
+
+export enum RestrictionRuleType {
+    // https://docs.npmjs.com/files/package.json#bundleddependencies
+    BundledDependencies = 'bundledDependencies',
+    // https://docs.npmjs.com/files/package.json#os
+    OS = 'os',
+    // https://docs.npmjs.com/files/package.json#cpu
+    CPU = 'cpu',
+}
 
 export class RestrictionRule extends PackageRule {
     public static BLACKLIST_MARK = '!';
 
-    public constructor(type: RestrictionRuleType, restrictions?: PackageRestrictions, prev?: PackageRestrictions) {
+    public constructor(type: RestrictionRuleType, restrictions?: string[], prev?: string[]) {
         super(type);
 
         this.fillChanges(restrictions);
@@ -17,7 +23,7 @@ export class RestrictionRule extends PackageRule {
         return value[0] === RestrictionRule.BLACKLIST_MARK ? value.substring(1, value.length) : value;
     }
 
-    private fillChanges(restrictions?: PackageRestrictions): void {
+    private fillChanges(restrictions?: string[]): void {
         if (Array.isArray(restrictions)) {
             let name: string;
 
@@ -37,7 +43,7 @@ export class RestrictionRule extends PackageRule {
         }
     }
 
-    private compareWith(restrictions?: PackageRestrictions): void {
+    private compareWith(restrictions?: string[]): void {
         if (Array.isArray(restrictions)) {
             const { changes } = this;
             let change: PackageRuleChange | undefined;

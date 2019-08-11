@@ -3,11 +3,16 @@ import { TaskTree } from 'tasktree-cli';
 import { Reader } from './io/reader';
 import { Writer } from './io/writer';
 import { Provider } from './providers/provider';
-import { Config } from './config/config';
+import { Config, ServiceProvider } from './config/config';
 import { Package } from './package/package';
-import { ConfigLoader } from './config/config-loader';
+import { ConfigLoader, ConfigLoaderOptions } from './config/config-loader';
 import { State } from './state/state';
-import { ChangelogOptions } from './typings/types';
+import { GitHubProvider } from './providers/github/provider';
+
+export interface ChangelogOptions extends ConfigLoaderOptions {
+    bump?: boolean;
+    branch?: string;
+}
 
 export class Changelog {
     private options: ChangelogOptions;
@@ -25,7 +30,8 @@ export class Changelog {
     }
 
     public async generate(): Promise<void> {
-        const [config, provider] = await this.getConfig();
+        const config = await this.getConfig();
+        const provider = this.getProvider(config);
         const state = await this.readState(config, provider);
 
         await this.writeState(state);
@@ -36,15 +42,34 @@ export class Changelog {
         return Promise.resolve(!!text);
     }
 
-    private async getConfig(): Promise<[Config, Provider]> {
+    private getProvider(config: Config): Provider {
+        const repository = this.package.getRepository();
+        const { branch } = this.options;
+        let provider: Provider | undefined;
+
+        switch (config.provider) {
+            case ServiceProvider.GitLab:
+                TaskTree.fail(`${ServiceProvider.GitLab} - not supported yet`);
+                break;
+            case ServiceProvider.GitHub:
+                provider = new GitHubProvider(repository, branch);
+                break;
+            default:
+                TaskTree.fail(`Service provider not specified`);
+                break;
+        }
+
+        return provider as Provider;
+    }
+
+    private async getConfig(): Promise<Config> {
         const task = TaskTree.add('Read configuration');
         const loader = new ConfigLoader(this.options);
         const config = await loader.load();
-        const provider = await config.getProvider(this.package.getRepository(), this.options.branch);
 
         task.complete('Configuration initialized with:');
 
-        return [config, provider];
+        return config;
     }
 
     private async readState(config: Config, provider: Provider): Promise<State> {

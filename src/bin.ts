@@ -1,6 +1,6 @@
-import { CommandManager } from './commands/command-manager';
-import { GenerateCommand } from './commands/generate-command';
-import { LintCommand } from './commands/lint-command';
+import { CommandManager } from './cli/command-manager';
+import { GenerateCommand } from './cli/commands/generate-command';
+import { LintCommand } from './cli/commands/lint-command';
 
 const manager = new CommandManager([new GenerateCommand(), new LintCommand()]);
 

@@ -1,11 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/entities/state.mock';
+import AttentionPlugin, { AttentionPluginOptions } from '../../src/plugins/implementations/attention';
 import { ConfigLoader } from '../../src/config/config-loader';
-import AttentionPlugin from '../../src/plugins/implementations/attention/attention';
-import { AttentionPluginOptions } from '../../src/plugins/implementations/attention/typings/types';
-import { ChangeLevel } from '../../src/config/typings/enums';
-import { DependencyRule } from '../../src/package/rules/dependency-rule';
-import { DependencyRuleType } from '../../src/package/rules/typings/enums';
+import { DependencyRule, DependencyRuleType } from '../../src/package/rules/dependency-rule';
+import { ChangeLevel } from '../../src/config/config';
 
 describe('AttentionPlugin', (): void => {
     let $loader: ConfigLoader;

@@ -1,5 +1,5 @@
 import { Priority, Compare } from '../typings/enums';
-import { ChangeLevel } from '../config/typings/enums';
+import { ChangeLevel } from '../config/config';
 
 export class Entity {
     public static SHORT_NAME_LENGTH = 7;

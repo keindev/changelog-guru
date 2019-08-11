@@ -1,18 +1,32 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { TaskTree } from 'tasktree-cli';
-import { StatePlugin } from '../../state-plugin';
-import { AttentionPluginOptions } from './typings/types';
-import { SectionPosition, SectionOrder } from '../../../entities/typings/enums';
-import { ConfigUtils } from '../../../config/utils';
-import { Section } from '../../../entities/section';
-import { Message } from '../../../entities/message';
-import Markdown from '../../../utils/markdown';
-import { ChangeLevel } from '../../../config/typings/enums';
-import { PackageRuleType } from '../../../package/typings/types';
-import { PackageRuleChangeType, DependencyRuleType, RestrictionRuleType } from '../../../package/rules/typings/enums';
-import { AttentionTemplateLiteral } from './typings/enums';
-import { PackageRuleChange } from '../../../package/rules/typings/types';
-import { PackageRule } from '../../../package/rules/package-rule';
+import { StatePlugin } from '../state-plugin';
+import { Section, SectionPosition, SectionOrder } from '../../entities/section';
+import { Message } from '../../entities/message';
+import Markdown from '../../utils/markdown';
+import { PluginOption, PluginOptionValue, ChangeLevel } from '../../config/config';
+import { DependencyRuleType } from '../../package/rules/dependency-rule';
+import { RestrictionRuleType } from '../../package/rules/restriction-rule';
+import {
+    PackageRuleChangeType,
+    PackageRuleType,
+    PackageRuleChange,
+    PackageRule,
+} from '../../package/rules/package-rule';
+
+export enum AttentionTemplateLiteral {
+    Name = '%name%',
+    Version = '%ver%',
+    PrevVersion = '%pver%',
+    Value = '%val%',
+    PrevValue = '%pval%',
+}
+
+export interface AttentionPluginOptions extends PluginOption {
+    title: string;
+    templates: { [key in PackageRuleChangeType]?: string };
+    sections: PackageRuleType[];
+}
 
 export default class AttentionPlugin extends StatePlugin {
     private section: Section | undefined;
@@ -94,7 +108,21 @@ export default class AttentionPlugin extends StatePlugin {
 
         if (this.section) {
             this.section.setOrder(SectionOrder.Min);
-            ConfigUtils.fillFromEnum(config.templates, PackageRuleChangeType, this.templates);
+
+            Object.entries(config.templates).forEach(
+                ([name, value]: [string, PluginOption | PluginOption[] | PluginOptionValue | undefined]): void => {
+                    if (typeof value === 'string') {
+                        const type = Object.values(PackageRuleChangeType).find(
+                            (itemName): boolean => itemName === name
+                        );
+
+                        if (value && type) {
+                            this.templates.set(type, value);
+                        }
+                    }
+                }
+            );
+
             config.sections.forEach((type): void => {
                 this.sections.add(type);
             });

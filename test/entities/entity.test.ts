@@ -1,6 +1,6 @@
 import { Entity } from '../../src/entities/entity';
-import { ChangeLevel } from '../../src/config/typings/enums';
 import { Priority, Compare } from '../../src/typings/enums';
+import { ChangeLevel } from '../../src/config/config';
 
 describe('Entity', (): void => {
     let $entity: Entity;

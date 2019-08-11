@@ -1,7 +1,11 @@
 import { PackageJson } from 'read-pkg';
 import { Commit } from '../entities/commit';
-import { ReleaseInfo } from './typings/types';
-import { ServiceProvider } from '../config/typings/enums';
+import { ServiceProvider } from '../config/config';
+
+export interface ReleaseInfo {
+    tag: string | undefined;
+    date: string;
+}
 
 export abstract class Provider {
     public static PAGE_SIZE: number = 100;

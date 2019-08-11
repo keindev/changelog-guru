@@ -1,9 +1,8 @@
 import { MockState } from '../__mocks__/entities/state.mock';
+import ScopePlugin, { ScopePluginOptions, ScopeNames } from '../../src/plugins/implementations/scope';
 import { ConfigLoader } from '../../src/config/config-loader';
-import { ScopePluginOptions, ScopeNames } from '../../src/plugins/implementations/scope/typings/types';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
-import ScopePlugin from '../../src/plugins/implementations/scope/scope';
 
 describe('ScopePlugin', (): void => {
     const $context = new MockState();

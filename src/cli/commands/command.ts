@@ -1,5 +1,5 @@
 import { OptionDefinition, CommandLineOptions } from 'command-line-args';
-import { ChangelogOptions } from '../typings/types';
+import { ChangelogOptions } from '../../changelog';
 
 export enum CommandType {
     String = 1,

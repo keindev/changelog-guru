@@ -1,6 +1,6 @@
 import { CommandLineOptions } from 'command-line-args';
 import { Command } from './command';
-import { Changelog } from '../changelog';
+import { Changelog } from '../../changelog';
 
 export class LintCommand extends Command {
     public constructor() {

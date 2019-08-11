@@ -2,8 +2,15 @@ import writePkg from 'write-pkg';
 import readPkg, { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import * as semver from 'semver';
-import { PackageDependenciesStory, PackageRestrictionsStory } from './typings/types';
-import { DependencyRuleType, RestrictionRuleType } from './rules/typings/enums';
+import { DependencyRuleType } from './rules/dependency-rule';
+import { RestrictionRuleType } from './rules/restriction-rule';
+
+export type PackageDependenciesStory = [PackageDependencies | undefined, PackageDependencies | undefined];
+export type PackageRestrictionsStory = [string[] | undefined, string[] | undefined];
+
+export interface PackageDependencies {
+    [key: string]: string;
+}
 
 export class Package {
     public static DEFAULT_VERSION = '0.0.1';

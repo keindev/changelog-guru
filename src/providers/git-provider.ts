@@ -3,8 +3,8 @@ import path from 'path';
 import getUserAgent from 'universal-user-agent';
 import findupSync from 'findup-sync';
 import { TaskTree } from 'tasktree-cli';
-import { ServiceProvider } from '../config/typings/enums';
 import { Provider } from './provider';
+import { ServiceProvider } from '../config/config';
 
 export abstract class GitProvider extends Provider {
     public static DEFAULT_BRANCH = 'master';

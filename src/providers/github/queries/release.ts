@@ -1,13 +1,12 @@
 import { Query } from './query';
-import { ReleaseInfo } from '../../typings/types';
-import { GitHubResponseRelease } from '../typings/types';
+import { ReleaseInfo } from '../../provider';
 
 export class ReleaseQuery extends Query {
     public async getLast(): Promise<ReleaseInfo | undefined> {
-        const response: GitHubResponseRelease = await this.execute(/* GraphQL */ `
+        const response = await this.execute(/* GraphQL */ `
             query GetRelease($owner: String!, $repository: String!) {
                 repository(owner: $owner, name: $repository) {
-                    release: releases(last: 1) {
+                    releases(last: 1) {
                         nodes {
                             tag: tagName
                             date: publishedAt
@@ -17,6 +16,6 @@ export class ReleaseQuery extends Query {
             }
         `);
 
-        return response.release.nodes.pop();
+        return (response.releases.nodes as ReleaseInfo[]).pop();
     }
 }

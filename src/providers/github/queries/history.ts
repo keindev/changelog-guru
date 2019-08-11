@@ -1,10 +1,28 @@
 import { Query } from './query';
-import {
-    GitHubResponseHistoryCursor,
-    GitHubResponseHistoryCommit,
-    GitHubResponseHistoryEdges,
-    GitHubResponseHistoryCommitsCount,
-} from '../typings/types';
+
+export interface GitHubResponseHistoryAuthorUser {
+    id: number;
+    login: string;
+    url: string;
+}
+
+export interface GitHubResponseHistoryAuthor {
+    avatar: string;
+    user: GitHubResponseHistoryAuthorUser;
+}
+
+export interface GitHubResponseHistoryCommit {
+    hash: string;
+    header: string;
+    body: string;
+    url: string;
+    date: string;
+    author: GitHubResponseHistoryAuthor;
+}
+
+export interface GitHubResponseHistoryNode {
+    node: GitHubResponseHistoryCommit;
+}
 
 export class HistoryQuery extends Query {
     public static moveCursor(cursor: string, position: number): string {
@@ -12,13 +30,13 @@ export class HistoryQuery extends Query {
     }
 
     public async getCursor(): Promise<string> {
-        const response: GitHubResponseHistoryCursor = await this.execute(/* GraphQL */ `
+        const response = await this.execute(/* GraphQL */ `
             query GetCommitObjectId($owner: String!, $repository: String!, $branch: String!) {
                 repository(owner: $owner, name: $repository) {
-                    branch: ref(qualifiedName: $branch) {
-                        cursor: target {
+                    ref(qualifiedName: $branch) {
+                        target {
                             ... on Commit {
-                                hash: oid
+                                oid
                             }
                         }
                     }
@@ -26,7 +44,7 @@ export class HistoryQuery extends Query {
             }
         `);
 
-        return response.branch.cursor.hash;
+        return response.ref.target.oid as string;
     }
 
     public async getCommits(date: string, limit: number, cursor?: string): Promise<GitHubResponseHistoryCommit[]> {
@@ -38,7 +56,7 @@ export class HistoryQuery extends Query {
             cursorParameter = ', after: $cursor';
         }
 
-        const response: GitHubResponseHistoryEdges = await this.execute(
+        const response = await this.execute(
             /* GraphQL */ `
             fragment CommitEdges on CommitHistoryConnection {
                 edges {
@@ -69,7 +87,7 @@ export class HistoryQuery extends Query {
                 ${cursorVariable}
             ) {
                 repository(owner: $owner, name: $repository) {
-                    branch: ref(qualifiedName: $branch) {
+                    ref(qualifiedName: $branch) {
                         target {
                             ... on Commit {
                                 history(since: $date, first: $limit${cursorParameter}) {
@@ -88,19 +106,21 @@ export class HistoryQuery extends Query {
             }
         );
 
-        return response.branch.target.history.edges.map((edge): GitHubResponseHistoryCommit => edge.node);
+        return response.ref.target.history.edges.map(
+            (edge: GitHubResponseHistoryNode): GitHubResponseHistoryCommit => edge.node
+        );
     }
 
     public async getCommitsCount(date: string): Promise<number> {
-        const response: GitHubResponseHistoryCommitsCount = await this.execute(
+        const response = await this.execute(
             /* GraphQL */ `
                 query GetCommitsCount($owner: String!, $repository: String!, $branch: String!, $date: GitTimestamp!) {
                     repository(owner: $owner, name: $repository) {
-                        branch: ref(qualifiedName: $branch) {
+                        ref(qualifiedName: $branch) {
                             target {
                                 ... on Commit {
                                     history(since: $date) {
-                                        count: totalCount
+                                        totalCount
                                     }
                                 }
                             }
@@ -113,6 +133,6 @@ export class HistoryQuery extends Query {
             }
         );
 
-        return response.branch.target.history.count;
+        return response.ref.target.history.totalCount as number;
     }
 }

@@ -2,9 +2,14 @@ import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import { TaskTree } from 'tasktree-cli';
-import { Config } from './config';
-import { ServiceProvider, ChangeLevel, ExclusionType } from './typings/enums';
-import { PluginOption, ConfigLoaderOptions } from './typings/types';
+import { Config, ServiceProvider, ChangeLevel, ExclusionType, PluginOption } from './config';
+
+export interface ConfigLoaderOptions {
+    provider?: ServiceProvider;
+    filePath?: string;
+    types?: Map<string, ChangeLevel>;
+    exclusions?: Map<ExclusionType, string[]>;
+}
 
 export class ConfigLoader {
     public static MODULE_NAME = 'changelog';

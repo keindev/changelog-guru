@@ -1,6 +1,6 @@
 import commandLineArgs from 'command-line-args';
 import { TaskTree } from 'tasktree-cli';
-import { Command } from './command';
+import { Command } from './commands/command';
 
 export class CommandManager {
     private taskTree = TaskTree.tree();

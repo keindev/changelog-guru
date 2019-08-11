@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { ServiceProvider } from '../../src/config/typings/enums';
 import { GitHubProvider } from '../../src/providers/github/provider';
 import { GitProvider } from '../../src/providers/git-provider';
+import { ServiceProvider } from '../../src/config/config';
 
 describe('Provider', (): void => {
     const $date = new Date(0).toISOString();

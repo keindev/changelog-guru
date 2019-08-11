@@ -2,9 +2,9 @@ import { PackageJson } from 'read-pkg';
 import { Commit } from '../../../src/entities/commit';
 import { Author } from '../../../src/entities/author';
 import { GitProvider } from '../../../src/providers/git-provider';
-import { ReleaseInfo } from '../../../src/providers/typings/types';
 import { Package } from '../../../src/package/package';
-import { ServiceProvider } from '../../../src/config/typings/enums';
+import { ServiceProvider } from '../../../src/config/config';
+import { ReleaseInfo } from '../../../src/providers/provider';
 
 export class MockProvider extends GitProvider {
     public readonly __author: Author;

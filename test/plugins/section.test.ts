@@ -1,9 +1,8 @@
 import { MockState } from '../__mocks__/entities/state.mock';
+import SectionPlugin, { SectionPluginOptions } from '../../src/plugins/implementations/section';
 import { ConfigLoader } from '../../src/config/config-loader';
-import { SectionPluginOptions } from '../../src/plugins/implementations/section/typings/types';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
-import SectionPlugin from '../../src/plugins/implementations/section/section';
 
 describe('SectionPlugin', (): void => {
     const $context = new MockState();

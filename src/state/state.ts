@@ -2,22 +2,32 @@ import fs from 'fs';
 import path from 'path';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import { ChangeLevel, ExclusionType } from '../config/typings/enums';
 import { Filter } from './filter';
-import { PluginOption } from '../config/typings/types';
-import { StateContext } from './typings/types';
 import { Commit } from '../entities/commit';
 import { Author } from '../entities/author';
-import { Section } from '../entities/section';
+import { Section, SectionPosition } from '../entities/section';
 import { License } from '../package/license';
-import { SectionPosition } from '../entities/typings/enums';
-import { BasePlugin } from '../plugins/base-plugin';
 import { CommitPlugin } from '../plugins/commit-plugin';
 import { StatePlugin } from '../plugins/state-plugin';
+import { BasePlugin } from '../plugins/base-plugin';
 import Key from '../utils/key';
-import { PluginType, ImportablePlugin, ConstructablePlugin } from '../plugins/typings/types';
-import { PackageRuleType } from '../package/typings/types';
-import { PackageRule } from '../package/rules/package-rule';
+import { PackageRule, PackageRuleType } from '../package/rules/package-rule';
+import { ChangeLevel, ExclusionType, PluginOption } from '../config/config';
+
+export interface ConstructablePlugin<T, C> {
+    new (context: C): T;
+}
+
+export interface ImportablePlugin<T, C> {
+    default: ConstructablePlugin<T, C>;
+}
+
+export interface StateContext {
+    getLicense(): License | undefined;
+    getPackageRule(type: PackageRuleType): PackageRule | undefined;
+    addSection(title: string, position: SectionPosition): Section | undefined;
+    findSection(title: string): Section | undefined;
+}
 
 export class State implements StateContext {
     protected pluginsPath: string = path.resolve(__dirname, '../plugins/implementations');
@@ -183,9 +193,9 @@ export class State implements StateContext {
         task.complete('Section tree is consistently');
     }
 
-    // TODO: think about it, maybe you should add a PluginLoader?
     private async modifyWithPlugin(name: string, options: PluginOption, task: Task): Promise<void> {
-        const filePath = path.join(this.pluginsPath, name, `${name}.${this.pluginsExtension}`);
+        type PluginType = BasePlugin | CommitPlugin | StatePlugin;
+        const filePath = path.join(this.pluginsPath, `${name}.${this.pluginsExtension}`);
 
         if (fs.existsSync(filePath)) {
             const module: ImportablePlugin<PluginType, StateContext> = await import(filePath);

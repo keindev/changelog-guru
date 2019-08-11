@@ -1,20 +1,18 @@
 import { ConfigLoader } from '../../src/config/config-loader';
-import { GitHubProvider } from '../../src/providers/github/provider';
+import { ServiceProvider } from '../../src/config/config';
 
 describe('ConfigLoader', (): void => {
     it('Default', (done): void => {
         const loader = new ConfigLoader();
 
         loader.load().then((config): void => {
+            expect(config.provider).toBe(ServiceProvider.GitHub);
+            expect(config.filePath).toBe('CHANGELOG.md');
             expect(config.getTypes()).toMatchSnapshot();
             expect(config.getExclusions()).toMatchSnapshot();
             expect(config.getPlugins()).toMatchSnapshot();
 
-            config.getProvider('git+https://github.com/keindev/changelog-guru.git').then((provider): void => {
-                expect(provider instanceof GitHubProvider).toBeTruthy();
-
-                done();
-            });
+            done();
         });
     });
 });

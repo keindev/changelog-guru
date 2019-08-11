@@ -1,10 +1,9 @@
-import { Section } from '../../src/entities/section';
-import { SectionPosition, SectionOrder } from '../../src/entities/typings/enums';
+import { Section, SectionPosition, SectionOrder } from '../../src/entities/section';
 import { Priority, Compare } from '../../src/typings/enums';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { Message } from '../../src/entities/message';
-import { ChangeLevel } from '../../src/config/typings/enums';
+import { ChangeLevel } from '../../src/config/config';
 
 describe('Section', (): void => {
     let $section: Section;

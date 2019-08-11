@@ -1,8 +1,22 @@
 import { Commit } from './commit';
 import { Message } from './message';
 import { Priority, Compare } from '../typings/enums';
-import { SectionPosition, SectionOrder } from './typings/enums';
 import { Entity } from './entity';
+
+export enum SectionPosition {
+    None = 0,
+    Subsection = 1,
+    Group = 2,
+    Footer = 3,
+    Body = 4,
+    Header = 5,
+}
+
+export enum SectionOrder {
+    Default = 0,
+    Max = Number.MAX_SAFE_INTEGER,
+    Min = Number.MIN_SAFE_INTEGER,
+}
 
 export class Section extends Entity {
     private index: number = SectionOrder.Default;

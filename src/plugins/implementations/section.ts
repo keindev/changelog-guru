@@ -1,9 +1,12 @@
-import { CommitPlugin } from '../../commit-plugin';
-import { SectionPluginOptions } from './typings/types';
-import { Section } from '../../../entities/section';
-import { SectionPosition } from '../../../entities/typings/enums';
-import Key from '../../../utils/key';
-import { Commit } from '../../../entities/commit';
+import { PluginOption } from '../../config/config';
+import { CommitPlugin } from '../commit-plugin';
+import { Section, SectionPosition } from '../../entities/section';
+import { Commit } from '../../entities/commit';
+import Key from '../../utils/key';
+
+export interface SectionPluginOptions extends PluginOption {
+    [key: string]: string[];
+}
 
 export default class SectionPlugin extends CommitPlugin {
     private blocks: Map<string, Section> = new Map();

@@ -1,11 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/entities/state.mock';
+import MarkerPlugin, { MarkerPluginOptions } from '../../src/plugins/implementations/marker';
 import { ConfigLoader } from '../../src/config/config-loader';
-import MarkerPlugin from '../../src/plugins/implementations/marker/marker';
-import { MarkerPluginOptions } from '../../src/plugins/implementations/marker/typings/types';
-import { Commit } from '../../src/entities/commit';
+import { Commit, CommitStatus } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
-import { CommitStatus } from '../../src/entities/typings/enums';
 
 describe('MarkerPlugin', (): void => {
     const $loader = new ConfigLoader();
