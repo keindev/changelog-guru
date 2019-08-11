@@ -120,6 +120,7 @@ Source code now under `MIT` license.
 # Bug Fixes
 
 -   **[AttentionPlugin]** Rename engine to engines [`ad9b186`](https://github.com/keindev/changelog-guru/commit/ad9b186dd129dce0395f9b14dae2c39d08e28b70)
+-   **[Cli]** Fix command alias matching [`2c6b821`](https://github.com/keindev/changelog-guru/commit/2c6b8211c4ed69ca7b95952eb17767c1a71de1b0)
 -   **[Commit]** Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
 -   **[Config]** Fix error with Level\.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
 -   **[Debug]** Fix debug cli commnad [`3296542`](https://github.com/keindev/changelog-guru/commit/3296542ca175f43b07445485f1209fee04368ca9)
@@ -221,6 +222,7 @@ Source code now under `MIT` license.
 -   Update vsc launch conf, update dependencies [`a1d9e00`](https://github.com/keindev/changelog-guru/commit/a1d9e00f0fb06d15775534bd56047d860aa7db72)
 -   Fix grammar [`1fa5490`](https://github.com/keindev/changelog-guru/commit/1fa54905ea4311c9881a6372067b322ef8a8caff)
 -   Refactor tests [`8f68df3`](https://github.com/keindev/changelog-guru/commit/8f68df378e1f9e024ddebbc3a58f44cb59995ce6)
+-   Remove typings folders [`e7e1cbb`](https://github.com/keindev/changelog-guru/commit/e7e1cbbd97a9a4bb03d2a734fdba9c8dd44682df)
 
 # Code Refactoring
 
