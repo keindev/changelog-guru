@@ -5,6 +5,7 @@ import { CommitPlugin } from '../commit-plugin';
 import { Section, SectionPosition, SectionOrder } from '../../entities/section';
 import { Commit, CommitStatus } from '../../entities/commit';
 import Key from '../../utils/key';
+import { LintOptions } from '../../linter';
 
 export enum MarkerType {
     // !break - indicates major changes breaking backward compatibility
@@ -27,8 +28,6 @@ export interface MarkerPluginOptions extends PluginOption {
 }
 
 export default class MarkerPlugin extends CommitPlugin {
-    private static EXPRESSION = /!(?<type>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
-
     private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 
@@ -78,14 +77,69 @@ export default class MarkerPlugin extends CommitPlugin {
     }
 
     public async parse(commit: Commit, task: Task): Promise<void> {
-        const expression = MarkerPlugin.EXPRESSION;
-        let match: RegExpExecArray | null;
-        let marker: MarkerType | undefined;
+        const markers = this.getMarkersFrom(commit.body[0]);
         let section: Section | undefined;
 
-        commit.body.forEach((line): void => {
+        markers.forEach(([marker, type, value]): void => {
+            section = this.sections.get(marker);
+
+            switch (marker) {
+                case MarkerType.Breaking:
+                    commit.setStatus(CommitStatus.BreakingChanges);
+                    break;
+                case MarkerType.Deprecated:
+                    commit.setStatus(CommitStatus.Deprecated);
+                    break;
+                case MarkerType.Important:
+                    commit.setStatus(CommitStatus.Important);
+                    break;
+                case MarkerType.Ignore:
+                    commit.ignore();
+                    break;
+                case MarkerType.Grouped:
+                    if (value) section = this.context.addSection(value, SectionPosition.Group);
+                    break;
+                default:
+                    task.fail(`Unexpected marker - {bold !${type}}`);
+                    break;
+            }
+
+            if (section) {
+                section.add(commit);
+            }
+        });
+    }
+
+    public lint(options: LintOptions, task: Task): void {
+        const { body } = options;
+        const markersLine = body[0];
+        const blackLine = body[1];
+        const bodyFirstLine = body[2];
+        const markers = this.getMarkersFrom(markersLine);
+        const types: string[] = Object.values(MarkerType);
+
+        if (markers.length) {
+            markers.forEach(([marker, type, value]): void => {
+                if (!types.some((name): boolean => name === marker)) task.error(`Unexpected marker {bold !${type}}`);
+                if (marker === MarkerType.Grouped && !value) task.error(`{bold !group} name is empty`);
+            });
+
+            if (bodyFirstLine && blackLine.trim().length) task.error('Missing blank line between markers and body');
+        } else if (markersLine && markersLine.length) {
+            task.error('Missing blank line between header and body');
+        }
+    }
+
+    private getMarkersFrom(text?: string): [MarkerType, string, string][] {
+        const markers: [MarkerType, string, string][] = [];
+
+        if (text) {
+            const expression = /!(?<type>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
+            let match: RegExpExecArray | null;
+            let marker: MarkerType | undefined;
+
             do {
-                match = expression.exec(line);
+                match = expression.exec(text);
 
                 if (match && match.groups && match.groups.type) {
                     const { type, value } = match.groups;
@@ -93,35 +147,12 @@ export default class MarkerPlugin extends CommitPlugin {
                     marker = Key.getEqual(type, [...this.markers]) as MarkerType | undefined;
 
                     if (marker) {
-                        section = this.sections.get(marker);
-
-                        switch (marker) {
-                            case MarkerType.Breaking:
-                                commit.setStatus(CommitStatus.BreakingChanges);
-                                break;
-                            case MarkerType.Deprecated:
-                                commit.setStatus(CommitStatus.Deprecated);
-                                break;
-                            case MarkerType.Important:
-                                commit.setStatus(CommitStatus.Important);
-                                break;
-                            case MarkerType.Ignore:
-                                commit.ignore();
-                                break;
-                            case MarkerType.Grouped:
-                                section = this.context.addSection(value, SectionPosition.Group);
-                                break;
-                            default:
-                                task.fail(`Unexpected marker type - {bold ${type}}`);
-                                break;
-                        }
-
-                        if (section) {
-                            section.add(commit);
-                        }
+                        markers.push([marker, type, value]);
                     }
                 }
             } while (match && expression.lastIndex);
-        });
+        }
+
+        return markers;
     }
 }

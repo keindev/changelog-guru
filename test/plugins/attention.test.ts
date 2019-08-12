@@ -25,7 +25,7 @@ describe('AttentionPlugin', (): void => {
                     done();
                 });
             } else {
-                throw new Error('AttentionPlugin config not found!');
+                expect(options).toBeDefined();
             }
         });
     });

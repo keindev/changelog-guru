@@ -5,14 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Node.js (yarn)",
+            "name": "Build changelog",
             "type": "node",
             "request": "launch",
             "outputCapture": "std",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "yarn",
-            "runtimeArgs": ["run", "debug"],
+            "runtimeArgs": ["run", "debug:build"],
+            "port": 9229
+        },
+        {
+            "name": "Lint commit",
+            "type": "node",
+            "request": "launch",
+            "outputCapture": "std",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["run", "debug:lint"],
             "port": 9229
         }
     ]

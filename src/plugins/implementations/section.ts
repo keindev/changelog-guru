@@ -1,8 +1,10 @@
+import { Task } from 'tasktree-cli/lib/task';
 import { PluginOption } from '../../config/config';
 import { CommitPlugin } from '../commit-plugin';
 import { Section, SectionPosition } from '../../entities/section';
 import { Commit } from '../../entities/commit';
 import Key from '../../utils/key';
+import { LintOptions } from '../../linter';
 
 export interface SectionPluginOptions extends PluginOption {
     [key: string]: string[];
@@ -40,5 +42,11 @@ export default class SectionPlugin extends CommitPlugin {
                 section.add(commit);
             }
         }
+    }
+
+    public lint(options: LintOptions, task: Task): void {
+        const { type } = options;
+
+        if (!Key.inMap(type, this.blocks)) task.error(`Commit type {bold ${type}} is not assigned with section`);
     }
 }

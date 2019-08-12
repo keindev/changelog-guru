@@ -3,9 +3,9 @@ import { Command, CommandType } from './command';
 import { Changelog } from '../../changelog';
 import { ChangeLevel, ExclusionType } from '../../config/config';
 
-export class GenerateCommand extends Command {
+export class BuildCommand extends Command {
     public constructor() {
-        super('generate', 'g', 'Generate changelog file');
+        super('build', 'b', 'Build changelog');
 
         this.setOption('bump', 'Bump package version in package.json', CommandType.Boolean);
         this.setOption('branch', 'Set branch by which change log will be generated');
@@ -45,14 +45,14 @@ export class GenerateCommand extends Command {
         changelogOptions.bump = options.bump;
         changelogOptions.branch = options.branch;
 
-        GenerateCommand.appendKeysTo(types as Types, options.major, ChangeLevel.Major);
-        GenerateCommand.appendKeysTo(types as Types, options.minor, ChangeLevel.Minor);
-        GenerateCommand.appendKeysTo(types as Types, options.patch, ChangeLevel.Patch);
+        BuildCommand.appendKeysTo(types as Types, options.major, ChangeLevel.Major);
+        BuildCommand.appendKeysTo(types as Types, options.minor, ChangeLevel.Minor);
+        BuildCommand.appendKeysTo(types as Types, options.patch, ChangeLevel.Patch);
 
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-authors'], ExclusionType.AuthorLogin);
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-types'], ExclusionType.CommitType);
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-scopes'], ExclusionType.CommitScope);
-        GenerateCommand.appendValuesTo(exclusions as Exclusions, options['excl-subjects'], ExclusionType.CommitSubject);
+        BuildCommand.appendValuesTo(exclusions as Exclusions, options['excl-authors'], ExclusionType.AuthorLogin);
+        BuildCommand.appendValuesTo(exclusions as Exclusions, options['excl-types'], ExclusionType.CommitType);
+        BuildCommand.appendValuesTo(exclusions as Exclusions, options['excl-scopes'], ExclusionType.CommitScope);
+        BuildCommand.appendValuesTo(exclusions as Exclusions, options['excl-subjects'], ExclusionType.CommitSubject);
 
         const changelog = new Changelog(changelogOptions);
 

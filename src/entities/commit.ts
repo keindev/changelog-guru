@@ -42,9 +42,9 @@ export class Commit extends Entity {
 
         const [type, scope, subject] = Commit.splitHeader(options.header);
 
-        if (type) this.type = type.trim();
-        if (scope) this.scope = scope.trim();
-        if (subject) this.subject = subject.trim();
+        if (type) this.type = type.toLocaleLowerCase();
+        if (scope) this.scope = scope;
+        if (subject) this.subject = subject;
     }
 
     public static compare(a: Commit, b: Commit): Compare {
@@ -62,7 +62,7 @@ export class Commit extends Entity {
 
     public static splitHeader(text: string): string[] {
         const match = text.match(/^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i);
-        let result: string[] = [];
+        const result: string[] = [];
 
         if (match) {
             const { groups } = match;
@@ -70,7 +70,9 @@ export class Commit extends Entity {
             if (groups) {
                 const { type, scope, subject } = groups;
 
-                result = [type, scope, subject];
+                if (type) result.push(type.trim());
+                if (scope) result.push(scope.trim());
+                if (subject) result.push(subject.trim());
             }
         }
 

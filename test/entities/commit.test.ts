@@ -53,10 +53,10 @@ describe('Commit', (): void => {
                 author: $author,
             });
 
-            expect(Commit.compare(a, c)).toBe(Compare.Less);
+            expect(Commit.compare(a, c)).toBe(Compare.More);
             expect(Commit.compare(c, d)).toBe(Compare.Less);
             expect(Commit.compare(a, b)).toBe(Compare.Equal);
-            expect(Commit.compare(c, a)).toBe(Compare.More);
+            expect(Commit.compare(c, a)).toBe(Compare.Less);
         });
     });
 

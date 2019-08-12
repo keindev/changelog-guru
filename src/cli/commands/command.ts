@@ -23,7 +23,6 @@ export abstract class Command {
     };
 
     private options: Map<string, [string, CommandType]> = new Map();
-    private defaultOption: [string, string, CommandType] | undefined = undefined;
 
     public constructor(name: string, alias: string, description: string) {
         this.name = name;
@@ -64,13 +63,7 @@ export abstract class Command {
     }
 
     public getDefinitions(): OptionDefinition[] {
-        const definitions = [];
-
-        if (this.defaultOption) {
-            const [name, , type] = this.defaultOption;
-
-            definitions.push(Command.getDefinition(name, type, true));
-        }
+        const definitions: OptionDefinition[] = [];
 
         this.options.forEach(([, type], name): void => {
             definitions.push(Command.getDefinition(name, type));
@@ -99,10 +92,6 @@ export abstract class Command {
 
     public setOption(name: string, description: string, type: CommandType = CommandType.String): void {
         this.options.set(name, [description, type]);
-    }
-
-    public setDefaultOption(name: string, description: string, type: CommandType = CommandType.String): void {
-        this.defaultOption = [name, description, type];
     }
 
     public abstract async execute(options: CommandLineOptions): Promise<void>;

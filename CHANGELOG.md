@@ -16,6 +16,7 @@ Source code now under `MIT` license.
 
 ## Dependencies
 
+-   Added **[chalk](https://www.npmjs.com/package/chalk/v/2.4.2)** with `^2.4.2`
 -   Added **[command-line-args](https://www.npmjs.com/package/command-line-args/v/5.1.1)** with `^5.1.1`
 -   Added **[cosmiconfig](https://www.npmjs.com/package/cosmiconfig/v/5.2.1)** with `^5.2.1`
 -   Added **[deepmerge](https://www.npmjs.com/package/deepmerge/v/4.0.0)** with `^4.0.0`
@@ -24,7 +25,7 @@ Source code now under `MIT` license.
 -   Added **[graphql-request](https://www.npmjs.com/package/graphql-request/v/1.8.2)** with `^1.8.2`
 -   Added **[read-pkg](https://www.npmjs.com/package/read-pkg/v/5.2.0)** with `^5.2.0`
 -   Added **[semver](https://www.npmjs.com/package/semver/v/6.3.0)** with `^6.3.0`
--   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/1.2.4)** with `^1.2.4`
+-   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/1.2.6)** with `^1.2.6`
 -   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/3.0.0)** with `^3.0.0`
 -   Added **[write-pkg](https://www.npmjs.com/package/write-pkg/v/4.0.0)** with `^4.0.0`
 
@@ -77,7 +78,6 @@ Source code now under `MIT` license.
 -   Rethought class "Process" [`9fee65e`](https://github.com/keindev/changelog-guru/commit/9fee65edb1367e2d7a0ef914612f08bfd92b409b)
 -   Changes in the process of logging task states [`b40e13f`](https://github.com/keindev/changelog-guru/commit/b40e13f2cde4fb283ecad8ab4e960fd0581dfca7)
 -   Added task loging to Providers & conf readers [`da4a964`](https://github.com/keindev/changelog-guru/commit/da4a9648e347355c44bb624dc4ffd3329309b302)
--   Added information methods to Task, fix some bugs with displ… [`54b4952`](https://github.com/keindev/changelog-guru/commit/54b49526b1ac69bbf8c3b42cad840c01f6743ea9)
 
 ## Subsections & Groups
 
@@ -111,8 +111,11 @@ Source code now under `MIT` license.
 
 # Improvements
 
+-   **[Changelog]** Add simple lint rules [`f6d338d`](https://github.com/keindev/changelog-guru/commit/f6d338d82277a6941e8c3a0ab164f90cff590247)
 -   **[Cli]** Rewrite to commands to clases [`3f0c2b8`](https://github.com/keindev/changelog-guru/commit/3f0c2b838b2f237423ee84c07ea06eab39dce3d3)
+-   **[Cli]** Add help output [`6a7f16f`](https://github.com/keindev/changelog-guru/commit/6a7f16fc2b77c8b109af7d80a63c738e72232014)
 -   **[Commit]** Add escape flag [`4c83958`](https://github.com/keindev/changelog-guru/commit/4c83958697248a18ec9785cee2a5e0b59a8935eb)
+-   **[Output]** Add output strings formating [`8068104`](https://github.com/keindev/changelog-guru/commit/80681044aa29bf15cd3656bb38a0ebd8ba7798ba)
 -   **[Package]** Add npm package links to output [`0b8097c`](https://github.com/keindev/changelog-guru/commit/0b8097c2d14363929f216bcf2e5c127b5a6128ba)
 -   **[Provider]** Add commits count info [`453ae5c`](https://github.com/keindev/changelog-guru/commit/453ae5c552cf40c8cbdcd35b0b40b32f80e557e7)
 -   **[State]** Change task tree messages struct [`c6c717e`](https://github.com/keindev/changelog-guru/commit/c6c717e36ffcffd0ffc9937f70f2cbfbd700fc4a)
@@ -185,6 +188,7 @@ Source code now under `MIT` license.
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 -   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
 -   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b)
+-   **[Changelog]** Rebuild changelog file [`4d91cf0`](https://github.com/keindev/changelog-guru/commit/4d91cf09d6c4993b5f536d818d36fd367e86fdb9)
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 -   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
 -   **[Marker]** Add eslint disable no\-explicit\-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
@@ -263,6 +267,7 @@ Source code now under `MIT` license.
 -   Fix lint & tsc errors [`90efe99`](https://github.com/keindev/changelog-guru/commit/90efe997e7b8669d3e9a4e7239d3d9e7e61058b9)
 -   Change Scope & Section plugins creation [`35536c1`](https://github.com/keindev/changelog-guru/commit/35536c131a08bfef67aa07244cde76183ff70240)
 -   Changed plugins process flow [`d0e8899`](https://github.com/keindev/changelog-guru/commit/d0e88991159b2bda82b7805b40e5a36f0aa05f9f)
+-   Added information methods to Task, fix some bugs with displ… [`54b4952`](https://github.com/keindev/changelog-guru/commit/54b49526b1ac69bbf8c3b42cad840c01f6743ea9)
 -   Refactor Entities [`2e6d122`](https://github.com/keindev/changelog-guru/commit/2e6d12275c2141337aab1c1af7a5b73b45b48ef0)
 -   Rename some Commit methods [`82c987c`](https://github.com/keindev/changelog-guru/commit/82c987c22e938c21a7e8b42b7a4c5ad40b7a5d4a)
 -   Refactor changelog\.generate [`53d3a63`](https://github.com/keindev/changelog-guru/commit/53d3a63b757621959b259b3f942fc9ae37e72f29)

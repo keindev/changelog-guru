@@ -8,7 +8,7 @@ import { Package } from './package/package';
 import { ConfigLoader, ConfigLoaderOptions } from './config/config-loader';
 import { State } from './state/state';
 import { GitHubProvider } from './providers/github/provider';
-import { Commit } from './entities/commit';
+import Linter, { LinterOptions } from './linter';
 
 export interface ChangelogOptions extends ConfigLoaderOptions {
     bump?: boolean;
@@ -38,32 +38,13 @@ export class Changelog {
         await this.writeState(state);
     }
 
-    public async lint(text: string | undefined): Promise<void> | never {
+    public async lint(message: string | undefined, options: LinterOptions): Promise<void> | never {
         const config = await this.getConfig();
         const task = TaskTree.add('Lint commit message:');
+        const types = config.getTypes().map(([name]): string => name);
+        const linter = new Linter(config.getPlugins(), types, task, options);
 
-        if (text) {
-            const lines = text.split(Commit.LINE_SEPARATOR);
-            const header = lines.shift() as string;
-            const [commitType, , subject] = Commit.splitHeader(header);
-            const type = commitType || '';
-
-            // TODO: --length param
-            if (header.length > 100) task.error('Header length is too long!');
-            if (!type) task.error('Type is not defined or is not separated from the subject with ":"!');
-            // TODO: --lowercase-only param
-            if (type !== type.toLocaleLowerCase()) task.error('Type is not in lowercase');
-            if (!config.getTypes().some(([name]): boolean => name === type)) task.error('Unknown commit type!');
-
-            if (!subject) task.error('Subject is empty!');
-
-            // TODO: plugins tests?
-            if (lines.length && lines[0].length && !/(^| )![a-z]/gi.test(lines[0])) {
-                task.error('Missing blank line between header and body');
-            }
-        } else {
-            task.error('Empty commit message!');
-        }
+        linter.lint(message);
 
         if (task.haveErrors()) {
             task.fail('Incorrect commit message:');
