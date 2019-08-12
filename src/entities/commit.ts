@@ -40,22 +40,11 @@ export class Commit extends Entity {
         this.url = options.url;
         this.author = options.author;
 
-        const match = options.header.match(
-            // <type>(<scope>): <subject>
-            /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
-        );
+        const [type, scope, subject] = Commit.splitHeader(options.header);
 
-        if (match) {
-            const { groups } = match;
-
-            if (groups) {
-                const { type, scope, subject } = groups;
-
-                if (type) this.type = type.trim();
-                if (scope) this.scope = scope.trim();
-                if (subject) this.subject = subject.trim();
-            }
-        }
+        if (type) this.type = type.trim();
+        if (scope) this.scope = scope.trim();
+        if (subject) this.subject = subject.trim();
     }
 
     public static compare(a: Commit, b: Commit): Compare {
@@ -69,6 +58,23 @@ export class Commit extends Entity {
         if (result === Compare.Equal) result = a.timestamp - b.timestamp;
 
         return Math.min(Math.max(result, Compare.Less), Compare.More);
+    }
+
+    public static splitHeader(text: string): string[] {
+        const match = text.match(/^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i);
+        let result: string[] = [];
+
+        if (match) {
+            const { groups } = match;
+
+            if (groups) {
+                const { type, scope, subject } = groups;
+
+                result = [type, scope, subject];
+            }
+        }
+
+        return result;
     }
 
     public getAccents(): string[] {
