@@ -4383,10 +4383,10 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-tasktree-cli@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/tasktree-cli/-/tasktree-cli-1.2.5.tgz#097ecd04dfacca2e08c7d4a123fe4d9717c87e72"
-  integrity sha512-sIwIXeh3MZMf9nhuv/BqL/MEQiq2BWVLZ0bQs1LVstVZuiA2L4MzmmPOZppzaMI42Z6CVu2hM8aQj42U7jXxwg==
+tasktree-cli@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/tasktree-cli/-/tasktree-cli-1.2.6.tgz#325ec5c15d38a07040c8c18547a9cb21348d01a8"
+  integrity sha512-AiJHOSP6nrkYJ57ISHIF8wUkMyv/54IB/4kcr8NR2NCjxZ6EQIYlqmbiO4+uO7fYGFkylGmUPs6JJhu1vqvwvg==
   dependencies:
     chalk "^2.4.2"
     color-convert "^2.0.0"
