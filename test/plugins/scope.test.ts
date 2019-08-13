@@ -1,5 +1,5 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/entities/state.mock';
+import { MockState } from '../__mocks__/state/state.mock';
 import ScopePlugin, { ScopePluginOptions, ScopeNames } from '../../src/plugins/implementations/scope';
 import { ConfigLoader } from '../../src/config/config-loader';
 import { Commit } from '../../src/entities/commit';

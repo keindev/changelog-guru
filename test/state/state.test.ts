@@ -1,4 +1,4 @@
-import { MockState } from '../__mocks__/entities/state.mock';
+import { MockState } from '../__mocks__/state/state.mock';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { ConfigLoader } from '../../src/config/config-loader';
