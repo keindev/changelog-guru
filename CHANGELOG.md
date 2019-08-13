@@ -24,6 +24,7 @@ Source code now under `MIT` license.
 -   Added **[findup-sync](https://www.npmjs.com/package/findup-sync/v/4.0.0)** with `^4.0.0`
 -   Added **[graphql-request](https://www.npmjs.com/package/graphql-request/v/1.8.2)** with `^1.8.2`
 -   Added **[read-pkg](https://www.npmjs.com/package/read-pkg/v/5.2.0)** with `^5.2.0`
+-   Added **[rimraf](https://www.npmjs.com/package/rimraf/v/2.6.3)** with `^2.6.3`
 -   Added **[semver](https://www.npmjs.com/package/semver/v/6.3.0)** with `^6.3.0`
 -   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/1.2.6)** with `^1.2.6`
 -   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/3.0.0)** with `^3.0.0`
