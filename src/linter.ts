@@ -41,6 +41,9 @@ export default class Linter {
     }
 
     public async lint(message: string = Linter.EMPTY_VALUE): Promise<void> {
+        this.task.log(message);
+        this.task.log(process.env.HUSKY_GIT_PARAMS || '111');
+
         const [header, body] = this.parseMessage(message);
         const [type, scope, subject] = this.parseHeader(header);
 
@@ -75,7 +78,7 @@ export default class Linter {
     private parseHeader(header: string): [string, string, string] {
         const [type, scope, subject] = Commit.splitHeader(header);
         const { task, maxHeaderLength } = this;
-        const clearType = Key.unify(type);
+        const clearType = type ? Key.unify(type) : type;
 
         if (header.length > maxHeaderLength) task.error(`Header is longer than {bold ${maxHeaderLength}} characters`);
 
