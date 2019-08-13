@@ -45,7 +45,7 @@ Source code now under `MIT` license.
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.0.0)** with `^6.0.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
--   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.0)** with `^22.15.0`
+-   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.1)** with `^22.15.1`
 -   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.3)** with `^3.0.3`
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.8.0)** with `^24.8.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
@@ -218,3 +218,4 @@ Source code now under `MIT` license.
 # Contributors
 
 [![@keindev](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)
+[![@LexaDel](https://avatars2.githubusercontent.com/u/17446469?v=4&size=40)](https://github.com/LexaDel)
