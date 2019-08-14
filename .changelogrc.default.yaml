@@ -26,52 +26,52 @@ output:
         commitScope: ['deps', 'deps-dev']
         commitSubject: ['merge']
 plugins:
-    attention:
-        title: Important Changes
-        templates:
-            added: 'Added %name% with %val%'
-            changed: 'Changed %name% from %pval% to %val%'
-            bumped: 'Bumped %name% from %pver% to %ver%'
-            downgraded: 'Downgraded %name% from %pver% to %ver%'
-            removed: 'Removed %name%, with %pval%'
-        sections:
-            - license
-            - os
-            - cpu
-            - engines
-            - dependencies
-            - devDependencies
-            - peerDependencies
-            - optionalDependencies
-            - bundledDependencies
+    - attention:
+          title: Important Changes
+          templates:
+              added: 'Added %name% with %val%'
+              changed: 'Changed %name% from %pval% to %val%'
+              bumped: 'Bumped %name% from %pver% to %ver%'
+              downgraded: 'Downgraded %name% from %pver% to %ver%'
+              removed: 'Removed %name%, with %pval%'
+          sections:
+              - license
+              - os
+              - cpu
+              - engines
+              - dependencies
+              - devDependencies
+              - peerDependencies
+              - optionalDependencies
+              - bundledDependencies
     # List of available markers
-    marker:
-        actions:
-            # !ignore - ignore a commit in output
-            - ignore
-            # !group(NAME) - creates a group of commits with the <NAME>
-            - group
-        joins:
-            # !important - place a commit title to special section on top of changelog
-            important: Important Internal Changes
-            # !deprecated - place a commit title to special section with deprecated properties
-            deprecated: DEPRECATIONS
-            # !break - indicates major changes breaking backward compatibility
-            break: BREAKING CHANGES
+    - marker:
+          actions:
+              # !ignore - ignore a commit in output
+              - ignore
+              # !group(NAME) - creates a group of commits with the <NAME>
+              - group
+          joins:
+              # !important - place a commit title to special section on top of changelog
+              important: Important Internal Changes
+              # !deprecated - place a commit title to special section with deprecated properties
+              deprecated: DEPRECATIONS
+              # !break - indicates major changes breaking backward compatibility
+              break: BREAKING CHANGES
     # list of major scopes
-    scope:
-        onlyPresented: false
-        names:
-            core: Core
-            api: API
-            ssr: Server Side Rendering
-            fc: Functional Components
-            dts: TypeScript Declaration Improvements
-    section:
-        Features: [feat]
-        Improvements: [improve]
-        Bug Fixes: [fix]
-        Internal changes: [types, workflow, build, test, chore, docs]
-        Performance Improvements: [perf]
-        Code Refactoring: [refactor]
-        Reverts: [revert]
+    - scope:
+          onlyPresented: false
+          names:
+              core: Core
+              api: API
+              ssr: Server Side Rendering
+              fc: Functional Components
+              dts: TypeScript Declaration Improvements
+    - section:
+          Features: [feat]
+          Improvements: [improve]
+          Bug Fixes: [fix]
+          Internal changes: [types, workflow, build, test, chore, docs]
+          Performance Improvements: [perf]
+          Code Refactoring: [refactor]
+          Reverts: [revert]

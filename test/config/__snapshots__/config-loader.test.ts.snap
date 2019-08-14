@@ -106,15 +106,6 @@ Array [
         "peerDependencies",
         "optionalDependencies",
         "bundledDependencies",
-        "license",
-        "os",
-        "cpu",
-        "engines",
-        "dependencies",
-        "devDependencies",
-        "peerDependencies",
-        "optionalDependencies",
-        "bundledDependencies",
       ],
       "templates": Object {
         "added": "Added %name% with %val%",
@@ -130,8 +121,6 @@ Array [
     "marker",
     Object {
       "actions": Array [
-        "ignore",
-        "group",
         "ignore",
         "group",
       ],
@@ -160,18 +149,14 @@ Array [
     Object {
       "Bug Fixes": Array [
         "fix",
-        "fix",
       ],
       "Code Refactoring": Array [
-        "refactor",
         "refactor",
       ],
       "Features": Array [
         "feat",
-        "feat",
       ],
       "Improvements": Array [
-        "improve",
         "improve",
       ],
       "Internal changes": Array [
@@ -181,19 +166,11 @@ Array [
         "test",
         "chore",
         "docs",
-        "types",
-        "workflow",
-        "build",
-        "test",
-        "chore",
-        "docs",
       ],
       "Performance Improvements": Array [
         "perf",
-        "perf",
       ],
       "Reverts": Array [
-        "revert",
         "revert",
       ],
     },

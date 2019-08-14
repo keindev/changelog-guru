@@ -104,20 +104,26 @@ export class ConfigLoader {
             data: { plugins },
         } = this;
 
-        if (plugins) {
-            Object.entries<PluginOption>(plugins).forEach(([name, config]): void => {
-                if (config) {
-                    activePlugins.set(
-                        name,
-                        new Proxy(config, {
-                            get(target, fieldName, receiver): PluginOption {
-                                return Reflect.get(target, fieldName, receiver);
-                            },
-                            set(): boolean {
-                                return false;
-                            },
-                        })
-                    );
+        if (Array.isArray(plugins)) {
+            plugins.forEach((plugin): void => {
+                if (typeof plugin === 'string') {
+                    activePlugins.set(plugin, {});
+                } else {
+                    Object.entries<PluginOption>(plugin).forEach(([name, config]): void => {
+                        if (config) {
+                            activePlugins.set(
+                                name,
+                                new Proxy(config, {
+                                    get(target, fieldName, receiver): PluginOption {
+                                        return Reflect.get(target, fieldName, receiver);
+                                    },
+                                    set(): boolean {
+                                        return false;
+                                    },
+                                })
+                            );
+                        }
+                    });
                 }
             });
         }
