@@ -8,17 +8,24 @@ export class CommandManager {
     private commands: Command[];
     private command: Command | undefined;
     private argv: commandLineArgs.ParseOptions | undefined;
+    private readonly helpDefinition: commandLineArgs.OptionDefinition = { name: 'help', type: Boolean };
 
     public constructor(commands: Command[]) {
         const mainOptions = commandLineArgs([{ name: 'command', defaultOption: true }], { stopAtFirstUnknown: true });
 
+        // eslint-disable-next-line no-underscore-dangle
+        this.argv = { argv: mainOptions._unknown || [] };
+        this.commands = commands;
+
         if (mainOptions.command) {
             this.command = commands.find((command): boolean => command.isMatched(mainOptions.command));
-            // eslint-disable-next-line no-underscore-dangle
-            this.argv = { argv: mainOptions._unknown || [] };
-        }
+        } else {
+            const { help } = commandLineArgs([this.helpDefinition], this.argv);
 
-        this.commands = commands;
+            if (help) {
+                process.stdout.write(this.help());
+            }
+        }
     }
 
     public isCorrectCommand(): boolean {
@@ -28,32 +35,33 @@ export class CommandManager {
     public async execute(): Promise<void> {
         if (this.isCorrectCommand()) {
             const command: Command = this.command as Command;
-            const options = commandLineArgs(command.getDefinitions(), this.argv);
+            const options = commandLineArgs([this.helpDefinition, ...command.getDefinitions()], this.argv);
 
-            this.taskTree.start();
+            if (options.help) {
+                process.stdout.write(this.help(command));
+            } else {
+                this.taskTree.start();
 
-            await command.execute(options);
+                await command.execute(options);
 
-            this.taskTree.stop();
+                this.taskTree.stop();
+            }
         }
     }
 
-    public help(): string {
-        const output: string[] = [
-            Help.header('Changelog guru:'),
-            Help.description('Git changelog generator, customizable a release changelog with helpful plugins'),
-        ];
+    public help(command?: Command): string {
+        let output: string;
 
-        this.commands.forEach((command): void => {
-            output.push(Help.command(command));
+        if (command) {
+            output = Help.command(command);
+        } else {
+            output = [
+                Help.header('Changelog guru:'),
+                Help.description('Git changelog generator, customizable a release changelog with helpful plugins'),
+                ...this.commands.map(Help.command),
+            ].join(Help.LINE_SEPARATOR);
+        }
 
-            command.getOptions().forEach(([name, description, type]): void => {
-                output.push(Help.option(name, description, type));
-            });
-
-            output.push(Help.LINE_SEPARATOR);
-        });
-
-        return output.join(Help.LINE_SEPARATOR);
+        return `${output}${Help.LINE_SEPARATOR}`;
     }
 }

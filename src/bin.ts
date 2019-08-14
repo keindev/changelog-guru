@@ -16,6 +16,4 @@ if (manager.isCorrectCommand()) {
             TaskTree.fail(error);
         }
     );
-} else {
-    process.stdout.write(manager.help());
 }
