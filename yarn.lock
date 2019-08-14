@@ -4373,7 +4373,7 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-tasktree-cli@^1.2.6:
+tasktree-cli@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/tasktree-cli/-/tasktree-cli-1.3.0.tgz#2986a5e8121a397d41cd4be93fe3d86eb5419afb"
   integrity sha512-mp6W0+MhfaXHKg2YGh6i4kiNexdHCqueoELbA1xa0HEoJ1UpIYHnoVj+n8VDEB/Ff9ObtXNN/5SeRtlVJSGaJQ==
