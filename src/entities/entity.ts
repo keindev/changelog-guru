@@ -4,8 +4,8 @@ import { ChangeLevel } from '../config/config';
 export class Entity {
     public static SHORT_NAME_LENGTH = 7;
 
-    private ignored: boolean = false;
-    private escaped: boolean = false;
+    private ignored = false;
+    private escaped = false;
     private level: ChangeLevel = ChangeLevel.Patch;
     private name: string;
 

@@ -8,7 +8,7 @@ import { ServiceProvider } from '../config/config';
 
 export abstract class GitProvider extends Provider {
     public static DEFAULT_BRANCH = 'master';
-    public static TYPE: string = 'git';
+    public static TYPE = 'git';
 
     protected repository: string;
     protected owner: string;

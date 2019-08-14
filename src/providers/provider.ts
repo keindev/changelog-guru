@@ -8,7 +8,7 @@ export interface ReleaseInfo {
 }
 
 export abstract class Provider {
-    public static PAGE_SIZE: number = 100;
+    public static PAGE_SIZE = 100;
 
     public readonly type: ServiceProvider;
 
