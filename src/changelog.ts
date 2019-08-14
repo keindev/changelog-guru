@@ -44,7 +44,7 @@ export class Changelog {
         const types = config.getTypes().map(([name]): string => name);
         const linter = new Linter(config.getPlugins(), types, task, options);
 
-        linter.lint(message);
+        await linter.lint(message);
 
         if (task.haveErrors()) {
             task.fail('Incorrect commit message:');

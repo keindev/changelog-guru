@@ -119,6 +119,8 @@ export default class MarkerPlugin extends CommitPlugin {
         const types: string[] = Object.values(MarkerType);
 
         if (markers.length) {
+            task.log(`Markers: ${markersLine}`);
+
             markers.forEach(([marker, type, value]): void => {
                 if (!types.some((name): boolean => name === marker)) task.error(`Unexpected marker {bold !${type}}`);
                 if (marker === MarkerType.Grouped && !value) task.error(`{bold !group} name is empty`);

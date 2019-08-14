@@ -1,3 +1,7 @@
+import fs from 'fs';
+import readline from 'readline';
+import path from 'path';
+import { once } from 'events';
 import { Task } from 'tasktree-cli/lib/task';
 import { Commit } from './entities/commit';
 import { PluginOption } from './config/config';
@@ -23,6 +27,8 @@ export default class Linter {
     public static DEFAULT_HEADER_MAX_LENGTH = 100;
     public static MIN_SUBJECT_LENGTH = 6;
     public static EMPTY_VALUE = '';
+    public static GIT_EDIT_MESSAGE_PATH = '.git/COMMIT_EDITMSG';
+    public static COMMENT_SIGN = '#';
 
     private task: Task;
     private plugins: [string, PluginOption][];
@@ -40,12 +46,17 @@ export default class Linter {
         this.lowercaseTypesOnly = !!options.lowercaseTypesOnly;
     }
 
-    public async lint(message: string = Linter.EMPTY_VALUE): Promise<void> {
-        this.task.log(message);
-        this.task.log(process.env.HUSKY_GIT_PARAMS || '111');
+    public async lint(value: string = Linter.EMPTY_VALUE): Promise<void> {
+        let message = value;
+
+        if (value === Linter.GIT_EDIT_MESSAGE_PATH) {
+            message = await this.readGitMessage();
+        }
 
         const [header, body] = this.parseMessage(message);
         const [type, scope, subject] = this.parseHeader(header);
+
+        this.task.log(`Header: {dim ${header || undefined}}`);
 
         await Promise.all(
             this.plugins.map(
@@ -59,6 +70,29 @@ export default class Linter {
                     })
             )
         );
+    }
+
+    private async readGitMessage(): Promise<string> {
+        const filePath = path.resolve(process.cwd(), Linter.GIT_EDIT_MESSAGE_PATH);
+        let result = Linter.EMPTY_VALUE;
+
+        if (fs.existsSync(filePath)) {
+            const fileStream = fs.createReadStream(filePath);
+            const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
+            const lines: string[] = [];
+
+            rl.on('line', (line): void => {
+                if (line.trim()[0] !== Linter.COMMENT_SIGN) lines.push(line);
+            });
+
+            await once(rl, 'close');
+
+            result = lines.join(Commit.LINE_SEPARATOR);
+        } else {
+            this.task.fail(`${filePath} not found`);
+        }
+
+        return result;
     }
 
     private parseMessage(message: string): [string, string[]] {
@@ -78,21 +112,23 @@ export default class Linter {
     private parseHeader(header: string): [string, string, string] {
         const [type, scope, subject] = Commit.splitHeader(header);
         const { task, maxHeaderLength } = this;
-        const clearType = type ? Key.unify(type) : type;
+        const safeType = type ? Key.unify(type) : type;
+        const safeScope = scope || Linter.EMPTY_VALUE;
+        const safeSubject = subject || Linter.EMPTY_VALUE;
 
         if (header.length > maxHeaderLength) task.error(`Header is longer than {bold ${maxHeaderLength}} characters`);
 
         if (type) {
-            if (this.lowercaseTypesOnly && type !== clearType) task.error('Type is not in lowercase');
-            if (!this.types.some((name): boolean => name === clearType)) task.error('Unknown commit type!');
+            if (this.lowercaseTypesOnly && type !== safeType) task.error('Type is not in lowercase');
+            if (!this.types.some((name): boolean => name === safeType)) task.error('Unknown commit type!');
         } else {
             task.error('Type is not defined or is not separated from the subject with "{bold :}"');
         }
 
-        if (!subject) task.error('Subject is empty');
-        if (subject.length < Linter.MIN_SUBJECT_LENGTH) task.error('Subject is not informative');
+        if (!safeSubject) task.error('Subject is empty');
+        if (safeSubject.length < Linter.MIN_SUBJECT_LENGTH) task.error('Subject is not informative');
 
-        return [clearType || Linter.EMPTY_VALUE, scope || Linter.EMPTY_VALUE, subject || Linter.EMPTY_VALUE];
+        return [safeType || Linter.EMPTY_VALUE, safeScope || Linter.EMPTY_VALUE, safeSubject || Linter.EMPTY_VALUE];
     }
 
     private async lintWithPlugin(name: string, config: PluginOption, options: LintOptions): Promise<void> {
