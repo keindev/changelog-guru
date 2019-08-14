@@ -30,4 +30,8 @@ export class Help {
 
         return output.join(Help.LINE_SEPARATOR);
     }
+
+    public static unexpectedCommand(command: string): string {
+        return chalk`changelog «${command}» is not a changelog command. See {bold «changelog --help»}.`;
+    }
 }

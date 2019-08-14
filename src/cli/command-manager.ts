@@ -4,52 +4,67 @@ import { Command } from './commands/command';
 import { Help } from './help';
 
 export class CommandManager {
+    public static OPTION_SEPARATOR = ' ';
+
     private taskTree = TaskTree.tree();
     private commands: Command[];
     private command: Command | undefined;
-    private argv: commandLineArgs.ParseOptions | undefined;
+    private argv: commandLineArgs.ParseOptions;
+    private unknownOptions: string[];
     private readonly helpDefinition: commandLineArgs.OptionDefinition = { name: 'help', type: Boolean };
 
     public constructor(commands: Command[]) {
         const mainOptions = commandLineArgs([{ name: 'command', defaultOption: true }], { stopAtFirstUnknown: true });
 
         // eslint-disable-next-line no-underscore-dangle
-        this.argv = { argv: mainOptions._unknown || [] };
+        this.unknownOptions = mainOptions._unknown || [];
+        this.argv = { argv: this.unknownOptions };
         this.commands = commands;
 
         if (mainOptions.command) {
             this.command = commands.find((command): boolean => command.isMatched(mainOptions.command));
-        } else {
-            const { help } = commandLineArgs([this.helpDefinition], this.argv);
 
-            if (help) {
-                process.stdout.write(this.help());
+            if (!this.command) {
+                this.error(mainOptions.command);
+            } else if (!this.unknownOptions.length) {
+                // TODO: `changelog build` can be called without parameters
+                this.help(this.command);
+                this.command = undefined;
             }
+        } else if (this.unknownOptions.length) {
+            this.error();
+        } else {
+            this.help();
         }
-    }
-
-    public isCorrectCommand(): boolean {
-        return !!this.command;
     }
 
     public async execute(): Promise<void> {
-        if (this.isCorrectCommand()) {
+        if (this.command) {
             const command: Command = this.command as Command;
-            const options = commandLineArgs([this.helpDefinition, ...command.getDefinitions()], this.argv);
 
-            if (options.help) {
-                process.stdout.write(this.help(command));
-            } else {
-                this.taskTree.start();
+            try {
+                const options = commandLineArgs([this.helpDefinition, ...command.getDefinitions()], this.argv);
 
-                await command.execute(options);
+                if (options.help) {
+                    this.help(command);
+                } else {
+                    this.taskTree.start();
 
-                this.taskTree.stop();
+                    await command.execute(options);
+
+                    this.taskTree.stop();
+                }
+            } catch {
+                this.error();
             }
         }
     }
 
-    public help(command?: Command): string {
+    private error(commandName: string = this.unknownOptions.join(CommandManager.OPTION_SEPARATOR)): void {
+        process.stdout.write(`${Help.unexpectedCommand(commandName)}${Help.LINE_SEPARATOR}`);
+    }
+
+    private help(command?: Command): void {
         let output: string;
 
         if (command) {
@@ -62,6 +77,6 @@ export class CommandManager {
             ].join(Help.LINE_SEPARATOR);
         }
 
-        return `${output}${Help.LINE_SEPARATOR}`;
+        process.stdout.write(`${output}${Help.LINE_SEPARATOR}`);
     }
 }
