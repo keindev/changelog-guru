@@ -34,9 +34,10 @@
     "scripts": {
         "clean": "rimraf lib coverage",
         "lint": "eslint src/**/*.ts --fix",
+        "spell": "cspell -c .vscode/cSpell.json --no-summary * src/**/* test/**/* bin/**/*",
         "test": "jest",
         "build:ts": "tsc",
-        "build": "npm-run-all clean lint test build:*"
+        "build": "npm-run-all clean spell lint test build:*"
     },
     "engines": {
         "node": ">=10.0.0"
@@ -66,6 +67,7 @@
         "@types/semver": "^6.0.1",
         "@typescript-eslint/eslint-plugin": "^2.0.0",
         "@typescript-eslint/parser": "^2.0.0",
+        "cspell": "^4.0.28",
         "eslint": "^6.1.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-config-prettier": "^6.0.0",
