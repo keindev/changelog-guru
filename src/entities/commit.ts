@@ -60,23 +60,23 @@ export class Commit extends Entity {
         return Math.min(Math.max(result, Compare.Less), Compare.More);
     }
 
-    public static splitHeader(text: string): string[] {
+    public static splitHeader(text: string): [string | undefined, string | undefined, string | undefined] {
         const match = text.match(/^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i);
-        const result: string[] = [];
+        let type: string | undefined;
+        let scope: string | undefined;
+        let subject: string | undefined;
 
         if (match) {
             const { groups } = match;
 
             if (groups) {
-                const { type, scope, subject } = groups;
-
-                if (type) result.push(type.trim());
-                if (scope) result.push(scope.trim());
-                if (subject) result.push(subject.trim());
+                if (groups.type) type = groups.type.trim();
+                if (groups.scope) scope = groups.scope.trim();
+                if (groups.subject) subject = groups.subject.trim();
             }
         }
 
-        return result;
+        return [type, scope, subject];
     }
 
     public getAccents(): string[] {
