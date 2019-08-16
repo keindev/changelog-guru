@@ -15,7 +15,7 @@ export interface LinterOptions {
     maxHeaderLength?: number;
 }
 
-export interface LintOptions {
+export interface PluginLintOptions {
     header: string;
     body: string[];
     type: string;
@@ -131,7 +131,7 @@ export class Linter {
         return [safeType || Linter.EMPTY_VALUE, safeScope || Linter.EMPTY_VALUE, safeSubject || Linter.EMPTY_VALUE];
     }
 
-    private async lintWithPlugin(name: string, config: PluginOption, options: LintOptions): Promise<void> {
+    private async lintWithPlugin(name: string, config: PluginOption, options: PluginLintOptions): Promise<void> {
         const { task } = this;
         const plugin = await this.pluginLoader.load(task, { name, config, context: this.state });
 

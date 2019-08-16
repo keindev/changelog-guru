@@ -5,7 +5,7 @@ import { CommitPlugin } from '../commit-plugin';
 import { Section, SectionPosition, SectionOrder } from '../../entities/section';
 import { Commit, CommitStatus } from '../../entities/commit';
 import Key from '../../utils/key';
-import { LintOptions } from '../../linter';
+import { PluginLintOptions } from '../../linter';
 
 export enum MarkerType {
     // !break - indicates major changes breaking backward compatibility
@@ -110,7 +110,7 @@ export default class MarkerPlugin extends CommitPlugin {
         });
     }
 
-    public lint(options: LintOptions, task: Task): void {
+    public lint(options: PluginLintOptions, task: Task): void {
         const { body } = options;
         const markersLine = body[0];
         const blackLine = body[1];
