@@ -63,7 +63,7 @@ describe('Commit', (): void => {
     it('Default', (): void => {
         expect($commit instanceof Entity).toBeTruthy();
         expect($commit.timestamp).toBe(21);
-        expect($commit.subject).toBe('subject');
+        expect($commit.getSubject()).toBe('subject');
         expect($commit.body).toStrictEqual(['', '', 'body', '', 'footer']);
         expect($commit.author).toStrictEqual($author);
         expect($commit.url).toBe(

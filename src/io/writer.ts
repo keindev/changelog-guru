@@ -22,16 +22,16 @@ export class Writer {
         let group: Commit | Commit[] | undefined;
 
         commits.forEach((commit): void => {
-            group = Key.inMap(commit.subject, groups);
+            group = Key.inMap(commit.getSubject(), groups);
 
             if (group) {
                 if (Array.isArray(group)) {
                     group.push(commit);
                 } else {
-                    groups.set(group.subject, [group, commit]);
+                    groups.set(group.getSubject(), [group, commit]);
                 }
             } else {
-                groups.set(commit.subject, commit);
+                groups.set(commit.getSubject(), commit);
             }
         });
 

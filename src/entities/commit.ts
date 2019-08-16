@@ -21,12 +21,12 @@ export interface CommitOptions {
 export class Commit extends Entity {
     public static LINE_SEPARATOR = '\n';
 
-    public readonly subject: string = '';
     public readonly body: readonly string[];
     public readonly timestamp: number;
     public readonly url: string;
     public readonly author: Author;
 
+    private subject = '';
     private scope: string | undefined;
     private type: string | undefined;
     private accents: Set<string> = new Set();
@@ -107,6 +107,10 @@ export class Commit extends Entity {
 
     public getSubject(): string {
         return this.subject;
+    }
+
+    public setSubject(subject: string): void {
+        this.subject = subject;
     }
 
     public setStatus(status: CommitStatus): void {
