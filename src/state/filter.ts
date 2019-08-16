@@ -23,7 +23,7 @@ export class Filter {
 
     public static commitsBySubject(commits: Map<string, Commit>, rules: string[]): void {
         commits.forEach((commit): void => {
-            if (rules.some((item): boolean => commit.subject.includes(item))) commit.ignore();
+            if (rules.some((item): boolean => commit.getSubject().includes(item))) commit.ignore();
         });
     }
 }
