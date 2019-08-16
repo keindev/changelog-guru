@@ -8,7 +8,7 @@ import { Package } from './package/package';
 import { ConfigLoader, ConfigLoaderOptions } from './config/config-loader';
 import { State } from './state/state';
 import { GitHubProvider } from './providers/github/provider';
-import { Linter, LinterOptions } from './linter';
+import { Linter, LintOptions } from './linter';
 
 export interface ChangelogOptions extends ConfigLoaderOptions {
     bump?: boolean;
@@ -38,11 +38,14 @@ export class Changelog {
         await this.writeState(state);
     }
 
-    public async lint(message: string | undefined, options: LinterOptions): Promise<void> | never {
+    public async lint(message: string | undefined, options: LintOptions): Promise<void> | never {
         const config = await this.getConfig();
         const task = TaskTree.add('Lint commit message:');
-        const types = config.getTypes().map(([name]): string => name);
-        const linter = new Linter(config.getPlugins(), types, task, options);
+        const linter = new Linter(task, {
+            config: options,
+            plugins: config.getPlugins(),
+            types: config.getTypes().map(([name]): string => name),
+        });
 
         await linter.lint(message);
 

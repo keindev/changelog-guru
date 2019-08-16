@@ -2,7 +2,7 @@ import { Task } from 'tasktree-cli/lib/task';
 import { CommitPlugin } from '../../../src/plugins/commit-plugin';
 import { Commit } from '../../../src/entities/commit';
 import { PluginOption } from '../../../src/config/config';
-import { LintOptions } from '../../../src/linter';
+import { PluginLintOptions } from '../../../src/linter';
 
 export default class MockCommitPlugin extends CommitPlugin {
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
@@ -16,7 +16,7 @@ export default class MockCommitPlugin extends CommitPlugin {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public lint(options: LintOptions, task: Task): void {
+    public lint(options: PluginLintOptions, task: Task): void {
         // empty
     }
 }

@@ -10,11 +10,6 @@ import { State } from './state/state';
 import { CommitPlugin } from './plugins/commit-plugin';
 import Key from './utils/key';
 
-export interface LinterOptions {
-    lowercaseTypesOnly?: boolean;
-    maxHeaderLength?: number;
-}
-
 export interface PluginLintOptions {
     header: string;
     body: string[];
@@ -23,12 +18,25 @@ export interface PluginLintOptions {
     subject: string;
 }
 
+export interface LintOptions {
+    lowercaseTypesOnly?: boolean;
+    maxHeaderLength?: number;
+}
+
+export interface LinterOptions {
+    config: LintOptions;
+    plugins: [string, PluginOption][];
+    types: string[];
+}
+
 export class Linter {
     public static DEFAULT_HEADER_MAX_LENGTH = 100;
     public static MIN_SUBJECT_LENGTH = 6;
     public static EMPTY_VALUE = '';
     public static GIT_EDIT_MESSAGE_PATH = '.git/COMMIT_EDITMSG';
     public static COMMENT_SIGN = '#';
+    public static PARAM_SIGN_LINUX = '$';
+    public static PARAM_SIGN_WIN = '%';
 
     private task: Task;
     private plugins: [string, PluginOption][];
@@ -37,22 +45,22 @@ export class Linter {
     private lowercaseTypesOnly: boolean;
     private state: State = new State();
     private pluginLoader: PluginLoader = new PluginLoader();
+    // The recommended method to specify -m with husky was `changelog lint -m $HUSKY_GIT_PARAMS`
+    // This does not work properly with win32 systems, where env variable declarations use a different syntax
+    private supportedParameters: string[] = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'];
 
-    public constructor(plugins: [string, PluginOption][], types: string[], task: Task, options: LinterOptions) {
-        this.plugins = plugins;
-        this.types = types;
+    public constructor(task: Task, options: LinterOptions) {
+        const { config } = options;
+
+        this.plugins = options.plugins;
+        this.types = options.types;
         this.task = task;
-        this.maxHeaderLength = options.maxHeaderLength || Linter.DEFAULT_HEADER_MAX_LENGTH;
-        this.lowercaseTypesOnly = !!options.lowercaseTypesOnly;
+        this.maxHeaderLength = config.maxHeaderLength || Linter.DEFAULT_HEADER_MAX_LENGTH;
+        this.lowercaseTypesOnly = !!config.lowercaseTypesOnly;
     }
 
     public async lint(value: string = Linter.EMPTY_VALUE): Promise<void> {
-        let message = value;
-
-        if (value === Linter.GIT_EDIT_MESSAGE_PATH) {
-            message = await this.readGitMessage();
-        }
-
+        const message = await this.getMessageBody(value);
         const [header, body] = this.parseMessage(message);
         const [type, scope, subject] = this.parseHeader(header);
 
@@ -72,8 +80,29 @@ export class Linter {
         );
     }
 
-    private async readGitMessage(): Promise<string> {
-        const filePath = path.resolve(process.cwd(), Linter.GIT_EDIT_MESSAGE_PATH);
+    private async getMessageBody(value: string): Promise<string> {
+        const isWin = (name: string): boolean => name === `${Linter.PARAM_SIGN_WIN}${name}${Linter.PARAM_SIGN_WIN}`;
+        const isLinux = (name: string): boolean => name === `${Linter.PARAM_SIGN_LINUX}${name}`;
+        const paramName = this.supportedParameters.find((name): boolean => isWin(name) || isLinux(name));
+        let result: string = value;
+
+        if (paramName && paramName in process.env) {
+            const paramValue = process.env[paramName];
+
+            if (paramValue) {
+                result = await this.readGitMessage(paramValue);
+            } else {
+                this.task.fail(`File path is not defined!`);
+            }
+        } else if (value === Linter.GIT_EDIT_MESSAGE_PATH) {
+            result = await this.readGitMessage(value);
+        }
+
+        return result;
+    }
+
+    private async readGitMessage(from: string): Promise<string> {
+        const filePath = from === Linter.GIT_EDIT_MESSAGE_PATH ? path.resolve(process.cwd(), from) : from;
         let result = Linter.EMPTY_VALUE;
 
         if (fs.existsSync(filePath)) {
