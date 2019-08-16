@@ -44,6 +44,9 @@
         "pval",
         "pver",
         "keindev",
-        "filepath"
+        "filepath",
+        "EDITMSG",
+        "deps",
+        "SPDX"
     ]
 }

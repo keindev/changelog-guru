@@ -6,7 +6,7 @@
     "license": "MIT",
     "author": {
         "name": "Daniil Ryazanov",
-        "email": "opensource@tagproject.ru"
+        "email": "kein@tagproject.ru"
     },
     "keywords": [
         "automated",
@@ -34,10 +34,10 @@
     "scripts": {
         "clean": "rimraf lib coverage",
         "lint": "eslint src/**/*.ts --fix",
-        "spell": "cspell -c .vscode/cSpell.json --no-summary * src/**/* test/**/* bin/**/*",
+        "cspell": "cspell -c .vscode/cspell.json --no-summary '*.*' '**/*.ts' '**/*.js'",
         "test": "jest",
         "build:ts": "tsc",
-        "build": "npm-run-all clean spell lint test build:*"
+        "build": "npm-run-all clean cspell lint test build:*"
     },
     "engines": {
         "node": ">=10.0.0"
