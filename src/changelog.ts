@@ -8,7 +8,7 @@ import { Package } from './package/package';
 import { ConfigLoader, ConfigLoaderOptions } from './config/config-loader';
 import { State } from './state/state';
 import { GitHubProvider } from './providers/github/provider';
-import Linter, { LinterOptions } from './linter';
+import { Linter, LinterOptions } from './linter';
 
 export interface ChangelogOptions extends ConfigLoaderOptions {
     bump?: boolean;

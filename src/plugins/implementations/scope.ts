@@ -3,7 +3,7 @@ import { CommitPlugin } from '../commit-plugin';
 import { Commit } from '../../entities/commit';
 import { PluginOption } from '../../config/config';
 import Key from '../../utils/key';
-import { LintOptions } from '../../linter';
+import { PluginLintOptions } from '../../linter';
 
 export interface ScopeNames {
     [key: string]: string;
@@ -18,7 +18,7 @@ export default class ScopePlugin extends CommitPlugin {
     public static SEPARATOR = ',';
     public static MIN_NAME_LENGTH = 2;
 
-    private onlyPresented: boolean = false;
+    private onlyPresented = false;
     private names: Map<string, string> = new Map();
 
     public async init(config: ScopePluginOptions): Promise<void> {
@@ -44,7 +44,7 @@ export default class ScopePlugin extends CommitPlugin {
         }
     }
 
-    public lint(options: LintOptions, task: Task): void {
+    public lint(options: PluginLintOptions, task: Task): void {
         const { scope } = options;
 
         if (scope) {

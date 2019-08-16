@@ -15,7 +15,7 @@ export interface LinterOptions {
     maxHeaderLength?: number;
 }
 
-export interface LintOptions {
+export interface PluginLintOptions {
     header: string;
     body: string[];
     type: string;
@@ -23,7 +23,7 @@ export interface LintOptions {
     subject: string;
 }
 
-export default class Linter {
+export class Linter {
     public static DEFAULT_HEADER_MAX_LENGTH = 100;
     public static MIN_SUBJECT_LENGTH = 6;
     public static EMPTY_VALUE = '';
@@ -131,7 +131,7 @@ export default class Linter {
         return [safeType || Linter.EMPTY_VALUE, safeScope || Linter.EMPTY_VALUE, safeSubject || Linter.EMPTY_VALUE];
     }
 
-    private async lintWithPlugin(name: string, config: PluginOption, options: LintOptions): Promise<void> {
+    private async lintWithPlugin(name: string, config: PluginOption, options: PluginLintOptions): Promise<void> {
         const { task } = this;
         const plugin = await this.pluginLoader.load(task, { name, config, context: this.state });
 
