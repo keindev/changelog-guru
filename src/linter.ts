@@ -23,7 +23,7 @@ export interface LintOptions {
     subject: string;
 }
 
-export default class Linter {
+export class Linter {
     public static DEFAULT_HEADER_MAX_LENGTH = 100;
     public static MIN_SUBJECT_LENGTH = 6;
     public static EMPTY_VALUE = '';
