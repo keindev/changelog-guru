@@ -37,7 +37,7 @@ Source code now under `MIT` license.
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
 -   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.17)** with `^24.0.17`
--   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.1)** with `^12.7.1`
+-   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.2)** with `^12.7.2`
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.0.0)** with `^2.0.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.0.0)** with `^2.0.0`
@@ -48,7 +48,7 @@ Source code now under `MIT` license.
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
 -   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.1)** with `^22.15.1`
 -   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.3)** with `^3.0.3`
--   Added **[jest](https://www.npmjs.com/package/jest/v/24.8.0)** with `^24.8.0`
+-   Added **[jest](https://www.npmjs.com/package/jest/v/24.9.0)** with `^24.9.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
 -   Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)** with `^1.18.2`
 -   Added **[ts-jest](https://www.npmjs.com/package/ts-jest/v/24.0.2)** with `^24.0.2`
@@ -137,6 +137,7 @@ Source code now under `MIT` license.
 -   **[Debug]** Fix debug cli commnad [`3296542`](https://github.com/keindev/changelog-guru/commit/3296542ca175f43b07445485f1209fee04368ca9)
 -   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
 -   **[Lint]** Fix lint errors [`babcbe3`](https://github.com/keindev/changelog-guru/commit/babcbe3aef4000b6663960e209c4403d2571fd0f)
+-   **[Linter]** Fix win32 husky param read error [`1059789`](https://github.com/keindev/changelog-guru/commit/1059789fddf24e001fe85f1bb1d115f801bf6658)
 -   **[Plugins]** Add export for Config interfaces [`949d2cc`](https://github.com/keindev/changelog-guru/commit/949d2cc1ab65191f1c35a73b0e5cbceb6ac9c88d)
 -   **[Provider]** Fix findup cwd [`e9e5df6`](https://github.com/keindev/changelog-guru/commit/e9e5df6c5966915db9af7f24326b2edc421f69f1)
 -   **[Provider]** Set default branch to master [`7953e81`](https://github.com/keindev/changelog-guru/commit/7953e81a59deb8d472bea8c41f30f7a09ab2eb82)
@@ -148,6 +149,7 @@ Source code now under `MIT` license.
 -   **[State]** Add check for existence of plugin file [`e2064ca`](https://github.com/keindev/changelog-guru/commit/e2064ca5abb9d099503d98a95b614e7dcc356201)
 -   **[State]** Add import task skip if plug not exist [`6b9c9fd`](https://github.com/keindev/changelog-guru/commit/6b9c9fdb1abd6935f388f9e6d9a2c01d8514a152)
 -   **[State, Section]** Fix sections sorting [`7740999`](https://github.com/keindev/changelog-guru/commit/77409996c382f83f49ce58f673da71b963732536)
+-   **[Test]** Replace subject to getSubject [`8839758`](https://github.com/keindev/changelog-guru/commit/88397586b7602e833a8bffbb333d579e8665e45e)
 -   **[Utils]** Rename CLI to Command [`09b0614`](https://github.com/keindev/changelog-guru/commit/09b06141d88745d9dd0c9410712018503c0c0bc6)
 -   **[Writer]** Fix error with output md [`fe88997`](https://github.com/keindev/changelog-guru/commit/fe889978149da0b4b760c70eb3eade80d2761821)
 -   Rewrite reader, test github api [`dfea14d`](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae) [`a5b847f`](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
@@ -196,7 +198,7 @@ Source code now under `MIT` license.
 
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 -   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
--   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b) [`fb642e9`](https://github.com/keindev/changelog-guru/commit/fb642e9fba687b41501885980e39d2d29cfdd56f)
+-   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b) [`fb642e9`](https://github.com/keindev/changelog-guru/commit/fb642e9fba687b41501885980e39d2d29cfdd56f) [`6e814e4`](https://github.com/keindev/changelog-guru/commit/6e814e4399a26f782f6f35d82080e3bf0203073d)
 -   **[Changelog]** Rebuild changelog file [`4d91cf0`](https://github.com/keindev/changelog-guru/commit/4d91cf09d6c4993b5f536d818d36fd367e86fdb9)
 -   **[Changelog]** Build new changelog [`cf506dc`](https://github.com/keindev/changelog-guru/commit/cf506dcc550d005214ea2af078d3d9db323a1e05)
 -   **[CommitPlugin]** Add lint method to mock [`3cd571e`](https://github.com/keindev/changelog-guru/commit/3cd571e61f9b9f93d341a7258acebbef7d2589a7)
@@ -254,12 +256,15 @@ Source code now under `MIT` license.
 
 ## Others
 
+-   **[Commit]** Add setter for subject field [`c2b2daf`](https://github.com/keindev/changelog-guru/commit/c2b2dafcf10b89149191c0b9960c77618176e6ab)
 -   **[Config]** Rename class, add trims [`4a4a66a`](https://github.com/keindev/changelog-guru/commit/4a4a66a9ba474e9bcbd51fddc6d9fe209dcfb0e0)
 -   **[Config]** Rename config to configuration [`b4c7a8e`](https://github.com/keindev/changelog-guru/commit/b4c7a8e5eea8bd516deda29a7ee7aa5a0539bfaf)
 -   **[Config]** Fix path to conf in mocks [`afd6461`](https://github.com/keindev/changelog-guru/commit/afd64616e7a21be343ff7ade8fe69249061a3999)
 -   **[Configuration]** Refatoring stage 2 [`5eb3f13`](https://github.com/keindev/changelog-guru/commit/5eb3f13c1344ed9209e33fe410b1bbe93e8b7ce3)
 -   **[GitProvider]** Add typings forlder [`c93830e`](https://github.com/keindev/changelog-guru/commit/c93830e75544c216963cdb8512ccc764142cfa46)
 -   **[Imports]** Refactor entities imports [`eae085d`](https://github.com/keindev/changelog-guru/commit/eae085db8c7ad86bf18df3c21893c26509766a05)
+-   **[Linter]** Remove default Linter export [`651fa4a`](https://github.com/keindev/changelog-guru/commit/651fa4a3721dd7e818bb602bd2f71f3b814df3a8)
+-   **[Linter]** Rename LintOptions to PluginLintOptions [`ee4b35e`](https://github.com/keindev/changelog-guru/commit/ee4b35e37ad6ab81da0456aa50c1afee6405d4be)
 -   **[MarkerPlugin]** Rename config fields [`bb38146`](https://github.com/keindev/changelog-guru/commit/bb381460578d16f9be561824b4af181da2cef19c)
 -   **[Package]** Refactor pkg & versioning upd [`38f947f`](https://github.com/keindev/changelog-guru/commit/38f947f7440c100ddfe68a16e569ec9b9bcb7d92)
 -   **[Plugin, Provider, Plugins, Tests]** Refactor Stage 2 \(60%\) [`6efd31e`](https://github.com/keindev/changelog-guru/commit/6efd31e5e209d1db555b34a15f365b8d5ad18277) [`78b29d4`](https://github.com/keindev/changelog-guru/commit/78b29d485cf0f952e4f08f7c4d70826047167fbc) [`c69e36c`](https://github.com/keindev/changelog-guru/commit/c69e36cf05a80734009ebada019864a77dd3b249)
