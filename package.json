@@ -33,7 +33,7 @@
     },
     "scripts": {
         "clean": "rimraf lib coverage",
-        "lint": "eslint src/**/*.ts --fix",
+        "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
         "cspell": "cspell -c .vscode/cspell.json --no-summary '*.*' '**/*.ts' '**/*.js'",
         "test": "jest",
         "build:ts": "tsc",
