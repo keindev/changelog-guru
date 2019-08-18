@@ -20,7 +20,7 @@ Source code now under `MIT` license.
 -   Added **[command-line-args](https://www.npmjs.com/package/command-line-args/v/5.1.1)** with `^5.1.1`
 -   Added **[cosmiconfig](https://www.npmjs.com/package/cosmiconfig/v/5.2.1)** with `^5.2.1`
 -   Added **[deepmerge](https://www.npmjs.com/package/deepmerge/v/4.0.0)** with `^4.0.0`
--   Added **[dotenv](https://www.npmjs.com/package/dotenv/v/8.0.0)** with `^8.0.0`
+-   Added **[dotenv](https://www.npmjs.com/package/dotenv/v/8.1.0)** with `^8.1.0`
 -   Added **[findup-sync](https://www.npmjs.com/package/findup-sync/v/4.0.0)** with `^4.0.0`
 -   Added **[graphql-request](https://www.npmjs.com/package/graphql-request/v/1.8.2)** with `^1.8.2`
 -   Added **[read-pkg](https://www.npmjs.com/package/read-pkg/v/5.2.0)** with `^5.2.0`
@@ -42,15 +42,16 @@ Source code now under `MIT` license.
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.0.0)** with `^2.0.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.0.0)** with `^2.0.0`
 -   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.28)** with `^4.0.28`
--   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.1.0)** with `^6.1.0`
+-   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.2.0)** with `^6.2.0`
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.0.0)** with `^6.0.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
 -   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.1)** with `^22.15.1`
--   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.3)** with `^3.0.3`
+-   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.4)** with `^3.0.4`
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.9.0)** with `^24.9.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
 -   Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)** with `^1.18.2`
+-   Added **[strip-ansi](https://www.npmjs.com/package/strip-ansi/v/5.2.0)** with `^5.2.0`
 -   Added **[ts-jest](https://www.npmjs.com/package/ts-jest/v/24.0.2)** with `^24.0.2`
 -   Added **[typescript](https://www.npmjs.com/package/typescript/v/3.5.3)** with `^3.5.3`
 
@@ -198,13 +199,14 @@ Source code now under `MIT` license.
 
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 -   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
--   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b) [`fb642e9`](https://github.com/keindev/changelog-guru/commit/fb642e9fba687b41501885980e39d2d29cfdd56f) [`6e814e4`](https://github.com/keindev/changelog-guru/commit/6e814e4399a26f782f6f35d82080e3bf0203073d)
+-   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b) [`fb642e9`](https://github.com/keindev/changelog-guru/commit/fb642e9fba687b41501885980e39d2d29cfdd56f) [`6e814e4`](https://github.com/keindev/changelog-guru/commit/6e814e4399a26f782f6f35d82080e3bf0203073d) [`844ce76`](https://github.com/keindev/changelog-guru/commit/844ce764a704b5526ef2169ef6f7c686fdc01d8b)
 -   **[Changelog]** Rebuild changelog file [`4d91cf0`](https://github.com/keindev/changelog-guru/commit/4d91cf09d6c4993b5f536d818d36fd367e86fdb9)
 -   **[Changelog]** Build new changelog [`cf506dc`](https://github.com/keindev/changelog-guru/commit/cf506dcc550d005214ea2af078d3d9db323a1e05)
 -   **[CommitPlugin]** Add lint method to mock [`3cd571e`](https://github.com/keindev/changelog-guru/commit/3cd571e61f9b9f93d341a7258acebbef7d2589a7)
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 -   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
 -   **[Debug]** Move debug configs to \.vscode [`14fc5dc`](https://github.com/keindev/changelog-guru/commit/14fc5dc5f64198334ba66a233e9cbbc667765e21)
+-   **[Linter]** Add tests for Linter [`0cb38bb`](https://github.com/keindev/changelog-guru/commit/0cb38bb0aa1cfac524a61baae9c31032a8fde3c2)
 -   **[Marker]** Add eslint disable no\-explicit\-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
 -   **[Media]** Update logo [`089b444`](https://github.com/keindev/changelog-guru/commit/089b4440e2386ef56a9cc187b56dc9b1d265439a)
 -   **[Mocks]** Rename mocks folder to \_\_mocks\_\_ [`3185f07`](https://github.com/keindev/changelog-guru/commit/3185f07091721aa929679e4a833d3ac80e384b3a)

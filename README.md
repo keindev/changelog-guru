@@ -26,17 +26,17 @@ yarn add changelog-guru
 npm install changelog-guru
 ```
 
-## Usage
+## Contents
 
-Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
+-   [What is **changelog-guru**](#what-is-changelog-guru)
+-   [Getting started](#getting-started)
+    -   [Configuration](#configuration)
+    -   [Generate changelog](#generate-changelog)
+    -   [Lint commit message](#lint-commit-message)
 
-Create `CHANGELOG.md`:
+### What is **changelog-guru**
 
-```
-
-changelog [options]
-
-```
+changelog-guru generate a CHANGELOG from git metadata and checks if your commit messages meet the [conventional commit format](https://www.conventionalcommits.org/).
 
 ### Goals
 
@@ -46,6 +46,8 @@ changelog [options]
 
 ### Format of the commit message
 
+The commit message pattern mostly looks like this:
+
 ```
 <type>(<scope>): <subject>
 <markers>
@@ -53,6 +55,30 @@ changelog [options]
 <body>
 <BLANK LINE>
 <footer>
+```
+
+Real world examples can look like this:
+
+```
+fix(Section): fix sections sorting
+!break
+
+Sort direction added:
+... code example
+```
+
+```
+build(deps-dev): bump eslint-plugin-jest to 22.x
+```
+
+```
+refactor(State): tidy up work with message queues
+!group(Prerelease refactoring)
+
+...
+
+refactor(ConfigLoader): correct configuration loading method
+!group(Prerelease refactoring)
 ```
 
 #### Type
@@ -73,13 +99,17 @@ Subject line contains succinct description of the change.
 
 > See the [Marker plugin](#marker) section for a more detailed description.
 
-Control markers of the form `!<name>`, allow you to group, ignore or increase the priority of commits in the change log
+Control markers of the form `!<name>`, allow you to group, ignore or increase the priority of commits in the change log.
 
 #### Body & Footer
 
-All that allows you to write a conscience.
+Extended information about changes.
 
-## Configuration
+## Getting started
+
+Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
+
+### Configuration
 
 > Changelog-guru uses [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and you can configure the module in any way you like described in the documentation.
 
@@ -93,11 +123,7 @@ All options can be configured in the configuration file, this is where `changelo
 
 For example see [.changelogrc.yaml](.changelogrc.yaml). Also you can use `changelog-guru` with [default](.changelogrc.default.yaml) configuration.
 
-### Provider
-
-| Default  | CLI Override          | API Override         |
-| -------- | --------------------- | -------------------- |
-| `github` | `--provider <string>` | `provider: <string>` |
+#### Provider
 
 The type of service provider to receive information about the project. To set the type of service you want to use, you must:
 
@@ -114,282 +140,20 @@ export GITLAB_TOKEN="f941e0..."
 
 > Changelog-guru uses [dotenv](https://www.npmjs.com/package/dotenv) and you can loads environment variables from a `.env`
 
-### Levels of changes
-
-| Default     | CLI Override      | API Override      |
-| ----------- | ----------------- | ----------------- |
-| _see below_ | `--major <items>` | `major: string[]` |
-| _see below_ | `--minor <items>` | `minor: string[]` |
-| _see below_ | `--patch <items>` | `patch: string[]` |
-
-Default level of changes:
-
-```YAML
-changes:
-    major:
-        - break
-    minor:
-        - feat
-        - improve
-    patch:
-        - fix
-        - chore
-        - refactor
-        - test
-        - docs
-        - build
-        - types
-        - style
-        - workflow
-        - perf
-        - revert
-```
-
-For a list of change types by level, see [SemVer](https://semver.org/). The commits with the specified types will be distributed by change levels. For example:
+### Generate changelog
 
 ```
 
-// Commit message with MINOR changes
-feat(Core): add awesome feature
+changelog generate [options]
 
 ```
 
-The following types of changes are defined by default:
-
--   **MAJOR** version:
-    -   `break` - breaking changes
--   **MINOR** version:
-    -   `feat` - new features
-    -   `improve` - features improvements
--   **PATCH** version:
-    -   `fix` - some bugs fixing
-    -   `chore` - minor changes
-    -   `refactor` - code refactoring
-    -   `test` - add or change tests
-    -   `docs` - documentation changes
-    -   `build` - package changes, release
-    -   `types` - code typing
-    -   `style` - `css`/`scss`/_other_, style sheet change
-    -   `workflow` - workflow changes
-    -   `perf` - performance improvements
-    -   `revert` - reverted changes
-
-### Output options
-
-Parameters of the output file. Specify the path to the file and the excluded entities.
-
-Default output options:
-
-```YAML
-output:
-    filePath: CHANGELOG.md
-    exclude:
-        authorLogin: ['dependabot-preview[bot]']
-        commitType: ['build']
-        commitScope: ['deps', 'deps-dev']
-        commitSubject: ['merge']
-```
-
-#### filePath
-
-File path to write change log to it.
-
-| Default        | CLI Override      | API Override       |
-| -------------- | ----------------- | ------------------ |
-| `CHANGELOG.md` | `--output <path>` | `filePath: string` |
-
-#### exclude
-
-One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors. To find out about other ways to ignore commits, see the section [Plugins](#plugins)
-
-| Default                                 | CLI Override              | API Override              |
-| --------------------------------------- | ------------------------- | ------------------------- |
-| _[see output example](#output-options)_ | `--excl-authors<items>`   | `authorLogin: string[]`   |
-| _[see output example](#output-options)_ | `--excl-types <items>`    | `commitType: string[]`    |
-| _[see output example](#output-options)_ | `--excl-scopes <items>`   | `commitScope: string[]`   |
-| _[see output example](#output-options)_ | `--excl-subjects <items>` | `commitSubject: string[]` |
-
--   **authorLogin** - excludes authors with the listed logins from the output file
--   **commitType** - excludes commits with the listed [types](#commit-structure) from the output file
--   **commitScope** - excludes commits with the listed [scopes](#commit-structure) from the output file
--   **commitSubject** - excludes commits with the listed [subjects](#commit-structure) from the output file
-
-### Other CLI options
-
-| Default                           | CLI             | Description                                                                                                                                      |
-| --------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `false`                           | `--bump`        | Based on data about changes made in the project, forms the next version number and bumps it in `package.json`, see [SemVer](https://semver.org/) |
-| _current branch from .git folder_ | `--branch`      | Set branch by which change log will be generated                                                                                                 |
-| -                                 | `-v, --version` | Show `changelog-guru` package version                                                                                                            |
-| -                                 | `--help`        | Show `changelog-guru` cli options help                                                                                                           |
-
-### Plugins
-
-All plugin settings are described in the special section `plugins` of the configuration as follows:
-
-```YAML
-plugins:
-    <plugin name>:
-        <plugins option>
-        ...
-        <plugins option>
-```
-
-#### Attention
-
-Base plugin enabled by default. Displays information about changes to [package.json](https://docs.npmjs.com/files/package.json) in the change log. Checks the following sections:
-
--   [license](https://docs.npmjs.com/files/package.json#license)
--   [engines](https://docs.npmjs.com/files/package.json#engines)
--   [dependencies](https://docs.npmjs.com/files/package.json#dependencies)
--   [dev dependencies](https://docs.npmjs.com/files/package.json#devdependencies)
--   [peer dependencies](https://docs.npmjs.com/files/package.json#peerdependencies)
--   [optional dependencies](https://docs.npmjs.com/files/package.json#optionaldependencies)
--   [bundled dependencies](https://docs.npmjs.com/files/package.json#bundleddependencies)
--   [OS](https://docs.npmjs.com/files/package.json#os)
--   [CPU](https://docs.npmjs.com/files/package.json#cpu)
-
-Default options:
-
-```YAML
-attention:
-    title: Important Changes
-    templates:
-        added: 'Added %name% with %val%'
-        changed: 'Changed %name% from %pval% to %val%'
-        bumped: 'Bumped %name% from %pver% to %ver%'
-        downgraded: 'Downgraded %name% from %pver% to %ver%'
-        removed: 'Removed %name%, with %pval%'
-    sections:
-        - license
-        - os
-        - cpu
-        - engines
-        - dependencies
-        - devDependencies
-        - peerDependencies
-        - optionalDependencies
-        - bundledDependencies
-```
-
-##### Title
-
-Default: `Important Changes`
-
-The name of the main section in which all other sections will be placed with changes by types.
-
-##### Templates
-
-The change message templates:
-
--   **added** - added Dependencies
--   **changed** - dependencies whose value is not `SemVer` and has been changed
--   **bumped** - dependencies whose version was bumped
--   **downgraded** - dependencies whose version was downgraded
--   **removed** - removed dependencies
-
-Literals available for substitution in Templates:
-
--   `%name%` - dependency name
--   `%ver%` - semantic version of dependency, for example `1.9.3`
--   `%pver%` - previous semantic version of dependency
--   `%val%` - dependency version, for example `^1.9.3`
--   `%pval%` - previous dependency version
-
-##### Sections
-
-List of available for output sections. If you do not want to see a section in the change log, simply remove its name from the list.
-
-#### Marker
-
-Base plugin enabled by default. Allows you to add additional useful information to the commit, for example, about breaking changes. Or allows you to hide the commit from the change log.
-
-Two types of markers are available, action markers and join markers.
-
-Default options:
-
-```YAML
-marker:
-    actions:
-        - ignore
-        - group
-    joins:
-        important: Important Internal Changes
-        deprecated: DEPRECATIONS
-        break: BREAKING CHANGES
-```
-
-##### Actions
-
-Action markers performs operations on commits when building a change log:
-
--   `!ignore` - ignore a commit in output
--   `!group(<name>)` - creates a group of commits with the `<name>`
-
-##### Joins
-
-Join markers combine commits in sections. Configured as follows:
+### Lint commit message
 
 ```
-<marker name>: <section title>
-```
 
-The following markers are available:
+changelog lint [options]
 
--   `!important` - place a commit title to special section on top of changelog
--   `!deprecated` - place a commit title to special section with deprecated properties
--   `!break` - indicates major changes breaking backward compatibility
-
-#### Scope
-
-Base plugin enabled by default. Renames areas and abbreviations to a more human-readable format.
-
-Default options:
-
-```YAML
-scope:
-    onlyPresented: false
-    names:
-        cr: Core
-        api: API
-        ssr: Server Side Rendering
-        fc: Functional Components
-        dts: TypeScript Declaration Improvements
-```
-
-##### onlyPresented
-
-Default: `false`
-
-In the case of true will only rename the specified names.
-
-##### names
-
-List of abbreviations and their human-readable versions. Configured as follows:
-
-```
-<abbreviated name>: <human-readable name>
-```
-
-#### Section
-
-Base plugin enabled by default. Distributes commits with the specified types into sections. Configured as follows:
-
-```
-<section name>: [commit types]
-```
-
-Default options:
-
-```YAML
-section:
-    Features: [feat]
-    Improvements: [improve]
-    Bug Fixes: [fix]
-    Internal changes: [types, workflow, build, test, chore, docs]
-    Performance Improvements: [perf]
-    Code Refactoring: [refactor]
-    Reverts: [revert]
 ```
 
 ## License

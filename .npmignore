@@ -3,6 +3,7 @@ test/
 coverage/
 media/
 src/
+docs/
 
 # Dependency directories
 node_modules/
