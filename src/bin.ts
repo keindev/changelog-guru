@@ -1,10 +1,10 @@
 import { TaskTree } from 'tasktree-cli';
 import { ExitCode } from 'tasktree-cli/lib/enums';
 import { CommandManager } from './cli/command-manager';
-import { BuildCommand } from './cli/commands/build-command';
+import { GenerateCommand } from './cli/commands/generate-command';
 import { LintCommand } from './cli/commands/lint-command';
 
-const manager = new CommandManager([new BuildCommand(), new LintCommand()]);
+const manager = new CommandManager([new GenerateCommand(), new LintCommand()]);
 const taskTree = TaskTree.tree();
 
 manager
