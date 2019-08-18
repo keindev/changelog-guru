@@ -56,6 +56,6 @@ export class BuildCommand extends Command {
 
         const changelog = new Changelog(changelogOptions);
 
-        await changelog.generate();
+        await changelog.build();
     }
 }

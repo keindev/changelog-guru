@@ -38,13 +38,14 @@ export class Linter {
     public static PARAM_SIGN_LINUX = '$';
     public static PARAM_SIGN_WIN = '%';
 
+    protected pluginLoader: PluginLoader = new PluginLoader();
+
     private task: Task;
     private plugins: [string, PluginOption][];
     private types: string[];
     private maxHeaderLength: number;
     private lowercaseTypesOnly: boolean;
     private state: State = new State();
-    private pluginLoader: PluginLoader = new PluginLoader();
     // The recommended method to specify -m with husky was `changelog lint -m $HUSKY_GIT_PARAMS`
     // This does not work properly with win32 systems, where env variable declarations use a different syntax
     private supportedParameters: string[] = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'];

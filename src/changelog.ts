@@ -30,7 +30,7 @@ export class Changelog {
         this.options = options;
     }
 
-    public async generate(): Promise<void> {
+    public async build(): Promise<void> {
         const config = await this.getConfig();
         const provider = this.getProvider(config);
         const state = await this.readState(config, provider);
