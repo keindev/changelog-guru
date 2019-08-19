@@ -1,5 +1,3 @@
-import stripAnsi from 'strip-ansi';
-import { Theme } from 'tasktree-cli/lib/theme';
 import { Task } from 'tasktree-cli/lib/task';
 import { ConfigLoader } from '../src/config/config-loader';
 import { Config } from '../src/config/config';
@@ -50,12 +48,7 @@ describe('Linter', (): void => {
 
         Promise.all([linter.lint(''), linter.lint('Test:'), linter.lint('wow: some subject message')]).then(
             (): void => {
-                const theme = new Theme();
-                const snapshot = $task.render(theme).map((line): string => stripAnsi(line));
-
                 expect($task.haveErrors()).toBeTruthy();
-                expect(snapshot).toMatchSnapshot();
-
                 done();
             }
         );
