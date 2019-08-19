@@ -53,14 +53,24 @@ output:
         commitSubject: ['merge']
 # Plugins that extend the basic functionality and modify the output in the change log
 plugins:
+    # Displays information about changes to package.json in the change log
     - attention:
+          # Main section title
           title: Important Changes
+          # The change message templates
           templates:
+              # Template for added Dependencies
               added: 'Added %name% with %val%'
+              # Template for dependencies whose values is not `SemVer` and has been changed
               changed: 'Changed %name% from %pval% to %val%'
+              # Template for dependencies whose version was bumped
               bumped: 'Bumped %name% from %pver% to %ver%'
+              # Template for dependencies whose version was downgraded
               downgraded: 'Downgraded %name% from %pver% to %ver%'
+              # Template for removed dependencies
               removed: 'Removed %name%, with %pval%'
+          # List of available for output sections.
+          # If you do not want to see a section in the changelog, simply remove its name from the list.
           sections:
               - license
               - os
@@ -71,13 +81,15 @@ plugins:
               - peerDependencies
               - optionalDependencies
               - bundledDependencies
-    # List of available markers
+    # Allows you to add additional useful information to the commit
     - marker:
+          # Action markers performs operations on commits objects when building a changelog
           actions:
               # !ignore - ignore a commit in output
               - ignore
               # !group(NAME) - creates a group of commits with the <NAME>
               - group
+          # Join markers combine commits in sections
           joins:
               # !important - place a commit title to special section on top of changelog
               important: Important Internal Changes
@@ -85,15 +97,18 @@ plugins:
               deprecated: DEPRECATIONS
               # !break - indicates major changes breaking backward compatibility
               break: BREAKING CHANGES
-    # list of major scopes
+    # Renames scopes and abbreviations to a more human-readable format
     - scope:
+          # In the case of true will only rename the specified names
           onlyPresented: false
+          # List of abbreviations and their human-readable versions
           names:
               core: Core
               api: API
               ssr: Server Side Rendering
               fc: Functional Components
               dts: TypeScript Declaration Improvements
+    # Distributes commits with the specified types into sections
     - section:
           Features: [feat]
           Improvements: [improve]
