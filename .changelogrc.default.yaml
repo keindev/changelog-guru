@@ -1,30 +1,57 @@
 ---
+# Specifies the type of service provider to receive project information
 provider: github
+# Commit levels of changes
 changes:
+    # Incompatible API changes
     major:
+        # Breaking changes
         - break
+    # New functionality with backwards compatible
     minor:
+        # New features
         - feat
+        # Features improvements
         - improve
+    # Backwards compatible bug fixes
     patch:
+        # Some bugs fixing
         - fix
+        # Minor changes
         - chore
+        # Code refactoring
         - refactor
+        # Adding or modifying tests
         - test
+        # Documentation changes
         - docs
+        # Package changes, releases, merging
         - build
+        # Code typing
         - types
+        # CSS, SCSS, and other style sheets changes
         - style
+        # Workflow changes
         - workflow
+        # Performance improvements
         - perf
+        # Reverted changes
         - revert
+# Parameters of the output file. Specify the path to the file and the excluded entities
 output:
+    # File path to write change log to it
     filePath: CHANGELOG.md
+    # One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors
     exclude:
+        # Excludes authors with the listed logins from the output file
         authorLogin: ['dependabot-preview[bot]']
+        # Excludes commits with the listed types from the output file
         commitType: ['build']
+        # Excludes commits with the listed scopes from the output file
         commitScope: ['deps', 'deps-dev']
+        # Excludes commits that contain the specified words in the subject
         commitSubject: ['merge']
+# Plugins that extend the basic functionality and modify the output in the change log
 plugins:
     - attention:
           title: Important Changes

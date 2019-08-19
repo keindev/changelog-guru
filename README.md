@@ -89,22 +89,22 @@ The type of changes made by this commit, such as `feat` or `fix`. You can config
 The following types of changes are defined by default:
 
 -   **MAJOR** version:
-    -   `break` - breaking changes
+    -   `break` - Breaking changes
 -   **MINOR** version:
-    -   `feat` - new features
-    -   `improve` - features improvements
+    -   `feat` - New features
+    -   `improve` - Features improvements
 -   **PATCH** version:
-    -   `fix` - some bugs fixing
-    -   `chore` - minor changes
-    -   `refactor` - code refactoring
-    -   `test` - add or change tests
-    -   `docs` - documentation changes
-    -   `build` - package changes, release
-    -   `types` - code typing
-    -   `style` - `css`/`scss`/_other_, style sheet change
-    -   `workflow` - workflow changes
-    -   `perf` - performance improvements
-    -   `revert` - reverted changes
+    -   `fix` - Some bugs fixing
+    -   `chore` - Minor changes
+    -   `refactor` - Code refactoring
+    -   `test` - Adding or modifying tests
+    -   `docs` - Documentation changes
+    -   `build` - Package changes, release
+    -   `types` - Code typing
+    -   `style` - `CSS`, `SCSS`, and other style sheets changes
+    -   `workflow` - Workflow changes
+    -   `perf` - Performance improvements
+    -   `revert` - Reverted changes
 
 #### Scope
 

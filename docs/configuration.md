@@ -1,6 +1,18 @@
 # Configuration
 
+See full **changelog-guru** configuration [file](../.changelog.default.yaml)
+
+## Provider
+
+Specifies the type of service provider to receive project information.
+
+| Default     | CLI Override      | API Override      |
+| ----------- | ----------------- | ----------------- |
+| _see below_ | `--major <items>` | `major: string[]` |
+
 ## Levels of changes
+
+Commit levels of changes.
 
 | Default     | CLI Override      | API Override      |
 | ----------- | ----------------- | ----------------- |
@@ -12,11 +24,14 @@ Default level of changes:
 
 ```YAML
 changes:
+    # Incompatible API changes
     major:
         - break
+    # New functionality with backwards compatible
     minor:
         - feat
         - improve
+    # Backwards compatible bug fixes
     patch:
         - fix
         - chore
@@ -43,22 +58,22 @@ feat(Core): add awesome feature
 The following types of changes are defined by default:
 
 -   **MAJOR** version:
-    -   `break` - breaking changes
+    -   `break` - Breaking changes
 -   **MINOR** version:
-    -   `feat` - new features
-    -   `improve` - features improvements
+    -   `feat` - New features
+    -   `improve` - Features improvements
 -   **PATCH** version:
-    -   `fix` - some bugs fixing
-    -   `chore` - minor changes
-    -   `refactor` - code refactoring
-    -   `test` - add or change tests
-    -   `docs` - documentation changes
-    -   `build` - package changes, release
-    -   `types` - code typing
-    -   `style` - `css`/`scss`/_other_, style sheet change
-    -   `workflow` - workflow changes
-    -   `perf` - performance improvements
-    -   `revert` - reverted changes
+    -   `fix` - Some bugs fixing
+    -   `chore` - Minor changes
+    -   `refactor` - Code refactoring
+    -   `test` - Adding or modifying tests
+    -   `docs` - Documentation changes
+    -   `build` - Package changes, releases, merging
+    -   `types` - Code typing
+    -   `style` - `CSS`, `SCSS`, and other style sheets changes
+    -   `workflow` - Workflow changes
+    -   `perf` - Performance improvements
+    -   `revert` - Reverted changes
 
 ## Output options
 
@@ -86,7 +101,7 @@ File path to write change log to it.
 
 ### exclude
 
-One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors. To find out about other ways to ignore commits, see the section [Plugins](#plugins)
+One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors. To find out about other ways to ignore commits, see the section [Plugins](plugins/plugins.md)
 
 | Default                                 | CLI Override              | API Override              |
 | --------------------------------------- | ------------------------- | ------------------------- |
@@ -95,23 +110,14 @@ One way to filter output by ignoring commits with a given type, scope, subject, 
 | _[see output example](#output-options)_ | `--excl-scopes <items>`   | `commitScope: string[]`   |
 | _[see output example](#output-options)_ | `--excl-subjects <items>` | `commitSubject: string[]` |
 
--   **authorLogin** - excludes authors with the listed logins from the output file
--   **commitType** - excludes commits with the listed [types](#commit-structure) from the output file
--   **commitScope** - excludes commits with the listed [scopes](#commit-structure) from the output file
--   **commitSubject** - excludes commits with the listed [subjects](#commit-structure) from the output file
-
-## Other CLI options
-
-| Default                           | CLI             | Description                                                                                                                                      |
-| --------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `false`                           | `--bump`        | Based on data about changes made in the project, forms the next version number and bumps it in `package.json`, see [SemVer](https://semver.org/) |
-| _current branch from .git folder_ | `--branch`      | Set branch by which change log will be generated                                                                                                 |
-| -                                 | `-v, --version` | Show `changelog-guru` package version                                                                                                            |
-| -                                 | `--help`        | Show `changelog-guru` cli options help                                                                                                           |
+-   **authorLogin** - Excludes authors with the listed logins from the output file
+-   **commitType** - Excludes commits with the listed types from the output file
+-   **commitScope** - Excludes commits with the listed scopes from the output file
+-   **commitSubject** - Excludes commits that contain the specified words in the subject
 
 ## Plugins
 
-All plugin settings are described in the special section `plugins` of the configuration as follows:
+Plugins that extend the basic functionality and modify the output in the change log. All plugin settings are described in the special section `plugins` of the configuration as follows:
 
 ```YAML
 plugins:
@@ -120,3 +126,5 @@ plugins:
         ...
         <plugins option>
 ```
+
+For the correct configuration of plugins read the section [Plugins](plugins/plugins.md)
