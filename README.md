@@ -10,7 +10,7 @@
 
 Automated changelog generator:package::zap::clipboard:
 
-> Absolutely [customizable](#configuration) a release changelog with helpful [plugins](#plugins)
+> Absolutely [customizable](#configuration) a release changelog with helpful [plugins](docs/plugins/plugins.md)
 
 ## Install
 
@@ -118,7 +118,7 @@ Subject line contains succinct description of the change.
 
 #### Markers
 
-> See the [Marker plugin](#marker) section for a more detailed description.
+> See the [Marker plugin](docs/plugins/default/marker.md) section for a more detailed description.
 
 Control markers of the form `!<name>`, allow you to group, ignore or increase the priority of commits in the change log.
 
