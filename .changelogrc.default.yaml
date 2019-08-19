@@ -58,6 +58,10 @@ plugins:
               deprecated: DEPRECATIONS
               # !break - indicates major changes breaking backward compatibility
               break: BREAKING CHANGES
+    # List of patterns for highlight code in subject
+    - highlight:
+          camelCase: true
+          masks: []
     # list of major scopes
     - scope:
           onlyPresented: false

@@ -52,6 +52,9 @@ plugins:
               important: Important Internal Changes
               deprecated: DEPRECATIONS
               break: BREAKING CHANGES
+    - highlight:
+          camelCase: true
+          masks: ['[a-z]+\w*\.\S*']
     - scope:
           onlyPresented: false
           names:
