@@ -6,9 +6,9 @@ See full **changelog-guru** configuration [file](../.changelog.default.yaml)
 
 Specifies the type of service provider to receive project information.
 
-| Default     | CLI Override      | API Override      |
-| ----------- | ----------------- | ----------------- |
-| _see below_ | `--major <items>` | `major: string[]` |
+| Default  | CLI Override        | API Override       |
+| -------- | ------------------- | ------------------ |
+| `github` | `--provider <name>` | `provider: string` |
 
 ## Levels of changes
 
