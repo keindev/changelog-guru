@@ -191,7 +191,7 @@ The command can be executed without options. If necessary, or if you want to ove
 
 ### Lint commit message
 
-There is a "changelog lint" to check the spelling of the text of the commit message.
+There is a `changelog lint` for checking the spelling of the commit message. Checks compliance with the format and spelling in the subject of the commit.
 
 ```
 
