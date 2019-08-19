@@ -1,33 +1,32 @@
-import fs from 'fs';
-import path from 'path';
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import { ChangeLevel, ExclusionType } from '../config/typings/enums';
 import { Filter } from './filter';
-import { PluginOption } from '../config/typings/types';
-import { StateContext } from './typings/types';
-import { DependencyType } from '../package/typings/enums';
-import { Dependency } from '../package/dependency';
 import { Commit } from '../entities/commit';
 import { Author } from '../entities/author';
-import { Section } from '../entities/section';
+import { Section, SectionPosition } from '../entities/section';
 import { License } from '../package/license';
-import { SectionPosition } from '../entities/typings/enums';
-import { BasePlugin } from '../plugins/base-plugin';
 import { CommitPlugin } from '../plugins/commit-plugin';
 import { StatePlugin } from '../plugins/state-plugin';
 import Key from '../utils/key';
-import { PluginType, ImportablePlugin, ConstructablePlugin } from '../plugins/typings/types';
+import { PackageRule, PackageRuleType } from '../package/rules/package-rule';
+import { ChangeLevel, ExclusionType, PluginOption } from '../config/config';
+import { PluginLoader } from '../plugins/plugin-loader';
+
+export interface StateContext {
+    getLicense(): License | undefined;
+    getPackageRule(type: PackageRuleType): PackageRule | undefined;
+    addSection(title: string, position: SectionPosition): Section | undefined;
+    findSection(title: string): Section | undefined;
+}
 
 export class State implements StateContext {
-    protected pluginsPath: string = path.resolve(__dirname, '../plugins/implementations');
-    protected pluginsExtension: string = 'js';
+    protected pluginLoader: PluginLoader = new PluginLoader();
 
-    protected authors: Map<string, Author> = new Map();
-    protected commits: Map<string, Commit> = new Map();
-    protected sections: Section[] = [];
-    protected license: License | undefined;
-    protected dependencies: Map<DependencyType, Dependency> = new Map();
+    private authors: Map<string, Author> = new Map();
+    private commits: Map<string, Commit> = new Map();
+    private sections: Section[] = [];
+    private license: License | undefined;
+    private rules: Map<PackageRuleType, PackageRule> = new Map();
 
     public getSections(): Section[] {
         return this.sections;
@@ -65,12 +64,12 @@ export class State implements StateContext {
         this.license = new License(id, prev);
     }
 
-    public getDependencies(type: DependencyType): Dependency | undefined {
-        return this.dependencies.get(type);
+    public getPackageRule(type: PackageRuleType): PackageRule | undefined {
+        return this.rules.get(type);
     }
 
-    public setDependencies(dependency: Dependency): void {
-        this.dependencies.set(dependency.type, dependency);
+    public setPackageRule(rule: PackageRule): void {
+        this.rules.set(rule.getType(), rule);
     }
 
     public getChangesLevels(): [number, number, number] {
@@ -90,7 +89,7 @@ export class State implements StateContext {
                     patch++;
                     break;
                 default:
-                    TaskTree.tree().fail(`Incompatible ChangeLevel - ${commit.getChangeLevel()}`);
+                    TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.getChangeLevel()}}`);
                     break;
             }
         });
@@ -146,14 +145,14 @@ export class State implements StateContext {
                     Filter.commitsBySubject(this.commits, rules);
                     break;
                 default:
-                    TaskTree.tree().fail(`Unacceptable entity exclusion type - ${type}`);
+                    TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
                     break;
             }
         });
     }
 
     public async modify(plugins: [string, PluginOption][]): Promise<void> {
-        const task = TaskTree.tree().add('Modifying release state...');
+        const task = TaskTree.add('Modifying release state...');
 
         await Promise.all(plugins.map(([name, options]): Promise<void> => this.modifyWithPlugin(name, options, task)));
         this.rebuildSectionsTree();
@@ -161,7 +160,7 @@ export class State implements StateContext {
     }
 
     private rebuildSectionsTree(): void {
-        const task = TaskTree.tree().add('Bringing the section tree to a consistent state...');
+        const task = TaskTree.add('Bringing the section tree to a consistent state...');
         const sections = this.sections.sort(Section.compare);
 
         if (sections.length) {
@@ -183,46 +182,27 @@ export class State implements StateContext {
         task.complete('Section tree is consistently');
     }
 
-    // TODO: think about it, maybe you should add a PluginLoader?
-    private async modifyWithPlugin(name: string, options: PluginOption, task: Task): Promise<void> {
-        const filePath = path.join(this.pluginsPath, name, `${name}.${this.pluginsExtension}`);
+    private async modifyWithPlugin(name: string, config: PluginOption, task: Task): Promise<void> {
+        const plugin = await this.pluginLoader.load(task, {
+            name,
+            config,
+            context: this,
+        });
 
-        if (fs.existsSync(filePath)) {
-            const module: ImportablePlugin<PluginType, StateContext> = await import(filePath);
-            const PluginClass: ConstructablePlugin<PluginType, StateContext> = module.default;
-
-            if (PluginClass && PluginClass.constructor && PluginClass.call && PluginClass.apply) {
-                const plugin = new PluginClass(this);
-                const subtask = task.add(`Changing state with ${PluginClass.name}`);
-
-                if (plugin instanceof BasePlugin) {
-                    await plugin.init(options);
-                } else {
-                    subtask.fail(`${PluginClass.name} is not Plugin class`);
-                }
-
-                switch (true) {
-                    case plugin instanceof CommitPlugin:
-                        await Promise.all(
-                            [...this.commits.values()].map(
-                                (commit): Promise<void> => (plugin as CommitPlugin).parse(commit, subtask)
-                            )
-                        );
-                        break;
-                    case plugin instanceof StatePlugin:
-                        await (plugin as StatePlugin).modify(subtask);
-                        break;
-                    default:
-                        subtask.fail(`${PluginClass.name} - state modification with this plugin is not available yet`);
-                        break;
-                }
-
-                subtask.complete();
-            } else {
-                task.fail(`${name} is not constructor`);
-            }
-        } else {
-            task.fail(`Plugin ${name} not found`);
+        switch (true) {
+            case plugin instanceof CommitPlugin:
+                await Promise.all(
+                    [...this.commits.values()].map(
+                        (commit): Promise<void> => (plugin as CommitPlugin).parse(commit, task)
+                    )
+                );
+                break;
+            case plugin instanceof StatePlugin:
+                await (plugin as StatePlugin).modify(task);
+                break;
+            default:
+                task.fail(`{bold ${plugin.constructor.name}} - plugin is not available yet`);
+                break;
         }
     }
 }

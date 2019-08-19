@@ -1,19 +1,32 @@
-import { ChangeLevel } from '../config/typings/enums';
-import { CommitOptions } from './typings/types';
-import { CommitStatus } from './typings/enums';
 import { Compare, Priority } from '../typings/enums';
 import { Entity } from './entity';
 import { Author } from './author';
+import { ChangeLevel } from '../config/config';
+
+export enum CommitStatus {
+    BreakingChanges = 1,
+    Deprecated = 2,
+    Important = 4,
+    Default = 8,
+}
+
+export interface CommitOptions {
+    timestamp: number;
+    header: string;
+    body?: string;
+    url: string;
+    author: Author;
+}
 
 export class Commit extends Entity {
     public static LINE_SEPARATOR = '\n';
 
-    public readonly subject: string = '';
     public readonly body: readonly string[];
     public readonly timestamp: number;
     public readonly url: string;
     public readonly author: Author;
 
+    private subject = '';
     private scope: string | undefined;
     private type: string | undefined;
     private accents: Set<string> = new Set();
@@ -27,22 +40,11 @@ export class Commit extends Entity {
         this.url = options.url;
         this.author = options.author;
 
-        const match = options.header.match(
-            // <type>(<scope>): <subject>
-            /^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i
-        );
+        const [type, scope, subject] = Commit.splitHeader(options.header);
 
-        if (match) {
-            const { groups } = match;
-
-            if (groups) {
-                const { type, scope, subject } = groups;
-
-                if (type) this.type = type.trim();
-                if (scope) this.scope = scope.trim();
-                if (subject) this.subject = subject.trim();
-            }
-        }
+        if (type) this.type = type.toLocaleLowerCase();
+        if (scope) this.scope = scope;
+        if (subject) this.subject = subject;
     }
 
     public static compare(a: Commit, b: Commit): Compare {
@@ -56,6 +58,25 @@ export class Commit extends Entity {
         if (result === Compare.Equal) result = a.timestamp - b.timestamp;
 
         return Math.min(Math.max(result, Compare.Less), Compare.More);
+    }
+
+    public static splitHeader(text: string): [string | undefined, string | undefined, string | undefined] {
+        const match = text.match(/^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i);
+        let type: string | undefined;
+        let scope: string | undefined;
+        let subject: string | undefined;
+
+        if (match) {
+            const { groups } = match;
+
+            if (groups) {
+                if (groups.type) type = groups.type.trim();
+                if (groups.scope) scope = groups.scope.trim();
+                if (groups.subject) subject = groups.subject.trim();
+            }
+        }
+
+        return [type, scope, subject];
     }
 
     public getAccents(): string[] {
@@ -86,6 +107,10 @@ export class Commit extends Entity {
 
     public getSubject(): string {
         return this.subject;
+    }
+
+    public setSubject(subject: string): void {
+        this.subject = subject;
     }
 
     public setStatus(status: CommitStatus): void {

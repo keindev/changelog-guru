@@ -1,6 +1,6 @@
 export default class Key {
-    public static MAX_DIFF_PERCENT: number = 0.2;
-    public static MAX_DIFF_DISTANCE: number = 1;
+    public static MAX_DIFF_PERCENT = 0.2;
+    public static MAX_DIFF_DISTANCE = 1;
 
     public static unify(key: string): string {
         return key.trim().toLowerCase();

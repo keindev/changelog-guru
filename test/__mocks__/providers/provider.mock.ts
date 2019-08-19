@@ -2,9 +2,9 @@ import { PackageJson } from 'read-pkg';
 import { Commit } from '../../../src/entities/commit';
 import { Author } from '../../../src/entities/author';
 import { GitProvider } from '../../../src/providers/git-provider';
-import { ReleaseInfo } from '../../../src/providers/typings/types';
 import { Package } from '../../../src/package/package';
-import { ServiceProvider } from '../../../src/config/typings/enums';
+import { ServiceProvider } from '../../../src/config/config';
+import { ReleaseInfo } from '../../../src/providers/provider';
 
 export class MockProvider extends GitProvider {
     public readonly __author: Author;
@@ -40,8 +40,13 @@ export class MockProvider extends GitProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async getCommits(page: number): Promise<Commit[]> {
+    public async getCommits(date: string, page: number): Promise<Commit[]> {
         return Promise.resolve([this.__commit]);
+    }
+
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
+    public async getCommitsCount(date: string): Promise<number> {
+        return Promise.resolve(1);
     }
 
     // eslint-disable-next-line class-methods-use-this

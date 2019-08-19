@@ -1,9 +1,10 @@
 import { TaskTree } from 'tasktree-cli';
+import { Progress } from 'tasktree-cli/lib/progress';
 import { Provider } from '../providers/provider';
 import { State } from '../state/state';
-import { DependencyType } from '../package/typings/enums';
-import { Dependency } from '../package/dependency';
 import { Package } from '../package/package';
+import { DependencyRule, DependencyRuleType } from '../package/rules/dependency-rule';
+import { RestrictionRule, RestrictionRuleType } from '../package/rules/restriction-rule';
 
 export class Reader {
     private provider: Provider;
@@ -14,30 +15,46 @@ export class Reader {
 
     public async read(packageInfo: Package): Promise<State> {
         const { provider } = this;
-        const task = TaskTree.tree().add('Loading a release state...');
+        const task = TaskTree.add('Loading a release state...');
         const state = new State();
         const { date, tag } = await provider.getLastRelease();
+        const commitsCount = await provider.getCommitsCount(date);
 
         task.log(`Last release date: ${date}`);
         task.log(`Last release tag: ${tag}`);
-        await this.loadCommits(state);
+
+        if (commitsCount) {
+            await this.loadCommits(commitsCount, state, date);
+        } else {
+            task.warn(`Branch don't have commits since ${date}`);
+        }
+
         await this.loadPackage(state, packageInfo);
         task.complete(`Release information:`);
 
         return state;
     }
 
-    private async loadCommits(state: State, pageIndex: number = 0): Promise<void> {
-        const commits = await this.provider.getCommits(pageIndex);
-        const { length } = commits;
+    private async loadCommits(count: number, state: State, date: string): Promise<void> {
+        const pagesCount = Math.ceil(count / Provider.PAGE_SIZE);
+        const task = TaskTree.add('Loading commits...');
+        const bar = task.bar(':bar :percent :etas', { total: pagesCount });
+        const promises = [];
+        let pageIndex = 0;
 
-        if (length) {
-            commits.forEach((commit): void => state.addCommit(commit));
-
-            if (length === Provider.PAGE_SIZE) {
-                await this.loadCommits(state, pageIndex + 1);
-            }
+        while (pagesCount > pageIndex) {
+            promises.push(this.loadCommitsPage(pageIndex++, state, date, bar));
         }
+
+        await Promise.all(promises);
+        task.complete(`{bold ${count}} commits loaded`, true);
+    }
+
+    private async loadCommitsPage(index: number, state: State, date: string, bar: Progress): Promise<void> {
+        const commits = await this.provider.getCommits(date, index);
+
+        commits.forEach((commit): void => state.addCommit(commit));
+        bar.tick(commits.length);
     }
 
     private async loadPackage(state: State, packageInfo: Package): Promise<void> {
@@ -45,15 +62,12 @@ export class Reader {
 
         state.setLicense(packageInfo.getLicense(), data.license);
 
-        Object.values(DependencyType).forEach((type): void => {
-            state.setDependencies(new Dependency(type, ...packageInfo.getDependenciesStories(type, data)));
+        Object.values(DependencyRuleType).forEach((type): void => {
+            state.setPackageRule(new DependencyRule(type, ...packageInfo.getDependenciesStory(type, data)));
         });
 
-        /*
-            TODO: add this ->
-            // https://docs.npmjs.com/files/package.json#bundleddependencies
-            https://docs.npmjs.com/files/package.json#os
-            https://docs.npmjs.com/files/package.json#cpu
-        */
+        Object.values(RestrictionRuleType).forEach((type): void => {
+            state.setPackageRule(new RestrictionRule(type, ...packageInfo.getRestrictionsStory(type, data)));
+        });
     }
 }

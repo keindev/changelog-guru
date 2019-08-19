@@ -1,10 +1,11 @@
 import { Priority, Compare } from '../typings/enums';
-import { ChangeLevel } from '../config/typings/enums';
+import { ChangeLevel } from '../config/config';
 
 export class Entity {
     public static SHORT_NAME_LENGTH = 7;
 
-    private ignored: boolean = false;
+    private ignored = false;
+    private escaped = false;
     private level: ChangeLevel = ChangeLevel.Patch;
     private name: string;
 
@@ -62,6 +63,14 @@ export class Entity {
 
     public isIgnored(): boolean {
         return this.ignored;
+    }
+
+    public escape(): void {
+        this.escaped = true;
+    }
+
+    public isEscaped(): boolean {
+        return this.escaped;
     }
 
     public isEmpty(): boolean {

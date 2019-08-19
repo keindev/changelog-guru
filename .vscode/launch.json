@@ -5,14 +5,55 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Node.js (yarn)",
+            "name": "Generate changelog",
             "type": "node",
             "request": "launch",
             "outputCapture": "std",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "yarn",
-            "runtimeArgs": ["run", "debug"],
+            "runtimeExecutable": "node",
+            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "generate"],
+            "port": 9229
+        },
+        {
+            "name": "Lint commit",
+            "type": "node",
+            "request": "launch",
+            "outputCapture": "std",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": [
+                "--nolazy",
+                "--inspect-brk=9229",
+                "bin/changelog",
+                "lint",
+                "--message",
+                "'.git/COMMIT_EDITMSG'",
+                "--lowercase-only"
+            ],
+            "port": 9229
+        },
+        {
+            "name": "CLI --help",
+            "type": "node",
+            "request": "launch",
+            "outputCapture": "std",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "--help"],
+            "port": 9229
+        },
+        {
+            "name": "CLI <command> --help",
+            "type": "node",
+            "request": "launch",
+            "outputCapture": "std",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "node",
+            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "generate", "--help"],
             "port": 9229
         }
     ]

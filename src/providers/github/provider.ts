@@ -4,14 +4,11 @@ import { TaskTree } from 'tasktree-cli';
 import { Author } from '../../entities/author';
 import { Commit } from '../../entities/commit';
 import { ReleaseQuery } from './queries/release';
-import { HistoryQuery } from './queries/history';
+import { HistoryQuery, GitHubResponseHistoryCommit, GitHubResponseHistoryAuthor } from './queries/history';
 import { PackageQuery } from './queries/package';
 import { GitProvider } from '../git-provider';
-import { ReleaseInfo } from '../typings/types';
-import { ServiceProvider } from '../../config/typings/enums';
-import { GitHubResponseHistoryCommit, GitHubResponseHistoryAuthor } from './typings/types';
-
-const $tasks = TaskTree.tree();
+import { ReleaseInfo } from '../provider';
+import { ServiceProvider } from '../../config/config';
 
 export class GitHubProvider extends GitProvider {
     private endpoint = 'https://api.github.com/graphql';
@@ -22,8 +19,8 @@ export class GitHubProvider extends GitProvider {
     private historyQuery: HistoryQuery;
     private packageQuery: PackageQuery;
 
-    public constructor(url: string) {
-        super(ServiceProvider.GitHub, url);
+    public constructor(url: string, branch?: string) {
+        super(ServiceProvider.GitHub, url, branch);
 
         const client = new GraphQLClient(this.endpoint, {
             method: 'POST',
@@ -42,21 +39,17 @@ export class GitHubProvider extends GitProvider {
         this.packageQuery = new PackageQuery(client, variables);
     }
 
-    public async getCommits(pageIndex: number): Promise<Commit[]> {
-        const task = $tasks.add(`Loading page #${pageIndex + 1}`);
-        const release = await this.getLastRelease();
-        let cursor: string | undefined;
+    public async getCommits(date: string, pageIndex: number): Promise<Commit[]> {
+        const cursor = pageIndex ? await this.getCursor(pageIndex) : undefined;
+        const commits = await this.historyQuery.getCommits(date, GitHubProvider.PAGE_SIZE, cursor);
 
-        if (pageIndex) {
-            cursor = await this.getCursor(pageIndex);
-        }
+        return commits.map((commit): Commit => this.parseResponse(commit));
+    }
 
-        const commits = await this.historyQuery.getCommits(release.date, GitHubProvider.PAGE_SIZE, cursor);
-        const list = commits.map((commit): Commit => this.parseResponse(commit));
+    public async getCommitsCount(date: string): Promise<number> {
+        const count = await this.historyQuery.getCommitsCount(date);
 
-        task.complete(`Page #${pageIndex + 1} loaded (${commits.length} commits)`);
-
-        return list;
+        return count;
     }
 
     public async getLastRelease(): Promise<ReleaseInfo> {
@@ -73,7 +66,7 @@ export class GitHubProvider extends GitProvider {
     }
 
     public async getPrevPackage(): Promise<PackageJson> {
-        const task = $tasks.add(`Loading previous package.json...`);
+        const task = TaskTree.add(`Loading previous release {bold package.json} state...`);
         const { packageQuery: query } = this;
         const release = await this.getLastRelease();
         const commit = await query.getPackageChanges(release.date);
@@ -81,9 +74,9 @@ export class GitHubProvider extends GitProvider {
 
         if (commit) {
             data = await query.getPackageFrom(commit);
-            task.complete('Previous package.json loaded');
+            task.complete('Previous release {bold package.json} state loaded');
         } else {
-            task.skip('Previous package.json is not found');
+            task.skip('The previous release did not contain package.json');
         }
 
         return data;

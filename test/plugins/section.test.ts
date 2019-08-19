@@ -1,9 +1,9 @@
-import { MockState } from '../__mocks__/entities/state.mock';
+import { Task } from 'tasktree-cli/lib/task';
+import { MockState } from '../__mocks__/state/state.mock';
+import SectionPlugin, { SectionPluginOptions } from '../../src/plugins/implementations/section';
 import { ConfigLoader } from '../../src/config/config-loader';
-import { SectionPluginOptions } from '../../src/plugins/implementations/section/typings/types';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
-import SectionPlugin from '../../src/plugins/implementations/section/section';
 
 describe('SectionPlugin', (): void => {
     const $context = new MockState();
@@ -23,7 +23,7 @@ describe('SectionPlugin', (): void => {
                     done();
                 });
             } else {
-                throw new Error('SectionPlugin config not found!');
+                expect(options).toBeDefined();
             }
         });
     });
@@ -37,6 +37,25 @@ describe('SectionPlugin', (): void => {
         expect($context.findSection('Performance Improvements')).toBeDefined();
         expect($context.findSection('Code Refactoring')).toBeDefined();
         expect($context.findSection('Reverts')).toBeDefined();
+    });
+
+    it('Lint', (): void => {
+        const task = new Task('lint');
+        const options = {
+            header: 'test(scope): subject',
+            body: [],
+            scope: 'scope',
+            type: 'test',
+            subject: 'subject',
+        };
+
+        $plugin.lint(Object.assign(options, { type: 'test' }), task);
+
+        expect(task.haveErrors()).toBeFalsy();
+
+        $plugin.lint(Object.assign(options, { type: 'abcd' }), task);
+
+        expect(task.haveErrors()).toBeTruthy();
     });
 
     it('Parse commits', (done): void => {

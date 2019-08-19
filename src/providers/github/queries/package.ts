@@ -1,10 +1,13 @@
 import { PackageJson } from 'read-pkg';
 import { Query } from './query';
-import { GitHubResponsePackageCommit, GitHubResponsePackageNodes, GitHubResponsePackageData } from '../typings/types';
+
+export interface GitHubResponsePackageCommit {
+    hash: string;
+}
 
 export class PackageQuery extends Query {
     public async getPackageChanges(date: string): Promise<GitHubResponsePackageCommit | undefined> {
-        const response: GitHubResponsePackageNodes = await this.execute(
+        const response = await this.execute(
             /* GraphQL */ `
                 query GetPackageChangeCommits(
                     $owner: String!
@@ -13,11 +16,11 @@ export class PackageQuery extends Query {
                     $date: GitTimestamp!
                 ) {
                     repository(owner: $owner, name: $repository) {
-                        branch: ref(qualifiedName: $branch) {
+                        ref(qualifiedName: $branch) {
                             target {
                                 ... on Commit {
                                     history(path: "package.json", until: $date, first: 2) {
-                                        commits: nodes {
+                                        nodes {
                                             hash: oid
                                         }
                                     }
@@ -32,15 +35,15 @@ export class PackageQuery extends Query {
             }
         );
 
-        return response.branch.target.history.commits.pop();
+        return (response.ref.target.history.nodes as GitHubResponsePackageCommit[]).pop();
     }
 
     public async getPackageFrom(commit: GitHubResponsePackageCommit): Promise<PackageJson> {
-        const response: GitHubResponsePackageData = await this.execute(
+        const response = await this.execute(
             /* GraphQL */ `
                 query GetPackage($owner: String!, $repository: String!, $expression: String!) {
                     repository(owner: $owner, name: $repository) {
-                        package: object(expression: $expression) {
+                        object(expression: $expression) {
                             ... on Blob {
                                 text
                             }
@@ -53,6 +56,6 @@ export class PackageQuery extends Query {
             }
         );
 
-        return JSON.parse(response.package.text);
+        return JSON.parse(response.object.text as string);
     }
 }

@@ -1,9 +1,8 @@
-import { Commit } from '../../src/entities/commit';
+import { Commit, CommitStatus } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { Compare, Priority } from '../../src/typings/enums';
 import { Entity } from '../../src/entities/entity';
-import { ChangeLevel } from '../../src/config/typings/enums';
-import { CommitStatus } from '../../src/entities/typings/enums';
+import { ChangeLevel } from '../../src/config/config';
 
 describe('Commit', (): void => {
     let $author: Author;
@@ -64,7 +63,7 @@ describe('Commit', (): void => {
     it('Default', (): void => {
         expect($commit instanceof Entity).toBeTruthy();
         expect($commit.timestamp).toBe(21);
-        expect($commit.subject).toBe('subject');
+        expect($commit.getSubject()).toBe('subject');
         expect($commit.body).toStrictEqual(['', '', 'body', '', 'footer']);
         expect($commit.author).toStrictEqual($author);
         expect($commit.url).toBe(

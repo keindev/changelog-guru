@@ -1,11 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/entities/state.mock';
+import { MockState } from '../__mocks__/state/state.mock';
+import MarkerPlugin, { MarkerPluginOptions } from '../../src/plugins/implementations/marker';
 import { ConfigLoader } from '../../src/config/config-loader';
-import MarkerPlugin from '../../src/plugins/implementations/marker/marker';
-import { MarkerPluginOptions } from '../../src/plugins/implementations/marker/typings/types';
-import { Commit } from '../../src/entities/commit';
+import { Commit, CommitStatus } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
-import { CommitStatus } from '../../src/entities/typings/enums';
 
 describe('MarkerPlugin', (): void => {
     const $loader = new ConfigLoader();
@@ -38,6 +36,31 @@ describe('MarkerPlugin', (): void => {
         expect($context.findSection('BREAKING CHANGES')).toBeDefined();
     });
 
+    it('Lint', (): void => {
+        let task = new Task('lint');
+        const options = {
+            header: 'test(scope): subject',
+            type: 'test',
+            scope: 'scope',
+            subject: 'subject',
+        };
+
+        $plugin.lint(Object.assign(options, { body: [''] }), task);
+        $plugin.lint(Object.assign(options, { body: ['!group(name)'] }), task);
+        $plugin.lint(Object.assign(options, { body: ['!important !deprecated !break !ignore', '', 'text'] }), task);
+
+        expect(task.haveErrors()).toBeFalsy();
+
+        $plugin.lint(Object.assign(options, { body: ['text'] }), task);
+
+        expect(task.haveErrors()).toBeTruthy();
+
+        task = new Task('lint');
+        $plugin.lint(Object.assign(options, { body: ['!group'] }), task);
+
+        expect(task.haveErrors()).toBeTruthy();
+    });
+
     it('!important marker', (done): void => {
         const section = $context.findSection('Important Internal Changes');
 
@@ -47,7 +70,7 @@ describe('MarkerPlugin', (): void => {
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
                 timestamp: 0,
                 header: 'feat(Jest): subject',
-                body: `\n\n!important`,
+                body: `!important`,
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
                 author: $author,
             });
@@ -72,7 +95,7 @@ describe('MarkerPlugin', (): void => {
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
                 timestamp: 0,
                 header: 'feat(Jest): subject',
-                body: '\n\n!deprecated',
+                body: '!deprecated',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
                 author: $author,
             });
@@ -97,7 +120,7 @@ describe('MarkerPlugin', (): void => {
             const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
                 timestamp: 0,
                 header: 'feat(Jest): subject',
-                body: '\n\n!break',
+                body: '!break',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f3',
                 author: $author,
             });
@@ -117,7 +140,7 @@ describe('MarkerPlugin', (): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
             timestamp: 0,
             header: 'feat(Jest): subject',
-            body: '\n\n!ignore',
+            body: '!ignore',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f4',
             author: $author,
         });
@@ -135,7 +158,7 @@ describe('MarkerPlugin', (): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f5', {
             timestamp: 0,
             header: 'feat(Jest): subject',
-            body: '\n\n!group(Jest markers test)',
+            body: '!group(Jest markers test)',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f5',
             author: $author,
         });

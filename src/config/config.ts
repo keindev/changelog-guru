@@ -1,8 +1,34 @@
-import { TaskTree } from 'tasktree-cli';
-import { ChangeLevel, ExclusionType, ServiceProvider } from './typings/enums';
-import { ConfigOptions, PluginOption } from './typings/types';
-import { Provider } from '../providers/provider';
-import { GitHubProvider } from '../providers/github/provider';
+export type PluginOptionValue = string | boolean | number | string[];
+
+export interface PluginOption {
+    [key: string]: PluginOptionValue | PluginOption | PluginOption[] | undefined;
+}
+
+export enum ServiceProvider {
+    GitHub = 'github',
+    GitLab = 'gitlab',
+}
+
+export enum ChangeLevel {
+    Major = 'major',
+    Minor = 'minor',
+    Patch = 'patch',
+}
+
+export enum ExclusionType {
+    AuthorLogin = 'authorLogin',
+    CommitType = 'commitType',
+    CommitScope = 'commitScope',
+    CommitSubject = 'commitSubject',
+}
+
+export interface ConfigOptions {
+    provider: ServiceProvider;
+    filePath: string;
+    types: Map<string, ChangeLevel>;
+    exclusions: Map<ExclusionType, string[]>;
+    plugins: Map<string, PluginOption>;
+}
 
 export class Config {
     public readonly filePath: string;
@@ -18,25 +44,6 @@ export class Config {
         this.types = options.types;
         this.plugins = options.plugins;
         this.exclusions = options.exclusions;
-    }
-
-    public async getProvider(repository: string): Promise<Provider> {
-        const tasks = TaskTree.tree();
-        let provider: Provider | undefined;
-
-        switch (this.provider) {
-            case ServiceProvider.GitLab:
-                tasks.fail(`${ServiceProvider.GitLab} - not supported yet`);
-                break;
-            case ServiceProvider.GitHub:
-                provider = new GitHubProvider(repository);
-                break;
-            default:
-                tasks.fail(`Service provider not specified`);
-                break;
-        }
-
-        return provider as Provider;
     }
 
     public getPlugin(name: string): PluginOption | undefined {

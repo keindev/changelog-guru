@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfigLoader Default 1`] = `
+Array [
+  Array [
+    "break",
+    "major",
+  ],
+  Array [
+    "feat",
+    "minor",
+  ],
+  Array [
+    "improve",
+    "minor",
+  ],
+  Array [
+    "fix",
+    "patch",
+  ],
+  Array [
+    "chore",
+    "patch",
+  ],
+  Array [
+    "refactor",
+    "patch",
+  ],
+  Array [
+    "test",
+    "patch",
+  ],
+  Array [
+    "docs",
+    "patch",
+  ],
+  Array [
+    "build",
+    "patch",
+  ],
+  Array [
+    "types",
+    "patch",
+  ],
+  Array [
+    "style",
+    "patch",
+  ],
+  Array [
+    "workflow",
+    "patch",
+  ],
+  Array [
+    "perf",
+    "patch",
+  ],
+  Array [
+    "revert",
+    "patch",
+  ],
+]
+`;
+
+exports[`ConfigLoader Default 2`] = `
+Array [
+  Array [
+    "authorLogin",
+    Array [
+      "dependabot-preview[bot]",
+    ],
+  ],
+  Array [
+    "commitType",
+    Array [
+      "build",
+    ],
+  ],
+  Array [
+    "commitScope",
+    Array [
+      "deps",
+      "deps-dev",
+    ],
+  ],
+  Array [
+    "commitSubject",
+    Array [
+      "merge",
+    ],
+  ],
+]
+`;
+
+exports[`ConfigLoader Default 3`] = `
+Array [
+  Array [
+    "attention",
+    Object {
+      "sections": Array [
+        "license",
+        "os",
+        "cpu",
+        "engines",
+        "dependencies",
+        "devDependencies",
+        "peerDependencies",
+        "optionalDependencies",
+        "bundledDependencies",
+      ],
+      "templates": Object {
+        "added": "Added %name% with %val%",
+        "bumped": "Bumped %name% from %pver% to %ver%",
+        "changed": "Changed %name% from %pval% to %val%",
+        "downgraded": "Downgraded %name% from %pver% to %ver%",
+        "removed": "Removed %name%, with %pval%",
+      },
+      "title": "Important Changes",
+    },
+  ],
+  Array [
+    "marker",
+    Object {
+      "actions": Array [
+        "ignore",
+        "group",
+      ],
+      "joins": Object {
+        "break": "BREAKING CHANGES",
+        "deprecated": "DEPRECATIONS",
+        "important": "Important Internal Changes",
+      },
+    },
+  ],
+  Array [
+    "scope",
+    Object {
+      "names": Object {
+        "api": "API",
+        "core": "Core",
+        "dts": "TypeScript Declaration Improvements",
+        "fc": "Functional Components",
+        "ssr": "Server Side Rendering",
+      },
+      "onlyPresented": false,
+    },
+  ],
+  Array [
+    "section",
+    Object {
+      "Bug Fixes": Array [
+        "fix",
+      ],
+      "Code Refactoring": Array [
+        "refactor",
+      ],
+      "Features": Array [
+        "feat",
+      ],
+      "Improvements": Array [
+        "improve",
+      ],
+      "Internal changes": Array [
+        "types",
+        "workflow",
+        "build",
+        "test",
+        "chore",
+        "docs",
+      ],
+      "Performance Improvements": Array [
+        "perf",
+      ],
+      "Reverts": Array [
+        "revert",
+      ],
+    },
+  ],
+]
+`;

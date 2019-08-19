@@ -33,11 +33,11 @@ export default class Markdown {
         return `[${text}](${url})`;
     }
 
-    public static code(text: string, lang: string = ''): string {
+    public static code(text: string, lang = ''): string {
         return `\`\`\`${lang} ${text} \`\`\``;
     }
 
-    public static wrap(text: SemVer | string): string {
+    public static wrap(text: SemVer | string | undefined): string {
         return `\`${text}\``;
     }
 

@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
-import { ServiceProvider } from '../../src/config/typings/enums';
 import { GitHubProvider } from '../../src/providers/github/provider';
 import { GitProvider } from '../../src/providers/git-provider';
+import { ServiceProvider } from '../../src/config/config';
 
 describe('Provider', (): void => {
+    const $date = new Date(0).toISOString();
     let $provider: GitProvider;
 
     beforeAll((): void => {
@@ -20,12 +21,20 @@ describe('Provider', (): void => {
         });
 
         it('Get commits', (done): void => {
-            $provider.getCommits(1).then((commits): void => {
+            $provider.getCommits($date, 1).then((commits): void => {
                 expect(commits).toBeDefined();
 
                 done();
             });
-        });
+        }, 10000);
+
+        it('Get commits count', (done): void => {
+            $provider.getCommitsCount($date).then((count): void => {
+                expect(count).toBeGreaterThanOrEqual(0);
+
+                done();
+            });
+        }, 10000);
 
         it('Get last release', (done): void => {
             $provider.getLastRelease().then((releaseInfo): void => {
@@ -33,7 +42,7 @@ describe('Provider', (): void => {
 
                 done();
             });
-        });
+        }, 10000);
 
         it('Get previous package info', (done): void => {
             $provider.getPrevPackage().then((packageInfo): void => {
@@ -41,6 +50,6 @@ describe('Provider', (): void => {
 
                 done();
             });
-        });
+        }, 10000);
     });
 });

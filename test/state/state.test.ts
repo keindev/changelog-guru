@@ -1,10 +1,9 @@
-import { MockState } from '../__mocks__/entities/state.mock';
+import { MockState } from '../__mocks__/state/state.mock';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { ConfigLoader } from '../../src/config/config-loader';
-import { SectionPosition } from '../../src/entities/typings/enums';
-import { Config } from '../../src/config/config';
-import { ChangeLevel } from '../../src/config/typings/enums';
+import { Config, ChangeLevel } from '../../src/config/config';
+import { SectionPosition } from '../../src/entities/section';
 
 describe('State', (): void => {
     const getAuthor = (login: string): Author =>

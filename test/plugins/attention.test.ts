@@ -1,11 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/entities/state.mock';
+import { MockState } from '../__mocks__/state/state.mock';
+import AttentionPlugin, { AttentionPluginOptions } from '../../src/plugins/implementations/attention';
 import { ConfigLoader } from '../../src/config/config-loader';
-import AttentionPlugin from '../../src/plugins/implementations/attention/attention';
-import { AttentionPluginOptions } from '../../src/plugins/implementations/attention/typings/types';
-import { ChangeLevel } from '../../src/config/typings/enums';
-import { Dependency } from '../../src/package/dependency';
-import { DependencyType } from '../../src/package/typings/enums';
+import { DependencyRule, DependencyRuleType } from '../../src/package/rules/dependency-rule';
+import { ChangeLevel } from '../../src/config/config';
 
 describe('AttentionPlugin', (): void => {
     let $loader: ConfigLoader;
@@ -27,7 +25,7 @@ describe('AttentionPlugin', (): void => {
                     done();
                 });
             } else {
-                throw new Error('AttentionPlugin config not found!');
+                expect(options).toBeDefined();
             }
         });
     });
@@ -64,9 +62,9 @@ describe('AttentionPlugin', (): void => {
     });
 
     it('Changed dependencies', (done): void => {
-        $context.setDependencies(
-            new Dependency(
-                DependencyType.Dependencies,
+        $context.setPackageRule(
+            new DependencyRule(
+                DependencyRuleType.Dependencies,
                 {
                     test: '^1.1.0',
                 },

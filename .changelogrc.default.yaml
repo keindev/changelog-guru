@@ -1,74 +1,119 @@
 ---
+# Specifies the type of service provider to receive project information
 provider: github
+# Commit levels of changes
 changes:
+    # Incompatible API changes
     major:
+        # Breaking changes
         - break
+    # New functionality with backwards compatible
     minor:
+        # New features
         - feat
+        # Features improvements
         - improve
+    # Backwards compatible bug fixes
     patch:
+        # Some bugs fixing
         - fix
+        # Minor changes
         - chore
+        # Code refactoring
         - refactor
+        # Adding or modifying tests
         - test
+        # Documentation changes
         - docs
+        # Package changes, releases, merging
         - build
+        # Code typing
         - types
+        # CSS, SCSS, and other style sheets changes
         - style
+        # Workflow changes
         - workflow
+        # Performance improvements
         - perf
+        # Reverted changes
         - revert
+# Parameters of the output file. Specify the path to the file and the excluded entities
 output:
+    # File path to write change log to it
     filePath: CHANGELOG.md
+    # One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors
     exclude:
+        # Excludes authors with the listed logins from the output file
         authorLogin: ['dependabot-preview[bot]']
+        # Excludes commits with the listed types from the output file
         commitType: ['build']
+        # Excludes commits with the listed scopes from the output file
         commitScope: ['deps', 'deps-dev']
+        # Excludes commits that contain the specified words in the subject
         commitSubject: ['merge']
+# Plugins that extend the basic functionality and modify the output in the change log
 plugins:
-    attention:
-        title: Important Changes
-        templates:
-            added: 'Added %name% with %val%'
-            changed: 'Changed %name% from %pval% to %val%'
-            bumped: 'Bumped %name% from %pver% to %ver%'
-            downgraded: 'Downgraded %name% from %pver% to %ver%'
-            removed: 'Removed %name%, with %pval%'
-        sections:
-            license: License
-            engines: Engines
-            dependencies: Dependencies
-            devDependencies: DevDependencies
-            peerDependencies: PeerDependencies
-            optionalDependencies: OptionalDependencies,
-    # List of available markers
-    marker:
-        actions:
-            # !ignore - ignore a commit in output
-            - ignore
-            # !group(NAME) - creates a group of commits with the <NAME>
-            - group
-        joins:
-            # !important - place a commit title to special section on top of changelog
-            important: Important Internal Changes
-            # !deprecated - place a commit title to special section with deprecated properties
-            deprecated: DEPRECATIONS
-            # !break - indicates major changes breaking backward compatibility
-            break: BREAKING CHANGES
-    # list of major scopes
-    scope:
-        onlyPresented: false
-        names:
-            core: Core
-            api: API
-            ssr: Server Side Rendering
-            fc: Functional Components
-            dts: TypeScript Declaration Improvements
-    section:
-        Features: [feat]
-        Improvements: [improve]
-        Bug Fixes: [fix]
-        Internal changes: [types, workflow, build, test, chore, docs]
-        Performance Improvements: [perf]
-        Code Refactoring: [refactor]
-        Reverts: [revert]
+    # Displays information about changes to package.json in the change log
+    - attention:
+          # Main section title
+          title: Important Changes
+          # The change message templates
+          templates:
+              # Template for added Dependencies
+              added: 'Added %name% with %val%'
+              # Template for dependencies whose values is not `SemVer` and has been changed
+              changed: 'Changed %name% from %pval% to %val%'
+              # Template for dependencies whose version was bumped
+              bumped: 'Bumped %name% from %pver% to %ver%'
+              # Template for dependencies whose version was downgraded
+              downgraded: 'Downgraded %name% from %pver% to %ver%'
+              # Template for removed dependencies
+              removed: 'Removed %name%, with %pval%'
+          # List of available for output sections.
+          # If you do not want to see a section in the changelog, simply remove its name from the list.
+          sections:
+              - license
+              - os
+              - cpu
+              - engines
+              - dependencies
+              - devDependencies
+              - peerDependencies
+              - optionalDependencies
+              - bundledDependencies
+    # Allows you to add additional useful information to the commit
+    - marker:
+          # Action markers performs operations on commits objects when building a changelog
+          actions:
+              # !ignore - ignore a commit in output
+              - ignore
+              # !group(NAME) - creates a group of commits with the <NAME>
+              - group
+          # Join markers combine commits in sections
+          joins:
+              # !important - place a commit title to special section on top of changelog
+              important: Important Internal Changes
+              # !deprecated - place a commit title to special section with deprecated properties
+              deprecated: DEPRECATIONS
+              # !break - indicates major changes breaking backward compatibility
+              break: BREAKING CHANGES
+    # Renames scopes and abbreviations to a more human-readable format
+    - scope:
+          # In the case of true will only rename the specified names
+          onlyPresented: false
+          # List of abbreviations and their human-readable versions
+          names:
+              core: Core
+              api: API
+              ssr: Server Side Rendering
+              fc: Functional Components
+              dts: TypeScript Declaration Improvements
+    # Distributes commits with the specified types into sections
+    - section:
+          Features: [feat]
+          Improvements: [improve]
+          Bug Fixes: [fix]
+          Internal changes: [types, workflow, build, test, chore, docs]
+          Performance Improvements: [perf]
+          Code Refactoring: [refactor]
+          Reverts: [revert]

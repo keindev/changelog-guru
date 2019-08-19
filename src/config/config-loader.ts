@@ -2,9 +2,14 @@ import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import { TaskTree } from 'tasktree-cli';
-import { Config } from './config';
-import { ServiceProvider, ChangeLevel, ExclusionType } from './typings/enums';
-import { PluginOption, ConfigLoaderOptions } from './typings/types';
+import { Config, ServiceProvider, ChangeLevel, ExclusionType, PluginOption } from './config';
+
+export interface ConfigLoaderOptions {
+    provider?: ServiceProvider;
+    filePath?: string;
+    types?: Map<string, ChangeLevel>;
+    exclusions?: Map<ExclusionType, string[]>;
+}
 
 export class ConfigLoader {
     public static MODULE_NAME = 'changelog';
@@ -20,7 +25,7 @@ export class ConfigLoader {
     }
 
     public async load(): Promise<Config> {
-        const task = TaskTree.tree().add('Reading configuration file...');
+        const task = TaskTree.add('Reading configuration file...');
         const filePath = await this.loadConfig();
         let config: Config | undefined;
 
@@ -35,7 +40,7 @@ export class ConfigLoader {
                 plugins: this.getPlugins(),
             });
 
-            task.complete(`Config file: ${path.relative(process.cwd(), filePath)}`);
+            task.complete(`Config file: {bold ${path.relative(process.cwd(), filePath)}}`);
         } else {
             task.fail('Default configuration file not found');
         }
@@ -65,7 +70,7 @@ export class ConfigLoader {
                             types.set(name, level as ChangeLevel);
                         });
                     } else {
-                        TaskTree.tree().fail('Unexpected level of changes (expected: major, minor or patch)');
+                        TaskTree.fail('Unexpected level of changes (expected: major, minor or patch)');
                     }
                 }
             });
@@ -85,7 +90,7 @@ export class ConfigLoader {
                 if (Object.values(ExclusionType).includes(name)) {
                     exclusions.set(name as ExclusionType, [...new Set(rules)]);
                 } else {
-                    TaskTree.tree().fail('Unexpected exclusion name');
+                    TaskTree.fail('Unexpected exclusion name');
                 }
             });
         }
@@ -99,20 +104,26 @@ export class ConfigLoader {
             data: { plugins },
         } = this;
 
-        if (plugins) {
-            Object.entries<PluginOption>(plugins).forEach(([name, config]): void => {
-                if (config) {
-                    activePlugins.set(
-                        name,
-                        new Proxy(config, {
-                            get(target, fieldName, receiver): PluginOption {
-                                return Reflect.get(target, fieldName, receiver);
-                            },
-                            set(): boolean {
-                                return false;
-                            },
-                        })
-                    );
+        if (Array.isArray(plugins)) {
+            plugins.forEach((plugin): void => {
+                if (typeof plugin === 'string') {
+                    activePlugins.set(plugin, {});
+                } else {
+                    Object.entries<PluginOption>(plugin).forEach(([name, config]): void => {
+                        if (config) {
+                            activePlugins.set(
+                                name,
+                                new Proxy(config, {
+                                    get(target, fieldName, receiver): PluginOption {
+                                        return Reflect.get(target, fieldName, receiver);
+                                    },
+                                    set(): boolean {
+                                        return false;
+                                    },
+                                })
+                            );
+                        }
+                    });
                 }
             });
         }

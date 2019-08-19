@@ -1,6 +1,10 @@
-import { Entity } from './entity';
-import { AuthorOptions } from './typings/types';
 import { Priority } from '../typings/enums';
+import { Entity } from './entity';
+
+export interface AuthorOptions {
+    url: string;
+    avatar: string;
+}
 
 export class Author extends Entity {
     public static DEFAULT_CONTRIBUTION = 1;
