@@ -1,6 +1,6 @@
 #### Scope
 
-Base plugin enabled by default. Renames areas and abbreviations to a more human-readable format.
+Base plugin enabled by default. Renames scopes and abbreviations to a more human-readable format.
 
 Default options:
 

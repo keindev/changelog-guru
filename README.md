@@ -108,7 +108,7 @@ The following types of changes are defined by default:
 
 #### Scope
 
-Scope could be anything specifying place of the commit changes. You can configure you own scopes in [config](docs/plugins/scope.md) file.
+Scope could be anything specifying place of the commit changes. You can configure you own scopes in [config](docs/plugins/default/scope.md) file.
 
 #### Subject
 
