@@ -84,7 +84,7 @@ export class Writer {
 
         data.push(Writer.renderAuthors(authors), Markdown.EMPTY_SEPARATOR);
         await this.writeFile(data.join(Markdown.LINE_SEPARATOR));
-        task.complete('Changelog updated!');
+        task.complete('Changelog generated!');
     }
 
     protected async writeFile(data: string): Promise<void> {
