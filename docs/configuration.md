@@ -1,6 +1,6 @@
 # Configuration
 
-See full **changelog-guru** configuration [file](../.changelog.default.yaml)
+See full **changelog-guru** configuration [file](../.changelogrc.default.yaml)
 
 ## Provider
 
