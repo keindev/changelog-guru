@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Build changelog",
+            "name": "Generate changelog",
             "type": "node",
             "request": "launch",
             "outputCapture": "std",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "runtimeExecutable": "node",
-            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "build"],
+            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "generate"],
             "port": 9229
         },
         {
