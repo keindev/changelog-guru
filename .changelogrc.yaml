@@ -52,7 +52,7 @@ plugins:
               deprecated: DEPRECATIONS
               break: BREAKING CHANGES
     - highlight:
-          camelCase: true
+          camelCase: false
           masks: ['[a-z]+\w*\.\S*']
     - scope:
           onlyPresented: false
