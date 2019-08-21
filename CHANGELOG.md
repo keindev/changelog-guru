@@ -1,6 +1,7 @@
 # BREAKING CHANGES
 
 -   **[Bin]** Chg cli options read [`cc71af8`](https://github.com/keindev/changelog-guru/commit/cc71af8811d0728077828f34e2c16c4fb43e6f27)
+-   **[CLI]** Rename build command to generate [`67e4046`](https://github.com/keindev/changelog-guru/commit/67e404630c33170543c01f6b4272e7190b57a874)
 -   **[Entities]** Refactoring stage 2 \(30%\) [`965b162`](https://github.com/keindev/changelog-guru/commit/965b162e44a7b30acab9a0002b7fec2d5a23ff68)
 -   **[Package]** Add restrictions rules [`ba5a037`](https://github.com/keindev/changelog-guru/commit/ba5a0374dea8265dcbda5789a996cb525d20855f)
 
@@ -51,7 +52,6 @@ Source code now under `MIT` license.
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.9.0)** with `^24.9.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
 -   Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)** with `^1.18.2`
--   Added **[strip-ansi](https://www.npmjs.com/package/strip-ansi/v/5.2.0)** with `^5.2.0`
 -   Added **[ts-jest](https://www.npmjs.com/package/ts-jest/v/24.0.2)** with `^24.0.2`
 -   Added **[typescript](https://www.npmjs.com/package/typescript/v/3.5.3)** with `^3.5.3`
 
@@ -138,6 +138,7 @@ Source code now under `MIT` license.
 -   **[Debug]** Fix debug cli commnad [`3296542`](https://github.com/keindev/changelog-guru/commit/3296542ca175f43b07445485f1209fee04368ca9)
 -   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
 -   **[Lint]** Fix lint errors [`babcbe3`](https://github.com/keindev/changelog-guru/commit/babcbe3aef4000b6663960e209c4403d2571fd0f)
+-   **[Linter]** Add parameter name normalization [`7fae71d`](https://github.com/keindev/changelog-guru/commit/7fae71dba87959b49d694293410de030ef595109)
 -   **[Linter]** Fix win32 husky param read error [`1059789`](https://github.com/keindev/changelog-guru/commit/1059789fddf24e001fe85f1bb1d115f801bf6658)
 -   **[Plugins]** Add export for Config interfaces [`949d2cc`](https://github.com/keindev/changelog-guru/commit/949d2cc1ab65191f1c35a73b0e5cbceb6ac9c88d)
 -   **[Provider]** Fix findup cwd [`e9e5df6`](https://github.com/keindev/changelog-guru/commit/e9e5df6c5966915db9af7f24326b2edc421f69f1)
@@ -152,6 +153,7 @@ Source code now under `MIT` license.
 -   **[State, Section]** Fix sections sorting [`7740999`](https://github.com/keindev/changelog-guru/commit/77409996c382f83f49ce58f673da71b963732536)
 -   **[Test]** Replace subject to getSubject [`8839758`](https://github.com/keindev/changelog-guru/commit/88397586b7602e833a8bffbb333d579e8665e45e)
 -   **[Utils]** Rename CLI to Command [`09b0614`](https://github.com/keindev/changelog-guru/commit/09b06141d88745d9dd0c9410712018503c0c0bc6)
+-   **[Win]** Fix bugs on win32 [`dc96e77`](https://github.com/keindev/changelog-guru/commit/dc96e77ba34242d84bcf01c29ea08c563eda9849)
 -   **[Writer]** Fix error with output md [`fe88997`](https://github.com/keindev/changelog-guru/commit/fe889978149da0b4b760c70eb3eade80d2761821)
 -   Rewrite reader, test github api [`dfea14d`](https://github.com/keindev/changelog-guru/commit/dfea14d54f3a44d29bf943ea9a138538a5d7f2ae) [`a5b847f`](https://github.com/keindev/changelog-guru/commit/a5b847fc992182e3377a49d7777f2d22eb3f05ef)
 -   Add author avatar size [`f2107a2`](https://github.com/keindev/changelog-guru/commit/f2107a21143370f69a1edd965e2354d040456512)
@@ -205,17 +207,26 @@ Source code now under `MIT` license.
 -   **[CommitPlugin]** Add lint method to mock [`3cd571e`](https://github.com/keindev/changelog-guru/commit/3cd571e61f9b9f93d341a7258acebbef7d2589a7)
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 -   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
+-   **[Configuration]** Add config description [`f1341bb`](https://github.com/keindev/changelog-guru/commit/f1341bba09f7ff84c29b205ece1dae7509d83526)
 -   **[Debug]** Move debug configs to \.vscode [`14fc5dc`](https://github.com/keindev/changelog-guru/commit/14fc5dc5f64198334ba66a233e9cbbc667765e21)
+-   **[LintCommand]** Fix commands desc [`5016d5c`](https://github.com/keindev/changelog-guru/commit/5016d5c3bd5b9f2b3c471bd4621f7d7da15cf6b7)
 -   **[Linter]** Add tests for Linter [`0cb38bb`](https://github.com/keindev/changelog-guru/commit/0cb38bb0aa1cfac524a61baae9c31032a8fde3c2)
 -   **[Marker]** Add eslint disable no\-explicit\-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
 -   **[Media]** Update logo [`089b444`](https://github.com/keindev/changelog-guru/commit/089b4440e2386ef56a9cc187b56dc9b1d265439a)
 -   **[Mocks]** Rename mocks folder to \_\_mocks\_\_ [`3185f07`](https://github.com/keindev/changelog-guru/commit/3185f07091721aa929679e4a833d3ac80e384b3a)
 -   **[Package]** Update dependencies [`54e6330`](https://github.com/keindev/changelog-guru/commit/54e63302f890edb007dd3a5911d6ae08ad62134f) [`1fbed44`](https://github.com/keindev/changelog-guru/commit/1fbed44925822a89fdb3cb8ceef460ac3b4fb77c) [`839d042`](https://github.com/keindev/changelog-guru/commit/839d04201466025bad2269548a4ca5be2f81593c)
+-   **[Package]** Add spell checking for docs [`59d45e2`](https://github.com/keindev/changelog-guru/commit/59d45e2d5f68638116d1e679f7c724f85b7eab7d)
 -   **[Package]** Normalize package info [`a13d7e0`](https://github.com/keindev/changelog-guru/commit/a13d7e046c1368b1b880e6df6ce9949ef0381c34)
+-   **[Plugins]** Add plugins list with description [`3b443e6`](https://github.com/keindev/changelog-guru/commit/3b443e62016c76f077efb12f37fdda776ea4d995)
+-   **[Plugins]** Fix plugins descriptin, add comments to default config [`43bac10`](https://github.com/keindev/changelog-guru/commit/43bac1036e13f669de43bd67e2e795295700718b)
 -   **[Provider]** Add tests for provider queries [`cf3e85d`](https://github.com/keindev/changelog-guru/commit/cf3e85dc7a852f0e2f44550a3889c9d557fb7053)
 -   **[Provider]** Increase test timeout [`8a7eab1`](https://github.com/keindev/changelog-guru/commit/8a7eab1ecf99aa28b1c9fced7ca12664c5383364)
 -   **[Provider, Reader]** Fix test [`aa779f9`](https://github.com/keindev/changelog-guru/commit/aa779f9582a0bf19271dcce21f491417268d7226)
 -   **[Reader]** Add test for Reader [`a64e5fc`](https://github.com/keindev/changelog-guru/commit/a64e5fcd0c53bcfbab59229c21582cf6fe42e53d)
+-   **[Readme]** Split readme file into several subtopics files [`6ea8ec9`](https://github.com/keindev/changelog-guru/commit/6ea8ec9b5d3dd1966dd8de67b0f0a2b91af2f4b8)
+-   **[Readme]** Add main package description [`11f790c`](https://github.com/keindev/changelog-guru/commit/11f790c2340d8a0933b8e3017712fbc91131fa0c)
+-   **[Readme]** Fix links [`d45638e`](https://github.com/keindev/changelog-guru/commit/d45638e8051ed88307e75d0a81207926e3d603f7)
+-   **[Readme]** Fix changelog lint desc [`7f78c7c`](https://github.com/keindev/changelog-guru/commit/7f78c7cc46535d0453fafaab0d41273f54c77186)
 -   **[Readme]** Add library description [`6c6056b`](https://github.com/keindev/changelog-guru/commit/6c6056bad2976582eae3a0a7a64816827082797a)
 -   **[Readme]** Add cdn logo link, add npm badges [`129c449`](https://github.com/keindev/changelog-guru/commit/129c44945deae630f2903c1249e37a60d96f8aee)
 -   **[Readme]** Add package description [`7901da6`](https://github.com/keindev/changelog-guru/commit/7901da6798d486597d5ee58258080f97cef3de82)
@@ -229,6 +240,7 @@ Source code now under `MIT` license.
 -   **[State]** Fix test error with addSection [`77d6b7a`](https://github.com/keindev/changelog-guru/commit/77d6b7aa9aed4a144d8a4a61f86cfe81cd2e59a6)
 -   **[Test]** Check travis ci build [`a13b684`](https://github.com/keindev/changelog-guru/commit/a13b684672a2396767d1deb215f1f27a942d56a9)
 -   **[Test]** Remove logs [`ac10c6d`](https://github.com/keindev/changelog-guru/commit/ac10c6de7a6e3c74fea3c541b174a6265a86fb80)
+-   **[Writer]** Change completion message [`61c6be5`](https://github.com/keindev/changelog-guru/commit/61c6be54b42c184d79bb03bcef63e77479bc55a1)
 -   Add \.editorconfig & dependencies [`99c5204`](https://github.com/keindev/changelog-guru/commit/99c5204c7f1816a0aac980ff56aa2c0573cb437a)
 -   Work on commit message template struct [`ad62093`](https://github.com/keindev/changelog-guru/commit/ad62093ee283cbf772724be6779935951a57bb17)
 -   Added VS settings, fix configs, update dependencies [`77fb627`](https://github.com/keindev/changelog-guru/commit/77fb62753b6e7f634805215b7253c39b8947fc48)

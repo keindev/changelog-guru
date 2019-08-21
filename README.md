@@ -10,7 +10,7 @@
 
 Automated changelog generator:package::zap::clipboard:
 
-> Absolutely [customizable](#configuration) a release changelog with helpful [plugins](#plugins)
+> Absolutely [customizable](#configuration) a release changelog with helpful [plugins](docs/plugins/plugins.md)
 
 ## Install
 
@@ -33,6 +33,7 @@ npm install changelog-guru
     -   [Configuration](#configuration)
     -   [Generate changelog](#generate-changelog)
     -   [Lint commit message](#lint-commit-message)
+-   [Plugins](docs/plugins/plugins.md)
 
 ### What is **changelog-guru**
 
@@ -83,11 +84,31 @@ refactor(ConfigLoader): correct configuration loading method
 
 #### Type
 
-The type of [changes](#levels-of-changes) made by this commit, such as `feat` or `fix`.
+The type of changes made by this commit, such as `feat` or `fix`. You can configure you own types in [config](docs/configuration.md) file.
+
+The following types of changes are defined by default:
+
+-   **MAJOR** version:
+    -   `break` - Breaking changes
+-   **MINOR** version:
+    -   `feat` - New features
+    -   `improve` - Features improvements
+-   **PATCH** version:
+    -   `fix` - Some bugs fixing
+    -   `chore` - Minor changes
+    -   `refactor` - Code refactoring
+    -   `test` - Adding or modifying tests
+    -   `docs` - Documentation changes
+    -   `build` - Package changes, release
+    -   `types` - Code typing
+    -   `style` - `CSS`, `SCSS`, and other style sheets changes
+    -   `workflow` - Workflow changes
+    -   `perf` - Performance improvements
+    -   `revert` - Reverted changes
 
 #### Scope
 
-Scope could be anything specifying place of the commit change.
+Scope could be anything specifying place of the commit changes. You can configure you own scopes in [config](docs/plugins/default/scope.md) file.
 
 #### Subject
 
@@ -97,11 +118,11 @@ Subject line contains succinct description of the change.
 
 #### Markers
 
-> See the [Marker plugin](#marker) section for a more detailed description.
+> See the [Marker plugin](docs/plugins/default/marker.md) section for a more detailed description.
 
 Control markers of the form `!<name>`, allow you to group, ignore or increase the priority of commits in the change log.
 
-#### Body & Footer
+#### Body and Footer
 
 Extended information about changes.
 
@@ -110,6 +131,8 @@ Extended information about changes.
 Changelog-guru can be used either through a command line interface with an optional configuration file, or else through its JavaScript API. Run `changelog --help` to see the available options and parameters.
 
 ### Configuration
+
+Only the minimum necessary settings are described here, for more detailed configuration, read the section [Configuration](docs/configuration.md).
 
 > Changelog-guru uses [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and you can configure the module in any way you like described in the documentation.
 
@@ -122,6 +145,8 @@ All options can be configured in the configuration file, this is where `changelo
 -   `changelog.config.js` file exporting a JS object
 
 For example see [.changelogrc.yaml](.changelogrc.yaml). Also you can use `changelog-guru` with [default](.changelogrc.default.yaml) configuration.
+
+Read more about [configuration file](docs/configuration.md)
 
 #### Provider
 
@@ -142,19 +167,55 @@ export GITLAB_TOKEN="f941e0..."
 
 ### Generate changelog
 
+Generate a changelog file by git metadata.
+
 ```
 
 changelog generate [options]
 
 ```
 
+The command can be executed without options. If necessary, or if you want to override the options specified in the configuration file, you can specify the following options:
+
+-   `--bump` - Bumps package version in package.json if specified
+-   `--branch <value>` - Sets the branch by which the change log will be generated
+-   `--provider <value>` - Specifies the type of service provider to receive project information
+-   `--output <value>` - File path to write change log to it
+-   `--major [types]` - The commit types with incompatible API changes
+-   `--minor [types]` - The commit types with backwards-compatible and added functionality
+-   `--patch [types]` - The commit types with backwards-compatible and bug fixes
+-   `--excl-authors [logins]` - Excludes authors with the listed logins from output
+-   `--excl-types [types]` - Excludes commits with the listed types from output
+-   `--excl-scopes [scopes]` - Excludes commits with the listed scopes from output
+-   `--excl-subjects [words]` - Excludes commits that contain the specified words in the subject
+
 ### Lint commit message
 
-```
-
-changelog lint [options]
+There is a `changelog lint` for checking the spelling of the commit message. Checks compliance with the format and spelling in the subject of the commit.
 
 ```
+
+changelog lint --message "..."
+
+```
+
+To lint commits before they are created you can use Husky's 'commit-msg' hook:
+
+```json
+{
+    "husky": {
+        "hooks": {
+            "commit-msg": "changelog lint --message HUSKY_GIT_PARAMS"
+        }
+    }
+}
+```
+
+For a more meticulous check, the following options are available:
+
+-   `--message <text>` - Required. Commit message for linting
+-   `--length number` - Max commit header length
+-   `--lowercase-only boolean` - Uses only lowercase types
 
 ## License
 

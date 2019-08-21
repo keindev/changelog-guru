@@ -1,4 +1,3 @@
----
 provider: github
 changes:
     major:
@@ -71,3 +70,4 @@ plugins:
           Performance Improvements: [perf]
           Code Refactoring: [refactor]
           Reverts: [revert]
+

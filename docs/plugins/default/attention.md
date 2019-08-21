@@ -1,4 +1,4 @@
-### Attention
+# Attention plugin
 
 Base plugin enabled by default. Displays information about changes to [package.json](https://docs.npmjs.com/files/package.json) in the change log. Checks the following sections:
 
@@ -35,21 +35,21 @@ attention:
         - bundledDependencies
 ```
 
-##### Title
+## Title
 
 Default: `Important Changes`
 
 The name of the main section in which all other sections will be placed with changes by types.
 
-##### Templates
+## Templates
 
 The change message templates:
 
--   **added** - added Dependencies
--   **changed** - dependencies whose value is not `SemVer` and has been changed
--   **bumped** - dependencies whose version was bumped
--   **downgraded** - dependencies whose version was downgraded
--   **removed** - removed dependencies
+-   **added** - Template for added Dependencies
+-   **changed** - Template for dependencies whose values is not `SemVer` and has been changed
+-   **bumped** - Template for dependencies whose version was bumped
+-   **downgraded** - Template for dependencies whose version was downgraded
+-   **removed** - Template for removed dependencies
 
 Literals available for substitution in Templates:
 
@@ -59,6 +59,6 @@ Literals available for substitution in Templates:
 -   `%val%` - dependency version, for example `^1.9.3`
 -   `%pval%` - previous dependency version
 
-##### Sections
+## Sections
 
 List of available for output sections. If you do not want to see a section in the change log, simply remove its name from the list.

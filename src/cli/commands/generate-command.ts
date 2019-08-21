@@ -7,9 +7,9 @@ export class GenerateCommand extends Command {
     public constructor() {
         super('generate', 'g', 'Generate changelog');
 
-        this.setOption('bump', 'Bump package version in package.json', CommandType.Boolean);
-        this.setOption('branch', 'Set branch by which change log will be generated');
-        this.setOption('provider', 'The type of service provider to receive information about the project');
+        this.setOption('bump', 'Bumps package version in package.json if specified', CommandType.Boolean);
+        this.setOption('branch', 'Sets the branch by which the change log will be generated');
+        this.setOption('provider', 'Specifies the type of service provider to receive project information');
         this.setOption('output', 'File path to write change log to it');
         this.setOption('major', 'The commit types with incompatible API changes', CommandType.List);
         this.setOption('minor', 'The commit types with backwards-compatible and added functionality', CommandType.List);
@@ -17,7 +17,11 @@ export class GenerateCommand extends Command {
         this.setOption('excl-authors', 'Excludes authors with the listed logins from output', CommandType.List);
         this.setOption('excl-types', 'Excludes commits with the listed types from output', CommandType.List);
         this.setOption('excl-scopes', 'Excludes commits with the listed scopes from output', CommandType.List);
-        this.setOption('excl-subjects', 'Excludes commits with the listed subjects from output', CommandType.List);
+        this.setOption(
+            'excl-subjects',
+            'Excludes commits that contain the specified words in the subject',
+            CommandType.List
+        );
     }
 
     private static appendKeysTo<K, V>(map: Map<K, V>, keys: K[], value: V): void {

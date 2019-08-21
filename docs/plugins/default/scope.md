@@ -1,6 +1,6 @@
-#### Scope
+# Scope plugin
 
-Base plugin enabled by default. Renames areas and abbreviations to a more human-readable format.
+Base plugin enabled by default. Renames scopes and abbreviations to a more human-readable format.
 
 Default options:
 
@@ -15,13 +15,13 @@ scope:
         dts: TypeScript Declaration Improvements
 ```
 
-##### onlyPresented
+## onlyPresented
 
 Default: `false`
 
 In the case of true will only rename the specified names.
 
-##### names
+## names
 
 List of abbreviations and their human-readable versions. Configured as follows:
 

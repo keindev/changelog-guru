@@ -81,10 +81,15 @@ export class Linter {
         );
     }
 
+    private normalizeParameterName(value: string): string | undefined {
+        const isWin = (name: string): boolean => value === `${Linter.PARAM_SIGN_WIN}${name}${Linter.PARAM_SIGN_WIN}`;
+        const isLinux = (name: string): boolean => value === `${Linter.PARAM_SIGN_LINUX}${name}`;
+
+        return this.supportedParameters.find((name): boolean => value === name || isWin(name) || isLinux(name));
+    }
+
     private async getMessageBody(value: string): Promise<string> {
-        const isWin = (name: string): boolean => name === `${Linter.PARAM_SIGN_WIN}${name}${Linter.PARAM_SIGN_WIN}`;
-        const isLinux = (name: string): boolean => name === `${Linter.PARAM_SIGN_LINUX}${name}`;
-        const paramName = this.supportedParameters.find((name): boolean => isWin(name) || isLinux(name));
+        const paramName = this.normalizeParameterName(value);
         let result: string = value;
 
         if (paramName && paramName in process.env) {

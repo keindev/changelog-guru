@@ -1,4 +1,4 @@
-#### Section
+# Section plugin
 
 Base plugin enabled by default. Distributes commits with the specified types into sections. Configured as follows:
 
@@ -17,4 +17,10 @@ section:
     Performance Improvements: [perf]
     Code Refactoring: [refactor]
     Reverts: [revert]
+```
+
+Configured as follows:
+
+```
+<human-readable section name>: [types]
 ```

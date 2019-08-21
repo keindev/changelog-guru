@@ -8,7 +8,7 @@ export class LintCommand extends Command {
 
         this.setOption('message', 'Commit message for linting');
         this.setOption('length', 'Max commit header length', CommandType.Number);
-        this.setOption('lowercase-only', 'Use only lowercase types', CommandType.Boolean);
+        this.setOption('lowercase-only', 'Uses only lowercase types', CommandType.Boolean);
     }
 
     public async execute(options: CommandLineOptions): Promise<void> {
