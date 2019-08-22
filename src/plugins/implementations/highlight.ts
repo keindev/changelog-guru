@@ -1,9 +1,7 @@
-import { Task } from 'tasktree-cli/lib/task';
 import { CommitPlugin } from '../commit-plugin';
 import { Commit } from '../../entities/commit';
 import { PluginOption } from '../../config/config';
 import Markdown from '../../utils/markdown';
-import { PluginLintOptions } from '../../linter';
 
 export enum MaskType {
     // Generics between tags
@@ -11,7 +9,7 @@ export enum MaskType {
     // Words which start with $ symbol
     DollarSign = '\\$\\S*',
     // Cli commands
-    CliCommand = '-{1,2}\\S*',
+    CliCommand = '(?<=\\s)-{1,2}\\w\\S*',
 }
 
 export interface HighlightPluginOptions extends PluginOption {
@@ -20,30 +18,29 @@ export interface HighlightPluginOptions extends PluginOption {
 }
 
 export default class HighlightPlugin extends CommitPlugin {
-    private camelCase = true;
-    private masks: string[] = [];
+    private masks: RegExp[] = [];
 
     public async init(config: HighlightPluginOptions): Promise<void> {
-        this.camelCase = !!config.camelCase;
-        this.masks = Object.values(MaskType);
-        if (Array.isArray(config.masks) && config.masks.length > 0) this.masks.push(...config.masks);
+        const { masks } = config;
+        const camelCase = !!config.camelCase;
+
+        this.masks = Object.values(MaskType).map(mask => new RegExp(mask, 'gi'));
+
+        if (Array.isArray(masks)) {
+            masks.forEach(mask => {
+                this.masks.push(new RegExp(mask, 'gi'));
+            });
+        }
+
+        if (camelCase) {
+            this.masks.push(new RegExp('[a-z]\\w*[A-Z]\\S*', 'g'));
+        }
     }
 
     public async parse(commit: Commit): Promise<void> {
         const subject = this.getSubjectFrom(commit);
-        commit.setSubject(subject);
-    }
 
-    public lint(options: PluginLintOptions, task: Task): void {
-        this.masks.forEach(mask => {
-            let isValid = true;
-            try {
-                RegExp(mask);
-            } catch (e) {
-                isValid = false;
-            }
-            if (!isValid) task.error(`Mask {bold ${mask}} is not valid`);
-        });
+        commit.setSubject(subject);
     }
 
     private getSubjectFrom(commit: Commit): string {
@@ -51,22 +48,16 @@ export default class HighlightPlugin extends CommitPlugin {
         let subject = commit.getSubject();
 
         if (subject) {
-            this.masks.forEach((mask: string): void => {
-                const expression = new RegExp(mask, 'gi');
-                subject = subject.replace(expression, (substring): string => {
+            this.masks.forEach((mask: RegExp): void => {
+                subject = subject.replace(mask, (substring): string => {
                     escape = true;
-                    return Markdown.code(substring.trim());
+
+                    return Markdown.wrap(substring);
                 });
             });
-            if (this.camelCase) {
-                const expression = new RegExp('[a-z]\\w*[A-Z]\\S*', 'g');
-                subject = subject.replace(expression, (substring): string => {
-                    escape = true;
-                    return Markdown.code(substring.trim());
-                });
-            }
         }
         if (escape) commit.escape();
+
         return subject;
     }
 }
