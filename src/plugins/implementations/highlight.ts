@@ -9,7 +9,7 @@ export enum MaskType {
     // Words which start with $ symbol
     DollarSign = '\\$\\S*',
     // Cli commands
-    CliCommand = '(?<=\\s)-{1,2}\\w\\S*',
+    CliCommand = '((?<= )|^)-{1,2}[a-z0-9_-]+',
 }
 
 export interface HighlightPluginOptions extends PluginOption {
