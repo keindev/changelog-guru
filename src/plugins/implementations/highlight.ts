@@ -10,8 +10,8 @@ export enum MaskType {
     DollarSign = '\\$\\S*',
     // Cli commands
     CliCommand = '((?<= )|^)-{1,2}[a-z0-9_-]+',
-    // Vue directives
-    VueDirective = 'v-[a-z0-9_-]+',
+    // Words which have hyphen
+    HyphenSign = '(?<= |^)[a-z0-9]+-[a-z0-9-]+',
 }
 
 export interface HighlightPluginOptions extends PluginOption {
