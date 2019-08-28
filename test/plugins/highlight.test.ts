@@ -111,6 +111,22 @@ describe('HighlightPlugin', (): void => {
         });
     });
 
+    it('Dot highlight', (done): void => {
+        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+            timestamp: 0,
+            header: 'feat(Jest): fix this.$slots and ctx.slots()',
+            body: `jest highlight test`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
+            author: $author,
+        });
+
+        $plugin.parse(commit).then((): void => {
+            expect(commit.getSubject()).toBe('fix `this.$slots` and `ctx.slots()`');
+
+            done();
+        });
+    });
+
     it('Disable camelCase highlight', (done): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 0,
