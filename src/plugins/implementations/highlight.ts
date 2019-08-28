@@ -7,11 +7,13 @@ export enum MaskType {
     // Generics between tags - <React.Profiler>
     Generics = '<[^>]*>',
     // Words which start with $ symbol - $scopedSlots
-    DollarSign = '\\$\\S*',
+    DollarSign = '(?<= |^)\\$[a-z0-9\\[\\]{}()]+',
     // Cli commands - -help or --help
     CliCommand = '((?<= )|^)-{1,2}[a-z0-9_-]+',
     // Words which have hyphen - vue-template-compiler
     HyphenSign = '(?<= |^)[a-z0-9]+-[a-z0-9-]+',
+    // Words which have dot - this.$slots or ctx.slots()
+    DotSign = '(?<= |^)[a-z0-9_$]+\\.[a-z0-9_$.-{}()\\[\\]]+',
 }
 
 export interface HighlightPluginOptions extends PluginOption {
