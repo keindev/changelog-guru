@@ -4,13 +4,13 @@ import { PluginOption } from '../../config/config';
 import Markdown from '../../utils/markdown';
 
 export enum MaskType {
-    // Generics between tags
+    // Generics between tags - <React.Profiler>
     Generics = '<[^>]*>',
-    // Words which start with $ symbol
+    // Words which start with $ symbol - $scopedSlots
     DollarSign = '\\$\\S*',
-    // Cli commands
+    // Cli commands - -help or --help
     CliCommand = '((?<= )|^)-{1,2}[a-z0-9_-]+',
-    // Words which have hyphen
+    // Words which have hyphen - vue-template-compiler
     HyphenSign = '(?<= |^)[a-z0-9]+-[a-z0-9-]+',
 }
 
