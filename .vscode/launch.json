@@ -35,9 +35,9 @@
             "port": 9229
         },
         {
+            "name": "Jest Current File",
             "type": "node",
             "request": "launch",
-            "name": "Jest Current File",
             "program": "${workspaceFolder}/node_modules/.bin/jest",
             "args": ["${relativeFile}", "--config", "jest.config.js"],
             "console": "integratedTerminal",

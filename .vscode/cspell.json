@@ -47,6 +47,7 @@
         "filepath",
         "EDITMSG",
         "deps",
-        "SPDX"
+        "SPDX",
+        "plusplus"
     ]
 }
