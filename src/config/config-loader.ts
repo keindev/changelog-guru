@@ -65,7 +65,7 @@ export class ConfigLoader {
         if (changes) {
             Object.entries<string[]>(changes).forEach(([level, names]): void => {
                 if (Array.isArray(names)) {
-                    if (Object.values(ChangeLevel).includes(level)) {
+                    if (Object.values(ChangeLevel).includes(level as ChangeLevel)) {
                         names.forEach((name): void => {
                             types.set(name, level as ChangeLevel);
                         });
@@ -87,7 +87,7 @@ export class ConfigLoader {
 
         if (output && output.exclude) {
             Object.entries<string[]>(output.exclude).forEach(([name, rules]): void => {
-                if (Object.values(ExclusionType).includes(name)) {
+                if (Object.values(ExclusionType).includes(name as ExclusionType)) {
                     exclusions.set(name as ExclusionType, [...new Set(rules)]);
                 } else {
                     TaskTree.fail('Unexpected exclusion name');

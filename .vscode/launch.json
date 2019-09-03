@@ -35,6 +35,19 @@
             "port": 9229
         },
         {
+            "name": "Jest Current File",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "args": ["${relativeFile}", "--config", "jest.config.js"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            }
+        },
+        {
             "name": "CLI --help",
             "type": "node",
             "request": "launch",
