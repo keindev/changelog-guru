@@ -47,7 +47,8 @@ describe('MarkerPlugin', (): void => {
 
         $plugin.lint(Object.assign(options, { body: [''] }), task);
         $plugin.lint(Object.assign(options, { body: ['!group(name)'] }), task);
-        $plugin.lint(Object.assign(options, { body: ['!important !deprecated !break !ignore', '', 'text'] }), task);
+        $plugin.lint(Object.assign(options, { body: ['!important !deprecated !break !ignore !escaped', '', 'text'] }),
+            task);
 
         expect(task.haveErrors()).toBeFalsy();
 
