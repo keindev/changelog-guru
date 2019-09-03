@@ -178,7 +178,7 @@ describe('MarkerPlugin', (): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f5', {
             timestamp: 0,
             header: 'feat(Jest): subject',
-            body: '!escaped(Jest markers test)',
+            body: '!escaped',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f5',
             author: $author,
         });
