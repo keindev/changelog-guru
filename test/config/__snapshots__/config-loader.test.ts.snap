@@ -123,6 +123,7 @@ Array [
       "actions": Array [
         "ignore",
         "group",
+        "escaped",
       ],
       "joins": Object {
         "break": "BREAKING CHANGES",
