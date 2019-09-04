@@ -38,7 +38,11 @@ Source code now under `MIT` license.
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
 -   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.18)** with `^24.0.18`
+<<<<<<< HEAD
 -   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.3)** with `^12.7.3`
+=======
+-   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.2)** with `^12.7.2`
+>>>>>>> e3b07e600f62aae25983f7edf9a3d1b44433f0d5
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.1.0)** with `^2.1.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.1.0)** with `^2.1.0`
@@ -322,4 +326,8 @@ Source code now under `MIT` license.
 
 [![@keindev](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)
 [![@LexaDel](https://avatars2.githubusercontent.com/u/17446469?v=4&size=40)](https://github.com/LexaDel)
+<<<<<<< HEAD
 [![@rohtuasad](https://avatars3.githubusercontent.com/u/20116416?v=4&size=40)](https://github.com/rohtuasad)
+=======
+[![@dependabot[bot]](https://avatars0.githubusercontent.com/in/29110?v=4&size=40)](https://github.com/dependabot%5Bbot%5D)
+>>>>>>> e3b07e600f62aae25983f7edf9a3d1b44433f0d5

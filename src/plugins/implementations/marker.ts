@@ -18,10 +18,12 @@ export enum MarkerType {
     Ignore = 'ignore',
     // !important - place a commit title to special section on top of changelog
     Important = 'important',
+    // !escaped - cancel character escaping on changelog generating
+    Escaped = 'escaped',
 }
 
 export interface MarkerPluginOptions extends PluginOption {
-    actions: (MarkerType.Ignore | MarkerType.Grouped)[];
+    actions: (MarkerType.Ignore | MarkerType.Grouped | MarkerType.Escaped)[];
     joins: {
         [key in MarkerType.Breaking | MarkerType.Deprecated | MarkerType.Important]: string;
     };
@@ -39,6 +41,7 @@ export default class MarkerPlugin extends CommitPlugin {
             switch (action) {
                 case MarkerType.Ignore:
                 case MarkerType.Grouped:
+                case MarkerType.Escaped:
                     this.markers.add(action);
                     break;
                 default:
@@ -98,6 +101,9 @@ export default class MarkerPlugin extends CommitPlugin {
                     break;
                 case MarkerType.Grouped:
                     if (value) section = this.context.addSection(value, SectionPosition.Group);
+                    break;
+                case MarkerType.Escaped:
+                    commit.escape();
                     break;
                 default:
                     task.fail(`Unexpected marker - {bold !${type}}`);
