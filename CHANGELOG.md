@@ -38,22 +38,22 @@ Source code now under `MIT` license.
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
 -   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.18)** with `^24.0.18`
--   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.2)** with `^12.7.2`
+-   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.3)** with `^12.7.3`
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
--   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.0.0)** with `^2.0.0`
--   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.0.0)** with `^2.0.0`
+-   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.1.0)** with `^2.1.0`
+-   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.1.0)** with `^2.1.0`
 -   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.28)** with `^4.0.28`
--   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.2.0)** with `^6.2.0`
+-   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.3.0)** with `^6.3.0`
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.1.0)** with `^6.1.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
--   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.1)** with `^22.15.1`
--   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.4)** with `^3.0.4`
+-   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.16.0)** with `^22.16.0`
+-   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.5)** with `^3.0.5`
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.9.0)** with `^24.9.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
 -   Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)** with `^1.18.2`
 -   Added **[ts-jest](https://www.npmjs.com/package/ts-jest/v/24.0.2)** with `^24.0.2`
--   Added **[typescript](https://www.npmjs.com/package/typescript/v/3.5.3)** with `^3.5.3`
+-   Added **[typescript](https://www.npmjs.com/package/typescript/v/3.6.2)** with `3.6.2`
 
 # Features
 
@@ -96,6 +96,7 @@ Source code now under `MIT` license.
 -   **[Plugins]** Added Sign plugin [`18cb21e`](https://github.com/keindev/changelog-guru/commit/18cb21e45693d68e6cc499aac72882d91161fac2)
 -   **[Plugins]** Added Sign plugin parse method [`3a5fb46`](https://github.com/keindev/changelog-guru/commit/3a5fb46755f9f12dd38142187f88eac7d3b81a99)
 -   **[Plugins]** Added Sing plugin modify method [`b18496d`](https://github.com/keindev/changelog-guru/commit/b18496da836d33acb38e148032716e5abe374036)
+-   **[Plugins]** Add marker for cancel character escaping on changelog … [`0fe59f3`](https://github.com/keindev/changelog-guru/commit/0fe59f38cea49bdab5a2907ed19f9acd4523ceda)
 -   Add repo state reader [`eb1466d`](https://github.com/keindev/changelog-guru/commit/eb1466da10729a4753fd936a9948551f76bd6e8a)
 -   Rewrite to typescript [`fde81be`](https://github.com/keindev/changelog-guru/commit/fde81bef20850e326cdc4651015f7473a136b623)
 -   Add author & commit entities [`a6dfb6d`](https://github.com/keindev/changelog-guru/commit/a6dfb6d6660ef32662a429fb470b34adbe1840d4)
@@ -134,6 +135,7 @@ Source code now under `MIT` license.
 -   **[Cli]** Fix help showns rules [`38faccf`](https://github.com/keindev/changelog-guru/commit/38faccfa595a10b771792fd44ad20ebbca0d6a74)
 -   **[Commit]** Fix regex for find commit scope [`7938096`](https://github.com/keindev/changelog-guru/commit/79380965e889b40648863d96f1501517e4ea5c94)
 -   **[Commit]** Fix header spliting to type, scope, subject [`5f30664`](https://github.com/keindev/changelog-guru/commit/5f30664e10d020c12aefa4505e55588ad78510d9)
+-   **[CommitPlugin]** Make \.lint as not an abstract method [`a937c8b`](https://github.com/keindev/changelog-guru/commit/a937c8b5f00b95d07677d7d59424424829b8694b)
 -   **[Config]** Fix error with Level\.major changes [`6203567`](https://github.com/keindev/changelog-guru/commit/620356714c0c321f54d863a2dcbbf13722d115d0)
 -   **[Debug]** Fix debug cli commnad [`3296542`](https://github.com/keindev/changelog-guru/commit/3296542ca175f43b07445485f1209fee04368ca9)
 -   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
@@ -201,17 +203,20 @@ Source code now under `MIT` license.
 
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 -   **[Chagelog]** Generate new chagelog [`f7d3934`](https://github.com/keindev/changelog-guru/commit/f7d3934040b2b4041d35108ab65d412245789f1a)
--   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
+-   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`4aa5805`](https://github.com/keindev/changelog-guru/commit/4aa58052df9f58e77b8f645123f4601209d2989e) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
 -   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b) [`fb642e9`](https://github.com/keindev/changelog-guru/commit/fb642e9fba687b41501885980e39d2d29cfdd56f) [`6e814e4`](https://github.com/keindev/changelog-guru/commit/6e814e4399a26f782f6f35d82080e3bf0203073d) [`844ce76`](https://github.com/keindev/changelog-guru/commit/844ce764a704b5526ef2169ef6f7c686fdc01d8b)
 -   **[Changelog]** Rebuild changelog file [`4d91cf0`](https://github.com/keindev/changelog-guru/commit/4d91cf09d6c4993b5f536d818d36fd367e86fdb9)
 -   **[Changelog]** Build new changelog [`cf506dc`](https://github.com/keindev/changelog-guru/commit/cf506dcc550d005214ea2af078d3d9db323a1e05)
 -   **[CommitPlugin]** Add lint method to mock [`3cd571e`](https://github.com/keindev/changelog-guru/commit/3cd571e61f9b9f93d341a7258acebbef7d2589a7)
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 -   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
+-   **[Config loader]** Fix errors [`f0ac006`](https://github.com/keindev/changelog-guru/commit/f0ac006be4510eff48521c4ecb2618168e8e66f5)
 -   **[Configuration]** Add config description [`f1341bb`](https://github.com/keindev/changelog-guru/commit/f1341bba09f7ff84c29b205ece1dae7509d83526)
 -   **[Configuration]** Fix provider option description [`a2ec04b`](https://github.com/keindev/changelog-guru/commit/a2ec04b749b8724fe437cbd64824cb3ab37d4dc1)
 -   **[Configuration, Readme]** Fix links [`fb6e9cd`](https://github.com/keindev/changelog-guru/commit/fb6e9cd034ed0253b1da8ed3c031ea9738c5b6c9) [`d45638e`](https://github.com/keindev/changelog-guru/commit/d45638e8051ed88307e75d0a81207926e3d603f7)
 -   **[Debug]** Move debug configs to \.vscode [`14fc5dc`](https://github.com/keindev/changelog-guru/commit/14fc5dc5f64198334ba66a233e9cbbc667765e21)
+-   **[Eslint]** Fix configs for eslint [`15c759b`](https://github.com/keindev/changelog-guru/commit/15c759b190c7f4b3c1237b57a4d8b3dd0499205c)
+-   **[ESLint]** Add padding\-line\-between\-statements rules [`34b13f1`](https://github.com/keindev/changelog-guru/commit/34b13f1ed5aff77c9fbdbcd00c16207b48fdb143)
 -   **[LintCommand]** Fix commands desc [`5016d5c`](https://github.com/keindev/changelog-guru/commit/5016d5c3bd5b9f2b3c471bd4621f7d7da15cf6b7)
 -   **[Linter]** Add tests for Linter [`0cb38bb`](https://github.com/keindev/changelog-guru/commit/0cb38bb0aa1cfac524a61baae9c31032a8fde3c2)
 -   **[Marker]** Add eslint disable no\-explicit\-any [`9df6c0a`](https://github.com/keindev/changelog-guru/commit/9df6c0a9407e83d14d43c9b8a1c812e1e354cef5)
@@ -222,6 +227,7 @@ Source code now under `MIT` license.
 -   **[Package]** Normalize package info [`a13d7e0`](https://github.com/keindev/changelog-guru/commit/a13d7e046c1368b1b880e6df6ce9949ef0381c34)
 -   **[Plugins]** Add plugins list with description [`3b443e6`](https://github.com/keindev/changelog-guru/commit/3b443e62016c76f077efb12f37fdda776ea4d995)
 -   **[Plugins]** Fix plugins descriptin, add comments to default config [`43bac10`](https://github.com/keindev/changelog-guru/commit/43bac1036e13f669de43bd67e2e795295700718b)
+-   **[Plugins]** Add test for escape marker [`2abd12f`](https://github.com/keindev/changelog-guru/commit/2abd12f62e769585f1c79f60a288e8fc0a382327) [`23cec42`](https://github.com/keindev/changelog-guru/commit/23cec42739d74ea93b34d116cdd23652e71e860d)
 -   **[Provider]** Add tests for provider queries [`cf3e85d`](https://github.com/keindev/changelog-guru/commit/cf3e85dc7a852f0e2f44550a3889c9d557fb7053)
 -   **[Provider]** Increase test timeout [`8a7eab1`](https://github.com/keindev/changelog-guru/commit/8a7eab1ecf99aa28b1c9fced7ca12664c5383364)
 -   **[Provider, Reader]** Fix test [`aa779f9`](https://github.com/keindev/changelog-guru/commit/aa779f9582a0bf19271dcce21f491417268d7226)
@@ -242,6 +248,8 @@ Source code now under `MIT` license.
 -   **[State]** Fix test error with addSection [`77d6b7a`](https://github.com/keindev/changelog-guru/commit/77d6b7aa9aed4a144d8a4a61f86cfe81cd2e59a6)
 -   **[Test]** Check travis ci build [`a13b684`](https://github.com/keindev/changelog-guru/commit/a13b684672a2396767d1deb215f1f27a942d56a9)
 -   **[Test]** Remove logs [`ac10c6d`](https://github.com/keindev/changelog-guru/commit/ac10c6de7a6e3c74fea3c541b174a6265a86fb80)
+-   **[Vscode]** Add Jest debug launch [`8a3a8ee`](https://github.com/keindev/changelog-guru/commit/8a3a8eef33206deb1d2aa3e63c90fb57cd9bad4e)
+-   **[Vscode]** Fix vscode configs [`10930a8`](https://github.com/keindev/changelog-guru/commit/10930a837a689c674dbb5cd86788b266680cf392)
 -   **[Writer]** Change completion message [`61c6be5`](https://github.com/keindev/changelog-guru/commit/61c6be54b42c184d79bb03bcef63e77479bc55a1)
 -   Add \.editorconfig & dependencies [`99c5204`](https://github.com/keindev/changelog-guru/commit/99c5204c7f1816a0aac980ff56aa2c0573cb437a)
 -   Work on commit message template struct [`ad62093`](https://github.com/keindev/changelog-guru/commit/ad62093ee283cbf772724be6779935951a57bb17)
@@ -314,4 +322,4 @@ Source code now under `MIT` license.
 
 [![@keindev](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)
 [![@LexaDel](https://avatars2.githubusercontent.com/u/17446469?v=4&size=40)](https://github.com/LexaDel)
-[![@dependabot[bot]](https://avatars0.githubusercontent.com/in/29110?v=4&size=40)](https://github.com/dependabot%5Bbot%5D)
+[![@rohtuasad](https://avatars3.githubusercontent.com/u/20116416?v=4&size=40)](https://github.com/rohtuasad)
