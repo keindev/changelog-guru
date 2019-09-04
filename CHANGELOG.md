@@ -37,7 +37,7 @@ Source code now under `MIT` license.
 -   Added **[@types/cosmiconfig](https://www.npmjs.com/package/@types/cosmiconfig/v/5.0.3)** with `^5.0.3`
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
--   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.17)** with `^24.0.17`
+-   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.18)** with `^24.0.18`
 -   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.2)** with `^12.7.2`
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.0.0)** with `^2.0.0`
@@ -45,7 +45,7 @@ Source code now under `MIT` license.
 -   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.28)** with `^4.0.28`
 -   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.2.0)** with `^6.2.0`
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
--   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.0.0)** with `^6.0.0`
+-   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.1.0)** with `^6.1.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
 -   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.15.1)** with `^22.15.1`
 -   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.4)** with `^3.0.4`
@@ -200,6 +200,7 @@ Source code now under `MIT` license.
 ## Others
 
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
+-   **[Chagelog]** Generate new chagelog [`f7d3934`](https://github.com/keindev/changelog-guru/commit/f7d3934040b2b4041d35108ab65d412245789f1a)
 -   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
 -   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b) [`fb642e9`](https://github.com/keindev/changelog-guru/commit/fb642e9fba687b41501885980e39d2d29cfdd56f) [`6e814e4`](https://github.com/keindev/changelog-guru/commit/6e814e4399a26f782f6f35d82080e3bf0203073d) [`844ce76`](https://github.com/keindev/changelog-guru/commit/844ce764a704b5526ef2169ef6f7c686fdc01d8b)
 -   **[Changelog]** Rebuild changelog file [`4d91cf0`](https://github.com/keindev/changelog-guru/commit/4d91cf09d6c4993b5f536d818d36fd367e86fdb9)
@@ -208,6 +209,8 @@ Source code now under `MIT` license.
 -   **[Config]** Add deps scope [`86b9032`](https://github.com/keindev/changelog-guru/commit/86b903227a48d5df513fdf783bd6768e5f527d9e)
 -   **[Config]** Add default config [`3663536`](https://github.com/keindev/changelog-guru/commit/3663536157b8d690bf98a0ef9041565b116d90cf)
 -   **[Configuration]** Add config description [`f1341bb`](https://github.com/keindev/changelog-guru/commit/f1341bba09f7ff84c29b205ece1dae7509d83526)
+-   **[Configuration]** Fix provider option description [`a2ec04b`](https://github.com/keindev/changelog-guru/commit/a2ec04b749b8724fe437cbd64824cb3ab37d4dc1)
+-   **[Configuration, Readme]** Fix links [`fb6e9cd`](https://github.com/keindev/changelog-guru/commit/fb6e9cd034ed0253b1da8ed3c031ea9738c5b6c9) [`d45638e`](https://github.com/keindev/changelog-guru/commit/d45638e8051ed88307e75d0a81207926e3d603f7)
 -   **[Debug]** Move debug configs to \.vscode [`14fc5dc`](https://github.com/keindev/changelog-guru/commit/14fc5dc5f64198334ba66a233e9cbbc667765e21)
 -   **[LintCommand]** Fix commands desc [`5016d5c`](https://github.com/keindev/changelog-guru/commit/5016d5c3bd5b9f2b3c471bd4621f7d7da15cf6b7)
 -   **[Linter]** Add tests for Linter [`0cb38bb`](https://github.com/keindev/changelog-guru/commit/0cb38bb0aa1cfac524a61baae9c31032a8fde3c2)
@@ -225,7 +228,6 @@ Source code now under `MIT` license.
 -   **[Reader]** Add test for Reader [`a64e5fc`](https://github.com/keindev/changelog-guru/commit/a64e5fcd0c53bcfbab59229c21582cf6fe42e53d)
 -   **[Readme]** Split readme file into several subtopics files [`6ea8ec9`](https://github.com/keindev/changelog-guru/commit/6ea8ec9b5d3dd1966dd8de67b0f0a2b91af2f4b8)
 -   **[Readme]** Add main package description [`11f790c`](https://github.com/keindev/changelog-guru/commit/11f790c2340d8a0933b8e3017712fbc91131fa0c)
--   **[Readme]** Fix links [`d45638e`](https://github.com/keindev/changelog-guru/commit/d45638e8051ed88307e75d0a81207926e3d603f7)
 -   **[Readme]** Fix changelog lint desc [`7f78c7c`](https://github.com/keindev/changelog-guru/commit/7f78c7cc46535d0453fafaab0d41273f54c77186)
 -   **[Readme]** Add library description [`6c6056b`](https://github.com/keindev/changelog-guru/commit/6c6056bad2976582eae3a0a7a64816827082797a)
 -   **[Readme]** Add cdn logo link, add npm badges [`129c449`](https://github.com/keindev/changelog-guru/commit/129c44945deae630f2903c1249e37a60d96f8aee)
@@ -312,3 +314,4 @@ Source code now under `MIT` license.
 
 [![@keindev](https://avatars3.githubusercontent.com/u/4527292?v=4&size=40)](https://github.com/keindev)
 [![@LexaDel](https://avatars2.githubusercontent.com/u/17446469?v=4&size=40)](https://github.com/LexaDel)
+[![@dependabot[bot]](https://avatars0.githubusercontent.com/in/29110?v=4&size=40)](https://github.com/dependabot%5Bbot%5D)

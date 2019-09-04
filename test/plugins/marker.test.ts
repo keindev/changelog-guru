@@ -47,7 +47,10 @@ describe('MarkerPlugin', (): void => {
 
         $plugin.lint(Object.assign(options, { body: [''] }), task);
         $plugin.lint(Object.assign(options, { body: ['!group(name)'] }), task);
-        $plugin.lint(Object.assign(options, { body: ['!important !deprecated !break !ignore', '', 'text'] }), task);
+        $plugin.lint(
+            Object.assign(options, { body: ['!important !deprecated !break !ignore !escaped', '', 'text'] }),
+            task
+        );
 
         expect(task.haveErrors()).toBeFalsy();
 
@@ -166,6 +169,24 @@ describe('MarkerPlugin', (): void => {
         $plugin.parse(commit, $task).then((): void => {
             expect($context.getSections().length).toBe(4);
             expect($context.findSection('Jest markers test')).toBeDefined();
+
+            done();
+        });
+    });
+
+    it('!escaped marker', (done): void => {
+        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f5', {
+            timestamp: 0,
+            header: 'feat(Jest): subject',
+            body: '!escaped',
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f5',
+            author: $author,
+        });
+
+        expect(commit.isEscaped()).toBeFalsy();
+
+        $plugin.parse(commit, $task).then((): void => {
+            expect(commit.isEscaped()).toBeTruthy();
 
             done();
         });
