@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import getUserAgent from 'universal-user-agent';
+import { getUserAgent } from 'universal-user-agent';
 import findupSync from 'findup-sync';
 import { TaskTree } from 'tasktree-cli';
 import { Provider } from './provider';

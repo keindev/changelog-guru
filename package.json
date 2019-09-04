@@ -54,7 +54,7 @@
         "rimraf": "^3.0.0",
         "semver": "^6.3.0",
         "tasktree-cli": "^1.3.0",
-        "universal-user-agent": "^3.0.0",
+        "universal-user-agent": "^4.0.0",
         "write-pkg": "^4.0.0"
     },
     "devDependencies": {
