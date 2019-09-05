@@ -40,7 +40,7 @@ describe('HighlightPlugin', (): void => {
 
         $plugin.init($options as HighlightPluginOptions).then((): void => {
             $plugin.parse(commit).then((): void => {
-                expect(commit.getSubject()).toBe('subject `<test>` `$test` `-test` camelCase');
+                expect(commit.getSubject()).toBe('subject `<test>` `$test` `-test` `camelCase`');
 
                 done();
             });
