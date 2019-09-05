@@ -95,7 +95,7 @@ describe('HighlightPlugin', (): void => {
         });
     });
 
-    it('Hyphen highlight', (done): void => {
+    it('Dash highlight', (done): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 0,
             header: 'feat(Jest): fix v-bind dynamic exhaustive-deps on slot outlets v-else-if',
@@ -160,6 +160,22 @@ describe('HighlightPlugin', (): void => {
 
                 done();
             });
+        });
+    });
+
+    it('complex highlight', (done): void => {
+        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+            timestamp: 0,
+            header: 'feat(Jest): fix this.$slots and ctx.slots() <slots> <slots>',
+            body: `jest highlight test`,
+            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
+            author: $author,
+        });
+
+        $plugin.parse(commit).then((): void => {
+            expect(commit.getSubject()).toBe('fix `this.$slots` and `ctx.slots()` `<slots>` `<slots>`');
+
+            done();
         });
     });
 });

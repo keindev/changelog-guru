@@ -10,8 +10,8 @@ export enum MaskType {
     DollarSign = '(?<= |^)\\$[a-z0-9\\[\\]{}()]+',
     // Cli commands - -help or --help
     CliCommand = '((?<= )|^)-{1,2}[a-z0-9_-]+',
-    // Words which have hyphen - vue-template-compiler
-    HyphenSign = '(?<= |^)[a-z0-9]+-[a-z0-9-]+',
+    // Words which have dash - vue-template-compiler
+    DashSign = '(?<= |^)[a-z0-9]+-[a-z0-9-]+',
     // Words which have dot - this.$slots or ctx.slots()
     DotSign = '(?<= |^)[a-z0-9_$]+\\.[a-z0-9_$.-{}()\\[\\]]+',
 }
@@ -52,13 +52,81 @@ export default class HighlightPlugin extends CommitPlugin {
         let subject = commit.getSubject();
 
         if (subject) {
-            this.masks.forEach((mask: RegExp): void => {
-                subject = subject.replace(mask, (substring): string => {
-                    escape = true;
+            let match: RegExpExecArray | null;
+            const replacements: Map<number, string> = new Map();
 
-                    return Markdown.wrap(substring);
-                });
+            this.masks.forEach((mask: RegExp): void => {
+                do {
+                    match = mask.exec(subject);
+
+                    if (match) {
+                        const str = match[0];
+                        const startPos = match.index;
+                        const endPos = startPos + str.length;
+                        const deleteReplacement: number[] = [];
+                        let addWord = replacements.size === 0;
+
+                        replacements.forEach((value: string, key: number) => {
+                            const startPosReplacement = key;
+                            const endPosReplacement = startPosReplacement + value.length;
+
+                            if (value.length > str.length) {
+                                if (startPosReplacement > endPos || endPosReplacement < startPos) {
+                                    addWord = true;
+                                }
+                            }
+
+                            if (value.length < str.length) {
+                                if (
+                                    str.indexOf(value) > -1 &&
+                                    (startPosReplacement < startPos && endPosReplacement > endPos)
+                                ) {
+                                    addWord = true;
+                                    deleteReplacement.push(key);
+                                }
+
+                                if (
+                                    str.indexOf(value) === -1 ||
+                                    (startPosReplacement > startPos && endPosReplacement < endPos)
+                                ) {
+                                    addWord = true;
+                                }
+                            }
+
+                            if (value.length === str.length && (str.indexOf(value) === -1 || key !== startPos)) {
+                                addWord = true;
+                            }
+                        });
+
+                        deleteReplacement.forEach(value => replacements.has(value) && replacements.delete(value));
+
+                        if (addWord) {
+                            replacements.set(startPos, str);
+                        }
+                    }
+                } while (match && mask.lastIndex);
             });
+
+            const subjectResult: string[] = [];
+            const replacementsSorted = [...replacements.entries()].sort((a, b) => a[0] - b[0]);
+
+            let startPosition = 0;
+
+            replacementsSorted.forEach((value: [number, string]) => {
+                const [position, str] = value;
+                const replacement = Markdown.wrap(str);
+
+                if (startPosition !== position - startPosition)
+                    subjectResult.push(subject.substr(startPosition, position - startPosition));
+
+                subjectResult.push(replacement);
+                startPosition = position + str.length;
+                escape = true;
+            });
+
+            if (startPosition < subject.length) subjectResult.push(subject.substr(startPosition, subject.length));
+
+            subject = subjectResult.join('');
         }
         if (escape) commit.escape();
 
