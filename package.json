@@ -66,7 +66,7 @@
         "@types/semver": "^6.0.2",
         "@typescript-eslint/eslint-plugin": "^2.1.0",
         "@typescript-eslint/parser": "^2.1.0",
-        "cspell": "^4.0.28",
+        "cspell": "^4.0.30",
         "eslint": "^6.3.0",
         "eslint-config-airbnb-base": "^14.0.0",
         "eslint-config-prettier": "^6.2.0",
