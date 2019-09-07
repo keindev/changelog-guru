@@ -40,12 +40,12 @@ export class MockProvider extends GitProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async getCommits(date: string, page: number): Promise<Commit[]> {
+    public async getCommits(date: Date, page: number): Promise<Commit[]> {
         return Promise.resolve([this.__commit]);
     }
 
     // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-unused-vars
-    public async getCommitsCount(date: string): Promise<number> {
+    public async getCommitsCount(date: Date): Promise<number> {
         return Promise.resolve(1);
     }
 
@@ -53,7 +53,7 @@ export class MockProvider extends GitProvider {
     public async getLastRelease(): Promise<ReleaseInfo> {
         return Promise.resolve({
             tag: Package.DEFAULT_VERSION,
-            date: new Date(0).toISOString(),
+            date: new Date(0),
         });
     }
 

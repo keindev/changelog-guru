@@ -7,7 +7,7 @@ import { Config, ServiceProvider } from './config/config';
 import { Package } from './package/package';
 import { ConfigLoader, ConfigLoaderOptions } from './config/config-loader';
 import { State } from './state/state';
-import { GitHubProvider } from './providers/github/provider';
+import { GitHubProvider } from './providers/github-provider';
 import { Linter, LintOptions } from './linter';
 
 export interface ChangelogOptions extends ConfigLoaderOptions {

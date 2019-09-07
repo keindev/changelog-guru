@@ -4,7 +4,7 @@ import { ServiceProvider } from '../config/config';
 
 export interface ReleaseInfo {
     tag: string | undefined;
-    date: string;
+    date: Date;
 }
 
 export abstract class Provider {
@@ -17,7 +17,7 @@ export abstract class Provider {
     }
 
     abstract async getLastRelease(): Promise<ReleaseInfo>;
-    abstract async getCommits(date: string, page: number): Promise<Commit[]>;
-    abstract async getCommitsCount(date: string): Promise<number>;
+    abstract async getCommits(date: Date, page: number): Promise<Commit[]>;
+    abstract async getCommitsCount(date: Date): Promise<number>;
     abstract async getPrevPackage(): Promise<PackageJson>;
 }

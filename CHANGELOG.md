@@ -23,11 +23,11 @@ Source code now under `MIT` license.
 -   Added **[deepmerge](https://www.npmjs.com/package/deepmerge/v/4.0.0)** with `^4.0.0`
 -   Added **[dotenv](https://www.npmjs.com/package/dotenv/v/8.1.0)** with `^8.1.0`
 -   Added **[findup-sync](https://www.npmjs.com/package/findup-sync/v/4.0.0)** with `^4.0.0`
--   Added **[graphql-request](https://www.npmjs.com/package/graphql-request/v/1.8.2)** with `^1.8.2`
+-   Added **[gh-gql](https://www.npmjs.com/package/gh-gql/v/0.2.0)** with `^0.2.0`
 -   Added **[read-pkg](https://www.npmjs.com/package/read-pkg/v/5.2.0)** with `^5.2.0`
 -   Added **[rimraf](https://www.npmjs.com/package/rimraf/v/3.0.0)** with `^3.0.0`
 -   Added **[semver](https://www.npmjs.com/package/semver/v/6.3.0)** with `^6.3.0`
--   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/2.0.0)** with `^2.0.0`
+-   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/2.0.2)** with `^2.0.2`
 -   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/4.0.0)** with `^4.0.0`
 -   Added **[write-pkg](https://www.npmjs.com/package/write-pkg/v/4.0.0)** with `^4.0.0`
 
@@ -38,16 +38,16 @@ Source code now under `MIT` license.
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
 -   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.18)** with `^24.0.18`
--   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.3)** with `^12.7.3`
--   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.1)** with `^6.0.1`
+-   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.4)** with `^12.7.4`
+-   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.2)** with `^6.0.2`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.1.0)** with `^2.1.0`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.1.0)** with `^2.1.0`
--   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.28)** with `^4.0.28`
+-   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.30)** with `^4.0.30`
 -   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.3.0)** with `^6.3.0`
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.2.0)** with `^6.2.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
--   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.16.0)** with `^22.16.0`
+-   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.17.0)** with `^22.17.0`
 -   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.5)** with `^3.0.5`
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.9.0)** with `^24.9.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
