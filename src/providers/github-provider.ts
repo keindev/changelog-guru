@@ -25,7 +25,7 @@ export class GitHubProvider extends GitProvider {
     }
 
     public async getCommits(date: Date, pageIndex: number): Promise<Commit[]> {
-        const commits = await this.provider.commit.get(date, pageIndex);
+        const commits = await this.provider.commit.getList(date, pageIndex);
 
         return commits.map(this.parseCommit.bind(this));
     }
