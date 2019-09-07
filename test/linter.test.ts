@@ -3,6 +3,7 @@ import { ConfigLoader } from '../src/config/config-loader';
 import { Config } from '../src/config/config';
 import { MockLinter } from './__mocks__/linter.mock';
 
+// eslint-disable-next-line max-lines-per-function
 describe('Linter', (): void => {
     let $task: Task;
     let $config: Config;
