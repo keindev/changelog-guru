@@ -1,5 +1,5 @@
 import { TaskTree } from 'tasktree-cli';
-import { Progress } from 'tasktree-cli/lib/progress';
+import { ProgressBar } from 'tasktree-cli/lib/progress-bar';
 import { Provider } from '../providers/provider';
 import { State } from '../state/state';
 import { Package } from '../package/package';
@@ -50,11 +50,11 @@ export class Reader {
         task.complete(`{bold ${count}} commits loaded`, true);
     }
 
-    private async loadCommitsPage(index: number, state: State, date: string, bar: Progress): Promise<void> {
+    private async loadCommitsPage(index: number, state: State, date: string, progress: ProgressBar): Promise<void> {
         const commits = await this.provider.getCommits(date, index);
 
         commits.forEach((commit): void => state.addCommit(commit));
-        bar.tick(commits.length);
+        progress.tick(commits.length);
     }
 
     private async loadPackage(state: State, packageInfo: Package): Promise<void> {

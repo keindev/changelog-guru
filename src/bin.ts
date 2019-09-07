@@ -1,5 +1,4 @@
-import { TaskTree } from 'tasktree-cli';
-import { ExitCode } from 'tasktree-cli/lib/enums';
+import { TaskTree, ExitCode } from 'tasktree-cli';
 import { CommandManager } from './cli/command-manager';
 import { GenerateCommand } from './cli/commands/generate-command';
 import { LintCommand } from './cli/commands/lint-command';
