@@ -1,5 +1,5 @@
 import { TaskTree } from 'tasktree-cli';
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { PluginOption } from '../../config/config';
 import { CommitPlugin } from '../commit-plugin';
 import { Section, SectionPosition, SectionOrder } from '../../entities/section';

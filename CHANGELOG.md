@@ -27,8 +27,8 @@ Source code now under `MIT` license.
 -   Added **[read-pkg](https://www.npmjs.com/package/read-pkg/v/5.2.0)** with `^5.2.0`
 -   Added **[rimraf](https://www.npmjs.com/package/rimraf/v/3.0.0)** with `^3.0.0`
 -   Added **[semver](https://www.npmjs.com/package/semver/v/6.3.0)** with `^6.3.0`
--   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/1.3.0)** with `^1.3.0`
--   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/3.0.0)** with `^3.0.0`
+-   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/2.0.0)** with `^2.0.0`
+-   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/4.0.0)** with `^4.0.0`
 -   Added **[write-pkg](https://www.npmjs.com/package/write-pkg/v/4.0.0)** with `^4.0.0`
 
 ## Dev Dependencies
@@ -45,7 +45,7 @@ Source code now under `MIT` license.
 -   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.28)** with `^4.0.28`
 -   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.3.0)** with `^6.3.0`
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
--   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.1.0)** with `^6.1.0`
+-   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.2.0)** with `^6.2.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
 -   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.16.0)** with `^22.16.0`
 -   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.5)** with `^3.0.5`
@@ -203,7 +203,7 @@ Source code now under `MIT` license.
 
 -   **[Author]** Сhanged the size parameter modification method [`4e88a69`](https://github.com/keindev/changelog-guru/commit/4e88a6906d363e24d8a4ccec6211906bf5825658)
 -   **[Chagelog]** Generate new chagelog [`f7d3934`](https://github.com/keindev/changelog-guru/commit/f7d3934040b2b4041d35108ab65d412245789f1a)
--   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`4aa5805`](https://github.com/keindev/changelog-guru/commit/4aa58052df9f58e77b8f645123f4601209d2989e) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
+-   **[Changelog, Changelog]** Update changelog [`8fd657f`](https://github.com/keindev/changelog-guru/commit/8fd657f0e6b37421bccb89ac59593be3368e68b1) [`11a6249`](https://github.com/keindev/changelog-guru/commit/11a6249681e8e00aea10eb4e862820810aaacf24) [`9b34f80`](https://github.com/keindev/changelog-guru/commit/9b34f80638f0d38ca3162e2a015d1369d3b45a60) [`4aa5805`](https://github.com/keindev/changelog-guru/commit/4aa58052df9f58e77b8f645123f4601209d2989e) [`87e9f10`](https://github.com/keindev/changelog-guru/commit/87e9f104e6a7c7ff9559f0b0aec6eb364c02c0a6) [`231550e`](https://github.com/keindev/changelog-guru/commit/231550e48a4026462041f12bff47ae3d96809dec) [`be11a9e`](https://github.com/keindev/changelog-guru/commit/be11a9e465627aebbc8222e9186a8fac43b4f3cd)
 -   **[Changelog]** Rebuild change log [`a0e38f1`](https://github.com/keindev/changelog-guru/commit/a0e38f109b1eacc8705e0ae5d49378eb8a48f64b) [`fb642e9`](https://github.com/keindev/changelog-guru/commit/fb642e9fba687b41501885980e39d2d29cfdd56f) [`6e814e4`](https://github.com/keindev/changelog-guru/commit/6e814e4399a26f782f6f35d82080e3bf0203073d) [`844ce76`](https://github.com/keindev/changelog-guru/commit/844ce764a704b5526ef2169ef6f7c686fdc01d8b)
 -   **[Changelog]** Rebuild changelog file [`4d91cf0`](https://github.com/keindev/changelog-guru/commit/4d91cf09d6c4993b5f536d818d36fd367e86fdb9)
 -   **[Changelog]** Build new changelog [`cf506dc`](https://github.com/keindev/changelog-guru/commit/cf506dcc550d005214ea2af078d3d9db323a1e05)

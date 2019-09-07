@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { MockState } from '../__mocks__/state/state.mock';
 import MarkerPlugin, { MarkerPluginOptions } from '../../src/plugins/implementations/marker';
 import { ConfigLoader } from '../../src/config/config-loader';

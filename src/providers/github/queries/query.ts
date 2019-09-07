@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { Variables } from 'graphql-request/dist/src/types';
+import { Variables, ClientError } from 'graphql-request/dist/src/types';
 import { TaskTree } from 'tasktree-cli';
 
 export class Query {
@@ -17,8 +17,12 @@ export class Query {
 
         try {
             data = await this.client.request(query, Object.assign(variables, this.variables));
-        } catch (err) {
-            TaskTree.add('GraphQLClient: request error!').error(err, true);
+        } catch (error) {
+            const clientError = error as ClientError;
+
+            clientError.message = JSON.stringify(clientError.response, null, 4);
+
+            TaskTree.add('GraphQLClient: request error!').error(clientError, true);
         }
 
         return data ? data.repository : undefined;

@@ -1,5 +1,5 @@
 import path from 'path';
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { Linter, LinterOptions } from '../../src/linter';
 import { PluginLoader } from '../../src/plugins/plugin-loader';
 

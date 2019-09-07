@@ -1,5 +1,5 @@
 import { TaskTree } from 'tasktree-cli';
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { Filter } from './filter';
 import { Commit } from '../entities/commit';
 import { Author } from '../entities/author';

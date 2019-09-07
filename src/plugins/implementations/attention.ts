@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { TaskTree } from 'tasktree-cli';
 import { StatePlugin } from '../state-plugin';
 import { Section, SectionPosition, SectionOrder } from '../../entities/section';

@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { StatePlugin } from '../../../src/plugins/state-plugin';
 import { PluginOption } from '../../../src/config/config';
 

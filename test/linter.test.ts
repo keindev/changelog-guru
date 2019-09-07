@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { ConfigLoader } from '../src/config/config-loader';
 import { Config } from '../src/config/config';
 import { MockLinter } from './__mocks__/linter.mock';

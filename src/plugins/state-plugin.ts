@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { BasePlugin } from './base-plugin';
 
 export abstract class StatePlugin extends BasePlugin {

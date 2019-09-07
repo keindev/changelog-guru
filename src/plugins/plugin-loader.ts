@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { PluginOption } from '../config/config';
 import { BasePlugin } from './base-plugin';
 import { CommitPlugin } from './commit-plugin';

@@ -2,7 +2,7 @@ import fs from 'fs';
 import readline from 'readline';
 import path from 'path';
 import { once } from 'events';
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/entities/task';
 import { Commit } from './entities/commit';
 import { PluginOption } from './config/config';
 import { PluginLoader } from './plugins/plugin-loader';
