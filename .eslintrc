@@ -19,6 +19,7 @@
     "rules": {
         "@typescript-eslint/member-ordering": "error",
         "import/prefer-default-export": 0,
+        "max-lines-per-function": ["error", { "max": 30 }],
         "max-len": [
             "error",
             {
