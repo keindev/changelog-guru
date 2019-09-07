@@ -35,7 +35,7 @@ export class Reader {
         return state;
     }
 
-    private async loadCommits(count: number, state: State, date: string): Promise<void> {
+    private async loadCommits(count: number, state: State, date: Date): Promise<void> {
         const pagesCount = Math.ceil(count / Provider.PAGE_SIZE);
         const task = TaskTree.add('Loading commits...');
         const bar = task.bar(':bar :percent :etas', { total: pagesCount });
@@ -50,7 +50,7 @@ export class Reader {
         task.complete(`{bold ${count}} commits loaded`, true);
     }
 
-    private async loadCommitsPage(index: number, state: State, date: string, progress: ProgressBar): Promise<void> {
+    private async loadCommitsPage(index: number, state: State, date: Date, progress: ProgressBar): Promise<void> {
         const commits = await this.provider.getCommits(date, index);
 
         commits.forEach((commit): void => state.addCommit(commit));

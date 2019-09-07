@@ -48,7 +48,7 @@
         "deepmerge": "^4.0.0",
         "dotenv": "^8.1.0",
         "findup-sync": "^4.0.0",
-        "graphql-request": "^1.8.2",
+        "gh-gql": "^0.3.0",
         "read-pkg": "^5.2.0",
         "rimraf": "^3.0.0",
         "semver": "^6.3.0",
