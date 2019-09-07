@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/entities/task';
+import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/state/state.mock';
 import SectionPlugin, { SectionPluginOptions } from '../../src/plugins/implementations/section';
 import { ConfigLoader } from '../../src/config/config-loader';

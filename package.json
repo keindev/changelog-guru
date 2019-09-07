@@ -17,7 +17,6 @@
         "gitlab"
     ],
     "main": "lib/changelog.js",
-    "unpkg": "lib/changelog.js",
     "module": "lib/changelog.js",
     "types": "lib/changelog.d.ts",
     "bin": {
@@ -53,7 +52,7 @@
         "read-pkg": "^5.2.0",
         "rimraf": "^3.0.0",
         "semver": "^6.3.0",
-        "tasktree-cli": "^2.0.0",
+        "tasktree-cli": "^2.0.1",
         "universal-user-agent": "^4.0.0",
         "write-pkg": "^4.0.0"
     },

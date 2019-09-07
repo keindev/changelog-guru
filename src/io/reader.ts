@@ -1,5 +1,5 @@
 import { TaskTree } from 'tasktree-cli';
-import { ProgressBar } from 'tasktree-cli/lib/entities/progress-bar';
+import { ProgressBar } from 'tasktree-cli/lib/progress-bar';
 import { Provider } from '../providers/provider';
 import { State } from '../state/state';
 import { Package } from '../package/package';

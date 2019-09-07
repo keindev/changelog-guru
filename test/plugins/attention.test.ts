@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/entities/task';
+import { Task } from 'tasktree-cli/lib/task';
 import { MockState } from '../__mocks__/state/state.mock';
 import AttentionPlugin, { AttentionPluginOptions } from '../../src/plugins/implementations/attention';
 import { ConfigLoader } from '../../src/config/config-loader';

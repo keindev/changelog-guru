@@ -1,4 +1,4 @@
-import { Task } from 'tasktree-cli/lib/entities/task';
+import { Task } from 'tasktree-cli/lib/task';
 import { CommitPlugin } from '../../../src/plugins/commit-plugin';
 import { Commit } from '../../../src/entities/commit';
 import { PluginOption } from '../../../src/config/config';
