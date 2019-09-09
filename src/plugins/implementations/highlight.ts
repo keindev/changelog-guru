@@ -23,6 +23,8 @@ export interface HighlightPluginOptions extends PluginOption {
 
 export default class HighlightPlugin extends CommitPlugin {
     private masks: RegExp[] = [];
+    private isEscaped = false;
+    private replacements: Map<number, string> = new Map();
 
     public async init(config: HighlightPluginOptions): Promise<void> {
         const { masks } = config;
@@ -42,94 +44,72 @@ export default class HighlightPlugin extends CommitPlugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const subject = this.getSubjectFrom(commit);
+        const subject = this.getHighlightSubject(commit.getSubject());
 
+        if (this.isEscaped) commit.escape();
         commit.setSubject(subject);
     }
 
-    private getSubjectFrom(commit: Commit): string {
-        let escape = false;
-        let subject = commit.getSubject();
+    private getHighlightSubject(subject: string): string {
+        const subjectResult: string[] = [];
 
-        if (subject) {
-            let match: RegExpExecArray | null;
-            const replacements: Map<number, string> = new Map();
+        if (subject.length > 0) {
+            const replacements = this.getReplacements(subject);
+            let posResult = 0;
 
-            this.masks.forEach((mask: RegExp): void => {
-                do {
-                    match = mask.exec(subject);
+            replacements.forEach((value: [number, string]) => {
+                const [posReplacement, replacement] = value;
+                const markdownReplacement = Markdown.wrap(replacement);
 
-                    if (match) {
-                        const str = match[0];
-                        const startPos = match.index;
-                        const endPos = startPos + str.length;
-                        const deleteReplacement: number[] = [];
-                        let addWord = replacements.size === 0;
-
-                        replacements.forEach((value: string, key: number) => {
-                            const startPosReplacement = key;
-                            const endPosReplacement = startPosReplacement + value.length;
-
-                            if (value.length > str.length) {
-                                if (startPosReplacement > endPos || endPosReplacement < startPos) {
-                                    addWord = true;
-                                }
-                            }
-
-                            if (value.length < str.length) {
-                                if (
-                                    str.indexOf(value) > -1 &&
-                                    (startPosReplacement < startPos && endPosReplacement > endPos)
-                                ) {
-                                    addWord = true;
-                                    deleteReplacement.push(key);
-                                }
-
-                                if (
-                                    str.indexOf(value) === -1 ||
-                                    (startPosReplacement > startPos && endPosReplacement < endPos)
-                                ) {
-                                    addWord = true;
-                                }
-                            }
-
-                            if (value.length === str.length && (str.indexOf(value) === -1 || key !== startPos)) {
-                                addWord = true;
-                            }
-                        });
-
-                        deleteReplacement.forEach(value => replacements.has(value) && replacements.delete(value));
-
-                        if (addWord) {
-                            replacements.set(startPos, str);
-                        }
-                    }
-                } while (match && mask.lastIndex);
+                subjectResult.push(subject.substr(posResult, posReplacement - posResult), markdownReplacement);
+                posResult = posReplacement + replacement.length;
+                this.isEscaped = true;
             });
 
-            const subjectResult: string[] = [];
-            const replacementsSorted = [...replacements.entries()].sort((a, b) => a[0] - b[0]);
-
-            let startPosition = 0;
-
-            replacementsSorted.forEach((value: [number, string]) => {
-                const [position, str] = value;
-                const replacement = Markdown.wrap(str);
-
-                if (startPosition !== position - startPosition)
-                    subjectResult.push(subject.substr(startPosition, position - startPosition));
-
-                subjectResult.push(replacement);
-                startPosition = position + str.length;
-                escape = true;
-            });
-
-            if (startPosition < subject.length) subjectResult.push(subject.substr(startPosition, subject.length));
-
-            subject = subjectResult.join('');
+            if (posResult < subject.length) subjectResult.push(subject.substr(posResult, subject.length));
         }
-        if (escape) commit.escape();
 
-        return subject;
+        return subjectResult.join('');
+    }
+
+    private getReplacements(subject: string): [number, string][] {
+        this.replacements.clear();
+        let match: RegExpExecArray | null;
+
+        this.masks.forEach((mask: RegExp): void => {
+            do {
+                match = mask.exec(subject);
+
+                if (match) {
+                    const newWord = match[0];
+                    const posNewWord = match.index;
+
+                    this.addNewReplacement(newWord, posNewWord);
+                }
+            } while (match && mask.lastIndex);
+        });
+
+        return [...this.replacements.entries()].sort((a, b) => a[0] - b[0]);
+    }
+
+    private addNewReplacement(newWord: string, posNewWord: number): void {
+        const endPosNewWord = posNewWord + newWord.length;
+        const deleteReplacements: number[] = [];
+        let endPosReplacement = 0;
+        let isNewWord = this.replacements.size === 0;
+
+        this.replacements.forEach((replacement, posReplacement) => {
+            endPosReplacement = posReplacement + replacement.length;
+            isNewWord = endPosReplacement < posNewWord || endPosNewWord < posReplacement;
+
+            if (!isNewWord && endPosReplacement < endPosNewWord && posReplacement > posNewWord) {
+                isNewWord = true;
+                deleteReplacements.push(posReplacement);
+            }
+        });
+
+        deleteReplacements.forEach(value => this.replacements.has(value) && this.replacements.delete(value));
+
+        if (isNewWord) this.replacements.set(posNewWord, newWord);
     }
 }

@@ -5,6 +5,7 @@ import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { PluginOption } from '../../src/config/config';
 
+// eslint-disable-next-line max-lines-per-function
 describe('HighlightPlugin', (): void => {
     const $loader = new ConfigLoader();
     const $context = new MockState();
