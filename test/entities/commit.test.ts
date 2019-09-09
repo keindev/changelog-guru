@@ -4,6 +4,7 @@ import { Compare, Priority } from '../../src/typings/enums';
 import { Entity } from '../../src/entities/entity';
 import { ChangeLevel } from '../../src/config/config';
 
+// eslint-disable-next-line max-lines-per-function
 describe('Commit', (): void => {
     let $author: Author;
     let $commit: Commit;

@@ -5,6 +5,7 @@ import { ConfigLoader } from '../../src/config/config-loader';
 import { Config, ChangeLevel } from '../../src/config/config';
 import { SectionPosition } from '../../src/entities/section';
 
+// eslint-disable-next-line max-lines-per-function
 describe('State', (): void => {
     const getAuthor = (login: string): Author =>
         new Author(login, {
@@ -31,6 +32,7 @@ describe('State', (): void => {
         });
     });
 
+    // eslint-disable-next-line max-lines-per-function
     it('Default', (done): void => {
         const state = new MockState();
         const author1 = getAuthor('dev1');

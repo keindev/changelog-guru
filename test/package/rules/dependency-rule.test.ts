@@ -2,7 +2,9 @@ import semver from 'semver';
 import { DependencyRule, DependencyRuleType } from '../../../src/package/rules/dependency-rule';
 import { PackageRuleChangeType } from '../../../src/package/rules/package-rule';
 
+// eslint-disable-next-line max-lines-per-function
 describe('DependencyRule', (): void => {
+    // eslint-disable-next-line max-lines-per-function
     it('Default', (): void => {
         const dependency = new DependencyRule(
             DependencyRuleType.Dependencies,

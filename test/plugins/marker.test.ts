@@ -5,6 +5,7 @@ import { ConfigLoader } from '../../src/config/config-loader';
 import { Commit, CommitStatus } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 
+// eslint-disable-next-line max-lines-per-function
 describe('MarkerPlugin', (): void => {
     const $loader = new ConfigLoader();
     const $context = new MockState();

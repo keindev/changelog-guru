@@ -5,6 +5,7 @@ import { ConfigLoader } from '../../src/config/config-loader';
 import { DependencyRule, DependencyRuleType } from '../../src/package/rules/dependency-rule';
 import { ChangeLevel } from '../../src/config/config';
 
+// eslint-disable-next-line max-lines-per-function
 describe('AttentionPlugin', (): void => {
     let $loader: ConfigLoader;
     let $context: MockState;

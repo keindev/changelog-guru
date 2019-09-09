@@ -4,7 +4,9 @@ import { Author } from '../../src/entities/author';
 import { Section, SectionPosition } from '../../src/entities/section';
 import { ChangeLevel } from '../../src/config/config';
 
+// eslint-disable-next-line max-lines-per-function
 describe('Writer', (): void => {
+    // eslint-disable-next-line max-lines-per-function
     it('Default', (done): void => {
         const writer = new MockWriter();
         const section1 = new Section('Section 1', SectionPosition.Body);
