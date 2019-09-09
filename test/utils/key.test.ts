@@ -1,5 +1,6 @@
 import Key from '../../src/utils/key';
 
+// eslint-disable-next-line max-lines-per-function
 describe('Key', (): void => {
     it('Unify', (): void => {
         expect(Key.unify('')).toBe('');

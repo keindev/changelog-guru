@@ -5,6 +5,7 @@ import { Author } from '../../src/entities/author';
 import { Message } from '../../src/entities/message';
 import { ChangeLevel } from '../../src/config/config';
 
+// eslint-disable-next-line max-lines-per-function
 describe('Section', (): void => {
     let $section: Section;
     let $commit: Commit;

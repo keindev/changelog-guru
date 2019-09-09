@@ -2,12 +2,14 @@ import { Filter } from '../../src/state/filter';
 import { Author } from '../../src/entities/author';
 import { Commit } from '../../src/entities/commit';
 
+// eslint-disable-next-line max-lines-per-function
 describe('Filter', (): void => {
     const $author = new Author('keindev', {
         url: 'https://github.com/keindev',
         avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
     });
 
+    // eslint-disable-next-line max-lines-per-function
     describe('Static', (): void => {
         it('Filter authors by login', (): void => {
             const bot = new Author('bot', {

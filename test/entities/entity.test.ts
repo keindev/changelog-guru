@@ -2,6 +2,7 @@ import { Entity } from '../../src/entities/entity';
 import { Priority, Compare } from '../../src/typings/enums';
 import { ChangeLevel } from '../../src/config/config';
 
+// eslint-disable-next-line max-lines-per-function
 describe('Entity', (): void => {
     let $entity: Entity;
 

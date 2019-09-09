@@ -5,6 +5,7 @@ import { ConfigLoader } from '../../src/config/config-loader';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 
+// eslint-disable-next-line max-lines-per-function
 describe('SectionPlugin', (): void => {
     const $context = new MockState();
     const $loader = new ConfigLoader();
