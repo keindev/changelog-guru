@@ -41,3 +41,8 @@ Renames scopes and abbreviations to a more human-readable format.
 ### [Section plugin](default/section.md)
 
 Distributes commits with the specified types into sections.
+
+### [Highlight plugin](default/highlight.md)
+
+Highlights code in subject of commit.
+
