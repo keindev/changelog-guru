@@ -2069,9 +2069,9 @@ getpass@^0.1.1:
     assert-plus "^1.0.0"
 
 gh-gql@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/gh-gql/-/gh-gql-0.3.0.tgz#54d4902b1f7086e4082be6358457e679ed424a59"
-  integrity sha512-TQbi8ejrNSbCRr39Z7/ZOUvzFyzMM9sHphWjcmKMbEd7L38LV9phCZxhNcrMFJM6gajVZs0m3n+G1LAaVAE4ZA==
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/gh-gql/-/gh-gql-0.3.1.tgz#84a82dd0c45ff4c777c42fd4e652e4ec1718cb89"
+  integrity sha512-UoBdL8u1TntlkU8Hj5CC2LJCLlu9OcT4+z+t5SMltPYylchWQuex49fELeHuj0n7EBjngPLTIpYSolXYGQLlhw==
   dependencies:
     dotenv "^8.1.0"
     graphql-request "^1.8.2"
