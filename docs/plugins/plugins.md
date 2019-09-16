@@ -44,5 +44,5 @@ Distributes commits with the specified types into sections.
 
 ### [Highlight plugin](default/highlight.md)
 
-Highlights code in subject of commit.
+Highlights variables and code snippets in subject of commit.
 

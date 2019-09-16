@@ -1,6 +1,6 @@
 # Highlight plugin
 
-Base plugin enabled by default. Highlights code in subject of commit. 
+Base plugin enabled by default. Highlights variables and code snippets in subject of commit. 
 
 Default options:
 
@@ -15,11 +15,11 @@ masks: []
 
 Default: `true`
 
-In the case of false won't highlight camel case code.
+Highlights a word or abbreviation written in camelCase.
 
 ## masks
 
-List of regular expressions. Configured as follows:
+List of custom regular expressions for extra highlighting. Configured as follows:
 
 ```
 masks: ['#\\S*']
