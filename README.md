@@ -5,7 +5,7 @@
     <a href="https://codecov.io/gh/keindev/changelog-guru"><img src="https://codecov.io/gh/keindev/changelog-guru/branch/master/graph/badge.svg" /></a>
     <a href="https://www.npmjs.com/package/changelog-guru"><img alt="npm" src="https://img.shields.io/npm/v/changelog-guru.svg"></a>
     <a href="https://www.npmjs.com/package/changelog-guru"><img alt="NPM" src="https://img.shields.io/npm/l/changelog-guru.svg"></a>
-    <a href="https://snyk.io/test/github/keindev/changelog-guru?targetFile=package.json"><img src="https://snyk.io/test/github/keindev/changelog-guru/badge.svg?targetFile=package.json" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/keindev/changelog-guru?targetFile=package.json" style="max-width:100%;"></a>
+    <a href="https://www.codefactor.io/repository/github/keindev/changelog-guru"><img src="https://www.codefactor.io/repository/github/keindev/changelog-guru/badge" alt="CodeFactor" /></a>
 </p>
 
 Automated changelog generator:package::zap::clipboard:
