@@ -23,8 +23,27 @@ export interface HighlightPluginOptions extends PluginOption {
 
 export default class HighlightPlugin extends CommitPlugin {
     private masks: RegExp[] = [];
-    private isEscaped = false;
-    private replacements: Map<number, string> = new Map();
+
+    static addNewReplacement(newWord: string, posNewWord: number, replacements: Map<number, string>): void {
+        const endPosNewWord = posNewWord + newWord.length;
+        const deleteReplacements: number[] = [];
+        let endPosReplacement = 0;
+        let isNewWord = replacements.size === 0;
+
+        replacements.forEach((replacement, posReplacement) => {
+            endPosReplacement = posReplacement + replacement.length;
+            isNewWord = endPosReplacement < posNewWord || endPosNewWord < posReplacement;
+
+            if (!isNewWord && endPosReplacement < endPosNewWord && posReplacement > posNewWord) {
+                isNewWord = true;
+                deleteReplacements.push(posReplacement);
+            }
+        });
+
+        deleteReplacements.forEach(value => replacements.has(value) && replacements.delete(value));
+
+        if (isNewWord) replacements.set(posNewWord, newWord);
+    }
 
     public async init(config: HighlightPluginOptions): Promise<void> {
         const { masks } = config;
@@ -44,14 +63,15 @@ export default class HighlightPlugin extends CommitPlugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const subject = this.getHighlightSubject(commit.getSubject());
+        const { subject, isEscaped } = this.getHighlightSubject(commit.getSubject());
 
-        if (this.isEscaped) commit.escape();
+        if (isEscaped) commit.escape();
         commit.setSubject(subject);
     }
 
-    private getHighlightSubject(subject: string): string {
+    private getHighlightSubject(subject: string): { subject: string; isEscaped: boolean } {
         const subjectResult: string[] = [];
+        let isEscaped = false;
 
         if (subject.length > 0) {
             const replacements = this.getReplacements(subject);
@@ -63,17 +83,20 @@ export default class HighlightPlugin extends CommitPlugin {
 
                 subjectResult.push(subject.substr(posResult, posReplacement - posResult), markdownReplacement);
                 posResult = posReplacement + replacement.length;
-                this.isEscaped = true;
+                isEscaped = true;
             });
 
             if (posResult < subject.length) subjectResult.push(subject.substr(posResult, subject.length));
         }
 
-        return subjectResult.join('');
+        return {
+            subject: subjectResult.join(''),
+            isEscaped,
+        };
     }
 
     private getReplacements(subject: string): [number, string][] {
-        this.replacements.clear();
+        const replacements: Map<number, string> = new Map();
         let match: RegExpExecArray | null;
 
         this.masks.forEach((mask: RegExp): void => {
@@ -84,32 +107,11 @@ export default class HighlightPlugin extends CommitPlugin {
                     const newWord = match[0];
                     const posNewWord = match.index;
 
-                    this.addNewReplacement(newWord, posNewWord);
+                    HighlightPlugin.addNewReplacement(newWord, posNewWord, replacements);
                 }
             } while (match && mask.lastIndex);
         });
 
-        return [...this.replacements.entries()].sort((a, b) => a[0] - b[0]);
-    }
-
-    private addNewReplacement(newWord: string, posNewWord: number): void {
-        const endPosNewWord = posNewWord + newWord.length;
-        const deleteReplacements: number[] = [];
-        let endPosReplacement = 0;
-        let isNewWord = this.replacements.size === 0;
-
-        this.replacements.forEach((replacement, posReplacement) => {
-            endPosReplacement = posReplacement + replacement.length;
-            isNewWord = endPosReplacement < posNewWord || endPosNewWord < posReplacement;
-
-            if (!isNewWord && endPosReplacement < endPosNewWord && posReplacement > posNewWord) {
-                isNewWord = true;
-                deleteReplacements.push(posReplacement);
-            }
-        });
-
-        deleteReplacements.forEach(value => this.replacements.has(value) && this.replacements.delete(value));
-
-        if (isNewWord) this.replacements.set(posNewWord, newWord);
+        return [...replacements.entries()].sort((a, b) => a[0] - b[0]);
     }
 }
