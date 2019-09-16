@@ -81,6 +81,10 @@ plugins:
               - peerDependencies
               - optionalDependencies
               - bundledDependencies
+    # List of patterns for highlight code in subject
+    - highlight:
+          camelCase: true
+          masks: []
     # Allows you to add additional useful information to the commit
     - marker:
           # Action markers performs operations on commits objects when building a changelog
@@ -119,3 +123,4 @@ plugins:
           Performance Improvements: [perf]
           Code Refactoring: [refactor]
           Reverts: [revert]
+

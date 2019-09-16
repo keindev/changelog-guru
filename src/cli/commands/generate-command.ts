@@ -41,6 +41,7 @@ export class GenerateCommand extends Command {
     public async execute(options: CommandLineOptions): Promise<void> {
         const { changelogOptions } = this;
         const { types, exclusions } = changelogOptions;
+
         type Types = NonNullable<typeof types>;
         type Exclusions = NonNullable<typeof exclusions>;
 

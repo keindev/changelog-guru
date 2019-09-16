@@ -118,6 +118,13 @@ Array [
     },
   ],
   Array [
+    "highlight",
+    Object {
+      "camelCase": true,
+      "masks": Array [],
+    },
+  ],
+  Array [
     "marker",
     Object {
       "actions": Array [
