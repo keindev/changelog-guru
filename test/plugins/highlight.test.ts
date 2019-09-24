@@ -1,9 +1,8 @@
 import { ConfigLoader } from '../../src/config/config-loader';
 import { MockState } from '../__mocks__/state/state.mock';
-import HighlightPlugin, { HighlightPluginOptions } from '../../src/plugins/implementations/highlight';
+import HighlightPlugin from '../../src/plugins/implementations/highlight';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
-import { PluginOption } from '../../src/config/config';
 
 // eslint-disable-next-line max-lines-per-function
 describe('HighlightPlugin', (): void => {
@@ -14,37 +13,18 @@ describe('HighlightPlugin', (): void => {
         url: 'https://github.com/keindev',
         avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
     });
-    let $options: PluginOption;
 
     beforeAll((done): void => {
         $loader.load().then((config): void => {
             const options = config.getPlugin('highlight');
 
             if (options) {
-                $options = options;
-                $plugin.init(options as HighlightPluginOptions).then((): void => {
+                $plugin.init(options).then((): void => {
                     done();
                 });
             } else {
                 throw new Error('HighlightPlugin config not found!');
             }
-        });
-    });
-
-    it('Default', (done): void => {
-        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
-            timestamp: 0,
-            header: 'feat(test): subject <test> $test -test camelCase',
-            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
-            author: $author,
-        });
-
-        $plugin.init($options as HighlightPluginOptions).then((): void => {
-            $plugin.parse(commit).then((): void => {
-                expect(commit.getSubject()).toBe('subject `<test>` `$test` `-test` `camelCase`');
-
-                done();
-            });
         });
     });
 
@@ -128,24 +108,6 @@ describe('HighlightPlugin', (): void => {
         });
     });
 
-    it('Disable camelCase highlight', (done): void => {
-        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
-            timestamp: 0,
-            header: 'feat(Jest): camelCase test',
-            body: `jest highlight test`,
-            url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
-            author: $author,
-        });
-
-        $plugin.init({ camelCase: false }).then((): void => {
-            $plugin.parse(commit).then((): void => {
-                expect(commit.getSubject()).toBe('camelCase test');
-
-                done();
-            });
-        });
-    });
-
     it('Enable camelCase highlight', (done): void => {
         const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
             timestamp: 0,
@@ -155,12 +117,10 @@ describe('HighlightPlugin', (): void => {
             author: $author,
         });
 
-        $plugin.init({ camelCase: true }).then((): void => {
-            $plugin.parse(commit).then((): void => {
-                expect(commit.getSubject()).toBe('`camelCase` test');
+        $plugin.parse(commit).then((): void => {
+            expect(commit.getSubject()).toBe('`camelCase` test');
 
-                done();
-            });
+            done();
         });
     });
 

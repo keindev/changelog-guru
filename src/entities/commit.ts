@@ -1,7 +1,9 @@
+import { LookupManager } from 'string-lookup-manager';
 import { Compare, Priority } from '../typings/enums';
 import { Entity } from './entity';
 import { Author } from './author';
 import { ChangeLevel } from '../config/config';
+import Markdown from '../utils/markdown';
 
 export enum CommitStatus {
     BreakingChanges = 1,
@@ -18,6 +20,11 @@ export interface CommitOptions {
     author: Author;
 }
 
+export interface SubjectSubstitution {
+    index: number;
+    substitution: string;
+}
+
 export class Commit extends Entity {
     public static LINE_SEPARATOR = '\n';
 
@@ -31,6 +38,7 @@ export class Commit extends Entity {
     private type: string | undefined;
     private accents: Set<string> = new Set();
     private status = CommitStatus.Default;
+    private replacements: LookupManager<{}> = new LookupManager<{}>();
 
     public constructor(hash: string, options: CommitOptions) {
         super(hash);
@@ -106,7 +114,7 @@ export class Commit extends Entity {
     }
 
     public getSubject(): string {
-        return this.subject;
+        return this.replacements.replace(this.subject, item => Markdown.wrap(item.value));
     }
 
     public setSubject(subject: string): void {
@@ -122,5 +130,9 @@ export class Commit extends Entity {
 
     public hasStatus(status: CommitStatus): boolean {
         return !!(this.status & status);
+    }
+
+    public addReplacement(value: string, position: number): void {
+        this.replacements.add(value, position);
     }
 }

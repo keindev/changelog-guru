@@ -81,10 +81,21 @@ plugins:
               - peerDependencies
               - optionalDependencies
               - bundledDependencies
-    # List of patterns for highlight code in subject
+    # Highlights variables and code snippets in subject of commit
     - highlight:
           camelCase: true
-          masks: []
+          masks: [
+              # Tags
+              '<[^>]*>',
+              # Words which start with '$' symbol
+              '\$\S+',
+              # CLI commands
+              '((?<= )|^)-{1,2}[a-z0-9_-]+',
+              # Dashed words
+              '(?<= |^)[a-z]+-[a-z-]+',
+              # Dotted words
+              '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+'
+          ]
     # Allows you to add additional useful information to the commit
     - marker:
           # Action markers performs operations on commits objects when building a changelog
@@ -123,4 +134,3 @@ plugins:
           Performance Improvements: [perf]
           Code Refactoring: [refactor]
           Reverts: [revert]
-
