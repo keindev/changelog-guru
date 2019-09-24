@@ -38,7 +38,7 @@ export class Reader {
     private async loadCommits(count: number, state: State, date: Date): Promise<void> {
         const pagesCount = Math.ceil(count / Provider.PAGE_SIZE);
         const task = TaskTree.add('Loading commits...');
-        const bar = task.bar(':bar :percent :etas', { total: pagesCount });
+        const bar = task.bar(':bar :percent :etas', { total: count });
         const promises = [];
         let pageIndex = 0;
 
