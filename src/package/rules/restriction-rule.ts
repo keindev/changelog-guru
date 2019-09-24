@@ -27,7 +27,7 @@ export class RestrictionRule extends PackageRule {
         if (Array.isArray(restrictions)) {
             let name: string;
 
-            restrictions.forEach((value): void => {
+            restrictions.forEach(value => {
                 name = RestrictionRule.getClearName(value);
 
                 this.changes.set(name, {
@@ -49,7 +49,7 @@ export class RestrictionRule extends PackageRule {
             let change: PackageRuleChange | undefined;
             let name: string;
 
-            restrictions.forEach((value): void => {
+            restrictions.forEach(value => {
                 name = RestrictionRule.getClearName(value);
                 change = changes.get(name);
 

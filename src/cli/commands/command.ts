@@ -65,7 +65,7 @@ export abstract class Command {
     public getDefinitions(): OptionDefinition[] {
         const definitions: OptionDefinition[] = [];
 
-        this.options.forEach(([, type], name): void => {
+        this.options.forEach(([, type], name) => {
             definitions.push(Command.getDefinition(name, type));
         });
 
@@ -75,7 +75,7 @@ export abstract class Command {
     public getOptions(): [string, string, CommandType][] {
         const options: [string, string, CommandType][] = [];
 
-        this.options.forEach(([description, type], name): void => {
+        this.options.forEach(([description, type], name) => {
             options.push([name, description, type]);
         });
 

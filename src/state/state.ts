@@ -77,7 +77,7 @@ export class State implements StateContext {
         let minor = 0;
         let patch = 0;
 
-        this.commits.forEach((commit): void => {
+        this.commits.forEach(commit => {
             switch (commit.getChangeLevel()) {
                 case ChangeLevel.Major:
                     major++;
@@ -101,7 +101,7 @@ export class State implements StateContext {
         let typeName: string | undefined;
         let tuple: [string, ChangeLevel] | undefined;
 
-        this.commits.forEach((commit): void => {
+        this.commits.forEach(commit => {
             typeName = commit.getTypeName();
 
             if (typeName) {
@@ -130,7 +130,7 @@ export class State implements StateContext {
     }
 
     public ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
-        exclusions.forEach(([type, rules]): void => {
+        exclusions.forEach(([type, rules]) => {
             switch (type) {
                 case ExclusionType.AuthorLogin:
                     Filter.authorsByLogin(this.authors, rules);
@@ -166,7 +166,7 @@ export class State implements StateContext {
         if (sections.length) {
             const relations: Map<string, Section> = new Map();
 
-            sections.forEach((section): void => {
+            sections.forEach(section => {
                 if (section.getPosition() === SectionPosition.Group) {
                     section.assignAsSubsection(relations);
                 } else {

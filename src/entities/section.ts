@@ -116,7 +116,7 @@ export class Section extends Entity {
 
             if (parent) parent.add(this);
 
-            commits.forEach((commit): void => {
+            commits.forEach(commit => {
                 parent = relations.get(commit.getName());
 
                 if (parent) parent.remove(commit);
@@ -129,7 +129,7 @@ export class Section extends Entity {
     public assignAsSection(relations: Map<string, Section>): void {
         const commits = this.getCommits();
 
-        commits.forEach((commit): void => {
+        commits.forEach(commit => {
             if (relations.has(commit.getName())) {
                 this.remove(commit);
             } else {

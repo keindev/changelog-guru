@@ -33,11 +33,13 @@ export default class MarkerPlugin extends CommitPlugin {
     private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 
+    // FIXME: make init shorter
+    // eslint-disable-next-line max-lines-per-function
     public async init(config: MarkerPluginOptions): Promise<void> {
         this.markers = new Set();
         this.sections = new Map();
 
-        config.actions.forEach((action): void => {
+        config.actions.forEach(action => {
             switch (action) {
                 case MarkerType.Ignore:
                 case MarkerType.Grouped:
@@ -52,7 +54,7 @@ export default class MarkerPlugin extends CommitPlugin {
 
         let position: SectionPosition = SectionPosition.None;
 
-        Object.entries(config.joins).forEach(([join, title]): void => {
+        Object.entries(config.joins).forEach(([join, title]) => {
             switch (join) {
                 case MarkerType.Breaking:
                 case MarkerType.Deprecated:
@@ -83,7 +85,7 @@ export default class MarkerPlugin extends CommitPlugin {
         const markers = this.getMarkersFrom(commit.body[0]);
         let section: Section | undefined;
 
-        markers.forEach(([marker, type, value]): void => {
+        markers.forEach(([marker, type, value]) => {
             section = this.sections.get(marker);
 
             switch (marker) {
@@ -127,7 +129,7 @@ export default class MarkerPlugin extends CommitPlugin {
         if (markers.length) {
             task.log(`Markers: ${markersLine}`);
 
-            markers.forEach(([marker, type, value]): void => {
+            markers.forEach(([marker, type, value]) => {
                 if (!types.some((name): boolean => name === marker)) task.error(`Unexpected marker {bold !${type}}`);
                 if (marker === MarkerType.Grouped && !value) task.error(`{bold !group} name is empty`);
             });

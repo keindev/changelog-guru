@@ -116,7 +116,7 @@ export class Linter {
             const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
             const lines: string[] = [];
 
-            rl.on('line', (line): void => {
+            rl.on('line', line => {
                 if (line.trim()[0] !== Linter.COMMENT_SIGN) lines.push(line);
             });
 

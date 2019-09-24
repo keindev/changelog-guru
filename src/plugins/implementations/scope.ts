@@ -34,7 +34,7 @@ export default class ScopePlugin extends CommitPlugin {
         if (scope) {
             let accent: string | undefined;
 
-            scope.split(ScopePlugin.SEPARATOR).forEach((name): void => {
+            scope.split(ScopePlugin.SEPARATOR).forEach(name => {
                 accent = Key.inMap(name, this.names);
 
                 if (accent || (!this.onlyPresented && name.length)) {
@@ -48,7 +48,7 @@ export default class ScopePlugin extends CommitPlugin {
         const { scope } = options;
 
         if (scope) {
-            scope.split(ScopePlugin.SEPARATOR).forEach((name): void => {
+            scope.split(ScopePlugin.SEPARATOR).forEach(name => {
                 if (name.length < ScopePlugin.MIN_NAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
                 if (this.onlyPresented && !Key.inMap(name, this.names)) {
                     task.error(`Scope name {bold ${name}} is not available`);

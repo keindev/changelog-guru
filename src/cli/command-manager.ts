@@ -42,7 +42,7 @@ export class CommandManager {
             chalk`${CommandManager.LINE_SEPARATOR} {bold ${name}}${options} - ${command.description.toLowerCase()}`,
         ];
 
-        command.getOptions().forEach(([option, description, type]): void => {
+        command.getOptions().forEach(([option, description, type]) => {
             output.push(
                 `${chalk`    {bold --${option}} {dim ${type}}`.padEnd(
                     CommandManager.OPTION_NAME_MAX_LENGTH,

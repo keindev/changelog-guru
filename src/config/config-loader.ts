@@ -63,10 +63,10 @@ export class ConfigLoader {
         } = this;
 
         if (changes) {
-            Object.entries<string[]>(changes).forEach(([level, names]): void => {
+            Object.entries<string[]>(changes).forEach(([level, names]) => {
                 if (Array.isArray(names)) {
                     if (Object.values(ChangeLevel).includes(level as ChangeLevel)) {
-                        names.forEach((name): void => {
+                        names.forEach(name => {
                             types.set(name, level as ChangeLevel);
                         });
                     } else {
@@ -86,7 +86,7 @@ export class ConfigLoader {
         } = this;
 
         if (output && output.exclude) {
-            Object.entries<string[]>(output.exclude).forEach(([name, rules]): void => {
+            Object.entries<string[]>(output.exclude).forEach(([name, rules]) => {
                 if (Object.values(ExclusionType).includes(name as ExclusionType)) {
                     exclusions.set(name as ExclusionType, [...new Set(rules)]);
                 } else {
@@ -105,11 +105,11 @@ export class ConfigLoader {
         } = this;
 
         if (Array.isArray(plugins)) {
-            plugins.forEach((plugin): void => {
+            plugins.forEach(plugin => {
                 if (typeof plugin === 'string') {
                     activePlugins.set(plugin, {});
                 } else {
-                    Object.entries<PluginOption>(plugin).forEach(([name, config]): void => {
+                    Object.entries<PluginOption>(plugin).forEach(([name, config]) => {
                         if (config) {
                             activePlugins.set(
                                 name,

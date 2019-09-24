@@ -26,7 +26,7 @@ export class GenerateCommand extends Command {
 
     private static appendKeysTo<K, V>(map: Map<K, V>, keys: K[], value: V): void {
         if (Array.isArray(keys) && keys.length) {
-            keys.forEach((key): void => {
+            keys.forEach(key => {
                 map.set(key, value);
             });
         }

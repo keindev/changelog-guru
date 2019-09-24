@@ -28,7 +28,8 @@ export default class HighlightPlugin extends CommitPlugin {
         const subject = commit.getSubject();
         let match: RegExpExecArray | null;
 
-        this.masks.forEach((mask: RegExp): void => {
+        // FIXME: rewrite to while ... do
+        this.masks.forEach(mask => {
             do {
                 match = mask.exec(subject);
 

@@ -38,7 +38,7 @@ export class DependencyRule extends PackageRule {
         if (deps) {
             let version: SemVer | undefined;
 
-            Object.entries(deps).forEach(([name, value]): void => {
+            Object.entries(deps).forEach(([name, value]) => {
                 version = semver.coerce(value) || undefined;
 
                 this.changes.set(name, {
@@ -54,6 +54,8 @@ export class DependencyRule extends PackageRule {
         }
     }
 
+    // FIXME: make func shorter
+    // eslint-disable-next-line max-lines-per-function
     private compareWith(deps?: PackageDependencies): void {
         if (deps) {
             const { changes } = this;
@@ -61,7 +63,7 @@ export class DependencyRule extends PackageRule {
             let version: SemVer | undefined;
             let type: PackageRuleChangeType;
 
-            Object.entries(deps).forEach(([name, value]): void => {
+            Object.entries(deps).forEach(([name, value]) => {
                 version = semver.coerce(value) || undefined;
                 change = changes.get(name);
 

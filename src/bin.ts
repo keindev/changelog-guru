@@ -8,9 +8,9 @@ const taskTree = TaskTree.tree();
 
 manager
     .execute()
-    .then((): void => {
+    .then(() => {
         taskTree.exit(ExitCode.Success);
     })
-    .catch((error): void => {
+    .catch(error => {
         taskTree.fail(error);
     });

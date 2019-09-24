@@ -21,7 +21,7 @@ export class Writer {
         const groups: Map<string, Commit | Commit[]> = new Map();
         let group: Commit | Commit[] | undefined;
 
-        commits.forEach((commit): void => {
+        commits.forEach(commit => {
             group = Key.inMap(commit.getSubject(), groups);
 
             if (group) {
@@ -48,7 +48,7 @@ export class Writer {
         if (Array.isArray(group)) {
             subject = group[0].getSubject();
             isEscaped = group[0].isEscaped();
-            group.forEach((commit): void => {
+            group.forEach(commit => {
                 accents.push(...commit.getAccents());
                 links.push(Markdown.commitLink(commit.getShortName(), commit.url));
             });
