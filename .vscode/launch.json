@@ -35,11 +35,12 @@
             "port": 9229
         },
         {
-            "name": "Jest Current File",
+            "name": "Jest",
             "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": ["${relativeFile}", "--config", "jest.config.js"],
+            "cwd": "${workspaceRoot}",
+            "args": ["--i", "--runInBand", "--coverage", "false", "${relativeFile}"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
