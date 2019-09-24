@@ -52,6 +52,7 @@
         "read-pkg": "^5.2.0",
         "rimraf": "^3.0.0",
         "semver": "^6.3.0",
+        "string-lookup-manager": "^1.1.0",
         "tasktree-cli": "^2.0.2",
         "universal-user-agent": "^4.0.0",
         "write-pkg": "^4.0.0"
