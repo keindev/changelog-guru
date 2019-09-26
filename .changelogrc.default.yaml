@@ -87,7 +87,7 @@ plugins:
           masks: [
               # Tags
               '<[^>]*>',
-              # Words which start with '$' symbol
+              # Words which start with '$' or '@' symbol
               '[$@]\S+',
               # CLI commands
               '((?<= )|^)-{1,2}[a-z0-9_-]+',

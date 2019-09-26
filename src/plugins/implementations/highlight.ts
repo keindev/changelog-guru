@@ -20,7 +20,7 @@ export default class HighlightPlugin extends CommitPlugin {
         }
 
         if (config.camelCase) {
-            this.masks.push(/[a-z]\w*[A-Z]\S*/g);
+            this.masks.push(/[a-zA-Z]+[A-Z]+[a-z]+/g);
         }
     }
 
