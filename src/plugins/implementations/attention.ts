@@ -112,9 +112,7 @@ export default class AttentionPlugin extends StatePlugin {
             Object.entries(config.templates).forEach(
                 ([name, value]: [string, PluginOption | PluginOption[] | PluginOptionValue | undefined]) => {
                     if (typeof value === 'string') {
-                        const type = Object.values(PackageRuleChangeType).find(
-                            (itemName): boolean => itemName === name
-                        );
+                        const type = Object.values(PackageRuleChangeType).find(itemName => itemName === name);
 
                         if (value && type) {
                             this.templates.set(type, value);
@@ -186,9 +184,7 @@ export default class AttentionPlugin extends StatePlugin {
                     changes = (rule as PackageRule).getChanges(changeType);
 
                     if (changes.length) {
-                        list.push(
-                            ...changes.map((change): string => AttentionPlugin.renderTemplate(template, change, task))
-                        );
+                        list.push(...changes.map(change => AttentionPlugin.renderTemplate(template, change, task)));
                     }
                 });
 

@@ -54,19 +54,19 @@ export class Section extends Entity {
     }
 
     public getSections(): Section[] {
-        const sections = [...this.entities.values()].filter((value): boolean => value instanceof Section) as Section[];
+        const sections = [...this.entities.values()].filter(value => value instanceof Section) as Section[];
 
         return sections.sort(Section.compare);
     }
 
     public getCommits(): Commit[] {
-        const commits = [...this.entities.values()].filter((value): boolean => value instanceof Commit) as Commit[];
+        const commits = [...this.entities.values()].filter(value => value instanceof Commit) as Commit[];
 
         return commits.sort(Commit.compare);
     }
 
     public getMessages(): Message[] {
-        const messages = [...this.entities.values()].filter((value): boolean => value instanceof Message) as Message[];
+        const messages = [...this.entities.values()].filter(value => value instanceof Message) as Message[];
 
         return messages.sort(Message.compare);
     }
@@ -75,9 +75,9 @@ export class Section extends Entity {
         let priority = super.getPriority();
 
         if (this.entities.size) {
-            priority = this.getSections().reduce((acc, section): number => acc + section.getPriority(), priority);
-            priority = this.getMessages().reduce((acc, message): number => acc + message.getPriority(), priority);
-            priority = this.getCommits().reduce((acc, commit): number => acc + commit.getPriority(), priority);
+            priority = this.getSections().reduce((acc, section) => acc + section.getPriority(), priority);
+            priority = this.getMessages().reduce((acc, message) => acc + message.getPriority(), priority);
+            priority = this.getCommits().reduce((acc, commit) => acc + commit.getPriority(), priority);
         }
 
         return priority;

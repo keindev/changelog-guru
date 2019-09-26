@@ -124,7 +124,7 @@ export default class MarkerPlugin extends CommitPlugin {
             task.log(`Markers: ${markersLine}`);
 
             markers.forEach(([marker, type, value]) => {
-                if (!types.some((name): boolean => name === marker)) task.error(`Unexpected marker {bold !${type}}`);
+                if (!types.some(name => name === marker)) task.error(`Unexpected marker {bold !${type}}`);
                 if (marker === MarkerType.Grouped && !value) task.error(`{bold !group} name is empty`);
             });
 
@@ -142,19 +142,17 @@ export default class MarkerPlugin extends CommitPlugin {
             let match: RegExpExecArray | null;
             let marker: MarkerType | undefined;
 
-            do {
-                match = expression.exec(text);
-
-                if (match && match.groups && match.groups.type) {
+            // TODO: replace to matchAll after v12 Active LTS Start (2019-10-22)
+            // eslint-disable-next-line no-cond-assign
+            while ((match = expression.exec(text)) !== null) {
+                if (match.groups && match.groups.type) {
                     const { type, value } = match.groups;
 
                     marker = Key.getEqual(type, [...this.markers]) as MarkerType | undefined;
 
-                    if (marker) {
-                        markers.push([marker, type, value]);
-                    }
+                    if (marker) markers.push([marker, type, value]);
                 }
-            } while (match && expression.lastIndex);
+            }
         }
 
         return markers;

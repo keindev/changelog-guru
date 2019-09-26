@@ -14,14 +14,14 @@ export default class Key {
         if (typeof key !== 'string') return false;
         if (!list.length) return false;
 
-        return list.some((item): boolean => Key.isEqual(key, item));
+        return list.some(item => Key.isEqual(key, item));
     }
 
     public static inSet(key: string, set: Set<string>): boolean {
         let result = true;
 
         if (!set.has(key)) {
-            result = [...set.keys()].some((setKey): boolean => Key.isEqual(key, setKey));
+            result = [...set.keys()].some(setKey => Key.isEqual(key, setKey));
         }
 
         return result;
@@ -31,8 +31,8 @@ export default class Key {
         let uniqueKey: string = key;
 
         if (!map.has(key)) {
-            [...map.keys()].some((mapKey): boolean => {
-                const isEqual: boolean = Key.isEqual(key, mapKey);
+            [...map.keys()].some(mapKey => {
+                const isEqual = Key.isEqual(key, mapKey);
 
                 if (isEqual) {
                     uniqueKey = mapKey;
@@ -46,7 +46,7 @@ export default class Key {
     }
 
     public static getEqual(key: string, list: string[]): string | undefined {
-        return list.find((item): boolean => Key.isEqual(item, key));
+        return list.find(item => Key.isEqual(item, key));
     }
 
     public static isEqual(a: string, b: string): boolean {

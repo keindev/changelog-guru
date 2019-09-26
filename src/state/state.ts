@@ -105,7 +105,7 @@ export class State implements StateContext {
             typeName = commit.getTypeName();
 
             if (typeName) {
-                tuple = types.find(([name]): boolean => Key.isEqual(typeName as string, name));
+                tuple = types.find(([name]) => Key.isEqual(typeName as string, name));
 
                 if (tuple) {
                     commit.setChangeLevel(tuple[1]);
@@ -154,7 +154,7 @@ export class State implements StateContext {
     public async modify(plugins: [string, PluginOption][]): Promise<void> {
         const task = TaskTree.add('Modifying release state...');
 
-        await Promise.all(plugins.map(([name, options]): Promise<void> => this.modifyWithPlugin(name, options, task)));
+        await Promise.all(plugins.map(([name, options]) => this.modifyWithPlugin(name, options, task)));
         this.rebuildSectionsTree();
         task.complete('Release status modified');
     }
@@ -177,7 +177,7 @@ export class State implements StateContext {
 
         this.sections = sections
             .filter(Section.filter)
-            .filter((section): boolean => section.getPosition() !== SectionPosition.Subsection)
+            .filter(section => section.getPosition() !== SectionPosition.Subsection)
             .sort(Section.compare);
         task.complete('Section tree is consistently');
     }
@@ -192,9 +192,7 @@ export class State implements StateContext {
         switch (true) {
             case plugin instanceof CommitPlugin:
                 await Promise.all(
-                    [...this.commits.values()].map(
-                        (commit): Promise<void> => (plugin as CommitPlugin).parse(commit, task)
-                    )
+                    [...this.commits.values()].map(commit => (plugin as CommitPlugin).parse(commit, task))
                 );
                 break;
             case plugin instanceof StatePlugin:

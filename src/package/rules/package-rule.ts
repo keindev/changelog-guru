@@ -38,6 +38,6 @@ export class PackageRule {
     }
 
     public getChanges(type: PackageRuleChangeType): PackageRuleChange[] {
-        return [...this.changes.values()].filter((change): boolean => change.type === type);
+        return [...this.changes.values()].filter(change => change.type === type);
     }
 }

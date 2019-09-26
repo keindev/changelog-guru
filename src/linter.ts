@@ -68,24 +68,19 @@ export class Linter {
         this.task.log(`Header: {dim ${header || undefined}}`);
 
         await Promise.all(
-            this.plugins.map(
-                ([name, config]): Promise<void> =>
-                    this.lintWithPlugin(name, config, {
-                        header,
-                        body,
-                        type,
-                        scope,
-                        subject,
-                    })
+            this.plugins.map(([name, config]) =>
+                this.lintWithPlugin(name, config, { header, body, type, scope, subject })
             )
         );
     }
 
     private normalizeParameterName(value: string): string | undefined {
-        const isWin = (name: string): boolean => value === `${Linter.PARAM_SIGN_WIN}${name}${Linter.PARAM_SIGN_WIN}`;
-        const isLinux = (name: string): boolean => value === `${Linter.PARAM_SIGN_LINUX}${name}`;
-
-        return this.supportedParameters.find((name): boolean => value === name || isWin(name) || isLinux(name));
+        return this.supportedParameters.find(
+            name =>
+                value === name ||
+                value === `${Linter.PARAM_SIGN_WIN}${name}${Linter.PARAM_SIGN_WIN}` ||
+                value === `${Linter.PARAM_SIGN_LINUX}${name}`
+        );
     }
 
     private async getMessageBody(value: string): Promise<string> {
@@ -155,7 +150,7 @@ export class Linter {
 
         if (type) {
             if (this.lowercaseTypesOnly && type !== safeType) task.error('Type is not in lowercase');
-            if (!this.types.some((name): boolean => name === safeType)) task.error('Unknown commit type!');
+            if (!this.types.some(name => name === safeType)) task.error('Unknown commit type!');
         } else {
             task.error('Type is not defined or is not separated from the subject with "{bold :}"');
         }

@@ -24,7 +24,7 @@ export default class SectionPlugin extends CommitPlugin {
 
                 if (section) {
                     section.setOrder(index + 1);
-                    types.forEach((type: string) => {
+                    types.forEach(type => {
                         this.blocks.set(Key.unify(type), section as Section);
                     });
                 }
