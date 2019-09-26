@@ -60,8 +60,4 @@ export default class Markdown {
     public static authorLink(author: Author): string {
         return Markdown.imageLink(author.getName(), author.getAvatar(), author.url);
     }
-
-    public static escape(text: string): string {
-        return text.replace(/ +(?= )/g, Markdown.EMPTY_SEPARATOR).replace(/([\]\\/[^$|`!_#><~{}()*+?.-])/g, '\\$1');
-    }
 }

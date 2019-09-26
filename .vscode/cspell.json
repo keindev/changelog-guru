@@ -48,6 +48,7 @@
         "EDITMSG",
         "deps",
         "SPDX",
-        "plusplus"
+        "plusplus",
+        "cond"
     ]
 }

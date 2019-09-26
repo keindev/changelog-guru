@@ -104,8 +104,6 @@ plugins:
               - ignore
               # !group(NAME) - creates a group of commits with the <NAME>
               - group
-              # !escaped - cancel character escaping on changelog generating
-              - escaped
           # Join markers combine commits in sections
           joins:
               # !important - place a commit title to special section on top of changelog

@@ -39,7 +39,6 @@ describe('Entity', (): void => {
         expect($entity.getChangeLevel()).toBe(ChangeLevel.Patch);
         expect($entity.getPriority()).toBe(Priority.Low);
         expect($entity.isIgnored()).toBeFalsy();
-        expect($entity.isEscaped()).toBeFalsy();
         expect($entity.isEmpty()).toBeFalsy();
     });
 
@@ -70,11 +69,5 @@ describe('Entity', (): void => {
 
         expect($entity.isIgnored()).toBeTruthy();
         expect($entity.isEmpty()).toBeTruthy();
-    });
-
-    it('Escape', (): void => {
-        $entity.escape();
-
-        expect($entity.isEscaped()).toBeTruthy();
     });
 });

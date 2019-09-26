@@ -43,18 +43,17 @@ export class Writer {
         const accents: string[] = [];
         const links: string[] = [];
         let subject: string;
-        let isEscaped: boolean;
 
         if (Array.isArray(group)) {
             subject = group[0].getSubject();
-            isEscaped = group[0].isEscaped();
+
             group.forEach(commit => {
                 accents.push(...commit.getAccents());
                 links.push(Markdown.commitLink(commit.getShortName(), commit.url));
             });
         } else {
             subject = group.getSubject();
-            isEscaped = group.isEscaped();
+
             accents.push(...group.getAccents());
             links.push(Markdown.commitLink(group.getShortName(), group.url));
         }
@@ -67,7 +66,7 @@ export class Writer {
             );
         }
 
-        output.push(isEscaped ? Markdown.capitalize(subject) : Markdown.escape(Markdown.capitalize(subject)), ...links);
+        output.push(Markdown.capitalize(subject), ...links);
 
         return Markdown.listItem(output.join(Markdown.WORD_SEPARATOR));
     }
@@ -80,7 +79,7 @@ export class Writer {
 
     public async write(sections: Section[], authors: Author[]): Promise<void> {
         const task = TaskTree.add('Writing new changelog...');
-        const data = sections.map((subsection): string => this.renderSection(subsection));
+        const data = sections.map(subsection => this.renderSection(subsection));
 
         data.push(Writer.renderAuthors(authors), Markdown.EMPTY_SEPARATOR);
         await this.writeFile(data.join(Markdown.LINE_SEPARATOR));
@@ -98,16 +97,11 @@ export class Writer {
         const output = [Markdown.title(section.getName(), level)];
 
         if (messages.length) {
-            output.push(
-                ...messages.map((message): string =>
-                    message.isEscaped ? message.text : Markdown.escape(message.text)
-                ),
-                Markdown.EMPTY_SEPARATOR
-            );
+            output.push(...messages.map(message => message.text), Markdown.EMPTY_SEPARATOR);
         }
 
         if (sections.length) {
-            output.push(...sections.map((subsection): string => this.renderSection(subsection, level + 1)));
+            output.push(...sections.map(subsection => this.renderSection(subsection, level + 1)));
 
             if (commits.length) {
                 output.push(Markdown.title('Others', level + 1));
