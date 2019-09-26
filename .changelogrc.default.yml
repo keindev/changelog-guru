@@ -83,7 +83,9 @@ plugins:
               - bundledDependencies
     # Highlights variables and code snippets in subject of commit
     - highlight:
+          # Highlight camelCase and UpperCamelCase words
           camelCase: true
+          # Highlight by regex mask
           masks: [
               # Tags
               '<[^>]*>',
