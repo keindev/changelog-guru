@@ -31,6 +31,7 @@ Source code now under `MIT` license.
 -   Added **[tasktree-cli](https://www.npmjs.com/package/tasktree-cli/v/2.0.2)** with `^2.0.2`
 -   Added **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent/v/4.0.0)** with `^4.0.0`
 -   Added **[write-pkg](https://www.npmjs.com/package/write-pkg/v/4.0.0)** with `^4.0.0`
+-   Added **[yargs](https://www.npmjs.com/package/yargs/v/14.0.0)** with `^14.0.0`
 
 ## Dev Dependencies
 
@@ -41,6 +42,7 @@ Source code now under `MIT` license.
 -   Added **[@types/jest](https://www.npmjs.com/package/@types/jest/v/24.0.18)** with `^24.0.18`
 -   Added **[@types/node](https://www.npmjs.com/package/@types/node/v/12.7.8)** with `^12.7.8`
 -   Added **[@types/semver](https://www.npmjs.com/package/@types/semver/v/6.0.2)** with `^6.0.2`
+-   Added **[@types/yargs](https://www.npmjs.com/package/@types/yargs/v/13.0.3)** with `^13.0.3`
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.3.1)** with `^2.3.1`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.3.1)** with `^2.3.1`
 -   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.30)** with `^4.0.30`
@@ -152,6 +154,7 @@ Source code now under `MIT` license.
 -   **[Highlight]** Fix double highlighting [`8b240c6`](https://github.com/keindev/changelog-guru/commit/8b240c64290f8c01312aa88004ee533c1329aabf)
 -   **[Highlight]** Fix test and update config changelog [`9a0a67e`](https://github.com/keindev/changelog-guru/commit/9a0a67ef77e8a62d0b1417b02de22e6f8bf44779)
 -   **[Highlight]** Fix `camelCase` & `UpperCamelCase` highlighting [`b8882ca`](https://github.com/keindev/changelog-guru/commit/b8882ca94f6f3da076d131807b9953a61d9bd36f)
+-   **[Highlight]** Extend masks regex for `!words` [`d06257d`](https://github.com/keindev/changelog-guru/commit/d06257db88a9bbb86236bb8819f387dd5b9b384c)
 -   **[HistoryQuery]** Fix type receieved date [`d06992b`](https://github.com/keindev/changelog-guru/commit/d06992b5bd15252e83eea3bdd32830e70126fe6c)
 -   **[Lint]** Fix lint errors [`babcbe3`](https://github.com/keindev/changelog-guru/commit/babcbe3aef4000b6663960e209c4403d2571fd0f)
 -   **[Linter]** Add parameter name normalization [`7fae71d`](https://github.com/keindev/changelog-guru/commit/7fae71dba87959b49d694293410de030ef595109)
@@ -349,6 +352,7 @@ Source code now under `MIT` license.
 -   Make some chore changes to entities [`30f3310`](https://github.com/keindev/changelog-guru/commit/30f3310cb9145c468ba3d0478b366769bf7ac705)
 -   Replace tasktree methods call to new api [`daac6c2`](https://github.com/keindev/changelog-guru/commit/daac6c22fa4cb61a2a4924ee9ca75f855741da03)
 -   Remove usless (): void typings [`a6adc72`](https://github.com/keindev/changelog-guru/commit/a6adc724103b984d2ccb79d2cebd278b81f1b10f)
+-   Change default config ext [`add02a2`](https://github.com/keindev/changelog-guru/commit/add02a25faf062da4b38f43da14eadf2bf4564bf)
 
 ---
 
