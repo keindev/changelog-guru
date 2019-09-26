@@ -28,15 +28,12 @@ export default class HighlightPlugin extends CommitPlugin {
         const subject = commit.getSubject();
         let match: RegExpExecArray | null;
 
-        // FIXME: rewrite to while ... do
         this.masks.forEach(mask => {
-            do {
-                match = mask.exec(subject);
-
-                if (match) {
-                    commit.addReplacement(match[0], match.index);
-                }
-            } while (match && mask.lastIndex);
+            // TODO: replace to matchAll after v12 Active LTS Start (2019-10-22)
+            // eslint-disable-next-line no-cond-assign
+            while ((match = mask.exec(subject)) !== null) {
+                commit.addReplacement(match[0], match.index);
+            }
         });
     }
 }
