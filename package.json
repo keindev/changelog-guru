@@ -60,6 +60,7 @@
     "devDependencies": {
         "@types/cosmiconfig": "^5.0.3",
         "@types/dotenv": "^6.1.1",
+        "@types/faker": "^4.1.5",
         "@types/findup-sync": "^2.0.2",
         "@types/jest": "^24.0.18",
         "@types/node": "^12.7.8",
@@ -73,6 +74,7 @@
         "eslint-config-prettier": "^6.3.0",
         "eslint-plugin-import": "^2.18.2",
         "eslint-plugin-jest": "^22.17.0",
+        "faker": "^4.1.0",
         "husky": "^3.0.7",
         "jest": "^24.9.0",
         "npm-run-all": "^4.1.5",
