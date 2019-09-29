@@ -5,40 +5,37 @@ import { Changelog } from '../../changelog';
 export const command = 'lint';
 export const alias = 'l';
 export const desc = 'Lint commit message';
+export const showInHelp = true;
 export const builder = {
     message: {
         required: true,
-        type: 'string',
+        string: true,
+        alias: 'm',
         description: 'Commit message for linting',
     },
     length: {
-        required: false,
-        type: 'number',
+        number: true,
+        alias: 'l',
         description: 'Max commit header length',
     },
     lowercase: {
-        required: false,
-        type: 'boolean',
+        boolean: true,
         description: 'Uses only lowercase types',
     },
 };
 
-export const handler = (argv: Arguments<{ [key: string]: any }>): Promise<void> => {
-    const tree = TaskTree.tree();
+interface LintOptions {
+    message: string;
+    length: number;
+    lowercase: boolean;
+}
 
-    tree.start();
-
+export const handler = (argv: Arguments<LintOptions>): Promise<void> => {
+    const tree = TaskTree.tree().start();
     const changelog = new Changelog();
 
     return changelog
-        .lint(argv.message, {
-            maxHeaderLength: argv.length,
-            lowercaseTypesOnly: argv.lowercase,
-        })
-        .then(() => {
-            tree.exit(ExitCode.Success);
-        })
-        .catch((error: string | Error) => {
-            tree.fail(error);
-        });
+        .lint(argv.message, { maxHeaderLength: argv.length, lowercaseTypesOnly: argv.lowercase })
+        .then(() => tree.exit(ExitCode.Success))
+        .catch(TaskTree.fail);
 };

@@ -1,8 +1,8 @@
-import * as yargs from 'yargs';
+import yargs from 'yargs';
 
 yargs
     .commandDir('commands')
     .demandCommand()
-    .help()
     .wrap(yargs.terminalWidth())
+    .help()
     .parse();
