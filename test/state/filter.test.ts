@@ -4,7 +4,8 @@ import { Commit } from '../../src/entities/commit';
 
 // eslint-disable-next-line max-lines-per-function
 describe('Filter', (): void => {
-    const $author = new Author('keindev', {
+    const $author = new Author({
+        login: 'keindev',
         url: 'https://github.com/keindev',
         avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
     });
@@ -12,7 +13,8 @@ describe('Filter', (): void => {
     // eslint-disable-next-line max-lines-per-function
     describe('Static', (): void => {
         it('Filter authors by login', (): void => {
-            const bot = new Author('bot', {
+            const bot = new Author({
+                login: 'bot',
                 url: 'https://github.com/keindev',
                 avatar: 'https://avatars3.githubusercontent.com/u/0?v=4',
             });
@@ -24,14 +26,16 @@ describe('Filter', (): void => {
         });
 
         it('Filter commits by type', (): void => {
-            const a = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+            const a = new Commit({
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
                 timestamp: 1,
                 header: 'feat(AAA): AAA',
                 body: '',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
                 author: $author,
             });
-            const b = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
+            const b = new Commit({
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
                 timestamp: 2,
                 header: 'fix(BBB): BBB',
                 body: '',
@@ -46,14 +50,16 @@ describe('Filter', (): void => {
         });
 
         it('Filter commits by Scope', (): void => {
-            const a = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+            const a = new Commit({
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
                 timestamp: 1,
                 header: 'feat(AAA): AAA',
                 body: '',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
                 author: $author,
             });
-            const b = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
+            const b = new Commit({
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
                 timestamp: 2,
                 header: 'fix(BBB): BBB',
                 body: '',
@@ -68,14 +74,16 @@ describe('Filter', (): void => {
         });
 
         it('Filter commits by Subject', (): void => {
-            const a = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+            const a = new Commit({
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
                 timestamp: 1,
                 header: 'feat(AAA): AAA',
                 body: '',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
                 author: $author,
             });
-            const b = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
+            const b = new Commit({
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
                 timestamp: 2,
                 header: 'fix(BBB): BBB',
                 body: '',

@@ -10,7 +10,8 @@ describe('SectionPlugin', (): void => {
     const $context = new MockState();
     const $loader = new ConfigLoader();
     const $plugin = new SectionPlugin($context);
-    const $author = new Author('keindev', {
+    const $author = new Author({
+        login: 'keindev',
         url: 'https://github.com/keindev',
         avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
     });
@@ -65,7 +66,8 @@ describe('SectionPlugin', (): void => {
         expect(section).toBeDefined();
 
         if (section) {
-            const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+            const commit = new Commit({
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
                 timestamp: 0,
                 header: 'fix: subject',
                 url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',

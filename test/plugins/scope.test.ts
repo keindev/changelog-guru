@@ -8,7 +8,8 @@ import { PluginOption } from '../../src/config/config';
 
 // eslint-disable-next-line max-lines-per-function
 describe('ScopePlugin', (): void => {
-    const $author = new Author('keindev', {
+    const $author = new Author({
+        login: 'keindev',
         url: 'https://github.com/keindev',
         avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
     });
@@ -36,7 +37,8 @@ describe('ScopePlugin', (): void => {
     });
 
     it('Default', (done): void => {
-        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+        const commit = new Commit({
+            hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
             timestamp: 0,
             header: 'feat(Core, Jest 1, Jest 2): subject',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
@@ -75,7 +77,8 @@ describe('ScopePlugin', (): void => {
     });
 
     it('Only presented in config', (done): void => {
-        const commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+        const commit = new Commit({
+            hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
             timestamp: 0,
             header: 'feat(Core, Jest 1, Jest 2): subject',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',

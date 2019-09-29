@@ -12,29 +12,34 @@ describe('Writer', (): void => {
         const section1 = new Section('Section 1', SectionPosition.Body);
         const section2 = new Section('Section 2', SectionPosition.Body);
         const section3 = new Section('Section 3', SectionPosition.Header);
-        const author = new Author('keindev', {
+        const author = new Author({
+            login: 'keindev',
             url: 'https://github.com/keindev',
             avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
         });
-        const commit1 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f1', {
+        const commit1 = new Commit({
+            hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
             author,
             timestamp: 1,
             header: 'feat(Section1): subject1',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
         });
-        const commit2 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f2', {
+        const commit2 = new Commit({
+            hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
             author,
             timestamp: 2,
             header: 'fix(Section2): subject2__',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
         });
-        const commit3 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f3', {
+        const commit3 = new Commit({
+            hash: 'b816518030dace1b91838ae0abd56fa88eba19f3',
             author,
             timestamp: 3,
             header: 'feat(Scope1): subject3',
             url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f3',
         });
-        const commit4 = new Commit('b816518030dace1b91838ae0abd56fa88eba19f4', {
+        const commit4 = new Commit({
+            hash: 'b816518030dace1b91838ae0abd56fa88eba19f4',
             author,
             timestamp: 4,
             header: 'feat(Scope1): subject3',

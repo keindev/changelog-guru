@@ -8,12 +8,14 @@ import { SectionPosition } from '../../src/entities/section';
 // eslint-disable-next-line max-lines-per-function
 describe('State', (): void => {
     const getAuthor = (login: string): Author =>
-        new Author(login, {
+        new Author({
+            login,
             url: `https://github.com/${login}`,
             avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
         });
     const getCommit = (id: number, header: string, author: Author): Commit =>
-        new Commit(`b816518030dace1b91838ae0abd56fa88eba19f${id}`, {
+        new Commit({
+            hash: `b816518030dace1b91838ae0abd56fa88eba19f${id}`,
             author,
             header,
             timestamp: 0,

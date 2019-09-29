@@ -13,12 +13,14 @@ export class MockProvider extends GitProvider {
     public constructor(type: ServiceProvider, url: string) {
         super(type, url);
 
-        this.__author = new Author('keindev', {
+        this.__author = new Author({
+            login: 'keindev',
             url: 'https://github.com/keindev',
             avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
         });
 
-        this.__commit = new Commit('b816518030dace1b91838ae0abd56fa88eba19ff', {
+        this.__commit = new Commit({
+            hash: 'b816518030dace1b91838ae0abd56fa88eba19ff',
             timestamp: 1,
             header: 'feat(Jest): subject',
             body: '\n\nbody\n\nfooter',
