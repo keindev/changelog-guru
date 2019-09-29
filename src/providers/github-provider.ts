@@ -67,29 +67,23 @@ export class GitHubProvider extends GitProvider {
         return data;
     }
 
-    private parseCommit(response: GitHubResponseCommit): Commit {
-        const author = this.parseAuthor(response.author);
-        const commit = new Commit(response.hash, {
-            author,
-            header: response.header,
-            body: response.body,
-            timestamp: new Date(response.date).getTime(),
-            url: response.url,
+    private parseCommit({ author, hash, header, body, date, url }: GitHubResponseCommit): Commit {
+        const commit = new Commit({
+            hash,
+            header,
+            body,
+            url,
+            author: this.parseAuthor(author),
+            timestamp: new Date(date).getTime(),
         });
 
         return commit;
     }
 
-    private parseAuthor(response: GitHubResponseCommitAuthor): Author {
+    private parseAuthor({ avatar, user: { id, login, url } }: GitHubResponseCommitAuthor): Author {
         const { authors } = this;
-        const {
-            avatar,
-            user: { id, login, url },
-        } = response;
 
-        if (!authors.has(id)) {
-            authors.set(id, new Author(login, { url, avatar }));
-        }
+        if (!authors.has(id)) authors.set(id, new Author({ login, url, avatar }));
 
         return authors.get(id) as Author;
     }

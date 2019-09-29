@@ -13,6 +13,7 @@ export enum CommitStatus {
 }
 
 export interface CommitOptions {
+    hash: string;
     timestamp: number;
     header: string;
     body?: string;
@@ -40,15 +41,15 @@ export class Commit extends Entity {
     private status = CommitStatus.Default;
     private replacements: LookupManager<{}> = new LookupManager<{}>();
 
-    public constructor(hash: string, options: CommitOptions) {
+    public constructor({ hash, timestamp, header, body, url, author }: CommitOptions) {
         super(hash);
 
-        this.timestamp = options.timestamp;
-        this.body = options.body ? options.body.split(Commit.LINE_SEPARATOR).map((l): string => l.trim()) : [];
-        this.url = options.url;
-        this.author = options.author;
+        this.timestamp = timestamp;
+        this.body = body ? body.split(Commit.LINE_SEPARATOR).map((l): string => l.trim()) : [];
+        this.url = url;
+        this.author = author;
 
-        const [type, scope, subject] = Commit.splitHeader(options.header);
+        const [type, scope, subject] = Commit.splitHeader(header);
 
         if (type) this.type = type.toLocaleLowerCase();
         if (scope) this.scope = scope;

@@ -2,6 +2,7 @@ import { Priority } from '../typings/enums';
 import { Entity } from './entity';
 
 export interface AuthorOptions {
+    login: string;
     url: string;
     avatar: string;
 }
@@ -18,12 +19,12 @@ export class Author extends Entity {
     private avatar: string;
     private contribution: number;
 
-    public constructor(login: string, options: AuthorOptions) {
+    public constructor({ login, url, avatar }: AuthorOptions) {
         super(`${Author.NAME_PREFIX}${login}`);
 
         this.login = login;
-        this.url = options.url;
-        this.avatar = options.avatar;
+        this.url = url;
+        this.avatar = avatar;
         this.contribution = Author.DEFAULT_CONTRIBUTION;
     }
 
