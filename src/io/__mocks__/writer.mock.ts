@@ -1,4 +1,4 @@
-import { Writer } from '../../../src/io/writer';
+import { Writer } from '../writer';
 
 export class MockWriter extends Writer {
     private __data: string | undefined;

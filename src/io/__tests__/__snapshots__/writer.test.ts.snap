@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Writer Default 1`] = `
+exports[`Writer Write sections Sections structure will correctly written 1`] = `
 "# Section 1
 
 ## Section 2

@@ -8,7 +8,7 @@ const login = faker.internet.userName();
 const avatar = 'https://avatars3.githubusercontent.com/u/4527292?v=4';
 const authorUrl = `https://github.com/${login}`;
 const hash = 'b816518030dace1b91838ae0abd56fa88eba19f';
-const timestamp = faker.random.number();
+const timestamp = 0;
 const body = '\n\nbody\n\nfooter';
 const commitUrl = 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0';
 let author: Author;
@@ -22,46 +22,11 @@ describe('Commit', (): void => {
 
     describe('Static methods', (): void => {
         it('Comparison is correct', (): void => {
-            /*
             const options = { author, timestamp, body, url: commitUrl };
             const a = new Commit({ ...options, hash: `${hash}1`, header: 'feat(Test): subject' });
             const b = new Commit({ ...options, hash: `${hash}2`, header: 'feat(Test): subject' });
             const c = new Commit({ ...options, hash: `${hash}3`, header: 'feat: subject' });
-            const d = new Commit({ ...options, timestamp: 1, hash: `${hash}4`, header: 'feat: subject' });
-            */
-
-            const a = new Commit({
-                hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
-                timestamp: 0,
-                header: 'feat(Test): subject',
-                body: '\n\nbody\n\nfooter',
-                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-                author,
-            });
-            const b = new Commit({
-                hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
-                timestamp: 0,
-                header: 'feat(Test): subject',
-                body: '\n\nbody\n\nfooter',
-                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-                author,
-            });
-            const c = new Commit({
-                hash: 'b816518030dace1b91838ae0abd56fa88eba19f3',
-                timestamp: 0,
-                header: 'feat: subject',
-                body: '\n\nbody\n\nfooter',
-                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-                author,
-            });
-            const d = new Commit({
-                hash: 'b816518030dace1b91838ae0abd56fa88eba19f4',
-                timestamp: 1,
-                header: 'feat: subject',
-                body: '\n\nbody\n\nfooter',
-                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
-                author,
-            });
+            const d = new Commit({ ...options, hash: `${hash}4`, header: 'feat: subject', timestamp: 1 });
 
             expect(Commit.compare(a, c)).toBe(Compare.Less);
             expect(Commit.compare(c, d)).toBe(Compare.Less);

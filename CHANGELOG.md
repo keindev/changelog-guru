@@ -18,7 +18,6 @@ Source code now under `MIT` license.
 ## Dependencies
 
 -   Added **[chalk](https://www.npmjs.com/package/chalk/v/2.4.2)** with `^2.4.2`
--   Added **[command-line-args](https://www.npmjs.com/package/command-line-args/v/5.1.1)** with `^5.1.1`
 -   Added **[cosmiconfig](https://www.npmjs.com/package/cosmiconfig/v/5.2.1)** with `^5.2.1`
 -   Added **[deepmerge](https://www.npmjs.com/package/deepmerge/v/4.0.0)** with `^4.0.0`
 -   Added **[dotenv](https://www.npmjs.com/package/dotenv/v/8.1.0)** with `^8.1.0`
@@ -35,7 +34,6 @@ Source code now under `MIT` license.
 
 ## Dev Dependencies
 
--   Added **[@types/command-line-args](https://www.npmjs.com/package/@types/command-line-args/v/5.0.0)** with `^5.0.0`
 -   Added **[@types/cosmiconfig](https://www.npmjs.com/package/@types/cosmiconfig/v/5.0.3)** with `^5.0.3`
 -   Added **[@types/dotenv](https://www.npmjs.com/package/@types/dotenv/v/6.1.1)** with `^6.1.1`
 -   Added **[@types/findup-sync](https://www.npmjs.com/package/@types/findup-sync/v/2.0.2)** with `^2.0.2`
@@ -46,12 +44,12 @@ Source code now under `MIT` license.
 -   Added **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin/v/2.3.1)** with `^2.3.1`
 -   Added **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser/v/2.3.1)** with `^2.3.1`
 -   Added **[cspell](https://www.npmjs.com/package/cspell/v/4.0.30)** with `^4.0.30`
--   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.4.0)** with `^6.4.0`
+-   Added **[eslint](https://www.npmjs.com/package/eslint/v/6.5.0)** with `^6.5.0`
 -   Added **[eslint-config-airbnb-base](https://www.npmjs.com/package/eslint-config-airbnb-base/v/14.0.0)** with `^14.0.0`
 -   Added **[eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier/v/6.3.0)** with `^6.3.0`
 -   Added **[eslint-plugin-import](https://www.npmjs.com/package/eslint-plugin-import/v/2.18.2)** with `^2.18.2`
 -   Added **[eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest/v/22.17.0)** with `^22.17.0`
--   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.5)** with `^3.0.5`
+-   Added **[husky](https://www.npmjs.com/package/husky/v/3.0.7)** with `^3.0.7`
 -   Added **[jest](https://www.npmjs.com/package/jest/v/24.9.0)** with `^24.9.0`
 -   Added **[npm-run-all](https://www.npmjs.com/package/npm-run-all/v/4.1.5)** with `^4.1.5`
 -   Added **[prettier](https://www.npmjs.com/package/prettier/v/1.18.2)** with `^1.18.2`
@@ -124,6 +122,7 @@ Source code now under `MIT` license.
 -   **[Cli]** Add help output [`6a7f16f`](https://github.com/keindev/changelog-guru/commit/6a7f16fc2b77c8b109af7d80a63c738e72232014)
 -   **[Cli]** Add `--help` command [`485935f`](https://github.com/keindev/changelog-guru/commit/485935f0cee933686add81bb52495ac0c05e23b1)
 -   **[Cli]** Define display rules `--help` [`f6a4b92`](https://github.com/keindev/changelog-guru/commit/f6a4b9276278ac9396134a522e6cadce15deabd2)
+-   **[Cli]** Rewrite cli to yargs [`b216bf8`](https://github.com/keindev/changelog-guru/commit/b216bf84cf0f80479e8d176294277a8155bba424)
 -   **[Commit]** Add escape flag [`4c83958`](https://github.com/keindev/changelog-guru/commit/4c83958697248a18ec9785cee2a5e0b59a8935eb)
 -   **[ConfigLoader]** Add ability to read plugins without config opt… [`5ab4741`](https://github.com/keindev/changelog-guru/commit/5ab4741de243bf7bafc8900ce365236f82efa86c)
 -   **[Entity]** Remove `!escaped` marker and methods [`ad9d1dc`](https://github.com/keindev/changelog-guru/commit/ad9d1dcdb84cde0ec198ee3843acc66cae3a4fe0)
@@ -296,6 +295,7 @@ Source code now under `MIT` license.
 -   Remove typings folders [`e7e1cbb`](https://github.com/keindev/changelog-guru/commit/e7e1cbbd97a9a4bb03d2a734fdba9c8dd44682df)
 -   Add `cSpell` for lang spell checking [`a9ea3f6`](https://github.com/keindev/changelog-guru/commit/a9ea3f65c97818a189cd5c647cc78dd202641076)
 -   Add eslint disable to describe functions [`ae05fee`](https://github.com/keindev/changelog-guru/commit/ae05feedfb55eb1b5c142420e79a7d60200832bb)
+-   Remove useless return value types in arrow functions [`cff4e2b`](https://github.com/keindev/changelog-guru/commit/cff4e2b212f68941d7f74a5ed5ac2246159b582b)
 
 # Code Refactoring
 
