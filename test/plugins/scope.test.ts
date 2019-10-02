@@ -6,8 +6,7 @@ import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 import { PluginOption } from '../../src/config/config';
 
-// eslint-disable-next-line max-lines-per-function
-describe('ScopePlugin', (): void => {
+describe('ScopePlugin', () => {
     const $author = new Author({
         login: 'keindev',
         url: 'https://github.com/keindev',
@@ -17,13 +16,13 @@ describe('ScopePlugin', (): void => {
     let $plugin: ScopePlugin;
     let $options: PluginOption;
 
-    beforeEach((done): void => {
+    beforeEach(done => {
         const loader = new ConfigLoader();
         const context = new MockState();
 
         $plugin = new ScopePlugin(context);
 
-        loader.load().then((config): void => {
+        loader.load().then(config => {
             const options = config.getPlugin('scope');
 
             if (options) {
@@ -36,7 +35,7 @@ describe('ScopePlugin', (): void => {
         });
     });
 
-    it('Default', (done): void => {
+    it('Default', done => {
         const commit = new Commit({
             hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
             timestamp: 0,
@@ -45,8 +44,8 @@ describe('ScopePlugin', (): void => {
             author: $author,
         });
 
-        $plugin.init($options as ScopePluginOptions).then((): void => {
-            $plugin.parse(commit).then((): void => {
+        $plugin.init($options as ScopePluginOptions).then(() => {
+            $plugin.parse(commit).then(() => {
                 expect(commit.getAccents()).toStrictEqual(['Core', 'Jest 1', 'Jest 2']);
 
                 done();
@@ -54,7 +53,7 @@ describe('ScopePlugin', (): void => {
         });
     });
 
-    it('Lint', (done): void => {
+    it('Lint', done => {
         const task = new Task('lint');
         const options = {
             header: 'test(scope): subject',
@@ -63,7 +62,7 @@ describe('ScopePlugin', (): void => {
             subject: 'subject',
         };
 
-        $plugin.init({ onlyPresented: true, names: $options.names as ScopeNames }).then((): void => {
+        $plugin.init({ onlyPresented: true, names: $options.names as ScopeNames }).then(() => {
             $plugin.lint(Object.assign(options, { scope: 'core, api' }), task);
 
             expect(task.haveErrors()).toBeFalsy();
@@ -76,7 +75,7 @@ describe('ScopePlugin', (): void => {
         });
     });
 
-    it('Only presented in config', (done): void => {
+    it('Only presented in config', done => {
         const commit = new Commit({
             hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
             timestamp: 0,
@@ -85,8 +84,8 @@ describe('ScopePlugin', (): void => {
             author: $author,
         });
 
-        $plugin.init({ onlyPresented: true, names: $options.names as ScopeNames }).then((): void => {
-            $plugin.parse(commit).then((): void => {
+        $plugin.init({ onlyPresented: true, names: $options.names as ScopeNames }).then(() => {
+            $plugin.parse(commit).then(() => {
                 expect(commit.getAccents()).toStrictEqual(['Core']);
 
                 done();

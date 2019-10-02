@@ -6,9 +6,9 @@ import { ChangeLevel } from '../../config/config';
 const name = faker.internet.userName(faker.name.firstName(), faker.name.lastName());
 const entity: Entity = new Entity(name);
 
-describe('Entity', (): void => {
-    describe('Static methods', (): void => {
-        it('Comparison is correct', (): void => {
+describe('Entity', () => {
+    describe('Static methods', () => {
+        it('Comparison is correct', () => {
             const a = new Entity('A');
             const b = new Entity('B');
 
@@ -19,7 +19,7 @@ describe('Entity', (): void => {
             expect(Entity.compare(a, a)).toBe(Compare.Equal);
         });
 
-        it('Entities is filtered', (): void => {
+        it('Entities is filtered', () => {
             const a = new Entity(faker.name.firstName());
             const b = new Entity(faker.name.firstName());
 
@@ -31,7 +31,7 @@ describe('Entity', (): void => {
     });
 
     describe('Change entity', () => {
-        it('Default options are set correctly', (): void => {
+        it('Default options are set correctly', () => {
             expect(entity.getName()).toBe(name);
             expect(entity.getShortName()).toBe(name.substr(0, 7));
             expect(entity.getChangeLevel()).toBe(ChangeLevel.Patch);
@@ -40,7 +40,7 @@ describe('Entity', (): void => {
             expect(entity.isEmpty()).toBeFalsy();
         });
 
-        it('Level will change', (): void => {
+        it('Level will change', () => {
             entity.setChangeLevel(ChangeLevel.Patch);
             expect(entity.getChangeLevel()).toBe(ChangeLevel.Patch);
             expect(entity.getPriority()).toBe(Priority.Low);
@@ -62,7 +62,7 @@ describe('Entity', (): void => {
             expect(entity.getPriority()).toBe(Priority.Low);
         });
 
-        it('Entity ignored', (): void => {
+        it('Entity ignored', () => {
             entity.ignore();
 
             expect(entity.isIgnored()).toBeTruthy();

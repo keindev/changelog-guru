@@ -1,8 +1,8 @@
 import { Config, ServiceProvider, ChangeLevel, ExclusionType } from '../config';
 
-describe('Config', (): void => {
-    describe('Create', (): void => {
-        it('Default configuration created', (): void => {
+describe('Config', () => {
+    describe('Create', () => {
+        it('Default configuration created', () => {
             const config = new Config({
                 provider: ServiceProvider.GitHub,
                 filePath: 'CHANGELOG.md',

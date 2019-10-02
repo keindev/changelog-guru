@@ -2,10 +2,8 @@ import semver from 'semver';
 import { DependencyRule, DependencyRuleType } from '../../../src/package/rules/dependency-rule';
 import { PackageRuleChangeType } from '../../../src/package/rules/package-rule';
 
-// eslint-disable-next-line max-lines-per-function
-describe('DependencyRule', (): void => {
-    // eslint-disable-next-line max-lines-per-function
-    it('Default', (): void => {
+describe('DependencyRule', () => {
+    it('Default', () => {
         const dependency = new DependencyRule(
             DependencyRuleType.Dependencies,
             {
@@ -98,7 +96,7 @@ describe('DependencyRule', (): void => {
         ]);
     });
 
-    it('Empty current version dependencies', (): void => {
+    it('Empty current version dependencies', () => {
         const dependency = new DependencyRule(DependencyRuleType.Dependencies, undefined, { package1: '^1.0.0' });
 
         expect(dependency.getType()).toBe(DependencyRuleType.Dependencies);
@@ -115,7 +113,7 @@ describe('DependencyRule', (): void => {
         ]);
     });
 
-    it('Empty previous dependencies', (): void => {
+    it('Empty previous dependencies', () => {
         const dependency = new DependencyRule(DependencyRuleType.Dependencies, { package1: '^1.0.0' });
 
         expect(dependency.getType()).toBe(DependencyRuleType.Dependencies);

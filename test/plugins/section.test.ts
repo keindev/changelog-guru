@@ -5,8 +5,7 @@ import { ConfigLoader } from '../../src/config/config-loader';
 import { Commit } from '../../src/entities/commit';
 import { Author } from '../../src/entities/author';
 
-// eslint-disable-next-line max-lines-per-function
-describe('SectionPlugin', (): void => {
+describe('SectionPlugin', () => {
     const $context = new MockState();
     const $loader = new ConfigLoader();
     const $plugin = new SectionPlugin($context);
@@ -16,12 +15,12 @@ describe('SectionPlugin', (): void => {
         avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
     });
 
-    beforeAll((done): void => {
-        $loader.load().then((config): void => {
+    beforeAll(done => {
+        $loader.load().then(config => {
             const options = config.getPlugin('section');
 
             if (options) {
-                $plugin.init(options as SectionPluginOptions).then((): void => {
+                $plugin.init(options as SectionPluginOptions).then(() => {
                     done();
                 });
             } else {
@@ -30,7 +29,7 @@ describe('SectionPlugin', (): void => {
         });
     });
 
-    it('Default', (): void => {
+    it('Default', () => {
         expect($context.getSections().length).toBe(7);
         expect($context.findSection('Features')).toBeDefined();
         expect($context.findSection('Improvements')).toBeDefined();
@@ -41,7 +40,7 @@ describe('SectionPlugin', (): void => {
         expect($context.findSection('Reverts')).toBeDefined();
     });
 
-    it('Lint', (): void => {
+    it('Lint', () => {
         const task = new Task('lint');
         const options = {
             header: 'test(scope): subject',
@@ -60,7 +59,7 @@ describe('SectionPlugin', (): void => {
         expect(task.haveErrors()).toBeTruthy();
     });
 
-    it('Parse commits', (done): void => {
+    it('Parse commits', done => {
         const section = $context.findSection('Bug Fixes');
 
         expect(section).toBeDefined();
@@ -74,7 +73,7 @@ describe('SectionPlugin', (): void => {
                 author: $author,
             });
 
-            $plugin.parse(commit).then((): void => {
+            $plugin.parse(commit).then(() => {
                 expect(section.getCommits()).toStrictEqual([commit]);
 
                 done();

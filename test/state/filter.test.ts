@@ -2,17 +2,15 @@ import { Filter } from '../../src/state/filter';
 import { Author } from '../../src/entities/author';
 import { Commit } from '../../src/entities/commit';
 
-// eslint-disable-next-line max-lines-per-function
-describe('Filter', (): void => {
+describe('Filter', () => {
     const $author = new Author({
         login: 'keindev',
         url: 'https://github.com/keindev',
         avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
     });
 
-    // eslint-disable-next-line max-lines-per-function
-    describe('Static', (): void => {
-        it('Filter authors by login', (): void => {
+    describe('Static', () => {
+        it('Filter authors by login', () => {
             const bot = new Author({
                 login: 'bot',
                 url: 'https://github.com/keindev',
@@ -25,7 +23,7 @@ describe('Filter', (): void => {
             expect($author.isIgnored()).toBeFalsy();
         });
 
-        it('Filter commits by type', (): void => {
+        it('Filter commits by type', () => {
             const a = new Commit({
                 hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
                 timestamp: 1,
@@ -49,7 +47,7 @@ describe('Filter', (): void => {
             expect(b.isIgnored()).toBeTruthy();
         });
 
-        it('Filter commits by Scope', (): void => {
+        it('Filter commits by Scope', () => {
             const a = new Commit({
                 hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
                 timestamp: 1,
@@ -73,7 +71,7 @@ describe('Filter', (): void => {
             expect(b.isIgnored()).toBeTruthy();
         });
 
-        it('Filter commits by Subject', (): void => {
+        it('Filter commits by Subject', () => {
             const a = new Commit({
                 hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
                 timestamp: 1,

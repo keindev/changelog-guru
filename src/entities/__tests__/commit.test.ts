@@ -14,14 +14,14 @@ const commitUrl = 'https://github.com/keindev/changelog-guru/commit/b816518030da
 let author: Author;
 let commit: Commit;
 
-describe('Commit', (): void => {
-    beforeAll((): void => {
+describe('Commit', () => {
+    beforeAll(() => {
         author = new Author({ login, avatar, url: authorUrl });
         commit = new Commit({ author, hash, timestamp, body, url: commitUrl, header: 'feat(Jest): subject' });
     });
 
-    describe('Static methods', (): void => {
-        it('Comparison is correct', (): void => {
+    describe('Static methods', () => {
+        it('Comparison is correct', () => {
             const options = { author, timestamp, body, url: commitUrl };
             const a = new Commit({ ...options, hash: `${hash}1`, header: 'feat(Test): subject' });
             const b = new Commit({ ...options, hash: `${hash}2`, header: 'feat(Test): subject' });
@@ -43,8 +43,8 @@ describe('Commit', (): void => {
         });
     });
 
-    describe('Change commit', (): void => {
-        it('Status will only change to a larger value', (): void => {
+    describe('Change commit', () => {
+        it('Status will only change to a larger value', () => {
             commit.setStatus(CommitStatus.Default);
             expect(commit.getChangeLevel()).toBe(ChangeLevel.Patch);
             expect(commit.getPriority()).toBe(Priority.Low);
@@ -72,7 +72,7 @@ describe('Commit', (): void => {
             expect(commit.hasStatus(CommitStatus.Important)).toBeTruthy();
         });
 
-        it('Only unique accents added', (): void => {
+        it('Only unique accents added', () => {
             const a = faker.system.fileName();
             const b = faker.system.fileName();
 

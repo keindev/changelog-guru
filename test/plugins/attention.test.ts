@@ -5,24 +5,23 @@ import { ConfigLoader } from '../../src/config/config-loader';
 import { DependencyRule, DependencyRuleType } from '../../src/package/rules/dependency-rule';
 import { ChangeLevel } from '../../src/config/config';
 
-// eslint-disable-next-line max-lines-per-function
-describe('AttentionPlugin', (): void => {
+describe('AttentionPlugin', () => {
     let $loader: ConfigLoader;
     let $context: MockState;
     let $plugin: AttentionPlugin;
     let $task: Task;
 
-    beforeEach((done): void => {
+    beforeEach(done => {
         $loader = new ConfigLoader();
         $context = new MockState();
         $plugin = new AttentionPlugin($context);
         $task = new Task('test task');
 
-        $loader.load().then((config): void => {
+        $loader.load().then(config => {
             const options = config.getPlugin('attention');
 
             if (options) {
-                $plugin.init(options as AttentionPluginOptions).then((): void => {
+                $plugin.init(options as AttentionPluginOptions).then(() => {
                     done();
                 });
             } else {
@@ -31,12 +30,12 @@ describe('AttentionPlugin', (): void => {
         });
     });
 
-    it('Default', (): void => {
+    it('Default', () => {
         expect($context.getSections().length).toBe(1);
         expect($context.findSection('Important Changes')).toBeDefined();
     });
 
-    it('Changed license', (done): void => {
+    it('Changed license', done => {
         $context.setLicense('MIT', undefined);
 
         const section = $context.findSection('Important Changes');
@@ -46,7 +45,7 @@ describe('AttentionPlugin', (): void => {
         expect(license).toBeDefined();
 
         if (section && license) {
-            $plugin.modify($task).then((): void => {
+            $plugin.modify($task).then(() => {
                 const [subsection] = section.getSections();
 
                 expect(subsection).toBeDefined();
@@ -62,7 +61,7 @@ describe('AttentionPlugin', (): void => {
         }
     });
 
-    it('Changed dependencies', (done): void => {
+    it('Changed dependencies', done => {
         $context.setPackageRule(
             new DependencyRule(
                 DependencyRuleType.Dependencies,
@@ -80,7 +79,7 @@ describe('AttentionPlugin', (): void => {
         expect(section).toBeDefined();
 
         if (section) {
-            $plugin.modify($task).then((): void => {
+            $plugin.modify($task).then(() => {
                 const [subsection] = section.getSections();
 
                 expect(subsection).toBeDefined();

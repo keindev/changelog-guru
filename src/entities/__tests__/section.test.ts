@@ -18,16 +18,16 @@ let message: Message;
 let author: Author;
 let commit: Commit;
 
-describe('Section', (): void => {
-    beforeEach((): void => {
+describe('Section', () => {
+    beforeEach(() => {
         section = new Section(faker.lorem.word(), SectionPosition.Body);
         message = new Message(faker.lorem.words());
         author = new Author({ login, avatar, url: authorUrl });
         commit = new Commit({ author, hash, timestamp, body, url: commitUrl, header: 'feat(Jest): subject' });
     });
 
-    describe('Static', (): void => {
-        it('Comparison is correct', (): void => {
+    describe('Static', () => {
+        it('Comparison is correct', () => {
             const a = new Section('a', SectionPosition.Body);
             const b = new Section('b', SectionPosition.Body);
 
@@ -50,7 +50,7 @@ describe('Section', (): void => {
             expect(Section.compare(a, b)).toBe(Compare.More);
         });
 
-        it('Sections is filtered', (): void => {
+        it('Sections is filtered', () => {
             const a = new Section('a', SectionPosition.Body);
             const b = new Section('b', SectionPosition.Subsection);
 
@@ -66,7 +66,7 @@ describe('Section', (): void => {
     });
 
     describe('Section modification', () => {
-        it('Position is change', (): void => {
+        it('Position is change', () => {
             section.setPosition(SectionPosition.Body);
             expect(section.getPosition()).toBe(SectionPosition.Body);
 
@@ -83,7 +83,7 @@ describe('Section', (): void => {
             expect(section.getPosition()).toBe(SectionPosition.Subsection);
         });
 
-        it('Entities are added and removed from the section', (): void => {
+        it('Entities are added and removed from the section', () => {
             const subsection = new Section('title', SectionPosition.Body);
 
             section.add(subsection);
@@ -115,7 +115,7 @@ describe('Section', (): void => {
     });
 
     describe('Relations', () => {
-        it('Relations of sectionsRelations between sections of the same level are built correctly', (): void => {
+        it('Relations of sectionsRelations between sections of the same level are built correctly', () => {
             const relations: Map<string, Section> = new Map();
 
             section.add(commit);
@@ -132,7 +132,7 @@ describe('Section', (): void => {
             expect(relations.get(commit.getName())).toStrictEqual(section);
         });
 
-        it('Relations between subsections are built correctly', (): void => {
+        it('Relations between subsections are built correctly', () => {
             const subsection = new Section(faker.lorem.word(), SectionPosition.Body);
             const relations: Map<string, Section> = new Map();
 

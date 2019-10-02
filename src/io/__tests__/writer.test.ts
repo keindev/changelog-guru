@@ -10,9 +10,9 @@ const avatar = 'https://avatars3.githubusercontent.com/u/4527292?v=4';
 const hash = 'b816518030dace1b91838ae0abd56fa88eba19f';
 const author = new Author({ login, url: `https://github.com/${login}`, avatar });
 
-describe('Writer', (): void => {
-    describe('Write sections', (): void => {
-        it('Sections structure will correctly written', (done): void => {
+describe('Writer', () => {
+    describe('Write sections', () => {
+        it('Sections structure will correctly written', done => {
             const writer = new MockWriter();
             const section1 = new Section('Section 1', SectionPosition.Body);
             const section2 = new Section('Section 2', SectionPosition.Body);
@@ -64,7 +64,7 @@ describe('Writer', (): void => {
             section3.add(commit3);
             section3.add(commit4);
 
-            writer.write([section1, section3], [author]).then((): void => {
+            writer.write([section1, section3], [author]).then(() => {
                 // eslint-disable-next-line no-underscore-dangle
                 expect(writer.__filePath()).toBeDefined();
                 // eslint-disable-next-line no-underscore-dangle

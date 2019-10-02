@@ -19,13 +19,13 @@ const commits = [
     new Commit({ author, url: commitUrl, hash: `${hash}2`, header: 'test: subject 2', timestamp: 1 }),
 ];
 
-describe('Reader', (): void => {
-    beforeEach((): void => {
+describe('Reader', () => {
+    beforeEach(() => {
         jest.resetAllMocks();
     });
 
     describe('Read state', () => {
-        it('Package and git meta data will be read to State object', (done): void => {
+        it('Package and git meta data will be read to State object', done => {
             const provider = new GitHubProvider(
                 ServiceProvider.GitHub,
                 'https://github.com/keindev/changelog-guru.git'
@@ -38,7 +38,7 @@ describe('Reader', (): void => {
             provider.getLastRelease.mockImplementation(() => Promise.resolve({ tag: undefined, date }));
             provider.getPrevPackage.mockImplementation(() => Promise.resolve({ license: 'MIT' }));
 
-            reader.read(pkg).then((state): void => {
+            reader.read(pkg).then(state => {
                 expect(state.getAuthors()).toStrictEqual([author]);
                 expect(state.getCommits()).toStrictEqual(commits);
 

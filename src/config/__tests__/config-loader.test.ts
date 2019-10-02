@@ -1,9 +1,9 @@
 import { ConfigLoader } from '../config-loader';
 import { ServiceProvider } from '../config';
 
-describe('ConfigLoader', (): void => {
-    describe('Create', (): void => {
-        it('Default configuration loaded', (done): void => {
+describe('ConfigLoader', () => {
+    describe('Create', () => {
+        it('Default configuration loaded', done => {
             const loader = new ConfigLoader();
 
             loader.load().then(config => {

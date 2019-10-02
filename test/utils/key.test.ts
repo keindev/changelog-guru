@@ -1,20 +1,19 @@
 import Key from '../../src/utils/key';
 
-// eslint-disable-next-line max-lines-per-function
-describe('Key', (): void => {
-    it('Unify', (): void => {
+describe('Key', () => {
+    it('Unify', () => {
         expect(Key.unify('')).toBe('');
         expect(Key.unify('   ')).toBe('');
         expect(Key.unify(' TEST ')).toBe('test');
     });
 
-    it('inArray', (): void => {
+    it('inArray', () => {
         expect(Key.inArray('feat', ['fear', 'test'])).toBeTruthy();
         expect(Key.inArray('feat', ['feed', 'test'])).toBeFalsy();
         expect(Key.inArray('feat', ['fix', 'test'])).toBeFalsy();
     });
 
-    it('inSet', (): void => {
+    it('inSet', () => {
         const items: Set<string> = new Set();
 
         items.add('fear');
@@ -26,7 +25,7 @@ describe('Key', (): void => {
         expect(Key.inSet('test', items)).toBeFalsy();
     });
 
-    it('inMap', (): void => {
+    it('inMap', () => {
         const items: Map<string, string> = new Map();
 
         items.set('fear', 'feat');
@@ -38,7 +37,7 @@ describe('Key', (): void => {
         expect(Key.inMap('test', items)).toBeUndefined();
     });
 
-    it('getEqual', (): void => {
+    it('getEqual', () => {
         const list = ['feat', 'fear', 'feed', 'fix'];
 
         expect(Key.getEqual('feat', list)).toBe('feat');
@@ -46,7 +45,7 @@ describe('Key', (): void => {
         expect(Key.getEqual('fuel', list)).toBeUndefined();
     });
 
-    it('isEqual', (): void => {
+    it('isEqual', () => {
         expect(Key.isEqual('1234', '123x')).toBeTruthy();
         expect(Key.isEqual('1234', '12xx')).toBeFalsy();
         expect(Key.isEqual('1234567', '123456x')).toBeTruthy();

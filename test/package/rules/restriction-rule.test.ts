@@ -1,10 +1,8 @@
 import { RestrictionRule, RestrictionRuleType } from '../../../src/package/rules/restriction-rule';
 import { PackageRuleChangeType } from '../../../src/package/rules/package-rule';
 
-// eslint-disable-next-line max-lines-per-function
-describe('RestrictionRule', (): void => {
-    // eslint-disable-next-line max-lines-per-function
-    it('Default', (): void => {
+describe('RestrictionRule', () => {
+    it('Default', () => {
         const restriction = new RestrictionRule(
             RestrictionRuleType.CPU,
             ['x64', '!arm', '!mips'],
