@@ -1,4 +1,4 @@
-import Key from '../../src/utils/key';
+import Key from '../key';
 
 describe('Key', () => {
     it('Unify', () => {

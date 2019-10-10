@@ -1,7 +1,7 @@
 import path from 'path';
 import { Task } from 'tasktree-cli/lib/task';
-import { Linter, LinterOptions } from '../../src/linter';
-import { PluginLoader } from '../../src/plugins/plugin-loader';
+import { Linter, LinterOptions } from '../linter';
+import { PluginLoader } from '../plugins/plugin-loader';
 
 export class MockLinter extends Linter {
     public static MOCK_PLUGIN_EXTENSION = 'ts';

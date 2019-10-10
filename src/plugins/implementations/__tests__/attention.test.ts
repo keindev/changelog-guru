@@ -1,19 +1,19 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/state/state.mock';
-import AttentionPlugin, { AttentionPluginOptions } from '../../src/plugins/implementations/attention';
-import { ConfigLoader } from '../../src/config/config-loader';
-import { DependencyRule, DependencyRuleType } from '../../src/package/rules/dependency-rule';
-import { ChangeLevel } from '../../src/config/config';
+import AttentionPlugin, { AttentionPluginOptions } from '../attention';
+import { State } from '../../../state/state';
+import { ChangeLevel } from '../../../config/config';
+import { ConfigLoader } from '../../../config/config-loader';
+import { DependencyRule, DependencyRuleType } from '../../../package/rules/dependency-rule';
 
 describe('AttentionPlugin', () => {
     let $loader: ConfigLoader;
-    let $context: MockState;
+    let $context: State;
     let $plugin: AttentionPlugin;
     let $task: Task;
 
     beforeEach(done => {
         $loader = new ConfigLoader();
-        $context = new MockState();
+        $context = new State();
         $plugin = new AttentionPlugin($context);
         $task = new Task('test task');
 
@@ -54,7 +54,7 @@ describe('AttentionPlugin', () => {
                     subsection
                         .getMessages()
                         .map((message): [ChangeLevel, string] => [message.getChangeLevel(), message.text])
-                ).toMatchSnapshot();
+                ).toMatchObject([['patch', 'Source code now under `MIT` license.']]);
 
                 done();
             });
@@ -88,7 +88,12 @@ describe('AttentionPlugin', () => {
                     subsection
                         .getMessages()
                         .map((message): [ChangeLevel, string] => [message.getChangeLevel(), message.text])
-                ).toMatchSnapshot();
+                ).toMatchObject([
+                    [
+                        'patch',
+                        '-   Bumped **[test](https://www.npmjs.com/package/test/v/1.1.0)** from `1.0.0` to `1.1.0`',
+                    ],
+                ]);
 
                 done();
             });

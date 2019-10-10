@@ -1,10 +1,10 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/state/state.mock';
-import ScopePlugin, { ScopePluginOptions, ScopeNames } from '../../src/plugins/implementations/scope';
-import { ConfigLoader } from '../../src/config/config-loader';
-import { Commit } from '../../src/entities/commit';
-import { Author } from '../../src/entities/author';
-import { PluginOption } from '../../src/config/config';
+import ScopePlugin, { ScopePluginOptions, ScopeNames } from '../scope';
+import { ConfigLoader } from '../../../config/config-loader';
+import { PluginOption } from '../../../config/config';
+import { Commit } from '../../../entities/commit';
+import { Author } from '../../../entities/author';
+import { State } from '../../../state/state';
 
 describe('ScopePlugin', () => {
     const $author = new Author({
@@ -18,7 +18,7 @@ describe('ScopePlugin', () => {
 
     beforeEach(done => {
         const loader = new ConfigLoader();
-        const context = new MockState();
+        const context = new State();
 
         $plugin = new ScopePlugin(context);
 

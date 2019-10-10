@@ -1,13 +1,13 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/state/state.mock';
-import MarkerPlugin, { MarkerPluginOptions } from '../../src/plugins/implementations/marker';
-import { ConfigLoader } from '../../src/config/config-loader';
-import { Commit, CommitStatus } from '../../src/entities/commit';
-import { Author } from '../../src/entities/author';
+import MarkerPlugin, { MarkerPluginOptions } from '../marker';
+import { ConfigLoader } from '../../../config/config-loader';
+import { Commit, CommitStatus } from '../../../entities/commit';
+import { Author } from '../../../entities/author';
+import { State } from '../../../state/state';
 
 describe('MarkerPlugin', () => {
     const $loader = new ConfigLoader();
-    const $context = new MockState();
+    const $context = new State();
     const $plugin = new MarkerPlugin($context);
     const $task = new Task('test task');
     const $author = new Author({

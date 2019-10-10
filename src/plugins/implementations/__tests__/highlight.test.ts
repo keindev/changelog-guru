@@ -1,12 +1,12 @@
-import { ConfigLoader } from '../../src/config/config-loader';
-import { MockState } from '../__mocks__/state/state.mock';
-import HighlightPlugin from '../../src/plugins/implementations/highlight';
-import { Commit } from '../../src/entities/commit';
-import { Author } from '../../src/entities/author';
+import HighlightPlugin from '../highlight';
+import { ConfigLoader } from '../../../config/config-loader';
+import { Commit } from '../../../entities/commit';
+import { Author } from '../../../entities/author';
+import { State } from '../../../state/state';
 
 describe('HighlightPlugin', () => {
     const $loader = new ConfigLoader();
-    const $context = new MockState();
+    const $context = new State();
     const $plugin = new HighlightPlugin($context);
     const $author = new Author({
         login: 'keindev',

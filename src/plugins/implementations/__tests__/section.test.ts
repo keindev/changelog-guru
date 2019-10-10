@@ -1,12 +1,12 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { MockState } from '../__mocks__/state/state.mock';
-import SectionPlugin, { SectionPluginOptions } from '../../src/plugins/implementations/section';
-import { ConfigLoader } from '../../src/config/config-loader';
-import { Commit } from '../../src/entities/commit';
-import { Author } from '../../src/entities/author';
+import SectionPlugin, { SectionPluginOptions } from '../section';
+import { ConfigLoader } from '../../../config/config-loader';
+import { Commit } from '../../../entities/commit';
+import { Author } from '../../../entities/author';
+import { State } from '../../../state/state';
 
 describe('SectionPlugin', () => {
-    const $context = new MockState();
+    const $context = new State();
     const $loader = new ConfigLoader();
     const $plugin = new SectionPlugin($context);
     const $author = new Author({
