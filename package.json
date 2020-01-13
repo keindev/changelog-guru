@@ -60,7 +60,7 @@
     "devDependencies": {
         "@types/cosmiconfig": "^5.0.3",
         "@types/dotenv": "^6.1.1",
-        "@types/faker": "^4.1.5",
+        "@types/faker": "^4.1.9",
         "@types/findup-sync": "^2.0.2",
         "@types/jest": "^24.0.18",
         "@types/node": "^12.7.8",
