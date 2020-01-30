@@ -1,6 +1,6 @@
 import { Arguments } from 'yargs';
 import { TaskTree, ExitCode } from 'tasktree-cli';
-import { Changelog } from '../../changelog';
+import { Changelog } from '../../Changelog';
 
 export const command = 'lint';
 export const alias = 'l';
@@ -24,13 +24,13 @@ export const builder = {
     },
 };
 
-interface LintOptions {
+interface ILintOptions {
     message: string;
     length: number;
     lowercase: boolean;
 }
 
-export const handler = (argv: Arguments<LintOptions>): Promise<void> => {
+export const handler = (argv: Arguments<ILintOptions>): Promise<void> => {
     const tree = TaskTree.tree().start();
     const changelog = new Changelog();
 

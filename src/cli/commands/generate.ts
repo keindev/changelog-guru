@@ -1,7 +1,7 @@
 import { Arguments } from 'yargs';
 import { TaskTree, ExitCode } from 'tasktree-cli';
-import { Changelog } from '../../changelog';
-import { ServiceProvider } from '../../config/config';
+import { Changelog } from '../../Changelog';
+import { ServiceProvider } from '../../config/Config';
 
 export const command = 'generate';
 export const alias = 'g';
@@ -29,14 +29,14 @@ export const builder = {
     },
 };
 
-interface GenerateOptions {
+interface IGenerateOptions {
     bump: boolean;
     branch: string;
     provider: ServiceProvider;
     output: string;
 }
 
-export const handler = (argv: Arguments<GenerateOptions>): Promise<void> => {
+export const handler = (argv: Arguments<IGenerateOptions>): Promise<void> => {
     const tree = TaskTree.tree().start();
     const changelog = new Changelog({
         bump: argv.bump,
