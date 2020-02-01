@@ -1,11 +1,11 @@
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
 import { IPluginOption } from '../../config/Config';
-import CommitPlugin from '../CommitPlugin';
 import Section, { SectionPosition, SectionOrder } from '../../entities/Section';
 import Commit, { CommitStatus } from '../../entities/Commit';
 import Key from '../../utils/Key';
-import { PluginLintOptions } from '../../Linter';
+import { IPluginLintOptions } from '../../Linter';
+import BasePlugin, { IParserPlugin } from '../BasePlugin';
 
 export enum MarkerType {
     // !break - indicates major changes breaking backward compatibility
@@ -27,7 +27,7 @@ export interface IMarkerPluginOptions extends IPluginOption {
     };
 }
 
-export default class MarkerPlugin extends CommitPlugin {
+export default class MarkerPlugin extends BasePlugin<IParserPlugin> {
     private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 
@@ -112,7 +112,7 @@ export default class MarkerPlugin extends CommitPlugin {
         });
     }
 
-    public lint(options: PluginLintOptions, task: Task): void {
+    public lint(options: IPluginLintOptions, task: Task): void {
         const { body } = options;
         const markersLine = body[0];
         const blackLine = body[1];

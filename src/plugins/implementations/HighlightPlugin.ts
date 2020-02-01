@@ -1,13 +1,13 @@
-import CommitPlugin from '../CommitPlugin';
 import Commit from '../../entities/Commit';
 import { IPluginOption } from '../../config/Config';
+import BasePlugin, { IParserPlugin } from '../BasePlugin';
 
 export interface IHighlightPluginOptions extends IPluginOption {
     camelCase?: boolean;
     masks?: string[];
 }
 
-export default class HighlightPlugin extends CommitPlugin {
+export default class HighlightPlugin extends BasePlugin<IParserPlugin> {
     private masks: RegExp[] = [];
 
     public async init(config: IHighlightPluginOptions): Promise<void> {

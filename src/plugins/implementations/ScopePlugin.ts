@@ -1,9 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
-import CommitPlugin from '../CommitPlugin';
 import Commit from '../../entities/Commit';
 import { IPluginOption } from '../../config/Config';
 import Key from '../../utils/Key';
-import { PluginLintOptions } from '../../Linter';
+import { IPluginLintOptions } from '../../Linter';
+import BasePlugin, { IParserPlugin } from '../BasePlugin';
 
 export interface IScopeNames {
     [key: string]: string;
@@ -14,7 +14,7 @@ export interface IScopePluginOptions extends IPluginOption {
     names: IScopeNames;
 }
 
-export default class ScopePlugin extends CommitPlugin {
+export default class ScopePlugin extends BasePlugin<IParserPlugin> {
     public static SEPARATOR = ',';
     public static MIN_NAME_LENGTH = 2;
 
@@ -44,7 +44,7 @@ export default class ScopePlugin extends CommitPlugin {
         }
     }
 
-    public lint(options: PluginLintOptions, task: Task): void {
+    public lint(options: IPluginLintOptions, task: Task): void {
         const { scope } = options;
 
         if (scope) {

@@ -7,7 +7,6 @@ import Commit from './entities/Commit';
 import PluginOption from './config/Config';
 import PluginLoader from './plugins/PluginLoader';
 import State from './state/State';
-import CommitPlugin from './plugins/CommitPlugin';
 import Key from './utils/Key';
 
 export interface IPluginLintOptions {
@@ -50,7 +49,7 @@ export class Linter {
     // This does not work properly with win32 systems, where env variable declarations use a different syntax
     private supportedParameters: string[] = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'];
 
-    public constructor(task: Task, options: LinterOptions) {
+    public constructor(task: Task, options: ILinterOptions) {
         const { config } = options;
 
         this.plugins = options.plugins;

@@ -5,8 +5,6 @@ import Commit from '../entities/Commit';
 import Author from '../entities/Author';
 import Section, { SectionPosition } from '../entities/Section';
 import License from '../package/License';
-import CommitPlugin from '../plugins/CommitPlugin';
-import StatePlugin from '../plugins/StatePlugin';
 import Key from '../utils/Key';
 import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
 import { ChangeLevel, ExclusionType, IPluginOption } from '../config/Config';
@@ -182,18 +180,7 @@ export default class State implements IPluginContext {
             context: this,
         });
 
-        switch (true) {
-            case plugin instanceof CommitPlugin:
-                await Promise.all(
-                    [...this.commits.values()].map(commit => (plugin as CommitPlugin).parse(commit, task))
-                );
-                break;
-            case plugin instanceof StatePlugin:
-                await (plugin as StatePlugin).modify(task);
-                break;
-            default:
-                task.fail(`{bold ${plugin.constructor.name}} - plugin is not available yet`);
-                break;
-        }
+        await Promise.all([...this.commits.values()].map(commit => (plugin as CommitPlugin).parse(commit, task)));
+        await (plugin as StatePlugin).modify(task);
     }
 }

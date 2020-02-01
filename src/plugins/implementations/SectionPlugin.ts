@@ -1,16 +1,16 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { IPluginOption } from '../../config/Config';
-import CommitPlugin from '../CommitPlugin';
 import Section, { SectionPosition } from '../../entities/Section';
 import Commit from '../../entities/Commit';
 import Key from '../../utils/Key';
-import { PluginLintOptions } from '../../Linter';
+import { IPluginLintOptions } from '../../Linter';
+import BasePlugin, { IParserPlugin } from '../BasePlugin';
 
 export interface ISectionPluginOptions extends IPluginOption {
     [key: string]: string[];
 }
 
-export default class SectionPlugin extends CommitPlugin {
+export default class SectionPlugin extends BasePlugin<IParserPlugin> {
     private blocks: Map<string, Section> = new Map();
 
     public async init(config: ISectionPluginOptions): Promise<void> {
@@ -44,7 +44,7 @@ export default class SectionPlugin extends CommitPlugin {
         }
     }
 
-    public lint(options: PluginLintOptions, task: Task): void {
+    public lint(options: IPluginLintOptions, task: Task): void {
         const { type } = options;
 
         if (!Key.inMap(type, this.blocks)) task.error(`Commit type {bold ${type}} is not assigned with section`);

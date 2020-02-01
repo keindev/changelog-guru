@@ -1,6 +1,5 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { TaskTree } from 'tasktree-cli';
-import StatePlugin from '../StatePlugin';
 import Section, { SectionPosition, SectionOrder } from '../../entities/Section';
 import Message from '../../entities/Message';
 import Markdown from '../../utils/Markdown';
@@ -11,6 +10,7 @@ import PackageRule, {
     IPackageRuleChange,
 } from '../../package/rules/PackageRule';
 import { DependencyRuleType, RestrictionRuleType } from '../../package/Package';
+import BasePlugin, { IModifierPlugin } from '../BasePlugin';
 
 export enum AttentionTemplateLiteral {
     Name = '%name%',
@@ -26,7 +26,7 @@ export interface IAttentionPluginOptions extends IPluginOption {
     sections: PackageRuleType[];
 }
 
-export default class AttentionPlugin extends StatePlugin {
+export default class AttentionPlugin extends BasePlugin<IModifierPlugin> {
     private section: Section | undefined;
     private templates: Map<PackageRuleChangeType, string> = new Map();
     private sections: Set<PackageRuleType> = new Set();
