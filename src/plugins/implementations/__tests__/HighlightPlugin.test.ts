@@ -1,8 +1,8 @@
 import HighlightPlugin from '../HighlightPlugin';
-import ConfigLoader from '../../../config/ConfigLoader';
-import Commit from '../../../entities/Commit';
-import Author from '../../../entities/Author';
-import State from '../../../state/State';
+import ConfigLoader from '../../../core/config/ConfigLoader';
+import Commit from '../../../core/entities/Commit';
+import Author from '../../../core/entities/Author';
+import State from '../../../core/state/State';
 
 describe('HighlightPlugin', () => {
     const $loader = new ConfigLoader();

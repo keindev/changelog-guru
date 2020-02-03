@@ -1,6 +1,5 @@
 import { SemVer } from 'semver';
-import { DependencyRuleType } from './DependencyRule';
-import { RestrictionRuleType } from './RestrictionRule';
+import { DependencyRuleType, RestrictionRuleType } from '../Package';
 
 export enum PackageRuleChangeType {
     Added = 'added',

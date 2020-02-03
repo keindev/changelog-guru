@@ -1,16 +1,15 @@
 import { Task } from 'tasktree-cli/lib/task';
-import { IPluginOption } from '../../config/Config';
-import Section, { SectionPosition } from '../../entities/Section';
-import Commit from '../../entities/Commit';
+import Section, { SectionPosition } from '../../core/entities/Section';
+import Commit from '../../core/entities/Commit';
 import Key from '../../utils/Key';
-import { IPluginLintOptions } from '../../Linter';
-import BasePlugin, { IParserPlugin } from '../BasePlugin';
+import Plugin, { IPluginLintOptions } from '../Plugin';
+import { IPluginOption } from '../../core/config/Config';
 
 export interface ISectionPluginOptions extends IPluginOption {
     [key: string]: string[];
 }
 
-export default class SectionPlugin extends BasePlugin<IParserPlugin> {
+export default class SectionPlugin extends Plugin {
     private blocks: Map<string, Section> = new Map();
 
     public async init(config: ISectionPluginOptions): Promise<void> {

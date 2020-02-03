@@ -1,9 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
 import MarkerPlugin, { IMarkerPluginOptions } from '../MarkerPlugin';
-import ConfigLoader from '../../../config/ConfigLoader';
-import Commit, { CommitStatus } from '../../../entities/Commit';
-import Author from '../../../entities/Author';
-import State from '../../../state/State';
+import ConfigLoader from '../../../core/config/ConfigLoader';
+import Commit, { CommitStatus } from '../../../core/entities/Commit';
+import Author from '../../../core/entities/Author';
+import State from '../../../core/state/State';
 
 describe('MarkerPlugin', () => {
     const $loader = new ConfigLoader();

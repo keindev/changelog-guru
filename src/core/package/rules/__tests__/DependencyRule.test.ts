@@ -1,6 +1,7 @@
 import semver from 'semver';
-import DependencyRule, { DependencyRuleType } from '../DependencyRule';
+import DependencyRule from '../DependencyRule';
 import { PackageRuleChangeType } from '../PackageRule';
+import { DependencyRuleType } from '../../Package';
 
 const dependency = new DependencyRule(
     DependencyRuleType.Dependencies,

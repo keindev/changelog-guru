@@ -1,10 +1,10 @@
 import { Task } from 'tasktree-cli/lib/task';
 import AttentionPlugin, { IAttentionPluginOptions } from '../AttentionPlugin';
-import State from '../../../state/State';
-import { ChangeLevel } from '../../../config/Config';
-import ConfigLoader from '../../../config/ConfigLoader';
-import DependencyRule from '../../../package/rules/DependencyRule';
-import { DependencyRuleType } from '../../../package/Package';
+import State from '../../../core/state/State';
+import { ChangeLevel } from '../../../core/config/Config';
+import ConfigLoader from '../../../core/config/ConfigLoader';
+import DependencyRule from '../../../core/package/rules/DependencyRule';
+import { DependencyRuleType } from '../../../core/package/Package';
 
 describe('AttentionPlugin', () => {
     let $loader: ConfigLoader;

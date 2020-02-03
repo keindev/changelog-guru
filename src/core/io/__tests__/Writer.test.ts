@@ -2,7 +2,7 @@ import { ChangeLevel } from '../../config/Config';
 import Author from '../../entities/Author';
 import Commit, { CommitStatus } from '../../entities/Commit';
 import Section, { SectionPosition } from '../../entities/Section';
-import { MockWriter } from '../__mocks__/writer.mock';
+import MockWriter from '../__mocks__/Writer.mock';
 
 const login = 'keindev';
 const commitUrl = 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f';

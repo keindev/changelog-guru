@@ -1,7 +1,7 @@
 import { Arguments } from 'yargs';
 import { TaskTree, ExitCode } from 'tasktree-cli';
 import { Changelog } from '../../Changelog';
-import { ServiceProvider } from '../../config/Config';
+import { ServiceProvider } from '../../core/config/Config';
 
 export const command = 'generate';
 export const alias = 'g';

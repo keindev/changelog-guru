@@ -36,7 +36,7 @@ export default class GitHubProvider extends GitProvider {
         return count;
     }
 
-    public async getLastRelease(): Promise<ReleaseInfo> {
+    public async getLastRelease(): Promise<IReleaseInfo> {
         if (!this.release) {
             const response = await this.provider.release.getLast();
 
@@ -47,7 +47,7 @@ export default class GitHubProvider extends GitProvider {
             }
         }
 
-        return this.release as ReleaseInfo;
+        return this.release as IReleaseInfo;
     }
 
     public async getPrevPackage(): Promise<PackageJson> {

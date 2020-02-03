@@ -1,5 +1,5 @@
 import { SemVer } from 'semver';
-import Author from '../entities/Author';
+import Author from '../core/entities/Author';
 
 export default class Markdown {
     public static DEFAULT_HEADER_LEVEL = 1;

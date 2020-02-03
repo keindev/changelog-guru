@@ -1,16 +1,16 @@
 import { Task } from 'tasktree-cli/lib/task';
 import { TaskTree } from 'tasktree-cli';
-import Section, { SectionPosition, SectionOrder } from '../../entities/Section';
-import Message from '../../entities/Message';
+import Section, { SectionPosition, SectionOrder } from '../../core/entities/Section';
+import Message from '../../core/entities/Message';
 import Markdown from '../../utils/Markdown';
-import { IPluginOption, PluginOptionValue, ChangeLevel } from '../../config/Config';
+import { IPluginOption, PluginOptionValue, ChangeLevel } from '../../core/config/Config';
 import PackageRule, {
     PackageRuleChangeType,
     PackageRuleType,
     IPackageRuleChange,
-} from '../../package/rules/PackageRule';
-import { DependencyRuleType, RestrictionRuleType } from '../../package/Package';
-import BasePlugin, { IModifierPlugin } from '../BasePlugin';
+} from '../../core/package/rules/PackageRule';
+import { DependencyRuleType, RestrictionRuleType } from '../../core/package/Package';
+import Plugin from '../Plugin';
 
 export enum AttentionTemplateLiteral {
     Name = '%name%',
@@ -26,7 +26,7 @@ export interface IAttentionPluginOptions extends IPluginOption {
     sections: PackageRuleType[];
 }
 
-export default class AttentionPlugin extends BasePlugin<IModifierPlugin> {
+export default class AttentionPlugin extends Plugin {
     private section: Section | undefined;
     private templates: Map<PackageRuleChangeType, string> = new Map();
     private sections: Set<PackageRuleType> = new Set();

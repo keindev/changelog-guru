@@ -3,7 +3,7 @@ import Commit from '../../entities/Commit';
 import Author from '../../entities/Author';
 import { SectionPosition } from '../../entities/Section';
 import ConfigLoader from '../../config/ConfigLoader';
-import Config, { ChangeLevel } from '../../config/Config';
+import Config, { ChangeLevel, ExclusionType } from '../../config/Config';
 
 const loader = new ConfigLoader();
 let config: Config;
@@ -110,6 +110,86 @@ describe('State', () => {
                 expect(state.findSection('header section')).toStrictEqual(section);
                 expect(state.findSection('')).toBeUndefined();
             }
+        });
+    });
+
+    describe('Filter commits', () => {
+        const state = new State();
+
+        it('Filter authors by login', () => {
+            const bot = new Author({
+                login: 'bot',
+                url: 'https://github.com/bot',
+                avatar: 'https://avatars3.githubusercontent.com/u/0?v=4',
+            });
+            const author = new Author({
+                login: 'dev1',
+                url: 'https://github.com/dev1',
+                avatar: 'https://avatars3.githubusercontent.com/u/1?v=4',
+            });
+
+            const A = new Commit({
+                author,
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f1',
+                timestamp: 1,
+                header: 'feat(AAA): AAA',
+                body: '',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f1',
+            });
+
+            const B = new Commit({
+                author,
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
+                timestamp: 2,
+                header: 'fix(BBB): BBB',
+                body: '',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
+            });
+
+            const C = new Commit({
+                author,
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
+                timestamp: 2,
+                header: 'fix(CCC): CCC',
+                body: '',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
+            });
+
+            const D = new Commit({
+                author: bot,
+                hash: 'b816518030dace1b91838ae0abd56fa88eba19f2',
+                timestamp: 2,
+                header: 'build(DDD): DDD',
+                body: '',
+                url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f2',
+            });
+
+            state.addCommit(A);
+            state.addCommit(B);
+            state.addCommit(C);
+            state.addCommit(D);
+
+            state.ignoreEntities([[ExclusionType.AuthorLogin, ['bot']]]);
+            expect(bot.isIgnored()).toBeTruthy();
+            expect(author.isIgnored()).toBeFalsy();
+
+            state.ignoreEntities([[ExclusionType.CommitType, ['fix']]]);
+            expect(A.isIgnored()).toBeFalsy();
+            expect(B.isIgnored()).toBeTruthy();
+            expect(C.isIgnored()).toBeTruthy();
+            expect(D.isIgnored()).toBeFalsy();
+
+            state.ignoreEntities([[ExclusionType.CommitScope, ['AAA']]]);
+            expect(A.isIgnored()).toBeTruthy();
+            expect(B.isIgnored()).toBeTruthy();
+            expect(C.isIgnored()).toBeTruthy();
+            expect(D.isIgnored()).toBeFalsy();
+
+            state.ignoreEntities([[ExclusionType.CommitSubject, ['DDD']]]);
+            expect(A.isIgnored()).toBeTruthy();
+            expect(B.isIgnored()).toBeTruthy();
+            expect(C.isIgnored()).toBeTruthy();
+            expect(D.isIgnored()).toBeTruthy();
         });
     });
 });

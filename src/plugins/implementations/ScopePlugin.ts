@@ -1,9 +1,8 @@
 import { Task } from 'tasktree-cli/lib/task';
-import Commit from '../../entities/Commit';
-import { IPluginOption } from '../../config/Config';
+import Commit from '../../core/entities/Commit';
+import { IPluginOption } from '../../core/config/Config';
 import Key from '../../utils/Key';
-import { IPluginLintOptions } from '../../Linter';
-import BasePlugin, { IParserPlugin } from '../BasePlugin';
+import Plugin, { IPluginLintOptions } from '../Plugin';
 
 export interface IScopeNames {
     [key: string]: string;
@@ -14,7 +13,7 @@ export interface IScopePluginOptions extends IPluginOption {
     names: IScopeNames;
 }
 
-export default class ScopePlugin extends BasePlugin<IParserPlugin> {
+export default class ScopePlugin extends Plugin {
     public static SEPARATOR = ',';
     public static MIN_NAME_LENGTH = 2;
 

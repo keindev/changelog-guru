@@ -2,9 +2,9 @@ import faker from 'faker';
 import Reader from '../Reader';
 import Package from '../../package/Package';
 import { ServiceProvider } from '../../config/Config';
-import { GitHubProvider } from '../../providers/GithubProvider';
 import Commit from '../../entities/Commit';
 import Author from '../../entities/Author';
+import GitHubProvider from '../../providers/GitHubProvider';
 
 jest.mock('../../providers/github-provider');
 

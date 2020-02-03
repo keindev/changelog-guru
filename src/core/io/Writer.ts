@@ -4,8 +4,8 @@ import { TaskTree } from 'tasktree-cli';
 import Section from '../entities/Section';
 import Commit from '../entities/Commit';
 import Author from '../entities/Author';
-import Markdown from '../utils/Markdown';
-import Key from '../utils/Key';
+import Markdown from '../../utils/Markdown';
+import Key from '../../utils/Key';
 import Message from '../entities/Message';
 
 export default class Writer {

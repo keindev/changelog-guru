@@ -1,9 +1,9 @@
 import { Task } from 'tasktree-cli/lib/task';
 import SectionPlugin, { ISectionPluginOptions } from '../SectionPlugin';
-import ConfigLoader from '../../../config/ConfigLoader';
-import Commit from '../../../entities/Commit';
-import Author from '../../../entities/Author';
-import State from '../../../state/State';
+import ConfigLoader from '../../../core/config/ConfigLoader';
+import Commit from '../../../core/entities/Commit';
+import Author from '../../../core/entities/Author';
+import State from '../../../core/state/State';
 
 describe('SectionPlugin', () => {
     const $context = new State();

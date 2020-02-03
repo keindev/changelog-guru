@@ -1,10 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { Task } from 'tasktree-cli/lib/task';
-import { IPluginOption } from '../config/Config';
-import License from '../package/License';
-import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
-import Section, { SectionPosition } from '../entities/Section';
+import { IPluginContext, IPlugin } from './Plugin';
+import { IPluginOption } from '../core/config/Config';
 
 export interface IConstructablePlugin<T, C> {
     new (context: C): T;
@@ -12,17 +10,6 @@ export interface IConstructablePlugin<T, C> {
 
 export interface IImportablePlugin<T, C> {
     default: IConstructablePlugin<T, C>;
-}
-
-export interface IPluginContext {
-    getLicense(): License | undefined;
-    getPackageRule(type: PackageRuleType): PackageRule | undefined;
-    addSection(title: string, position: SectionPosition): Section | undefined;
-    findSection(title: string): Section | undefined;
-}
-
-export interface IPlugin {
-    init(config: IPluginOption): Promise<void>;
 }
 
 export interface IPluginLoadOptions {

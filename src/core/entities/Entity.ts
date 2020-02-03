@@ -67,8 +67,8 @@ export default class Entity {
         this.level = level;
     }
 
-    public ignore(): void {
-        this.ignored = true;
+    public ignore(condition?: boolean): void {
+        this.ignored = this.ignored || (typeof condition === 'boolean' ? condition : true);
     }
 
     public isIgnored(): boolean {

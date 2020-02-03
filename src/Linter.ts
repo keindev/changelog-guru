@@ -3,19 +3,12 @@ import readline from 'readline';
 import path from 'path';
 import { once } from 'events';
 import { Task } from 'tasktree-cli/lib/task';
-import Commit from './entities/Commit';
-import PluginOption from './config/Config';
+import Commit from './core/entities/Commit';
+import { IPluginOption } from './core/config/Config';
 import PluginLoader from './plugins/PluginLoader';
-import State from './state/State';
+import State from './core/state/State';
 import Key from './utils/Key';
-
-export interface IPluginLintOptions {
-    header: string;
-    body: string[];
-    type: string;
-    scope: string;
-    subject: string;
-}
+import { IPluginLintOptions } from './plugins/Plugin';
 
 export interface ILintOptions {
     lowercaseTypesOnly?: boolean;
@@ -24,7 +17,7 @@ export interface ILintOptions {
 
 export interface ILinterOptions {
     config: ILintOptions;
-    plugins: [string, PluginOption][];
+    plugins: [string, IPluginOption][];
     types: string[];
 }
 
@@ -40,7 +33,7 @@ export class Linter {
     protected pluginLoader: PluginLoader = new PluginLoader();
 
     private task: Task;
-    private plugins: [string, PluginOption][];
+    private plugins: [string, IPluginOption][];
     private types: string[];
     private maxHeaderLength: number;
     private lowercaseTypesOnly: boolean;
@@ -160,12 +153,12 @@ export class Linter {
         return [safeType || Linter.EMPTY_VALUE, safeScope || Linter.EMPTY_VALUE, safeSubject || Linter.EMPTY_VALUE];
     }
 
-    private async lintWithPlugin(name: string, config: PluginOption, options: IPluginLintOptions): Promise<void> {
+    private async lintWithPlugin(name: string, config: IPluginOption, options: IPluginLintOptions): Promise<void> {
         const { task } = this;
         const plugin = await this.pluginLoader.load(task, { name, config, context: this.state });
 
-        if (plugin instanceof CommitPlugin) {
-            (plugin as CommitPlugin).lint(options, task);
+        if (plugin.lint) {
+            plugin.lint(options, task);
         }
     }
 }

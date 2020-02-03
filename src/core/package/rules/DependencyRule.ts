@@ -1,9 +1,10 @@
 import semver, { SemVer } from 'semver';
-import PackageRule, { PackageRuleChangeType, PackageRuleChange } from './PackageRule';
-import { PackageDependencies, DependencyRuleType } from '../Package';
+import PackageRule, { PackageRuleChangeType, IPackageRuleChange } from './PackageRule';
+import { DependencyRuleType, IPackageDependencies } from '../Package';
+import { Compare } from '../../entities/Entity';
 
 export default class DependencyRule extends PackageRule {
-    public constructor(type: DependencyRuleType, deps?: PackageDependencies, prev?: PackageDependencies) {
+    public constructor(type: DependencyRuleType, deps?: IPackageDependencies, prev?: IPackageDependencies) {
         super(type);
 
         this.fillChanges(deps);
@@ -20,7 +21,7 @@ export default class DependencyRule extends PackageRule {
         return link;
     }
 
-    private fillChanges(deps?: PackageDependencies): void {
+    private fillChanges(deps?: IPackageDependencies): void {
         if (deps) {
             let version: SemVer | undefined;
 
@@ -42,10 +43,10 @@ export default class DependencyRule extends PackageRule {
 
     // FIXME: make func shorter
     // eslint-disable-next-line max-lines-per-function
-    private compareWith(deps?: PackageDependencies): void {
+    private compareWith(deps?: IPackageDependencies): void {
         if (deps) {
             const { changes } = this;
-            let change: PackageRuleChange | undefined;
+            let change: IPackageRuleChange | undefined;
             let version: SemVer | undefined;
             let type: PackageRuleChangeType;
 

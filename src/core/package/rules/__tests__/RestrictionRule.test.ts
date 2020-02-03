@@ -1,5 +1,6 @@
-import RestrictionRule, { RestrictionRuleType } from '../RestrictionRule';
+import RestrictionRule from '../RestrictionRule';
 import { PackageRuleChangeType } from '../PackageRule';
+import { RestrictionRuleType } from '../../Package';
 
 const restriction = new RestrictionRule(RestrictionRuleType.CPU, ['x64', '!arm', '!mips'], ['x64', 'arm', 'ia32']);
 

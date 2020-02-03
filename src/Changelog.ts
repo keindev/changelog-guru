@@ -1,14 +1,14 @@
 import dotenv from 'dotenv';
 import { TaskTree } from 'tasktree-cli';
-import Reader from './io/Reader';
-import Writer from './io/Writer';
-import Provider from './providers/Provider';
-import Config, { ServiceProvider } from './config/Config';
-import Package from './package/Package';
-import ConfigLoader, { IConfigLoaderOptions } from './config/ConfigLoader';
-import State from './state/State';
-import GitHubProvider from './providers/GitHubProvider';
+import Reader from './core/io/Reader';
+import Writer from './core/io/Writer';
+import Config, { ServiceProvider } from './core/config/Config';
+import Package from './core/package/Package';
+import ConfigLoader, { IConfigLoaderOptions } from './core/config/ConfigLoader';
+import State from './core/state/State';
 import { Linter, ILintOptions } from './Linter';
+import Provider from './core/providers/Provider';
+import GitHubProvider from './core/providers/GitHubProvider';
 
 export interface IChangelogOptions extends IConfigLoaderOptions {
     bump?: boolean;

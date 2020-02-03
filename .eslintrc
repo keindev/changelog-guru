@@ -47,7 +47,7 @@
         {
             "files": "*.test.ts",
             "rules": {
-                "max-lines-per-function": ["error", { "max": 200 }]
+                "max-lines-per-function": ["error", { "max": 300 }]
             }
         }
     ],

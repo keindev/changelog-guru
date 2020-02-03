@@ -2,7 +2,7 @@ import { LookupManager } from 'string-lookup-manager';
 import Entity, { Compare, Priority } from './Entity';
 import Author from './Author';
 import { ChangeLevel } from '../config/Config';
-import Markdown from '../utils/Markdown';
+import Markdown from '../../utils/Markdown';
 
 export enum CommitStatus {
     BreakingChanges = 1,

@@ -1,14 +1,14 @@
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import Filter from './Filter';
 import Commit from '../entities/Commit';
 import Author from '../entities/Author';
 import Section, { SectionPosition } from '../entities/Section';
 import License from '../package/License';
-import Key from '../utils/Key';
+import Key from '../../utils/Key';
 import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
 import { ChangeLevel, ExclusionType, IPluginOption } from '../config/Config';
-import PluginLoader, { IPluginContext } from '../plugins/PluginLoader';
+import PluginLoader from '../../plugins/PluginLoader';
+import { IPluginContext } from '../../plugins/Plugin';
 
 export default class State implements IPluginContext {
     protected pluginLoader = new PluginLoader();
@@ -121,19 +121,21 @@ export default class State implements IPluginContext {
     }
 
     public ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
+        const { authors, commits } = this;
+
         exclusions.forEach(([type, rules]) => {
             switch (type) {
                 case ExclusionType.AuthorLogin:
-                    Filter.authorsByLogin(this.authors, rules);
+                    authors.forEach(author => author.ignore(rules.indexOf(author.login) >= 0));
                     break;
                 case ExclusionType.CommitType:
-                    Filter.commitsByType(this.commits, rules);
+                    commits.forEach(commit => commit.ignore(Key.inArray(commit.getTypeName(), rules)));
                     break;
                 case ExclusionType.CommitScope:
-                    Filter.commitsByScope(this.commits, rules);
+                    commits.forEach(commit => commit.ignore(Key.inArray(commit.getScope(), rules)));
                     break;
                 case ExclusionType.CommitSubject:
-                    Filter.commitsBySubject(this.commits, rules);
+                    commits.forEach(commit => commit.ignore(rules.some(item => commit.getSubject().includes(item))));
                     break;
                 default:
                     TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
@@ -174,13 +176,15 @@ export default class State implements IPluginContext {
     }
 
     private async modifyWithPlugin(name: string, config: IPluginOption, task: Task): Promise<void> {
-        const plugin = await this.pluginLoader.load(task, {
-            name,
-            config,
-            context: this,
-        });
+        const plugin = await this.pluginLoader.load(task, { name, config, context: this });
 
-        await Promise.all([...this.commits.values()].map(commit => (plugin as CommitPlugin).parse(commit, task)));
-        await (plugin as StatePlugin).modify(task);
+        if (plugin.parse) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            await Promise.all([...this.commits.values()].map(commit => plugin.parse!(commit, task)));
+        }
+
+        if (plugin.modify) {
+            await plugin.modify(task);
+        }
     }
 }

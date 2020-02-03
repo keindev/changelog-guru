@@ -35,6 +35,7 @@
         "lint": "eslint src/**/*.ts --fix",
         "spellcheck": "cspell -c .vscode/cspell.json --no-summary \"*.*\" \"docs/**/*\" \"**/*.ts\" \"**/*.js\"",
         "test": "jest",
+        "check:ts": "tsc --noEmit",
         "build:ts": "tsc",
         "build": "npm-run-all clean spellcheck lint test build:*"
     },

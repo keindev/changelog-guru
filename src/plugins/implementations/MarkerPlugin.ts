@@ -1,11 +1,10 @@
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import { IPluginOption } from '../../config/Config';
-import Section, { SectionPosition, SectionOrder } from '../../entities/Section';
-import Commit, { CommitStatus } from '../../entities/Commit';
+import Section, { SectionPosition, SectionOrder } from '../../core/entities/Section';
+import Commit, { CommitStatus } from '../../core/entities/Commit';
 import Key from '../../utils/Key';
-import { IPluginLintOptions } from '../../Linter';
-import BasePlugin, { IParserPlugin } from '../BasePlugin';
+import Plugin, { IPluginLintOptions } from '../Plugin';
+import { IPluginOption } from '../../core/config/Config';
 
 export enum MarkerType {
     // !break - indicates major changes breaking backward compatibility
@@ -27,7 +26,7 @@ export interface IMarkerPluginOptions extends IPluginOption {
     };
 }
 
-export default class MarkerPlugin extends BasePlugin<IParserPlugin> {
+export default class MarkerPlugin extends Plugin {
     private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 

@@ -1,13 +1,13 @@
-import Commit from '../../entities/Commit';
-import { IPluginOption } from '../../config/Config';
-import BasePlugin, { IParserPlugin } from '../BasePlugin';
+import Commit from '../../core/entities/Commit';
+import { IPluginOption } from '../../core/config/Config';
+import Plugin from '../Plugin';
 
 export interface IHighlightPluginOptions extends IPluginOption {
     camelCase?: boolean;
     masks?: string[];
 }
 
-export default class HighlightPlugin extends BasePlugin<IParserPlugin> {
+export default class HighlightPlugin extends Plugin {
     private masks: RegExp[] = [];
 
     public async init(config: IHighlightPluginOptions): Promise<void> {

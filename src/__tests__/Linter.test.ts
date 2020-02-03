@@ -1,6 +1,6 @@
 import { Task } from 'tasktree-cli/lib/task';
-import ConfigLoader from '../config/ConfigLoader';
-import Config from '../config/Config';
+import ConfigLoader from '../core/config/ConfigLoader';
+import Config from '../core/config/Config';
 import { MockLinter } from '../__mocks__/Linter.mock';
 
 let task: Task;

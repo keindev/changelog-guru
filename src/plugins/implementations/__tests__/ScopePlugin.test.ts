@@ -1,10 +1,10 @@
 import { Task } from 'tasktree-cli/lib/task';
 import ScopePlugin, { IScopePluginOptions, IScopeNames } from '../ScopePlugin';
-import ConfigLoader from '../../../config/ConfigLoader';
-import PluginOption from '../../../config/Config';
-import Commit from '../../../entities/Commit';
-import Author from '../../../entities/Author';
-import State from '../../../state/State';
+import ConfigLoader from '../../../core/config/ConfigLoader';
+import Commit from '../../../core/entities/Commit';
+import Author from '../../../core/entities/Author';
+import State from '../../../core/state/State';
+import { IPluginOption } from '../../../core/config/Config';
 
 describe('ScopePlugin', () => {
     const $author = new Author({
@@ -14,7 +14,7 @@ describe('ScopePlugin', () => {
     });
 
     let $plugin: ScopePlugin;
-    let $options: PluginOption;
+    let $options: IPluginOption;
 
     beforeEach(done => {
         const loader = new ConfigLoader();
@@ -84,7 +84,7 @@ describe('ScopePlugin', () => {
             author: $author,
         });
 
-        $plugin.init({ onlyPresented: true, names: $options.names as ScopeNames }).then(() => {
+        $plugin.init({ onlyPresented: true, names: $options.names as IScopeNames }).then(() => {
             $plugin.parse(commit).then(() => {
                 expect(commit.getAccents()).toStrictEqual(['Core']);
 
