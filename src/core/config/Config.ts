@@ -1,9 +1,3 @@
-export type PluginOptionValue = string | boolean | number | string[];
-
-export interface IPluginOption {
-    [key: string]: PluginOptionValue | IPluginOption | IPluginOption[] | undefined;
-}
-
 export enum ServiceProvider {
     GitHub = 'github',
     GitLab = 'gitlab',

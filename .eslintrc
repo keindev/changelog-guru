@@ -16,6 +16,7 @@
     "rules": {
         "@typescript-eslint/member-ordering": "error",
         "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }],
+        "@typescript-eslint/no-non-null-assertion": 0,
         "max-lines-per-function": ["error", { "max": 40 }],
         "import/prefer-default-export": 0,
         "import/extensions": [

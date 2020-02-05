@@ -2,7 +2,7 @@ import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../entities/Commit';
 import Author from '../entities/Author';
-import Section, { SectionPosition } from '../entities/Section';
+import Section, { SectionPosition, SectionOrder } from '../entities/Section';
 import License from '../package/License';
 import Key from '../../utils/Key';
 import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
@@ -105,11 +105,16 @@ export default class State implements IPluginContext {
         });
     }
 
-    public addSection(name: string, position: SectionPosition = SectionPosition.Group): Section | undefined {
+    public addSection(
+        name: string,
+        position = SectionPosition.Group,
+        order = SectionOrder.Default
+    ): Section | undefined {
         let section = this.findSection(name);
 
         if (!section && Key.unify(name)) {
             section = new Section(name, position);
+            section.setOrder(order);
             this.sections.push(section);
         }
 

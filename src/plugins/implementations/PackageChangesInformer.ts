@@ -3,14 +3,14 @@ import { TaskTree } from 'tasktree-cli';
 import Section, { SectionPosition, SectionOrder } from '../../core/entities/Section';
 import Message from '../../core/entities/Message';
 import Markdown from '../../utils/Markdown';
-import { IPluginOption, PluginOptionValue, ChangeLevel } from '../../core/config/Config';
+import { ChangeLevel } from '../../core/config/Config';
 import PackageRule, {
     PackageRuleChangeType,
     PackageRuleType,
     IPackageRuleChange,
 } from '../../core/package/rules/PackageRule';
 import { DependencyRuleType, RestrictionRuleType } from '../../core/package/Package';
-import Plugin from '../Plugin';
+import Plugin, { IPluginConfig, IPlugin } from '../Plugin';
 
 export enum AttentionTemplateLiteral {
     Name = '%name%',
@@ -20,13 +20,13 @@ export enum AttentionTemplateLiteral {
     PrevValue = '%pval%',
 }
 
-export interface IAttentionPluginOptions extends IPluginOption {
+export interface IAttentionPluginOptions extends IPluginConfig {
     title: string;
     templates: { [key in PackageRuleChangeType]?: string };
     sections: PackageRuleType[];
 }
 
-export default class AttentionPlugin extends Plugin {
+export default class PackageChangesInformer extends Plugin {
     private section: Section | undefined;
     private templates: Map<PackageRuleChangeType, string> = new Map();
     private sections: Set<PackageRuleType> = new Set();
@@ -99,7 +99,7 @@ export default class AttentionPlugin extends Plugin {
         return Markdown.listItem(text);
     }
 
-    public async init(config: IAttentionPluginOptions): Promise<void> {
+    public async init(config: IPluginConfig): Promise<void> {
         this.section = this.context.addSection(config.title, SectionPosition.Header);
         this.templates = new Map();
         this.sections = new Set();
@@ -107,17 +107,15 @@ export default class AttentionPlugin extends Plugin {
         if (this.section) {
             this.section.setOrder(SectionOrder.Min);
 
-            Object.entries(config.templates).forEach(
-                ([name, value]: [string, IPluginOption | IPluginOption[] | PluginOptionValue | undefined]) => {
-                    if (typeof value === 'string') {
-                        const type = Object.values(PackageRuleChangeType).find(itemName => itemName === name);
+            Object.entries(config.templates).forEach(([name, value]) => {
+                if (typeof value === 'string') {
+                    const type = Object.values(PackageRuleChangeType).find(itemName => itemName === name);
 
-                        if (value && type) {
-                            this.templates.set(type, value);
-                        }
+                    if (value && type) {
+                        this.templates.set(type, value);
                     }
                 }
-            );
+            });
 
             config.sections.forEach(type => {
                 this.sections.add(type);
@@ -175,14 +173,16 @@ export default class AttentionPlugin extends Plugin {
             rule = this.context.getPackageRule(type);
 
             if (rule) {
-                subsection = new Section(AttentionPlugin.getSubtitle(type, task), SectionPosition.Subsection);
+                subsection = new Section(PackageChangesInformer.getSubtitle(type, task), SectionPosition.Subsection);
                 list = [];
 
                 this.templates.forEach((template, changeType) => {
                     changes = (rule as PackageRule).getChanges(changeType);
 
                     if (changes.length) {
-                        list.push(...changes.map(change => AttentionPlugin.renderTemplate(template, change, task)));
+                        list.push(
+                            ...changes.map(change => PackageChangesInformer.renderTemplate(template, change, task))
+                        );
                     }
                 });
 

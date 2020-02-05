@@ -9,7 +9,7 @@ export interface ISectionPluginOptions extends IPluginOption {
     [key: string]: string[];
 }
 
-export default class SectionPlugin extends Plugin {
+export default class SectionLinker extends Plugin {
     private blocks: Map<string, Section> = new Map();
 
     public async init(config: ISectionPluginOptions): Promise<void> {

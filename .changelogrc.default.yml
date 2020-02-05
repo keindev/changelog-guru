@@ -54,7 +54,7 @@ output:
 # Plugins that extend the basic functionality and modify the output in the change log
 plugins:
     # Displays information about changes to package.json in the change log
-    - attention:
+    - package-changes:
           # Main section title
           title: Important Changes
           # The change message templates
@@ -82,24 +82,24 @@ plugins:
               - optionalDependencies
               - bundledDependencies
     # Highlights variables and code snippets in subject of commit
-    - highlight:
+    - highlights:
           # Highlight camelCase and UpperCamelCase words
           camelCase: true
           # Highlight by regex mask
           masks: [
-              # Tags
-              '<[^>]*>',
-              # Words which start with '$', '@' or '!' symbol
-              '[$@!]\S+',
-              # CLI commands
-              '((?<= )|^)-{1,2}[a-z0-9_-]+',
-              # Dashed words
-              '(?<= |^)[a-z]+-[a-z-]+',
-              # Dotted words
-              '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+'
-          ]
+                  # Tags
+                  '<[^>]*>',
+                  # Words which start with '$', '@' or '!' symbol
+                  '[$@!]\S+',
+                  # CLI commands
+                  '((?<= )|^)-{1,2}[a-z0-9_-]+',
+                  # Dashed words
+                  '(?<= |^)[a-z]+-[a-z-]+',
+                  # Dotted words
+                  '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+',
+              ]
     # Allows you to add additional useful information to the commit
-    - marker:
+    - markers:
           # Action markers performs operations on commits objects when building a changelog
           actions:
               # !ignore - ignore a commit in output
@@ -115,7 +115,7 @@ plugins:
               # !break - indicates major changes breaking backward compatibility
               break: BREAKING CHANGES
     # Renames scopes and abbreviations to a more human-readable format
-    - scope:
+    - scopes:
           # In the case of true will only rename the specified names
           onlyPresented: false
           # List of abbreviations and their human-readable versions
@@ -126,7 +126,7 @@ plugins:
               fc: Functional Components
               dts: TypeScript Declaration Improvements
     # Distributes commits with the specified types into sections
-    - section:
+    - sections:
           Features: [feat]
           Improvements: [improve]
           Bug Fixes: [fix]

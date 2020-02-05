@@ -13,7 +13,7 @@ export interface IScopePluginOptions extends IPluginOption {
     names: IScopeNames;
 }
 
-export default class ScopePlugin extends Plugin {
+export default class ScopeLinker extends Plugin {
     public static SEPARATOR = ',';
     public static MIN_NAME_LENGTH = 2;
 
@@ -33,7 +33,7 @@ export default class ScopePlugin extends Plugin {
         if (scope) {
             let accent: string | undefined;
 
-            scope.split(ScopePlugin.SEPARATOR).forEach(name => {
+            scope.split(ScopeLinker.SEPARATOR).forEach(name => {
                 accent = Key.inMap(name, this.names);
 
                 if (accent || (!this.onlyPresented && name.length)) {
@@ -47,8 +47,8 @@ export default class ScopePlugin extends Plugin {
         const { scope } = options;
 
         if (scope) {
-            scope.split(ScopePlugin.SEPARATOR).forEach(name => {
-                if (name.length < ScopePlugin.MIN_NAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
+            scope.split(ScopeLinker.SEPARATOR).forEach(name => {
+                if (name.length < ScopeLinker.MIN_NAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
                 if (this.onlyPresented && !Key.inMap(name, this.names)) {
                     task.error(`Scope name {bold ${name}} is not available`);
                 }
