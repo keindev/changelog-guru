@@ -18,13 +18,13 @@ export enum SectionOrder {
 }
 
 export default class Section extends Entity {
-    private index: number = SectionOrder.Default;
+    private index: number;
     private position: SectionPosition;
-    private entities: Map<string, Entity> = new Map();
+    private entities = new Map<string, Entity>();
 
-    public constructor(title: string, position: SectionPosition) {
+    public constructor(title: string, position: SectionPosition, order: SectionOrder | number = SectionOrder.Default) {
         super(title);
-
+        this.index = order;
         this.position = position;
     }
 

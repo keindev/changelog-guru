@@ -23,20 +23,15 @@ export interface IPackageRuleChange {
 }
 
 export default class PackageRule {
-    protected changes: Map<string, IPackageRuleChange>;
+    readonly type: PackageRuleType;
 
-    private type: PackageRuleType;
+    protected changes = new Map<string, IPackageRuleChange>();
 
     public constructor(type: PackageRuleType) {
         this.type = type;
-        this.changes = new Map();
     }
 
-    public getType(): PackageRuleType {
-        return this.type;
-    }
-
-    public getChanges(type: PackageRuleChangeType): IPackageRuleChange[] {
+    public getChanges(type: PackageRuleChangeType | string): IPackageRuleChange[] {
         return [...this.changes.values()].filter(change => change.type === type);
     }
 }

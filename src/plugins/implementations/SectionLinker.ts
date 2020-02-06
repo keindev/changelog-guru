@@ -2,33 +2,27 @@ import { Task } from 'tasktree-cli/lib/task';
 import Section, { SectionPosition } from '../../core/entities/Section';
 import Commit from '../../core/entities/Commit';
 import Key from '../../utils/Key';
-import Plugin, { IPluginLintOptions } from '../Plugin';
-import { IPluginOption } from '../../core/config/Config';
-
-export interface ISectionPluginOptions extends IPluginOption {
-    [key: string]: string[];
-}
+import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
 export default class SectionLinker extends Plugin {
-    private blocks: Map<string, Section> = new Map();
+    private blocks = new Map<string, Section>();
 
-    public async init(config: ISectionPluginOptions): Promise<void> {
-        this.blocks = new Map();
+    public async init(config: IPluginConfig): Promise<void> {
+        if (this.context) {
+            const { context, blocks } = this;
 
-        let section: Section | undefined;
+            Object.entries(config).forEach(([name, types], order) => {
+                if (Array.isArray(types)) {
+                    const section = context.addSection(name, SectionPosition.Body, order);
 
-        Object.entries(config).forEach(([name, types], index) => {
-            if (Array.isArray(types)) {
-                section = this.context.addSection(name, SectionPosition.Body);
-
-                if (section) {
-                    section.setOrder(index + 1);
-                    types.forEach(type => {
-                        this.blocks.set(Key.unify(type), section as Section);
-                    });
+                    if (section) {
+                        (types as string[]).forEach(type => {
+                            blocks.set(Key.unify(type), section);
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public async parse(commit: Commit): Promise<void> {
@@ -37,9 +31,7 @@ export default class SectionLinker extends Plugin {
         if (type) {
             const section = Key.inMap(type, this.blocks);
 
-            if (section) {
-                section.add(commit);
-            }
+            if (section) section.add(commit);
         }
     }
 

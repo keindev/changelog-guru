@@ -100,7 +100,7 @@ export default class MarkersManager extends Plugin {
     }
 
     private getMarkersFrom(text?: string): [MarkerType, string, string][] {
-        const markers: [MarkerType, string][] = [];
+        const markers: [MarkerType, string, string][] = [];
 
         if (text) {
             const expression = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;

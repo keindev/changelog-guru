@@ -1,57 +1,46 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../../core/entities/Commit';
-import { IPluginOption } from '../../core/config/Config';
 import Key from '../../utils/Key';
-import Plugin, { IPluginLintOptions } from '../Plugin';
-
-export interface IScopeNames {
-    [key: string]: string;
-}
-
-export interface IScopePluginOptions extends IPluginOption {
-    onlyPresented: boolean;
-    names: IScopeNames;
-}
+import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
 export default class ScopeLinker extends Plugin {
-    public static SEPARATOR = ',';
+    public static DELIMITER = ',';
     public static MIN_NAME_LENGTH = 2;
 
     private onlyPresented = false;
-    private names: Map<string, string> = new Map();
+    private names = new Map<string, string>();
 
-    public async init(config: IScopePluginOptions): Promise<void> {
-        this.onlyPresented = !!config.onlyPresented;
-        this.names = new Map(
-            Object.entries(config.names).map(([abbr, name]): [string, string] => [Key.unify(abbr), name])
-        );
+    async init(config: IPluginConfig): Promise<void> {
+        const { onlyPresented, names } = config as {
+            onlyPresented: boolean;
+            names: { [key: string]: string };
+        };
+
+        this.onlyPresented = onlyPresented;
+        this.names = new Map(Object.entries(names).map(([abbr, name]) => [Key.unify(abbr), name]));
     }
 
-    public async parse(commit: Commit): Promise<void> {
+    async parse(commit: Commit): Promise<void> {
         const scope = commit.getScope();
 
         if (scope) {
-            let accent: string | undefined;
+            scope.split(ScopeLinker.DELIMITER).forEach(name => {
+                const accent = Key.inMap(name, this.names);
 
-            scope.split(ScopeLinker.SEPARATOR).forEach(name => {
-                accent = Key.inMap(name, this.names);
-
-                if (accent || (!this.onlyPresented && name.length)) {
-                    commit.addAccent((accent || name).trim());
-                }
+                if (accent || (!this.onlyPresented && name.length)) commit.addAccent((accent || name).trim());
             });
         }
     }
 
-    public lint(options: IPluginLintOptions, task: Task): void {
+    lint(options: IPluginLintOptions, task: Task): void {
         const { scope } = options;
 
         if (scope) {
-            scope.split(ScopeLinker.SEPARATOR).forEach(name => {
+            const { onlyPresented, names } = this;
+
+            scope.split(ScopeLinker.DELIMITER).forEach(name => {
                 if (name.length < ScopeLinker.MIN_NAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
-                if (this.onlyPresented && !Key.inMap(name, this.names)) {
-                    task.error(`Scope name {bold ${name}} is not available`);
-                }
+                if (onlyPresented && !Key.inMap(name, names)) task.error(`Scope {bold ${name}} is not available`);
             });
         }
     }
