@@ -1,9 +1,9 @@
 export default class License {
-    public readonly id: string;
-    public readonly prev: string | undefined;
-    public readonly isChanged: boolean;
+    readonly id: string;
+    readonly prev?: string;
+    readonly isChanged: boolean;
 
-    public constructor(id: string, prev?: string) {
+    constructor(id: string, prev?: string) {
         this.id = id;
         this.prev = prev;
         this.isChanged = !prev || !!id.localeCompare(prev);

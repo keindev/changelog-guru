@@ -2,29 +2,29 @@ import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import { TaskTree } from 'tasktree-cli';
-import Config, { ServiceProvider, ChangeLevel, ExclusionType, IPluginOption } from './Config';
+import Config, { ServiceProvider, ChangeLevel, ExclusionType } from './Config';
 
 export interface IConfigLoaderOptions {
     provider?: ServiceProvider;
-    filePath?: string;
+    output?: string;
     types?: Map<string, ChangeLevel>;
     exclusions?: Map<ExclusionType, string[]>;
 }
 
 export default class ConfigLoader {
-    public static MODULE_NAME = 'changelog';
-    public static DEFAULT_CONFIG_PATH = `../../../.changelogrc.default.yml`;
-    public static DEFAULT_OUTPUT_FILE_NAME = 'CHANGELOG.md';
+    static MODULE_NAME = 'changelog';
+    static DEFAULT_CONFIG_PATH = `../../../.changelogrc.default.yml`;
+    static DEFAULT_OUTPUT_FILE_NAME = 'CHANGELOG.md';
 
-    private filePath: string = path.join(__dirname, ConfigLoader.DEFAULT_CONFIG_PATH);
+    private filePath = path.join(__dirname, ConfigLoader.DEFAULT_CONFIG_PATH);
     private data: cosmiconfig.Config = {};
     private options: IConfigLoaderOptions;
 
-    public constructor(options?: IConfigLoaderOptions) {
-        this.options = options || {};
+    public constructor(options: IConfigLoaderOptions = {}) {
+        this.options = options;
     }
 
-    public async load(): Promise<Config> {
+    async load(): Promise<Config> {
         const task = TaskTree.add('Reading configuration file...');
         const filePath = await this.loadConfig();
         let config: Config | undefined;
@@ -33,8 +33,8 @@ export default class ConfigLoader {
             const { data, options } = this;
 
             config = new Config({
-                provider: options.provider || data.provider || ServiceProvider.GitHub,
-                filePath: options.filePath || this.getOutputFilePath(),
+                provider: options.provider ?? data.provider ?? ServiceProvider.GitHub,
+                filePath: options.output ?? this.data.output?.filePath ?? ConfigLoader.DEFAULT_OUTPUT_FILE_NAME,
                 types: options.types && options.types.size ? options.types : this.getTypes(),
                 exclusions: options.exclusions && options.exclusions.size ? options.exclusions : this.getExclusions(),
                 plugins: this.getPlugins(),
@@ -48,30 +48,26 @@ export default class ConfigLoader {
         return config as Config;
     }
 
-    private getOutputFilePath(): string {
-        const {
-            data: { output },
-        } = this;
-
-        return output && output.filePath ? output.filePath : ConfigLoader.DEFAULT_OUTPUT_FILE_NAME;
-    }
-
     private getTypes(): Map<string, ChangeLevel> {
-        const types: Map<string, ChangeLevel> = new Map();
-        const {
-            data: { changes },
-        } = this;
+        const types = new Map<string, ChangeLevel>();
+        const { changes } = this.data;
 
         if (changes) {
-            Object.entries<string[]>(changes).forEach(([level, names]) => {
+            const levels = Object.values<string>(ChangeLevel);
+
+            Object.entries(changes).reduce((acc, [level, names]): [string, ChangeLevel][] => {
+                if (levels.includes(level)) TaskTree.fail('Unexpected level of changes');
+
+                return Array.isArray(names) ? [...acc, ...names.map(name => [name, level])] : acc;
+            }, []);
+
+            Object.entries(changes).forEach(([level, names]) => {
                 if (Array.isArray(names)) {
-                    if (Object.values(ChangeLevel).includes(level as ChangeLevel)) {
-                        names.forEach(name => {
-                            types.set(name, level as ChangeLevel);
-                        });
-                    } else {
-                        TaskTree.fail('Unexpected level of changes (expected: major, minor or patch)');
-                    }
+                    if (levels.includes(level)) TaskTree.fail('Unexpected level of changes');
+
+                    names.forEach(name => {
+                        types.set(name, level as ChangeLevel);
+                    });
                 }
             });
         }

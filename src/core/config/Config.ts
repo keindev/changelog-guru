@@ -25,14 +25,15 @@ export interface IConfigOptions {
 }
 
 export default class Config {
-    public readonly filePath: string;
-    public readonly provider: ServiceProvider;
+    readonly filePath: string;
+    readonly provider: ServiceProvider;
 
+    // FIXME: rename after update to TS 3.8
     private types: Map<string, ChangeLevel>;
     private plugins: Map<string, IPluginOption>;
     private exclusions: Map<ExclusionType, string[]>;
 
-    public constructor(options: IConfigOptions) {
+    constructor(options: IConfigOptions) {
         this.provider = options.provider;
         this.filePath = options.filePath;
         this.types = options.types;
@@ -40,19 +41,19 @@ export default class Config {
         this.exclusions = options.exclusions;
     }
 
-    public getPlugin(name: string): IPluginOption | undefined {
-        return this.plugins.get(name);
-    }
-
-    public getPlugins(): [string, IPluginOption][] {
+    get plugins(): [string, IPluginOption][] {
         return [...this.plugins.entries()];
     }
 
-    public getTypes(): [string, ChangeLevel][] {
+    get types(): [string, ChangeLevel][] {
         return [...this.types.entries()];
     }
 
-    public getExclusions(): [ExclusionType, string[]][] {
+    get exclusions(): [ExclusionType, string[]][] {
         return [...this.exclusions.entries()];
+    }
+
+    public getPlugin(name: string): IPluginOption | undefined {
+        return this.plugins.get(name);
     }
 }

@@ -10,23 +10,23 @@ import { Linter, ILintOptions } from './Linter';
 import Provider from './core/providers/Provider';
 import GitHubProvider from './core/providers/GitHubProvider';
 
-export interface IChangelogOptions extends IConfigLoaderOptions {
+export interface IOptions extends IConfigLoaderOptions {
     bump?: boolean;
     branch?: string;
 }
 
 export class Changelog {
-    private options: IChangelogOptions;
+    private options: IOptions;
     private package: Package;
 
-    public constructor(options?: IChangelogOptions) {
+    public constructor(options?: IOptions) {
         dotenv.config();
 
         this.package = new Package();
         this.options = options || {};
     }
 
-    public setOptions(options: IChangelogOptions): void {
+    public setOptions(options: IOptions): void {
         this.options = options;
     }
 
@@ -58,15 +58,14 @@ export class Changelog {
 
     private getProvider(config: Config): Provider {
         const repository = this.package.getRepository();
-        const { branch } = this.options;
         let provider: Provider | undefined;
 
         switch (config.provider) {
+            case ServiceProvider.GitHub:
+                provider = new GitHubProvider(repository, this.options.branch);
+                break;
             case ServiceProvider.GitLab:
                 TaskTree.fail(`{bold ${ServiceProvider.GitLab}} - not supported yet`);
-                break;
-            case ServiceProvider.GitHub:
-                provider = new GitHubProvider(repository, branch);
                 break;
             default:
                 TaskTree.fail(`Service provider not specified`);

@@ -58,16 +58,16 @@ export default class Reader {
     }
 
     private async loadPackage(state: State, packageInfo: Package): Promise<void> {
-        const data = await this.provider.getPrevPackage();
+        const prev = await this.provider.getPrevPackage();
 
-        state.setLicense(packageInfo.getLicense(), data.license);
+        state.setLicense(packageInfo.license, prev.license);
 
         Object.values(DependencyRuleType).forEach(type => {
-            state.setPackageRule(new DependencyRule(type, ...packageInfo.getDependenciesStory(type, data)));
+            state.setPackageRule(new DependencyRule(type, packageInfo.getDependencies(type), prev[type]));
         });
 
         Object.values(RestrictionRuleType).forEach(type => {
-            state.setPackageRule(new RestrictionRule(type, ...packageInfo.getRestrictionsStory(type, data)));
+            state.setPackageRule(new RestrictionRule(type, ...packageInfo.getRestrictionsStory(type, prev)));
         });
     }
 }
