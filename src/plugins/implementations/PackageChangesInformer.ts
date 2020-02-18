@@ -68,7 +68,7 @@ export default class PackageChangesInformer extends Plugin {
             this.templates = new Map(Object.entries(templates).filter(([name]) => changes.includes(name)));
             this.sections = [...new Set(sections)];
 
-            if (this.main) this.main.setOrder(SectionOrder.Min);
+            if (this.main) this.main.order = SectionOrder.Min;
         }
     }
 
@@ -103,7 +103,7 @@ export default class PackageChangesInformer extends Plugin {
                             'https://spdx.org/licenses/'
                         )}`
                     );
-                    message.setChangeLevel(ChangeLevel.Major);
+                    message.changeLevel = ChangeLevel.Major;
                 } else {
                     message = new Message(`Source code now under ${Markdown.wrap(id)} license.`);
                 }
@@ -130,10 +130,9 @@ export default class PackageChangesInformer extends Plugin {
                     }, '');
 
                     if (text) {
-                        const message = new Message(text);
                         const subsection = new Section(subtitles[type], SectionPosition.Subsection, order);
 
-                        subsection.add(message);
+                        subsection.add(new Message(text));
                         section.add(subsection);
                     }
                 }

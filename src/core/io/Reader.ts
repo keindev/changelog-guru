@@ -9,16 +9,15 @@ import RestrictionRule from '../package/rules/RestrictionRule';
 export default class Reader {
     private provider: Provider;
 
-    public constructor(provider: Provider) {
+    constructor(provider: Provider) {
         this.provider = provider;
     }
 
-    public async read(packageInfo: Package): Promise<State> {
-        const { provider } = this;
+    async read(packageInfo: Package): Promise<State> {
         const task = TaskTree.add('Loading a release state...');
         const state = new State();
-        const { date, tag } = await provider.getLastRelease();
-        const commitsCount = await provider.getCommitsCount(date);
+        const { date, tag } = await this.provider.getLastRelease();
+        const commitsCount = await this.provider.getCommitsCount(date);
 
         task.log(`Last release date: ${date}`);
         task.log(`Last release tag: ${tag}`);

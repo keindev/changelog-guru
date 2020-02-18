@@ -13,21 +13,21 @@ import { IPluginContext } from '../../plugins/Plugin';
 export default class State implements IPluginContext {
     protected pluginLoader = new PluginLoader();
 
-    private authors: Map<string, Author> = new Map();
-    private commits: Map<string, Commit> = new Map();
+    private authors = new Map<string, Author>();
+    private commits = new Map<string, Commit>();
     private sections: Section[] = [];
     private license: License | undefined;
     private rules: Map<PackageRuleType, PackageRule> = new Map();
 
-    public getSections(): Section[] {
+    get sections(): Section[] {
         return this.sections;
     }
 
-    public getAuthors(): Author[] {
+    get authors(): Author[] {
         return [...this.authors.values()].filter(Author.filter).sort(Author.compare);
     }
 
-    public getCommits(): Commit[] {
+    get commits(): Commit[] {
         return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
     }
 
@@ -47,23 +47,23 @@ export default class State implements IPluginContext {
         }
     }
 
-    public getLicense(): License | undefined {
+    get license(): License | undefined {
         return this.license;
     }
 
-    public setLicense(id: string, prev?: string): void {
+    set license(id: string, prev?: string) {
         this.license = new License(id, prev);
     }
 
-    public getPackageRule(type: PackageRuleType): PackageRule | undefined {
+    getPackageRule(type: PackageRuleType): PackageRule | undefined {
         return this.rules.get(type);
     }
 
-    public setPackageRule(rule: PackageRule): void {
+    setPackageRule(rule: PackageRule): void {
         this.rules.set(rule.getType(), rule);
     }
 
-    public getChangesLevels(): [number, number, number] {
+    get changesLevels(): [number, number, number] {
         let major = 0;
         let minor = 0;
         let patch = 0;
@@ -81,7 +81,6 @@ export default class State implements IPluginContext {
                     break;
                 default:
                     TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.getChangeLevel()}}`);
-                    break;
             }
         });
 
@@ -98,18 +97,12 @@ export default class State implements IPluginContext {
             if (typeName) {
                 tuple = types.find(([name]) => Key.isEqual(typeName as string, name));
 
-                if (tuple) {
-                    commit.setChangeLevel(tuple[1]);
-                }
+                if (tuple) commit.setChangeLevel(tuple[1]);
             }
         });
     }
 
-    public addSection(
-        name: string,
-        position = SectionPosition.Group,
-        order = SectionOrder.Default
-    ): Section | undefined {
+    addSection(name: string, position = SectionPosition.Group, order = SectionOrder.Default): Section | undefined {
         let section = this.findSection(name);
 
         if (!section && Key.unify(name)) {
@@ -121,11 +114,11 @@ export default class State implements IPluginContext {
         return section;
     }
 
-    public findSection(name: string): Section | undefined {
-        return this.sections.find((section): boolean => Key.isEqual(section.getName(), name));
+    findSection(name: string): Section | undefined {
+        return this.sections.find((section): boolean => Key.isEqual(section.name, name));
     }
 
-    public ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
+    ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
         const { authors, commits } = this;
 
         exclusions.forEach(([type, rules]) => {
@@ -144,12 +137,11 @@ export default class State implements IPluginContext {
                     break;
                 default:
                     TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
-                    break;
             }
         });
     }
 
-    public async modify(plugins: [string, IPluginOption][]): Promise<void> {
+    async modify(plugins: [string, IPluginOption][]): Promise<void> {
         const task = TaskTree.add('Modifying release state...');
 
         await Promise.all(plugins.map(([name, options]) => this.modifyWithPlugin(name, options, task)));
@@ -165,7 +157,7 @@ export default class State implements IPluginContext {
             const relations: Map<string, Section> = new Map();
 
             sections.forEach(section => {
-                if (section.getPosition() === SectionPosition.Group) {
+                if (section.position === SectionPosition.Group) {
                     section.assignAsSubsection(relations);
                 } else {
                     section.assignAsSection(relations);
@@ -175,7 +167,7 @@ export default class State implements IPluginContext {
 
         this.sections = sections
             .filter(Section.filter)
-            .filter(section => section.getPosition() !== SectionPosition.Subsection)
+            .filter(section => section.position !== SectionPosition.Subsection)
             .sort(Section.compare);
         task.complete('Section tree is consistently');
     }
@@ -188,8 +180,6 @@ export default class State implements IPluginContext {
             await Promise.all([...this.commits.values()].map(commit => plugin.parse!(commit, task)));
         }
 
-        if (plugin.modify) {
-            await plugin.modify(task);
-        }
+        if (plugin.modify) await plugin.modify(task);
     }
 }

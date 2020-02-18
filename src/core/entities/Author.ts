@@ -1,24 +1,18 @@
 import Entity, { Priority } from './Entity';
 
-export interface IAuthorOptions {
-    login: string;
-    url: string;
-    avatar: string;
-}
-
 export default class Author extends Entity {
-    public static DEFAULT_CONTRIBUTION = 1;
-    public static AVATAR_SIZE = 40;
-    public static SIZE_PARAMETER_NAME = 'size';
-    public static NAME_PREFIX = '@';
+    static DEFAULT_CONTRIBUTION = 1;
+    static AVATAR_SIZE = 40;
+    static SIZE_PARAMETER_NAME = 'size';
+    static NAME_PREFIX = '@';
 
-    public readonly url: string;
-    public readonly login: string;
+    readonly url: string;
+    readonly login: string;
 
     private avatar: string;
     private contribution: number;
 
-    public constructor({ login, url, avatar }: IAuthorOptions) {
+    public constructor(login: string, url: string, avatar: string) {
         super(`${Author.NAME_PREFIX}${login}`);
 
         this.login = login;
@@ -27,11 +21,11 @@ export default class Author extends Entity {
         this.contribution = Author.DEFAULT_CONTRIBUTION;
     }
 
-    public getPriority(): Priority {
+    get priority(): Priority {
         return this.contribution;
     }
 
-    public getAvatar(size: number = Author.AVATAR_SIZE): string {
+    getAvatar(size: number = Author.AVATAR_SIZE): string {
         const url = new URL(this.avatar);
         const { searchParams } = url;
 
@@ -44,7 +38,7 @@ export default class Author extends Entity {
         return url.toString();
     }
 
-    public increaseContribution(contribution?: number): void {
+    contribute(contribution?: number): void {
         this.contribution += contribution || Author.DEFAULT_CONTRIBUTION;
     }
 }

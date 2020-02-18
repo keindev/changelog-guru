@@ -3,6 +3,12 @@ import PackageRule, { PackageRuleChangeType, IPackageRuleChange } from './Packag
 import { DependencyRuleType, IPackageDependencies } from '../Package';
 import { Compare } from '../../entities/Entity';
 
+const types = {
+    [Compare.Less]: PackageRuleChangeType.Bumped,
+    [Compare.More]: PackageRuleChangeType.Downgraded,
+    [Compare.Equal]: PackageRuleChangeType.Changed,
+};
+
 export default class DependencyRule extends PackageRule {
     public constructor(type: DependencyRuleType, deps?: IPackageDependencies, prev?: IPackageDependencies) {
         super(type);
@@ -60,17 +66,7 @@ export default class DependencyRule extends PackageRule {
                         : PackageRuleChangeType.Unchanged;
 
                     if (type === PackageRuleChangeType.Changed && version && change.version) {
-                        switch (semver.compare(version, change.version)) {
-                            case Compare.Less:
-                                type = PackageRuleChangeType.Bumped;
-                                break;
-                            case Compare.More:
-                                type = PackageRuleChangeType.Downgraded;
-                                break;
-                            default:
-                                type = PackageRuleChangeType.Changed;
-                                break;
-                        }
+                        type = types[semver.compare(version, change.version)];
                     }
 
                     change.type = type;

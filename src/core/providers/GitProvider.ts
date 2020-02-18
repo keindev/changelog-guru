@@ -4,11 +4,11 @@ import { getUserAgent } from 'universal-user-agent';
 import findupSync from 'findup-sync';
 import { TaskTree } from 'tasktree-cli';
 import Provider from './Provider';
-import { ServiceProvider } from '../config/Config';
+import { ServiceProvider } from '../Config';
 
 export default abstract class GitProvider extends Provider {
-    public static DEFAULT_BRANCH = 'master';
-    public static TYPE = 'git';
+    static DEFAULT_BRANCH = 'master';
+    static TYPE = 'git';
 
     protected repository: string;
     protected owner: string;
@@ -16,7 +16,7 @@ export default abstract class GitProvider extends Provider {
     protected version = process.env.npm_package_version;
     protected userAgent: string;
 
-    public constructor(type: ServiceProvider, url: string, branch?: string) {
+    constructor(type: ServiceProvider, url: string, branch?: string) {
         super(type);
 
         const task = TaskTree.add('Initializing git provider');

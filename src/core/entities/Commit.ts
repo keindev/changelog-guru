@@ -1,7 +1,7 @@
 import { LookupManager } from 'string-lookup-manager';
 import Entity, { Compare, Priority } from './Entity';
 import Author from './Author';
-import { ChangeLevel } from '../config/Config';
+import { ChangeLevel } from '../Config';
 import Markdown from '../../utils/Markdown';
 
 export enum CommitStatus {
@@ -20,32 +20,23 @@ export interface ICommitOptions {
     author: Author;
 }
 
-// TODO: used???
-export interface ISubjectSubstitution {
-    index: number;
-    substitution: string;
-}
-
 export default class Commit extends Entity {
-    public static LINE_SEPARATOR = '\n';
-
-    public readonly body: readonly string[];
-    public readonly timestamp: number;
-    public readonly url: string;
-    public readonly author: Author;
+    readonly body: readonly string[] = [];
+    readonly timestamp: number;
+    readonly url: string;
+    readonly author: Author;
+    readonly scope?: string;
 
     private subject = '';
-    private scope: string | undefined;
-    private type: string | undefined;
-    private accents: Set<string> = new Set();
+    private type?: string;
+    private accents = new Set<string>();
     private status = CommitStatus.Default;
-    private replacements: LookupManager<{}> = new LookupManager<{}>();
+    private replacements = new LookupManager<{}>();
 
-    public constructor({ hash, timestamp, header, body, url, author }: ICommitOptions) {
+    constructor({ hash, timestamp, header, body, url, author }: ICommitOptions) {
         super(hash);
 
         this.timestamp = timestamp;
-        this.body = body ? body.split(Commit.LINE_SEPARATOR).map((l): string => l.trim()) : [];
         this.url = url;
         this.author = author;
 
@@ -54,11 +45,12 @@ export default class Commit extends Entity {
         if (type) this.type = type.toLocaleLowerCase();
         if (scope) this.scope = scope;
         if (subject) this.subject = subject;
+        if (body) this.body = body.split(Markdown.LINE_SEPARATOR).map(line => line.trim());
     }
 
-    public static compare(a: Commit, b: Commit): Compare {
-        const x = a.getScope();
-        const y = b.getScope();
+    static compare(a: Commit, b: Commit): Compare {
+        const { scope: x } = a;
+        const { scope: y } = b;
         let result = super.compare(a, b);
 
         if (x && !y) result--;
@@ -69,7 +61,7 @@ export default class Commit extends Entity {
         return Math.min(Math.max(result, Compare.Less), Compare.More);
     }
 
-    public static splitHeader(text: string): [string | undefined, string | undefined, string | undefined] {
+    static splitHeader(text: string): [string | undefined, string | undefined, string | undefined] {
         const match = text.match(/^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i);
         let type: string | undefined;
         let scope: string | undefined;
@@ -88,20 +80,16 @@ export default class Commit extends Entity {
         return [type, scope, subject];
     }
 
-    public getAccents(): string[] {
+    get accents(): string[] {
         return [...this.accents.values()];
     }
 
-    public addAccent(text: string): void {
-        this.accents.add(text);
-    }
-
-    public getTypeName(): string | undefined {
+    get typeName(): string | undefined {
         return this.type;
     }
 
-    public getPriority(): Priority {
-        let priority = super.getPriority();
+    get priority(): Priority {
+        let priority = super.priority;
 
         if (this.hasStatus(CommitStatus.BreakingChanges)) priority += Priority.High;
         if (this.hasStatus(CommitStatus.Deprecated)) priority += Priority.Medium;
@@ -110,30 +98,30 @@ export default class Commit extends Entity {
         return priority;
     }
 
-    public getScope(): string | undefined {
-        return this.scope;
-    }
-
-    public getSubject(): string {
+    get subject(): string {
         return this.replacements.replace(this.subject, item => Markdown.wrap(item.value));
     }
 
-    public setSubject(subject: string): void {
+    set subject(subject: string): void {
         this.subject = subject;
     }
 
-    public setStatus(status: CommitStatus): void {
-        this.status |= status;
+    set status(status: CommitStatus): void {
+        this.status = status;
 
-        if (this.hasStatus(CommitStatus.Deprecated)) this.setChangeLevel(ChangeLevel.Minor);
-        if (this.hasStatus(CommitStatus.BreakingChanges)) this.setChangeLevel(ChangeLevel.Major);
+        if (this.hasStatus(CommitStatus.Deprecated)) this.changeLevel = ChangeLevel.Minor;
+        if (this.hasStatus(CommitStatus.BreakingChanges)) this.changeLevel = ChangeLevel.Major;
     }
 
-    public hasStatus(status: CommitStatus): boolean {
+    addAccent(text: string): void {
+        this.accents.add(text);
+    }
+
+    hasStatus(status: CommitStatus): boolean {
         return !!(this.status & status);
     }
 
-    public addReplacement(value: string, position: number): void {
+    addReplacement(value: string, position: number): void {
         this.replacements.add(value, position);
     }
 }

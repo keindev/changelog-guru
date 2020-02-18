@@ -1,6 +1,6 @@
 import { PackageJson } from 'read-pkg';
 import Commit from '../entities/Commit';
-import { ServiceProvider } from '../config/Config';
+import { ServiceProvider } from '../Config';
 
 export interface IReleaseInfo {
     tag: string | undefined;
@@ -8,11 +8,11 @@ export interface IReleaseInfo {
 }
 
 export default abstract class Provider {
-    public static PAGE_SIZE = 100;
+    static PAGE_SIZE = 100;
 
-    public readonly type: ServiceProvider;
+    readonly type: ServiceProvider;
 
-    public constructor(type: ServiceProvider) {
+    constructor(type: ServiceProvider) {
         this.type = type;
     }
 

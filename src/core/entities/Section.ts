@@ -18,121 +18,100 @@ export enum SectionOrder {
 }
 
 export default class Section extends Entity {
-    private index: number;
-    private position: SectionPosition;
+    order: SectionOrder | number;
+    position: SectionPosition;
+
     private entities = new Map<string, Entity>();
 
-    public constructor(title: string, position: SectionPosition, order: SectionOrder | number = SectionOrder.Default) {
+    constructor(title: string, position: SectionPosition, order: SectionOrder | number = SectionOrder.Default) {
         super(title);
-        this.index = order;
+
+        this.order = order;
         this.position = position;
     }
 
-    public static compare(a: Section, b: Section): Compare {
-        let result = b.getPosition() - a.getPosition() || a.getOrder() - b.getOrder() || super.compare(a, b);
+    static compare(a: Section, b: Section): Compare {
+        let result = b.position - a.position || a.order - b.order || super.compare(a, b);
 
-        if (result === Compare.Equal) result = a.getName().localeCompare(b.getName());
+        if (result === Compare.Equal) result = a.name.localeCompare(b.name);
 
         return Math.min(Math.max(result, Compare.Less), Compare.More);
     }
 
-    public getOrder(): SectionOrder | number {
-        return this.index;
-    }
-
-    public setOrder(index: SectionOrder | number): void {
-        this.index = index;
-    }
-
-    public getPosition(): SectionPosition {
-        return this.position;
-    }
-
-    public setPosition(position: SectionPosition): void {
-        this.position = position;
-    }
-
-    public getSections(): Section[] {
+    get sections(): Section[] {
         const sections = [...this.entities.values()].filter(value => value instanceof Section) as Section[];
 
         return sections.sort(Section.compare);
     }
 
-    public getCommits(): Commit[] {
+    get commits(): Commit[] {
         const commits = [...this.entities.values()].filter(value => value instanceof Commit) as Commit[];
 
         return commits.sort(Commit.compare);
     }
 
-    public getMessages(): Message[] {
+    get messages(): Message[] {
         const messages = [...this.entities.values()].filter(value => value instanceof Message) as Message[];
 
         return messages.sort(Message.compare);
     }
 
     public getPriority(): Priority {
-        let priority = super.getPriority();
+        let priority = super.priority;
 
         if (this.entities.size) {
-            priority = this.getSections().reduce((acc, section) => acc + section.getPriority(), priority);
-            priority = this.getMessages().reduce((acc, message) => acc + message.getPriority(), priority);
-            priority = this.getCommits().reduce((acc, commit) => acc + commit.getPriority(), priority);
+            priority = this.getSections().reduce((acc, section) => acc + section.priority, priority);
+            priority = this.getMessages().reduce((acc, message) => acc + message.priority, priority);
+            priority = this.getCommits().reduce((acc, commit) => acc + commit.priority, priority);
         }
 
         return priority;
     }
 
-    public add(entity: Commit | Section | Message): void {
+    add(entity: Commit | Section | Message): void {
         const { entities } = this;
-        const name = entity.getName();
 
-        if (!entities.has(name)) {
-            entities.set(name, entity);
+        if (!entities.has(entity.name)) {
+            entities.set(entity.name, entity);
 
-            if (entity instanceof Section) {
-                (entity as Section).setPosition(SectionPosition.Subsection);
-            }
+            if (entity instanceof Section) (entity as Section).position = SectionPosition.Subsection;
         }
     }
 
-    public remove(entity: Commit | Section | Message): void {
-        if (this.entities.delete(entity.getName())) {
-            if (entity instanceof Section) {
-                (entity as Section).setPosition(SectionPosition.Group);
-            }
+    remove(entity: Commit | Section | Message): void {
+        if (this.entities.delete(entity.name)) {
+            if (entity instanceof Section) (entity as Section).position = SectionPosition.Group;
         }
     }
 
-    public isEmpty(): boolean {
+    get isEmpty(): boolean {
         return !this.entities.size;
     }
 
     public assignAsSubsection(relations: Map<string, Section>): void {
-        const commits = this.getCommits();
+        const { commits } = this;
 
         if (commits.length) {
-            let parent = relations.get(commits[0].getName());
+            let parent = relations.get(commits[0].name);
 
             if (parent) parent.add(this);
 
             commits.forEach(commit => {
-                parent = relations.get(commit.getName());
+                parent = relations.get(commit.name);
 
                 if (parent) parent.remove(commit);
 
-                relations.set(commit.getName(), this);
+                relations.set(commit.name, this);
             });
         }
     }
 
     public assignAsSection(relations: Map<string, Section>): void {
-        const commits = this.getCommits();
-
-        commits.forEach(commit => {
-            if (relations.has(commit.getName())) {
+        this.commits.forEach(commit => {
+            if (relations.has(commit.name)) {
                 this.remove(commit);
             } else {
-                relations.set(commit.getName(), this);
+                relations.set(commit.name, this);
             }
         });
     }

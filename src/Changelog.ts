@@ -19,18 +19,14 @@ export class Changelog {
     private options: IOptions;
     private package: Package;
 
-    public constructor(options?: IOptions) {
+    constructor(options?: IOptions) {
         dotenv.config();
 
         this.package = new Package();
         this.options = options || {};
     }
 
-    public setOptions(options: IOptions): void {
-        this.options = options;
-    }
-
-    public async build(): Promise<void> {
+    async build(): Promise<void> {
         const config = await this.getConfig();
         const provider = this.getProvider(config);
         const state = await this.readState(config, provider);
@@ -38,7 +34,7 @@ export class Changelog {
         await this.writeState(state);
     }
 
-    public async lint(message: string | undefined, options: ILintOptions): Promise<void> | never {
+    async lint(message: string | undefined, options: ILintOptions): Promise<void> | never {
         const config = await this.getConfig();
         const task = TaskTree.add('Lint commit message:');
         const linter = new Linter(task, {
@@ -57,12 +53,11 @@ export class Changelog {
     }
 
     private getProvider(config: Config): Provider {
-        const repository = this.package.getRepository();
         let provider: Provider | undefined;
 
         switch (config.provider) {
             case ServiceProvider.GitHub:
-                provider = new GitHubProvider(repository, this.options.branch);
+                provider = new GitHubProvider(this.package.repository, this.options.branch);
                 break;
             case ServiceProvider.GitLab:
                 TaskTree.fail(`{bold ${ServiceProvider.GitLab}} - not supported yet`);
@@ -77,8 +72,7 @@ export class Changelog {
 
     private async getConfig(): Promise<Config> {
         const task = TaskTree.add('Read configuration');
-        const loader = new ConfigLoader(this.options);
-        const config = await loader.load();
+        const config = await new ConfigLoader(this.options).load();
 
         task.complete('Configuration initialized with:');
 
@@ -97,12 +91,8 @@ export class Changelog {
     }
 
     private async writeState(state: State): Promise<void> {
-        const writer = new Writer();
+        await new Writer().write(state.getSections(), state.getAuthors());
 
-        await writer.write(state.getSections(), state.getAuthors());
-
-        if (this.options.bump) {
-            await this.package.incrementVersion(...state.getChangesLevels());
-        }
+        if (this.options.bump) await this.package.incrementVersion(...state.changesLevels);
     }
 }

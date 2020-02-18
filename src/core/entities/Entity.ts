@@ -1,4 +1,4 @@
-import { ChangeLevel } from '../config/Config';
+import { ChangeLevel } from '../Config';
 
 export enum Priority {
     High = 1000,
@@ -12,70 +12,57 @@ export enum Compare {
     Equal = 0,
 }
 
+const priorities = {
+    [ChangeLevel.Major]: Priority.High,
+    [ChangeLevel.Minor]: Priority.Medium,
+    [ChangeLevel.Patch]: Priority.Low,
+};
+
 export default class Entity {
-    public static SHORT_NAME_LENGTH = 7;
+    static SHORT_NAME_LENGTH = 7;
+
+    readonly name: string;
 
     private ignored = false;
     private level: ChangeLevel = ChangeLevel.Patch;
-    private name: string;
 
-    public constructor(name?: string) {
+    constructor(name?: string) {
         this.name = name || `f${(~~(Math.random() * 1e8)).toString(16)}`;
     }
 
-    public static compare(a: Entity, b: Entity): Compare {
-        const result = b.getPriority() - a.getPriority();
-
-        return Math.min(Math.max(result, Compare.Less), Compare.More);
+    static compare(a: Entity, b: Entity): Compare {
+        return Math.min(Math.max(b.priority - a.priority, Compare.Less), Compare.More);
     }
 
-    public static filter(e: Entity): boolean {
-        return !e.isEmpty() && !e.isIgnored();
+    static filter(e: Entity): boolean {
+        return !e.isEmpty && !e.isIgnored;
     }
 
-    public getName(): string {
-        return this.name;
-    }
-
-    public getShortName(): string {
+    get shortName(): string {
         return this.name.substr(0, Entity.SHORT_NAME_LENGTH);
     }
 
-    public getPriority(): Priority {
-        let priority: Priority;
-
-        switch (this.level) {
-            case ChangeLevel.Major:
-                priority = Priority.High;
-                break;
-            case ChangeLevel.Minor:
-                priority = Priority.Medium;
-                break;
-            default:
-                priority = Priority.Low;
-                break;
-        }
-
-        return priority;
+    get priority(): Priority {
+        return priorities[this.level];
     }
 
-    public getChangeLevel(): ChangeLevel {
+    get changeLevel(): ChangeLevel {
         return this.level;
     }
 
-    public setChangeLevel(level: ChangeLevel): void {
+    set changeLevel(level: ChangeLevel) {
         this.level = level;
     }
 
-    public ignore(condition?: boolean): void {
+    get isIgnored(): boolean {
+        return this.ignored;
+    }
+
+    get isEmpty(): boolean {
+        return this.ignored;
+    }
+
+    ignore(condition?: boolean): void {
         this.ignored = this.ignored || (typeof condition === 'boolean' ? condition : true);
-    }
-
-    public isIgnored(): boolean {
-        return this.ignored;
-    }
-
-    public isEmpty(): boolean {
-        return this.ignored;
     }
 }

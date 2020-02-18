@@ -4,17 +4,16 @@ import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import Author from '../entities/Author';
 import Commit from '../entities/Commit';
-import { ServiceProvider } from '../config/Config';
+import { ServiceProvider } from '../Config';
 import GitProvider from './GitProvider';
 import { IReleaseInfo } from './Provider';
 
 export default class GitHubProvider extends GitProvider {
     private provider: Provider;
-
-    private authors: Map<number, Author> = new Map();
+    private authors = new Map<number, Author>();
     private release: IReleaseInfo | undefined;
 
-    public constructor(url: string, branch?: string) {
+    constructor(url: string, branch?: string) {
         super(ServiceProvider.GitHub, url, branch);
 
         this.provider = new Provider({
@@ -24,33 +23,29 @@ export default class GitHubProvider extends GitProvider {
         });
     }
 
-    public async getCommits(date: Date, pageIndex: number): Promise<Commit[]> {
+    async getCommits(date: Date, pageIndex: number): Promise<Commit[]> {
         const commits = await this.provider.commit.getList(date, pageIndex);
 
         return commits.map(this.parseCommit.bind(this));
     }
 
-    public async getCommitsCount(date: Date): Promise<number> {
+    async getCommitsCount(date: Date): Promise<number> {
         const count = await this.provider.commit.getCount(date);
 
         return count;
     }
 
-    public async getLastRelease(): Promise<IReleaseInfo> {
+    async getLastRelease(): Promise<IReleaseInfo> {
         if (!this.release) {
             const response = await this.provider.release.getLast();
 
-            if (response) {
-                this.release = { tag: response.tag, date: new Date(response.date) };
-            } else {
-                this.release = { tag: undefined, date: new Date(0) };
-            }
+            this.release = { tag: response?.tag, date: new Date(response?.date ?? 0) };
         }
 
         return this.release as IReleaseInfo;
     }
 
-    public async getPrevPackage(): Promise<PackageJson> {
+    async getPrevPackage(): Promise<PackageJson> {
         const task = TaskTree.add(`Loading previous release {bold package.json} state...`);
         const release = await this.getLastRelease();
         const change = await this.provider.package.getLastChange(release.date);
@@ -67,23 +62,14 @@ export default class GitHubProvider extends GitProvider {
         return data;
     }
 
-    private parseCommit({ author, hash, header, body, date, url }: GitHubResponseCommit): Commit {
-        const commit = new Commit({
-            hash,
-            header,
-            body,
-            url,
-            author: this.parseAuthor(author),
-            timestamp: new Date(date).getTime(),
-        });
-
-        return commit;
+    private parseCommit({ author, date, ...others }: GitHubResponseCommit): Commit {
+        return new Commit({ ...others, author: this.parseAuthor(author), timestamp: new Date(date).getTime() });
     }
 
     private parseAuthor({ avatar, user: { id, login, url } }: GitHubResponseCommitAuthor): Author {
         const { authors } = this;
 
-        if (!authors.has(id)) authors.set(id, new Author({ login, url, avatar }));
+        if (!authors.has(id)) authors.set(id, new Author(login, url, avatar));
 
         return authors.get(id) as Author;
     }

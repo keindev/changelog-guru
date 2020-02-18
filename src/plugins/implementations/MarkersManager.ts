@@ -33,7 +33,7 @@ export default class MarkersManager extends Plugin {
     private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 
-    public async init(config: IPluginConfig): Promise<void> {
+    async init(config: IPluginConfig): Promise<void> {
         const { actions, joins } = config as {
             actions: (MarkerType.Ignore | MarkerType.Grouped)[];
             joins: { [key in MarkerType.Breaking | MarkerType.Deprecated | MarkerType.Important]: string };
@@ -58,7 +58,7 @@ export default class MarkersManager extends Plugin {
         }
     }
 
-    public async parse(commit: Commit): Promise<void> {
+    async parse(commit: Commit): Promise<void> {
         const { context } = this;
         const markers = this.getMarkersFrom(commit.body[0]);
         let section: Section | undefined;
@@ -67,12 +67,9 @@ export default class MarkersManager extends Plugin {
             commit.ignore();
         } else {
             markers.forEach(([marker, value]) => {
-                if (statuses[marker]) commit.setStatus(statuses[marker]!);
+                if (statuses[marker]) commit.status = statuses[marker]!;
                 if (marker === MarkerType.Grouped && value && context) section = context.addSection(value);
-
-                section = section || this.sections.get(marker);
-
-                if (section) section.add(commit);
+                if ((section = section || this.sections.get(marker))) section.add(commit);
             });
         }
     }
@@ -112,9 +109,8 @@ export default class MarkersManager extends Plugin {
                 if (match.groups && match.groups.type) {
                     const { name, value } = match.groups;
 
-                    marker = Key.getEqual(name, [...this.markers]) as MarkerType | undefined;
-
-                    if (marker) markers.push([marker, value, name]);
+                    if ((marker = Key.getEqual(name, [...this.markers]) as MarkerType | undefined))
+                        markers.push([marker, value, name]);
                 }
             }
         }

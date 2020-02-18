@@ -1,5 +1,5 @@
 import ConfigLoader from '../ConfigLoader';
-import { ServiceProvider } from '../Config';
+import { ServiceProvider } from '../config/Config';
 
 describe('ConfigLoader', () => {
     describe('Create', () => {

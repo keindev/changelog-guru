@@ -1,42 +1,34 @@
 export default class Key {
-    public static MAX_DIFF_PERCENT = 0.2;
-    public static MAX_DIFF_DISTANCE = 1;
+    static MAX_DIFF_PERCENT = 0.2;
+    static MAX_DIFF_DISTANCE = 1;
 
-    public static unify(key: string): string {
+    static unify(key: string): string {
         return key.trim().toLowerCase();
     }
 
-    public static unique<T>(list: T[]): T[] {
+    static unique<T>(list: T[]): T[] {
         return [...new Set(list)];
     }
 
-    public static inArray(key: string | undefined, list: string[]): boolean {
+    static inArray(key: string | undefined, list: string[]): boolean {
         if (typeof key !== 'string') return false;
         if (!list.length) return false;
 
         return list.some(item => Key.isEqual(key, item));
     }
 
-    public static inSet(key: string, set: Set<string>): boolean {
-        let result = true;
-
-        if (!set.has(key)) {
-            result = [...set.keys()].some(setKey => Key.isEqual(key, setKey));
-        }
-
-        return result;
+    static inSet(key: string, set: Set<string>): boolean {
+        return set.has(key) || [...set.keys()].some(setKey => Key.isEqual(key, setKey));
     }
 
-    public static inMap<T>(key: string, map: Map<string, T>): T | undefined {
+    static inMap<T>(key: string, map: Map<string, T>): T | undefined {
         let uniqueKey: string = key;
 
         if (!map.has(key)) {
             [...map.keys()].some(mapKey => {
                 const isEqual = Key.isEqual(key, mapKey);
 
-                if (isEqual) {
-                    uniqueKey = mapKey;
-                }
+                if (isEqual) uniqueKey = mapKey;
 
                 return isEqual;
             });
@@ -45,11 +37,11 @@ export default class Key {
         return map.get(uniqueKey);
     }
 
-    public static getEqual(key: string, list: string[]): string | undefined {
+    static getEqual(key: string, list: string[]): string | undefined {
         return list.find(item => Key.isEqual(item, key));
     }
 
-    public static isEqual(a: string, b: string): boolean {
+    static isEqual(a: string, b: string): boolean {
         let result = a === b;
 
         if (!result) {

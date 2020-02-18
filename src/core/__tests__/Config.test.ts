@@ -1,4 +1,4 @@
-import Config, { ServiceProvider, ChangeLevel, ExclusionType } from '../Config';
+import Config, { ServiceProvider, ChangeLevel, ExclusionType } from '../config/Config';
 
 describe('Config', () => {
     describe('Create', () => {

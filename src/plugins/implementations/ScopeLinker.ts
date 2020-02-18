@@ -21,10 +21,8 @@ export default class ScopeLinker extends Plugin {
     }
 
     async parse(commit: Commit): Promise<void> {
-        const scope = commit.getScope();
-
-        if (scope) {
-            scope.split(ScopeLinker.DELIMITER).forEach(name => {
+        if (commit.scope) {
+            commit.scope.split(ScopeLinker.DELIMITER).forEach(name => {
                 const accent = Key.inMap(name, this.names);
 
                 if (accent || (!this.onlyPresented && name.length)) commit.addAccent((accent || name).trim());

@@ -22,13 +22,13 @@ export interface ILinterOptions {
 }
 
 export class Linter {
-    public static DEFAULT_HEADER_MAX_LENGTH = 100;
-    public static MIN_SUBJECT_LENGTH = 6;
-    public static EMPTY_VALUE = '';
-    public static GIT_EDIT_MESSAGE_PATH = '.git/COMMIT_EDITMSG';
-    public static COMMENT_SIGN = '#';
-    public static PARAM_SIGN_LINUX = '$';
-    public static PARAM_SIGN_WIN = '%';
+    static DEFAULT_HEADER_MAX_LENGTH = 100;
+    static MIN_SUBJECT_LENGTH = 6;
+    static EMPTY_VALUE = '';
+    static GIT_EDIT_MESSAGE_PATH = '.git/COMMIT_EDITMSG';
+    static COMMENT_SIGN = '#';
+    static PARAM_SIGN_LINUX = '$';
+    static PARAM_SIGN_WIN = '%';
 
     protected pluginLoader: PluginLoader = new PluginLoader();
 
@@ -42,7 +42,7 @@ export class Linter {
     // This does not work properly with win32 systems, where env variable declarations use a different syntax
     private supportedParameters: string[] = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'];
 
-    public constructor(task: Task, options: ILinterOptions) {
+    constructor(task: Task, options: ILinterOptions) {
         const { config } = options;
 
         this.plugins = options.plugins;
@@ -52,13 +52,12 @@ export class Linter {
         this.lowercaseTypesOnly = !!config.lowercaseTypesOnly;
     }
 
-    public async lint(value: string = Linter.EMPTY_VALUE): Promise<void> {
+    async lint(value: string = Linter.EMPTY_VALUE): Promise<void> {
         const message = await this.getMessageBody(value);
         const [header, body] = this.parseMessage(message);
         const [type, scope, subject] = this.parseHeader(header);
 
         this.task.log(`Header: {dim ${header || undefined}}`);
-
         await Promise.all(
             this.plugins.map(([name, config]) =>
                 this.lintWithPlugin(name, config, { header, body, type, scope, subject })
@@ -157,8 +156,6 @@ export class Linter {
         const { task } = this;
         const plugin = await this.pluginLoader.load(task, { name, config, context: this.state });
 
-        if (plugin.lint) {
-            plugin.lint(options, task);
-        }
+        if (plugin.lint) plugin.lint(options, task);
     }
 }

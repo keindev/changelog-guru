@@ -26,10 +26,8 @@ export default class SectionLinker extends Plugin {
     }
 
     public async parse(commit: Commit): Promise<void> {
-        const type = commit.getTypeName();
-
-        if (type) {
-            const section = Key.inMap(type, this.blocks);
+        if (commit.typeName) {
+            const section = Key.inMap(commit.typeName, this.blocks);
 
             if (section) section.add(commit);
         }
