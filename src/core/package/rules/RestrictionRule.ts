@@ -2,9 +2,9 @@ import PackageRule, { IPackageRuleChange, PackageRuleChangeType } from './Packag
 import { RestrictionRuleType } from '../Package';
 
 export default class RestrictionRule extends PackageRule {
-    public static BLACKLIST_MARK = '!';
+    static BLACKLIST_MARK = '!';
 
-    public constructor(type: RestrictionRuleType, restrictions?: string[], prev?: string[]) {
+    constructor(type: RestrictionRuleType, restrictions?: string[], prev?: string[]) {
         super(type);
 
         this.fillChanges(restrictions);

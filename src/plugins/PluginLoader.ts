@@ -19,7 +19,7 @@ export default class PluginLoader {
         this.context = context;
     }
 
-    public async getPlugin(name: string, config: IPluginConfig): Promise<IPlugin | undefined> {
+    async getPlugin(name: string, config: IPluginConfig): Promise<IPlugin | undefined> {
         const constructor = this.plugins.get(name);
         let plugin: IPlugin | undefined;
 

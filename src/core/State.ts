@@ -4,7 +4,7 @@ import Commit from '../entities/Commit';
 import Author from '../entities/Author';
 import Section, { SectionPosition, SectionOrder } from '../entities/Section';
 import License from '../package/License';
-import Key from '../../utils/Key';
+import { isSame, inArray, unify } from '../../utils/Text';
 import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
 import { ChangeLevel, ExclusionType, IPluginOption } from '../config/Config';
 import PluginLoader from '../../plugins/PluginLoader';
@@ -31,7 +31,7 @@ export default class State implements IPluginContext {
         return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
     }
 
-    public addCommit(commit: Commit): void {
+    addCommit(commit: Commit): void {
         const { commits, authors } = this;
 
         if (!commits.has(commit.getName())) {
@@ -87,7 +87,7 @@ export default class State implements IPluginContext {
         return [major, minor, patch];
     }
 
-    public setCommitTypes(types: [string, ChangeLevel][]): void {
+    setCommitTypes(types: [string, ChangeLevel][]): void {
         let typeName: string | undefined;
         let tuple: [string, ChangeLevel] | undefined;
 
@@ -95,7 +95,7 @@ export default class State implements IPluginContext {
             typeName = commit.getTypeName();
 
             if (typeName) {
-                tuple = types.find(([name]) => Key.isEqual(typeName as string, name));
+                tuple = types.find(([name]) => isSame(typeName as string, name));
 
                 if (tuple) commit.setChangeLevel(tuple[1]);
             }
@@ -105,7 +105,7 @@ export default class State implements IPluginContext {
     addSection(name: string, position = SectionPosition.Group, order = SectionOrder.Default): Section | undefined {
         let section = this.findSection(name);
 
-        if (!section && Key.unify(name)) {
+        if (!section && unify(name)) {
             section = new Section(name, position);
             section.setOrder(order);
             this.sections.push(section);
@@ -115,7 +115,7 @@ export default class State implements IPluginContext {
     }
 
     findSection(name: string): Section | undefined {
-        return this.sections.find((section): boolean => Key.isEqual(section.name, name));
+        return this.sections.find((section): boolean => isSame(section.name, name));
     }
 
     ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
@@ -127,10 +127,10 @@ export default class State implements IPluginContext {
                     authors.forEach(author => author.ignore(rules.indexOf(author.login) >= 0));
                     break;
                 case ExclusionType.CommitType:
-                    commits.forEach(commit => commit.ignore(Key.inArray(commit.getTypeName(), rules)));
+                    commits.forEach(commit => commit.ignore(inArray(commit.getTypeName(), rules)));
                     break;
                 case ExclusionType.CommitScope:
-                    commits.forEach(commit => commit.ignore(Key.inArray(commit.getScope(), rules)));
+                    commits.forEach(commit => commit.ignore(inArray(commit.getScope(), rules)));
                     break;
                 case ExclusionType.CommitSubject:
                     commits.forEach(commit => commit.ignore(rules.some(item => commit.getSubject().includes(item))));

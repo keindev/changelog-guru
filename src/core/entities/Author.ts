@@ -12,7 +12,7 @@ export default class Author extends Entity {
     private avatar: string;
     private contribution: number;
 
-    public constructor(login: string, url: string, avatar: string) {
+    constructor(login: string, url: string, avatar: string) {
         super(`${Author.NAME_PREFIX}${login}`);
 
         this.login = login;

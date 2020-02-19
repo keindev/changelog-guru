@@ -40,7 +40,7 @@ export class Changelog {
         const linter = new Linter(task, {
             config: options,
             plugins: config.getPlugins(),
-            types: config.getTypes().map(([name]): string => name),
+            types: config.getTypes().map(([name]) => name),
         });
 
         await linter.lint(message);

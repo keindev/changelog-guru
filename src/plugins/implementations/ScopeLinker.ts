@@ -1,11 +1,11 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../../core/entities/Commit';
-import Key from '../../utils/Key';
+import { unify, inMap } from '../../utils/Text';
 import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
 export default class ScopeLinker extends Plugin {
-    public static DELIMITER = ',';
-    public static MIN_NAME_LENGTH = 2;
+    static DELIMITER = ',';
+    static MIN_NAME_LENGTH = 2;
 
     private onlyPresented = false;
     private names = new Map<string, string>();
@@ -17,13 +17,13 @@ export default class ScopeLinker extends Plugin {
         };
 
         this.onlyPresented = onlyPresented;
-        this.names = new Map(Object.entries(names).map(([abbr, name]) => [Key.unify(abbr), name]));
+        this.names = new Map(Object.entries(names).map(([abbr, name]) => [unify(abbr), name]));
     }
 
     async parse(commit: Commit): Promise<void> {
         if (commit.scope) {
             commit.scope.split(ScopeLinker.DELIMITER).forEach(name => {
-                const accent = Key.inMap(name, this.names);
+                const accent = inMap(name, this.names);
 
                 if (accent || (!this.onlyPresented && name.length)) commit.addAccent((accent || name).trim());
             });
@@ -38,7 +38,7 @@ export default class ScopeLinker extends Plugin {
 
             scope.split(ScopeLinker.DELIMITER).forEach(name => {
                 if (name.length < ScopeLinker.MIN_NAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
-                if (onlyPresented && !Key.inMap(name, names)) task.error(`Scope {bold ${name}} is not available`);
+                if (onlyPresented && !inMap(name, names)) task.error(`Scope {bold ${name}} is not available`);
             });
         }
     }

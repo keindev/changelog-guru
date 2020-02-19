@@ -27,11 +27,11 @@ export default class PackageRule {
 
     protected changes = new Map<string, IPackageRuleChange>();
 
-    public constructor(type: PackageRuleType) {
+    constructor(type: PackageRuleType) {
         this.type = type;
     }
 
-    public getChanges(type: PackageRuleChangeType | string): IPackageRuleChange[] {
+    getChanges(type: PackageRuleChangeType | string): IPackageRuleChange[] {
         return [...this.changes.values()].filter(change => change.type === type);
     }
 }

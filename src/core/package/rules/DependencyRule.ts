@@ -10,7 +10,7 @@ const types = {
 };
 
 export default class DependencyRule extends PackageRule {
-    public constructor(type: DependencyRuleType, deps?: IPackageDependencies, prev?: IPackageDependencies) {
+    constructor(type: DependencyRuleType, deps?: IPackageDependencies, prev?: IPackageDependencies) {
         super(type);
 
         this.fillChanges(deps);
@@ -20,7 +20,7 @@ export default class DependencyRule extends PackageRule {
     private getLink(name: string, version?: SemVer): string | undefined {
         let link: string | undefined;
 
-        if (this.getType() !== DependencyRuleType.Engines && version) {
+        if (this.type !== DependencyRuleType.Engines && version) {
             link = `https://www.npmjs.com/package/${name}/v/${version.version}`;
         }
 

@@ -7,7 +7,7 @@ import Commit from './core/entities/Commit';
 import { IPluginOption } from './core/config/Config';
 import PluginLoader from './plugins/PluginLoader';
 import State from './core/state/State';
-import Key from './utils/Key';
+import { unify } from './utils/Text';
 import { IPluginLintOptions } from './plugins/Plugin';
 
 export interface ILintOptions {
@@ -108,7 +108,7 @@ export class Linter {
 
             await once(rl, 'close');
 
-            result = lines.join(Commit.LINE_SEPARATOR);
+            result = lines.join(Commit.LINE_DELIMITER);
         } else {
             this.task.fail(`${filePath} not found`);
         }
@@ -121,7 +121,7 @@ export class Linter {
         let header = Linter.EMPTY_VALUE;
 
         if (message) {
-            lines = message.split(Commit.LINE_SEPARATOR);
+            lines = message.split('\n');
             header = lines.shift() as string;
         } else {
             this.task.error('Empty commit message');
@@ -133,7 +133,7 @@ export class Linter {
     private parseHeader(header: string): [string, string, string] {
         const [type, scope, subject] = Commit.splitHeader(header);
         const { task, maxHeaderLength } = this;
-        const safeType = type ? Key.unify(type) : type;
+        const safeType = type ? unify(type) : type;
         const safeScope = scope || Linter.EMPTY_VALUE;
         const safeSubject = subject || Linter.EMPTY_VALUE;
 

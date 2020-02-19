@@ -2,7 +2,7 @@ import { Task } from 'tasktree-cli/lib/task';
 import { TaskTree } from 'tasktree-cli';
 import Section, { SectionPosition, SectionOrder } from '../../core/entities/Section';
 import Message from '../../core/entities/Message';
-import Markdown from '../../utils/Markdown';
+import * as md from '../../utils/Markdown';
 import { ChangeLevel } from '../../core/config/Config';
 import { PackageRuleChangeType, PackageRuleType, IPackageRuleChange } from '../../core/package/rules/PackageRule';
 import { DependencyRuleType, RestrictionRuleType } from '../../core/package/Package';
@@ -31,15 +31,15 @@ const renderListItem = (template: string, { name, link, ...change }: IPackageRul
     const text = template.replace(/%[a-z]{3,4}%/g, (substring): string => {
         switch (substring) {
             case AttentionTemplateLiteral.Name:
-                return Markdown.bold(link ? Markdown.link(name, link) : name);
+                return md.strong(link ? md.url(name, link) : name);
             case AttentionTemplateLiteral.Value:
-                return Markdown.wrap(change.value);
+                return md.wrap(change.value);
             case AttentionTemplateLiteral.Version:
-                return Markdown.wrap(change.version);
+                return md.wrap(change.version);
             case AttentionTemplateLiteral.PrevValue:
-                return Markdown.wrap(change.prevValue);
+                return md.wrap(change.prevValue);
             case AttentionTemplateLiteral.PrevVersion:
-                return Markdown.wrap(change.prevVersion);
+                return md.wrap(change.prevVersion);
             default:
                 (task || TaskTree).fail(`Unexpected template literal: {bold ${substring}}`);
                 break;
@@ -48,7 +48,7 @@ const renderListItem = (template: string, { name, link, ...change }: IPackageRul
         return substring;
     });
 
-    return Markdown.listItem(text);
+    return md.list(text);
 };
 
 export default class PackageChangesInformer extends Plugin {
@@ -56,7 +56,7 @@ export default class PackageChangesInformer extends Plugin {
     private sections: PackageRuleType[] = [];
     private templates = new Map<string, string>();
 
-    public async init(config: IPluginConfig): Promise<void> {
+    async init(config: IPluginConfig): Promise<void> {
         const { title, templates, sections } = config as {
             title: string;
             templates: { [key in PackageRuleChangeType]: string };
@@ -72,7 +72,7 @@ export default class PackageChangesInformer extends Plugin {
         }
     }
 
-    public async modify(task: Task): Promise<void> {
+    async modify(task: Task): Promise<void> {
         const { main } = this;
 
         if (main) {
@@ -95,17 +95,10 @@ export default class PackageChangesInformer extends Plugin {
                 task.warn(`License changed from {bold.underline ${prev}} to {bold.underline ${id}}.`);
 
                 if (prev) {
-                    message = new Message(
-                        `License changed from ${Markdown.wrap(prev)} to ${Markdown.wrap(
-                            id
-                        )}. You can check it in ${Markdown.link(
-                            'the full list of SPDX license IDs.',
-                            'https://spdx.org/licenses/'
-                        )}`
-                    );
+                    message = new Message(`License changed from ${md.licenseLink(prev)} to ${md.licenseLink(id)}.`);
                     message.changeLevel = ChangeLevel.Major;
                 } else {
-                    message = new Message(`Source code now under ${Markdown.wrap(id)} license.`);
+                    message = new Message(`Source code now under ${md.wrap(id)} license.`);
                 }
 
                 subsection.add(message);
@@ -125,7 +118,7 @@ export default class PackageChangesInformer extends Plugin {
                 if (rule) {
                     const text = templates.reduce((acc, [name, value]) => {
                         return [acc, ...rule.getChanges(value).map(change => renderListItem(name, change, task))].join(
-                            Markdown.LINE_SEPARATOR
+                            '\n'
                         );
                     }, '');
 

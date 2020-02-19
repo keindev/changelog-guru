@@ -4,12 +4,12 @@ import { TaskTree } from 'tasktree-cli';
 import Section from '../entities/Section';
 import Commit from '../entities/Commit';
 import Author from '../entities/Author';
-import Markdown from '../../utils/Markdown';
-import Key from '../../utils/Key';
+import * as md from '../../utils/Markdown';
+import { inMap } from '../../utils/Text';
 import Message from '../entities/Message';
 
 export default class Writer {
-    public static FILE_NAME = 'CHANGELOG.md';
+    static FILE_NAME = 'CHANGELOG.md';
 
     protected filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
 
@@ -18,7 +18,7 @@ export default class Writer {
         let group: Commit | Commit[] | undefined;
 
         commits.forEach(commit => {
-            group = Key.inMap(commit.subject, groups);
+            group = inMap(commit.subject, groups);
 
             if (group) {
                 if (Array.isArray(group)) {
@@ -44,37 +44,27 @@ export default class Writer {
             subject = group[0].subject;
             group.forEach(commit => {
                 accents.push(...commit.accents);
-                links.push(Markdown.commitLink(commit.shortName, commit.url));
+                links.push(md.commitLink(commit.shortName, commit.url));
             });
         } else {
             subject = group.subject;
             accents.push(...group.accents);
-            links.push(Markdown.commitLink(group.shortName, group.url));
+            links.push(md.commitLink(group.shortName, group.url));
         }
 
-        if (accents.length) {
-            output.push(
-                Markdown.bold(`[${[...new Set(...accents)].map(Markdown.capitalize).join(Markdown.ITEM_SEPARATOR)}]`)
-            );
-        }
+        if (accents.length) output.push(md.strong(`[${[...new Set(...accents)].map(md.capitalize).join(', ')}]`));
 
-        output.push(Markdown.capitalize(subject), ...links);
+        output.push(md.capitalize(subject), ...links);
 
-        return Markdown.listItem(output.join(Markdown.WORD_SEPARATOR));
+        return md.list(output.join(' '));
     }
 
-    private static renderAuthors(authors: Author[]): string {
-        return [Markdown.line(), Markdown.title('Contributors'), ...authors.map(Markdown.authorLink)].join(
-            Markdown.LINE_SEPARATOR
-        );
-    }
-
-    public async write(sections: Section[], authors: Author[]): Promise<void> {
+    async write(sections: Section[], authors: Author[]): Promise<void> {
         const task = TaskTree.add('Writing new changelog...');
         const data = sections.map(subsection => this.renderSection(subsection));
 
-        data.push(Writer.renderAuthors(authors), Markdown.EMPTY_SEPARATOR);
-        await this.writeFile(data.join(Markdown.LINE_SEPARATOR));
+        data.push(md.contributors(authors.map(md.authorLink)), '');
+        await this.writeFile(data.join('\n'));
         task.complete('Changelog generated!');
     }
 
@@ -82,24 +72,22 @@ export default class Writer {
         await fs.promises.writeFile(this.filePath, data);
     }
 
-    private renderSection(section: Section, level: number = Markdown.DEFAULT_HEADER_LEVEL): string {
+    private renderSection(section: Section, level = 1): string {
         const sections = section.sections.filter(Section.filter);
         const commits = section.commits.filter(Commit.filter);
         const messages = section.messages.filter(Message.filter);
-        const output = [Markdown.title(section.name, level)];
+        const output = [md.title(section.name, level)];
 
-        if (messages.length) output.push(...messages.map(message => message.text), Markdown.EMPTY_SEPARATOR);
+        if (messages.length) output.push(...messages.map(message => message.text), '');
 
         if (sections.length) {
             output.push(...sections.map(subsection => this.renderSection(subsection, level + 1)));
 
-            if (commits.length) output.push(Markdown.title('Others', level + 1));
+            if (commits.length) output.push(md.title('Others', level + 1));
         }
 
-        if (commits.length) {
-            output.push(...Writer.groupCommits(commits).map(Writer.renderCommit), Markdown.EMPTY_SEPARATOR);
-        }
+        if (commits.length) output.push(...Writer.groupCommits(commits).map(Writer.renderCommit), '');
 
-        return output.join(Markdown.LINE_SEPARATOR);
+        return output.join('\n');
     }
 }

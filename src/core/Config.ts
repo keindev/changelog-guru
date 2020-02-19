@@ -46,7 +46,7 @@ export default class Config {
     private plugins = new Map<string, IPluginConfig>();
     private exclusions = new Map<ExclusionType, string[]>();
 
-    public constructor({ types, exclusions, output, provider }: IConfigOptions = {}) {
+    constructor({ types, exclusions, output, provider }: IConfigOptions = {}) {
         this.types = types ?? new Map();
         this.exclusions = exclusions ?? new Map();
         this.filePath = output;

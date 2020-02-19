@@ -2,7 +2,7 @@ import { LookupManager } from 'string-lookup-manager';
 import Entity, { Compare, Priority } from './Entity';
 import Author from './Author';
 import { ChangeLevel } from '../Config';
-import Markdown from '../../utils/Markdown';
+import { wrap } from '../../utils/Markdown';
 
 export enum CommitStatus {
     BreakingChanges = 1,
@@ -45,7 +45,7 @@ export default class Commit extends Entity {
         if (type) this.type = type.toLocaleLowerCase();
         if (scope) this.scope = scope;
         if (subject) this.subject = subject;
-        if (body) this.body = body.split(Markdown.LINE_SEPARATOR).map(line => line.trim());
+        if (body) this.body = body.split('\n').map(line => line.trim());
     }
 
     static compare(a: Commit, b: Commit): Compare {
@@ -99,7 +99,7 @@ export default class Commit extends Entity {
     }
 
     get subject(): string {
-        return this.replacements.replace(this.subject, item => Markdown.wrap(item.value));
+        return this.replacements.replace(this.subject, item => wrap(item.value));
     }
 
     set subject(subject: string): void {

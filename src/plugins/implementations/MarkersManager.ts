@@ -1,7 +1,7 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Section, { SectionPosition, SectionOrder } from '../../core/entities/Section';
 import Commit, { CommitStatus } from '../../core/entities/Commit';
-import Key from '../../utils/Key';
+import { find } from '../../utils/Text';
 import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
 export enum MarkerType {
@@ -74,7 +74,7 @@ export default class MarkersManager extends Plugin {
         }
     }
 
-    public lint(options: IPluginLintOptions, task: Task): void {
+    lint(options: IPluginLintOptions, task: Task): void {
         const { body } = options;
         const markersLine = body[0];
         const blackLine = body[1];
@@ -109,7 +109,7 @@ export default class MarkersManager extends Plugin {
                 if (match.groups && match.groups.type) {
                     const { name, value } = match.groups;
 
-                    if ((marker = Key.getEqual(name, [...this.markers]) as MarkerType | undefined))
+                    if ((marker = find(name, [...this.markers]) as MarkerType | undefined))
                         markers.push([marker, value, name]);
                 }
             }

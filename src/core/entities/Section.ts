@@ -56,13 +56,13 @@ export default class Section extends Entity {
         return messages.sort(Message.compare);
     }
 
-    public getPriority(): Priority {
+    get priority(): Priority {
         let priority = super.priority;
 
         if (this.entities.size) {
-            priority = this.getSections().reduce((acc, section) => acc + section.priority, priority);
-            priority = this.getMessages().reduce((acc, message) => acc + message.priority, priority);
-            priority = this.getCommits().reduce((acc, commit) => acc + commit.priority, priority);
+            priority = this.sections.reduce((acc, section) => acc + section.priority, priority);
+            priority = this.messages.reduce((acc, message) => acc + message.priority, priority);
+            priority = this.commits.reduce((acc, commit) => acc + commit.priority, priority);
         }
 
         return priority;
@@ -88,7 +88,7 @@ export default class Section extends Entity {
         return !this.entities.size;
     }
 
-    public assignAsSubsection(relations: Map<string, Section>): void {
+    assignAsSubsection(relations: Map<string, Section>): void {
         const { commits } = this;
 
         if (commits.length) {
@@ -106,7 +106,7 @@ export default class Section extends Entity {
         }
     }
 
-    public assignAsSection(relations: Map<string, Section>): void {
+    assignAsSection(relations: Map<string, Section>): void {
         this.commits.forEach(commit => {
             if (relations.has(commit.name)) {
                 this.remove(commit);

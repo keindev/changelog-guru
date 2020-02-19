@@ -3,11 +3,11 @@ import Writer from '../Writer';
 export default class MockWriter extends Writer {
     private __data: string | undefined;
 
-    public __filePath(): string {
+    __filePath(): string {
         return this.filePath;
     }
 
-    public __getData(): string | undefined {
+    __getData(): string | undefined {
         return this.__data;
     }
 
