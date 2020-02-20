@@ -1,6 +1,6 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../../core/entities/Commit';
-import { unify, inMap } from '../../utils/Text';
+import { unify, findSame } from '../../utils/Text';
 import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
 export default class ScopeLinker extends Plugin {
@@ -23,9 +23,13 @@ export default class ScopeLinker extends Plugin {
     async parse(commit: Commit): Promise<void> {
         if (commit.scope) {
             commit.scope.split(ScopeLinker.DELIMITER).forEach(name => {
-                const accent = inMap(name, this.names);
+                const actualName = findSame(name, [...this.names.keys()]);
 
-                if (accent || (!this.onlyPresented && name.length)) commit.addAccent((accent || name).trim());
+                if (actualName) {
+                    const accent = this.names.get(actualName);
+
+                    if (accent || (!this.onlyPresented && name.length)) commit.addAccent((accent || name).trim());
+                }
             });
         }
     }
@@ -35,10 +39,11 @@ export default class ScopeLinker extends Plugin {
 
         if (scope) {
             const { onlyPresented, names } = this;
+            const actualNames = [...names.keys()];
 
             scope.split(ScopeLinker.DELIMITER).forEach(name => {
                 if (name.length < ScopeLinker.MIN_NAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
-                if (onlyPresented && !inMap(name, names)) task.error(`Scope {bold ${name}} is not available`);
+                if (onlyPresented && !findSame(name, actualNames)) task.error(`Scope {bold ${name}} is not available`);
             });
         }
     }

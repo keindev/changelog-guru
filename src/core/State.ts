@@ -4,7 +4,7 @@ import Commit from '../entities/Commit';
 import Author from '../entities/Author';
 import Section, { SectionPosition, SectionOrder } from '../entities/Section';
 import License from '../package/License';
-import { isSame, inArray, unify } from '../../utils/Text';
+import { isSame, findSame, unify } from '../../utils/Text';
 import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
 import { ChangeLevel, ExclusionType, IPluginOption } from '../config/Config';
 import PluginLoader from '../../plugins/PluginLoader';
@@ -127,10 +127,10 @@ export default class State implements IPluginContext {
                     authors.forEach(author => author.ignore(rules.indexOf(author.login) >= 0));
                     break;
                 case ExclusionType.CommitType:
-                    commits.forEach(commit => commit.ignore(inArray(commit.getTypeName(), rules)));
+                    commits.forEach(commit => commit.ignore(findSame(commit.getTypeName(), rules)));
                     break;
                 case ExclusionType.CommitScope:
-                    commits.forEach(commit => commit.ignore(inArray(commit.getScope(), rules)));
+                    commits.forEach(commit => commit.ignore(findSame(commit.getScope(), rules)));
                     break;
                 case ExclusionType.CommitSubject:
                     commits.forEach(commit => commit.ignore(rules.some(item => commit.getSubject().includes(item))));

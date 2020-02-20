@@ -1,7 +1,7 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Section, { SectionPosition, SectionOrder } from '../../core/entities/Section';
 import Commit, { CommitStatus } from '../../core/entities/Commit';
-import { find } from '../../utils/Text';
+import { findSame } from '../../utils/Text';
 import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
 export enum MarkerType {
@@ -109,7 +109,7 @@ export default class MarkersManager extends Plugin {
                 if (match.groups && match.groups.type) {
                     const { name, value } = match.groups;
 
-                    if ((marker = find(name, [...this.markers]) as MarkerType | undefined))
+                    if ((marker = findSame(name, [...this.markers]) as MarkerType | undefined))
                         markers.push([marker, value, name]);
                 }
             }

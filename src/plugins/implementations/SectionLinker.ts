@@ -1,7 +1,7 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Section, { SectionPosition } from '../../core/entities/Section';
 import Commit from '../../core/entities/Commit';
-import { unify, inMap } from '../../utils/Text';
+import { unify, findSame } from '../../utils/Text';
 import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
 export default class SectionLinker extends Plugin {
@@ -27,15 +27,20 @@ export default class SectionLinker extends Plugin {
 
     async parse(commit: Commit): Promise<void> {
         if (commit.typeName) {
-            const section = inMap(commit.typeName, this.blocks);
+            const sectionName = findSame(commit.typeName, [...this.blocks.keys()]);
 
-            if (section) section.add(commit);
+            if (sectionName) {
+                const section = this.blocks.get(sectionName);
+
+                if (section) section.add(commit);
+            }
         }
     }
 
     lint(options: IPluginLintOptions, task: Task): void {
         const { type } = options;
+        const blocks = [...this.blocks.keys()];
 
-        if (!inMap(type, this.blocks)) task.error(`Commit type {bold ${type}} is not assigned with section`);
+        if (!findSame(type, blocks)) task.error(`Commit type {bold ${type}} is not assigned with section`);
     }
 }

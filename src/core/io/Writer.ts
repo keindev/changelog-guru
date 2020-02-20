@@ -5,7 +5,7 @@ import Section from '../entities/Section';
 import Commit from '../entities/Commit';
 import Author from '../entities/Author';
 import * as md from '../../utils/Markdown';
-import { inMap } from '../../utils/Text';
+import { findSame } from '../../utils/Text';
 import Message from '../entities/Message';
 
 export default class Writer {
@@ -15,19 +15,22 @@ export default class Writer {
 
     private static groupCommits(commits: Commit[]): (Commit | Commit[])[] {
         const groups = new Map<string, Commit | Commit[]>();
-        let group: Commit | Commit[] | undefined;
 
         commits.forEach(commit => {
-            group = inMap(commit.subject, groups);
+            const key = findSame(commit.subject, [...groups.keys()]);
 
-            if (group) {
-                if (Array.isArray(group)) {
-                    group.push(commit);
+            if (key) {
+                const group = groups.get(key);
+
+                if (group) {
+                    if (Array.isArray(group)) {
+                        group.push(commit);
+                    } else {
+                        groups.set(group.subject, [group, commit]);
+                    }
                 } else {
-                    groups.set(group.subject, [group, commit]);
+                    groups.set(commit.subject, commit);
                 }
-            } else {
-                groups.set(commit.subject, commit);
             }
         });
 

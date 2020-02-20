@@ -31,10 +31,4 @@ export const isSame = (a: string, b: string): boolean => {
     return mx[l2][l1] <= MAX_DIFF_DISTANCE || mx[l2][l1] / l1 <= MAX_DIFF_PERCENT;
 };
 
-export const inArray = (key: string, list: string[]): boolean => list.some(item => isSame(key, item));
-
-export const find = (key: string, list: string[]): string | undefined => list.find(item => isSame(item, key));
-
-export const inMap = <T>(key: string, map: Map<string, T>): T | undefined => {
-    return map.get(key) ?? map.get([...map.keys()].find(k => isSame(key, k)) ?? '');
-};
+export const findSame = (key: string, items: string[]): string | undefined => items.find(item => isSame(item, key));
