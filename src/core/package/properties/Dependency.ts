@@ -1,6 +1,5 @@
 import semver, { SemVer } from 'semver';
 import PackageRule, { PackageRuleChangeType, IPackageRuleChange } from './PackageRule';
-import { DependencyRuleType, IPackageDependencies } from '../Package';
 import { Compare } from '../../entities/Entity';
 
 const types = {

@@ -3,7 +3,7 @@ import AttentionPlugin, { IAttentionPluginOptions } from '../AttentionPlugin';
 import State from '../../../core/state/State';
 import { ChangeLevel } from '../../../core/config/Config';
 import ConfigLoader from '../../../core/config/ConfigLoader';
-import DependencyRule from '../../../core/package/rules/DependencyRule';
+import DependencyRule from '../../../core/package/properties/DependencyRule';
 import { DependencyRuleType } from '../../../core/package/Package';
 
 describe('AttentionPlugin', () => {

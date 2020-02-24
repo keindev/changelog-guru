@@ -2,7 +2,7 @@ import Commit from './Commit';
 import Message from './Message';
 import Entity, { Compare, Priority } from './Entity';
 
-export enum SectionPosition {
+export enum Position {
     None = 0,
     Subsection = 1,
     Group = 2,
@@ -11,19 +11,19 @@ export enum SectionPosition {
     Header = 5,
 }
 
-export enum SectionOrder {
+export enum Order {
     Default = 0,
     Max = Number.MAX_SAFE_INTEGER,
     Min = Number.MIN_SAFE_INTEGER,
 }
 
 export default class Section extends Entity {
-    order: SectionOrder | number;
-    position: SectionPosition;
+    order: number;
+    position: Position;
 
-    private entities = new Map<string, Entity>();
+    #entities = new Map<string, Entity>();
 
-    constructor(title: string, position: SectionPosition, order: SectionOrder | number = SectionOrder.Default) {
+    constructor(title: string, position: Position, order: number = Order.Default) {
         super(title);
 
         this.order = order;
@@ -39,19 +39,19 @@ export default class Section extends Entity {
     }
 
     get sections(): Section[] {
-        const sections = [...this.entities.values()].filter(value => value instanceof Section) as Section[];
+        const sections = [...this.#entities.values()].filter(value => value instanceof Section) as Section[];
 
         return sections.sort(Section.compare);
     }
 
     get commits(): Commit[] {
-        const commits = [...this.entities.values()].filter(value => value instanceof Commit) as Commit[];
+        const commits = [...this.#entities.values()].filter(value => value instanceof Commit) as Commit[];
 
         return commits.sort(Commit.compare);
     }
 
     get messages(): Message[] {
-        const messages = [...this.entities.values()].filter(value => value instanceof Message) as Message[];
+        const messages = [...this.#entities.values()].filter(value => value instanceof Message) as Message[];
 
         return messages.sort(Message.compare);
     }
@@ -59,7 +59,7 @@ export default class Section extends Entity {
     get priority(): Priority {
         let priority = super.priority;
 
-        if (this.entities.size) {
+        if (this.#entities.size) {
             priority = this.sections.reduce((acc, section) => acc + section.priority, priority);
             priority = this.messages.reduce((acc, message) => acc + message.priority, priority);
             priority = this.commits.reduce((acc, commit) => acc + commit.priority, priority);
@@ -69,26 +69,24 @@ export default class Section extends Entity {
     }
 
     add(entity: Commit | Section | Message): void {
-        const { entities } = this;
+        if (!this.#entities.has(entity.name)) {
+            this.#entities.set(entity.name, entity);
 
-        if (!entities.has(entity.name)) {
-            entities.set(entity.name, entity);
-
-            if (entity instanceof Section) (entity as Section).position = SectionPosition.Subsection;
+            if (entity instanceof Section) entity.position = Position.Subsection;
         }
     }
 
     remove(entity: Commit | Section | Message): void {
-        if (this.entities.delete(entity.name)) {
-            if (entity instanceof Section) (entity as Section).position = SectionPosition.Group;
+        if (this.#entities.delete(entity.name)) {
+            if (entity instanceof Section) entity.position = Position.Group;
         }
     }
 
-    get isEmpty(): boolean {
-        return !this.entities.size;
+    get empty(): boolean {
+        return !this.#entities.size;
     }
 
-    assignAsSubsection(relations: Map<string, Section>): void {
+    assignSubsection(relations: Map<string, Section>): void {
         const { commits } = this;
 
         if (commits.length) {
@@ -106,7 +104,7 @@ export default class Section extends Entity {
         }
     }
 
-    assignAsSection(relations: Map<string, Section>): void {
+    assignSection(relations: Map<string, Section>): void {
         this.commits.forEach(commit => {
             if (relations.has(commit.name)) {
                 this.remove(commit);

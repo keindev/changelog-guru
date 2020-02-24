@@ -16,14 +16,14 @@ export interface IOptions extends IConfigLoaderOptions {
 }
 
 export class Changelog {
-    private options: IOptions;
-    private package: Package;
+    #options: IOptions;
+    #package: Package;
 
     constructor(options?: IOptions) {
         dotenv.config();
 
-        this.package = new Package();
-        this.options = options || {};
+        this.#package = new Package();
+        this.#options = options || {};
     }
 
     async build(): Promise<void> {
@@ -57,7 +57,7 @@ export class Changelog {
 
         switch (config.provider) {
             case ServiceProvider.GitHub:
-                provider = new GitHubProvider(this.package.repository, this.options.branch);
+                provider = new GitHubProvider(this.#package.repository, this.#options.branch);
                 break;
             case ServiceProvider.GitLab:
                 TaskTree.fail(`{bold ${ServiceProvider.GitLab}} - not supported yet`);
@@ -72,7 +72,7 @@ export class Changelog {
 
     private async getConfig(): Promise<Config> {
         const task = TaskTree.add('Read configuration');
-        const config = await new ConfigLoader(this.options).load();
+        const config = await new ConfigLoader(this.#options).load();
 
         task.complete('Configuration initialized with:');
 
@@ -81,7 +81,7 @@ export class Changelog {
 
     private async readState(config: Config, provider: Provider): Promise<State> {
         const reader = new Reader(provider);
-        const state = await reader.read(this.package);
+        const state = await reader.read(this.#package);
 
         state.setCommitTypes(config.getTypes());
         state.ignoreEntities(config.getExclusions());
@@ -93,6 +93,6 @@ export class Changelog {
     private async writeState(state: State): Promise<void> {
         await new Writer().write(state.getSections(), state.getAuthors());
 
-        if (this.options.bump) await this.package.incrementVersion(...state.changesLevels);
+        if (this.#options.bump) await this.#package.incrementVersion(...state.changesLevels);
     }
 }

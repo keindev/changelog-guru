@@ -8,74 +8,52 @@ import * as md from '../../utils/Markdown';
 import { findSame } from '../../utils/Text';
 import Message from '../entities/Message';
 
-export default class Writer {
-    static FILE_NAME = 'CHANGELOG.md';
+const render = (commits: Commit[]): string[] => {
+    const groups = new Map<string, Commit[]>();
 
-    protected filePath = path.resolve(process.cwd(), Writer.FILE_NAME);
+    commits.forEach(commit => {
+        const key = findSame(commit.subject, [...groups.keys()]);
 
-    private static groupCommits(commits: Commit[]): (Commit | Commit[])[] {
-        const groups = new Map<string, Commit | Commit[]>();
+        if (key) {
+            const group = groups.get(key);
 
-        commits.forEach(commit => {
-            const key = findSame(commit.subject, [...groups.keys()]);
-
-            if (key) {
-                const group = groups.get(key);
-
-                if (group) {
-                    if (Array.isArray(group)) {
-                        group.push(commit);
-                    } else {
-                        groups.set(group.subject, [group, commit]);
-                    }
-                } else {
-                    groups.set(commit.subject, commit);
-                }
+            if (Array.isArray(group)) {
+                group.push(commit);
+            } else {
+                groups.set(commit.subject, [commit]);
             }
+        }
+    });
+
+    return [...groups.values()].map(group => {
+        const output: string[] = [];
+        const accents = new Set<string>();
+        const links: string[] = [];
+
+        group.forEach(commit => {
+            commit.accents.forEach(accents.add);
+            links.push(md.commitLink(commit.shortName, commit.url));
         });
 
-        return [...groups.values()];
-    }
+        if (accents.size) output.push(md.strong(`[${[...accents.values()].map(md.capitalize).join(', ')}]`));
 
-    private static renderCommit(group: Commit | Commit[]): string {
-        const output: string[] = [];
-        const accents: string[] = [];
-        const links: string[] = [];
-        let subject: string;
-
-        if (Array.isArray(group)) {
-            subject = group[0].subject;
-            group.forEach(commit => {
-                accents.push(...commit.accents);
-                links.push(md.commitLink(commit.shortName, commit.url));
-            });
-        } else {
-            subject = group.subject;
-            accents.push(...group.accents);
-            links.push(md.commitLink(group.shortName, group.url));
-        }
-
-        if (accents.length) output.push(md.strong(`[${[...new Set(...accents)].map(md.capitalize).join(', ')}]`));
-
-        output.push(md.capitalize(subject), ...links);
+        output.push(md.capitalize(group[0].subject), ...links);
 
         return md.list(output.join(' '));
-    }
+    });
+};
 
+export default class Writer {
     async write(sections: Section[], authors: Author[]): Promise<void> {
         const task = TaskTree.add('Writing new changelog...');
-        const data = sections.map(subsection => this.renderSection(subsection));
+        const data = sections.map(subsection => this.render(subsection));
 
         data.push(md.contributors(authors.map(md.authorLink)), '');
-        await this.writeFile(data.join('\n'));
+        await fs.promises.writeFile(path.resolve(process.cwd(), 'CHANGELOG.md'), data);
         task.complete('Changelog generated!');
     }
 
-    protected async writeFile(data: string): Promise<void> {
-        await fs.promises.writeFile(this.filePath, data);
-    }
-
-    private renderSection(section: Section, level = 1): string {
+    private render(section: Section, level = 1): string {
         const sections = section.sections.filter(Section.filter);
         const commits = section.commits.filter(Commit.filter);
         const messages = section.messages.filter(Message.filter);
@@ -84,12 +62,12 @@ export default class Writer {
         if (messages.length) output.push(...messages.map(message => message.text), '');
 
         if (sections.length) {
-            output.push(...sections.map(subsection => this.renderSection(subsection, level + 1)));
+            output.push(...sections.map(subsection => this.render(subsection, level + 1)));
 
             if (commits.length) output.push(md.title('Others', level + 1));
         }
 
-        if (commits.length) output.push(...Writer.groupCommits(commits).map(Writer.renderCommit), '');
+        if (commits.length) output.push(...render(commits), '');
 
         return output.join('\n');
     }

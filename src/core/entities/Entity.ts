@@ -23,8 +23,8 @@ export default class Entity {
 
     readonly name: string;
 
-    private ignored = false;
-    private level: ChangeLevel = ChangeLevel.Patch;
+    #ignored = false;
+    #level: ChangeLevel = ChangeLevel.Patch;
 
     constructor(name?: string) {
         this.name = name || `f${(~~(Math.random() * 1e8)).toString(16)}`;
@@ -35,7 +35,7 @@ export default class Entity {
     }
 
     static filter(e: Entity): boolean {
-        return !e.isEmpty && !e.isIgnored;
+        return !e.empty && !e.ignored;
     }
 
     get shortName(): string {
@@ -43,26 +43,26 @@ export default class Entity {
     }
 
     get priority(): Priority {
-        return priorities[this.level];
+        return priorities[this.#level];
     }
 
-    get changeLevel(): ChangeLevel {
-        return this.level;
+    get level(): ChangeLevel {
+        return this.#level;
     }
 
-    set changeLevel(level: ChangeLevel) {
-        this.level = level;
+    set level(level: ChangeLevel) {
+        if (priorities[level]) this.#level = level;
     }
 
-    get isIgnored(): boolean {
-        return this.ignored;
+    get ignored(): boolean {
+        return this.#ignored;
     }
 
-    get isEmpty(): boolean {
-        return this.ignored;
+    set ignored(condition: boolean) {
+        this.#ignored = this.#ignored || condition;
     }
 
-    ignore(condition?: boolean): void {
-        this.ignored = this.ignored || (typeof condition === 'boolean' ? condition : true);
+    get empty(): boolean {
+        return this.#ignored;
     }
 }

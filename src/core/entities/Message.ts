@@ -6,10 +6,10 @@ export default class Message extends Entity {
     constructor(text: string) {
         super();
 
-        this.text = text;
+        this.text = text.trim();
     }
 
-    get isEmpty(): boolean {
-        return !this.text.trim().length;
+    get empty(): boolean {
+        return !this.text.length;
     }
 }

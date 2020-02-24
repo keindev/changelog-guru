@@ -25,7 +25,7 @@ export const imageLink = (text: string, img: string, url: string): string => lin
 
 export const commitLink = (text: string, url: string): string => link(wrap(text), url);
 
-export const authorLink = (author: Author): string => imageLink(author.name, author.getAvatar(), author.url);
+export const authorLink = (author: Author): string => imageLink(author.name, author.avatar, author.url);
 
 export const licenseLink = (license: string): string => link(license, `https://spdx.org/licenses/${license}.html`);
 

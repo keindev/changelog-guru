@@ -4,7 +4,7 @@ import Section, { SectionPosition, SectionOrder } from '../../core/entities/Sect
 import Message from '../../core/entities/Message';
 import * as md from '../../utils/Markdown';
 import { ChangeLevel } from '../../core/config/Config';
-import { PackageRuleChangeType, PackageRuleType, IPackageRuleChange } from '../../core/package/rules/PackageRule';
+import { PackageRuleChangeType, PackageRuleType, IPackageRuleChange } from '../../core/package/properties/PackageRule';
 import { DependencyRuleType, RestrictionRuleType } from '../../core/package/Package';
 import Plugin, { IPluginConfig } from '../Plugin';
 

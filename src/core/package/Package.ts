@@ -1,9 +1,9 @@
 import writePkg from 'write-pkg';
-import readPkg, { NormalizedPackageJson } from 'read-pkg';
+import readPkg from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import * as semver from 'semver';
 
-export enum DependencyRuleType {
+export enum Dependency {
     // https://docs.npmjs.com/files/package.json#engines
     Engines = 'engines',
     // https://docs.npmjs.com/files/package.json#dependencies
@@ -16,7 +16,7 @@ export enum DependencyRuleType {
     OptionalDependencies = 'optionalDependencies',
 }
 
-export enum RestrictionRuleType {
+export enum Restriction {
     // https://docs.npmjs.com/files/package.json#bundleddependencies
     BundledDependencies = 'bundledDependencies',
     // https://docs.npmjs.com/files/package.json#os
@@ -26,20 +26,17 @@ export enum RestrictionRuleType {
 }
 
 export default class Package {
-    static DEFAULT_VERSION = '0.0.1';
-    static DEFAULT_LICENSE = '';
-    static DEFAULT_REPOSITORY = '';
-
-    private data: NormalizedPackageJson;
+    #rules = new Map<Dependency | Restriction, Rule>();
+    #data: readPkg.NormalizedPackageJson;
 
     constructor() {
         const task = TaskTree.add('Reading package.json');
 
-        this.data = readPkg.sync({ normalize: true });
+        this.#data = readPkg.sync({ normalize: true });
 
-        if (!this.data.license) task.fail('Package license is not specified');
-        if (!this.data.version) task.fail('Package version is not specified');
-        if (!this.data.repository) task.fail('Package repository url is not specified');
+        if (!this.#data.license) task.fail('Package license is not specified');
+        if (!this.#data.version) task.fail('Package version is not specified');
+        if (!this.#data.repository) task.fail('Package repository url is not specified');
 
         task.log(`Version: {bold ${this.version}}`);
         task.log(`Repository: {bold ${this.repository}}`);
@@ -47,31 +44,26 @@ export default class Package {
     }
 
     get repository(): string {
-        const { repository } = this.data;
-
-        if (typeof repository === 'string') return repository;
-        if (typeof repository === 'object') return repository.url;
-
-        return Package.DEFAULT_REPOSITORY;
+        return typeof this.#data.repository === 'object' ? this.#data.repository.url : this.#data.repository!;
     }
 
     get version(): string {
-        return this.data.version ? semver.valid(semver.coerce(this.data.version)!)! : Package.DEFAULT_VERSION;
+        return semver.valid(semver.coerce(this.#data.version)!)!;
     }
 
     get license(): string {
-        return this.data.license || Package.DEFAULT_LICENSE;
+        return this.#data.license!;
     }
 
-    getDependencies(type: DependencyRuleType): { [key: string]: string } | undefined {
-        return this.data[type];
+    getDependencies(type: Dependency): { [key: string]: string } | undefined {
+        return this.#data[type];
     }
 
-    getRestrictions(type: RestrictionRuleType): string[] | undefined {
-        return this.data[type];
+    getRestrictions(type: Restriction): string[] | undefined {
+        return this.#data[type];
     }
 
-    async incrementVersion(major: number, minor: number, patch: number): Promise<void> {
+    async bump(major: number, minor: number, patch: number): Promise<void> {
         const task = TaskTree.add(`Updating package version`);
         let next: string | null | undefined;
 
@@ -81,7 +73,7 @@ export default class Package {
         if (!next) task.fail(`New package version is invalid or less (see https://semver.org/)`);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await writePkg({ ...(this.data as any), version: next! });
+        await writePkg({ ...(this.#data as any), version: next! });
         task.complete(`Package version updated to {bold ${next}}`);
     }
 }

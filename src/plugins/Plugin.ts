@@ -1,7 +1,7 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../core/entities/Commit';
 import License from '../core/package/License';
-import PackageRule, { PackageRuleType } from '../core/package/rules/PackageRule';
+import PackageRule, { PackageRuleType } from '../core/package/properties/PackageRule';
 import Section, { SectionPosition, SectionOrder } from '../core/entities/Section';
 
 export interface IPluginLintOptions {

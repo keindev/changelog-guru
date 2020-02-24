@@ -1,29 +1,28 @@
 import { TaskTree } from 'tasktree-cli';
-import { ProgressBar } from 'tasktree-cli/lib/progress-bar';
 import Provider from '../providers/Provider';
-import State from '../state/State';
 import Package, { DependencyRuleType, RestrictionRuleType } from '../package/Package';
-import DependencyRule from '../package/rules/DependencyRule';
-import RestrictionRule from '../package/rules/RestrictionRule';
+import DependencyRule from '../package/properties/DependencyRule';
+import RestrictionRule from '../package/properties/RestrictionRule';
+import State from '../State';
 
 export default class Reader {
-    private provider: Provider;
+    #provider: Provider;
 
     constructor(provider: Provider) {
-        this.provider = provider;
+        this.#provider = provider;
     }
 
     async read(packageInfo: Package): Promise<State> {
         const task = TaskTree.add('Loading a release state...');
         const state = new State();
-        const { date, tag } = await this.provider.getLastRelease();
-        const commitsCount = await this.provider.getCommitsCount(date);
+        const { date, tag } = await this.#provider.getLastRelease();
+        const count = await this.#provider.getCommitsCount(date);
 
         task.log(`Last release date: ${date}`);
         task.log(`Last release tag: ${tag}`);
 
-        if (commitsCount) {
-            await this.loadCommits(commitsCount, state, date);
+        if (count) {
+            await this.loadCommits(count, state, date);
         } else {
             task.warn(`Branch don't have commits since ${date}`);
         }
@@ -42,22 +41,18 @@ export default class Reader {
         let pageIndex = 0;
 
         while (pagesCount > pageIndex) {
-            promises.push(this.loadCommitsPage(pageIndex++, state, date, bar));
+            promises.push(this.#provider.getCommits(date, pageIndex++).then(commits => {
+                commits.forEach(commit => state.addCommit(commit));
+                bar.tick(commits.length);
+            }));
         }
 
         await Promise.all(promises);
         task.complete(`{bold ${count}} commits loaded`, true);
     }
 
-    private async loadCommitsPage(index: number, state: State, date: Date, progress: ProgressBar): Promise<void> {
-        const commits = await this.provider.getCommits(date, index);
-
-        commits.forEach(commit => state.addCommit(commit));
-        progress.tick(commits.length);
-    }
-
     private async loadPackage(state: State, packageInfo: Package): Promise<void> {
-        const prev = await this.provider.getPrevPackage();
+        const prev = await this.#provider.getPrevPackage();
 
         state.setLicense(packageInfo.license, prev.license);
 

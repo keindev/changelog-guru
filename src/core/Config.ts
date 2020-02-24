@@ -2,7 +2,6 @@ import path from 'path';
 import cosmiconfig from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import { TaskTree } from 'tasktree-cli';
-import { IPluginConfig } from '../../plugins/Plugin';
 
 export enum ServiceProvider {
     GitHub = 'github',
