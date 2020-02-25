@@ -1,36 +1,39 @@
 import fs from 'fs';
 import path from 'path';
+import { PackageJson } from 'read-pkg';
 import { getUserAgent } from 'universal-user-agent';
 import findupSync from 'findup-sync';
 import { TaskTree } from 'tasktree-cli';
-import Provider from './Provider';
 import { ServiceProvider } from '../Config';
+import Commit from '../entities/Commit';
 
-export default abstract class GitProvider extends Provider {
-    static DEFAULT_BRANCH = 'master';
-    static TYPE = 'git';
+export interface IRelease {
+    tag: string | undefined;
+    date: Date;
+}
+
+export default abstract class GitProvider {
+    readonly type: ServiceProvider;
 
     protected repository: string;
     protected owner: string;
-    protected branch: string = GitProvider.DEFAULT_BRANCH;
+    protected branch = 'master';
     protected version = process.env.npm_package_version;
     protected userAgent: string;
 
     constructor(type: ServiceProvider, url: string, branch?: string) {
-        super(type);
-
         const task = TaskTree.add('Initializing git provider');
         const pathname = new URL(url).pathname.split('/');
-        const pattern = `.${GitProvider.TYPE}/HEAD`;
 
-        this.repository = path.basename(pathname.pop() as string, `.${GitProvider.TYPE}`);
+        this.type = type;
+        this.repository = path.basename(pathname.pop() as string, '.git');
         this.owner = pathname.pop() as string;
         this.userAgent = `changelog-guru/${this.version} ${getUserAgent()}`;
 
         if (branch) {
             this.branch = branch;
         } else {
-            const filePath = findupSync(pattern, { cwd: process.cwd() });
+            const filePath = findupSync('.git/HEAD', { cwd: process.cwd() });
 
             if (filePath && fs.existsSync(filePath)) {
                 const buffer = fs.readFileSync(filePath);
@@ -39,10 +42,10 @@ export default abstract class GitProvider extends Provider {
                 if (match) {
                     [, this.branch] = match;
                 } else {
-                    task.warn(`{bold ${pattern}} - ref(s) SHA not found`);
+                    task.warn(`{bold .git/HEAD} - ref(s) SHA not found`);
                 }
             } else {
-                task.warn(`{bold ${pattern}} - does not exist`);
+                task.warn(`{bold .git/HEAD} - does not exist`);
             }
         }
 
@@ -52,4 +55,9 @@ export default abstract class GitProvider extends Provider {
         task.log(`Owner: {bold ${this.owner}}`);
         task.complete('Git provider:');
     }
+
+    abstract async getLastRelease(): Promise<IRelease>;
+    abstract async getCommits(date: Date, page: number): Promise<Commit[]>;
+    abstract async getCommitsCount(date: Date): Promise<number>;
+    abstract async getPrevPackage(): Promise<PackageJson>;
 }

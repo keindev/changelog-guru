@@ -93,6 +93,6 @@ export class Changelog {
     private async writeState(state: State): Promise<void> {
         await new Writer().write(state.getSections(), state.getAuthors());
 
-        if (this.#options.bump) await this.#package.incrementVersion(...state.changesLevels);
+        if (this.#options.bump) await this.#package.bump(...state.changesLevels);
     }
 }

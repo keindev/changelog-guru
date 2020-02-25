@@ -1,38 +1,16 @@
 import writePkg from 'write-pkg';
-import readPkg from 'read-pkg';
+import readPkg, { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import * as semver from 'semver';
-
-export enum Dependency {
-    // https://docs.npmjs.com/files/package.json#engines
-    Engines = 'engines',
-    // https://docs.npmjs.com/files/package.json#dependencies
-    Dependencies = 'dependencies',
-    // https://docs.npmjs.com/files/package.json#devdependencies
-    DevDependencies = 'devDependencies',
-    // https://docs.npmjs.com/files/package.json#peerdependencies
-    PeerDependencies = 'peerDependencies',
-    // https://docs.npmjs.com/files/package.json#optionaldependencies
-    OptionalDependencies = 'optionalDependencies',
-}
-
-export enum Restriction {
-    // https://docs.npmjs.com/files/package.json#bundleddependencies
-    BundledDependencies = 'bundledDependencies',
-    // https://docs.npmjs.com/files/package.json#os
-    OS = 'os',
-    // https://docs.npmjs.com/files/package.json#cpu
-    CPU = 'cpu',
-}
+import { Dependency, Restriction } from './properties/Rule';
 
 export default class Package {
-    #rules = new Map<Dependency | Restriction, Rule>();
-    #data: readPkg.NormalizedPackageJson;
+    #data: PackageJson;
 
     constructor() {
         const task = TaskTree.add('Reading package.json');
 
-        this.#data = readPkg.sync({ normalize: true });
+        this.#data = readPkg.sync({ normalize: false });
 
         if (!this.#data.license) task.fail('Package license is not specified');
         if (!this.#data.version) task.fail('Package version is not specified');

@@ -1,9 +1,9 @@
 import PackageRule, { IPackageRuleChange, PackageRuleChangeType } from './PackageRule';
 import { RestrictionRuleType } from '../Package';
 
-export default class RestrictionRule extends PackageRule {
-    static BLACKLIST_MARK = '!';
+const getName = (name: string): string => (name[0] === '!' ? name.slice(1) : name);
 
+export default class RestrictionRule extends PackageRule {
     constructor(type: RestrictionRuleType, restrictions?: string[], prev?: string[]) {
         super(type);
 
@@ -11,16 +11,12 @@ export default class RestrictionRule extends PackageRule {
         this.compareWith(prev);
     }
 
-    private static getClearName(value: string): string {
-        return value[0] === RestrictionRule.BLACKLIST_MARK ? value.substring(1, value.length) : value;
-    }
-
     private fillChanges(restrictions?: string[]): void {
         if (Array.isArray(restrictions)) {
             let name: string;
 
             restrictions.forEach(value => {
-                name = RestrictionRule.getClearName(value);
+                name = getName(value);
 
                 this.changes.set(name, {
                     name,
@@ -42,7 +38,7 @@ export default class RestrictionRule extends PackageRule {
             let name: string;
 
             restrictions.forEach(value => {
-                name = RestrictionRule.getClearName(value);
+                name = getName(value);
                 change = changes.get(name);
 
                 if (change) {

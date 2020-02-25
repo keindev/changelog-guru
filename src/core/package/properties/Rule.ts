@@ -1,17 +1,32 @@
 import { SemVer } from 'semver';
 
-export enum PackageRuleChangeType {
-    Added = 'added',
-    Bumped = 'bumped',
-    Changed = 'changed',
-    Downgraded = 'downgraded',
-    Removed = 'removed',
-    Unchanged = 'unchanged',
+
+
+export enum Dependency {
+    // https://docs.npmjs.com/files/package.json#engines
+    Engines = 'engines',
+    // https://docs.npmjs.com/files/package.json#dependencies
+    Dependencies = 'dependencies',
+    // https://docs.npmjs.com/files/package.json#devdependencies
+    DevDependencies = 'devDependencies',
+    // https://docs.npmjs.com/files/package.json#peerdependencies
+    PeerDependencies = 'peerDependencies',
+    // https://docs.npmjs.com/files/package.json#optionaldependencies
+    OptionalDependencies = 'optionalDependencies',
 }
 
-export interface IPackageRuleChange {
+export enum Restriction {
+    // https://docs.npmjs.com/files/package.json#bundleddependencies
+    BundledDependencies = 'bundledDependencies',
+    // https://docs.npmjs.com/files/package.json#os
+    OS = 'os',
+    // https://docs.npmjs.com/files/package.json#cpu
+    CPU = 'cpu',
+}
+
+export interface IChange {
     name: string;
-    type: PackageRuleChangeType;
+    type: Type;
     value?: string;
     link?: string;
     version?: SemVer;
@@ -19,47 +34,16 @@ export interface IPackageRuleChange {
     prevVersion?: SemVer;
 }
 
-export default class PackageRule {
-    readonly type: PackageRuleType;
+export default class Rule<T = Dependency | Restriction> {
+    readonly type: T;
 
-    protected changes = new Map<string, IPackageRuleChange>();
+    protected changes = new Map<string, IChange>();
 
-    constructor(type: PackageRuleType) {
+    constructor(type: T) {
         this.type = type;
     }
 
-    get added(): IPackageRuleChange[] {
-        return [...this.changes.values()].filter(change => change.type === PackageRuleChangeType.Added)
+    getChanges(type: Type): IChange[] {
+        return [...this.changes.values()].filter(change => change.type === type);
     }
-
-    get added(): IPackageRuleChange[] {
-        return [...this.changes.values()].filter(change => change.type === type)
-    }
-
-    get added(): IPackageRuleChange[] {
-        return [...this.changes.values()].filter(change => change.type === type)
-    }
-
-    get added(): IPackageRuleChange[] {
-        return [...this.changes.values()].filter(change => change.type === type)
-    }
-
-    get added(): IPackageRuleChange[] {
-        return [...this.changes.values()].filter(change => change.type === type)
-    }
-
-    get added(): IPackageRuleChange[] {
-        return [...this.changes.values()].filter(change => change.type === type)
-    }
-
-    get added(): IPackageRuleChange[] {
-        return [...this.changes.values()].filter(change => change.type === type)
-    }
-
-    get
-    Bumped = 'bumped',
-    Changed = 'changed',
-    Downgraded = 'downgraded',
-    Removed = 'removed',
-    Unchanged = 'unchanged',
 }

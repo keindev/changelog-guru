@@ -16,11 +16,7 @@ export default class GitHubProvider extends GitProvider {
     constructor(url: string, branch?: string) {
         super(ServiceProvider.GitHub, url, branch);
 
-        this.provider = new Provider({
-            owner: this.owner,
-            repository: this.repository,
-            branch: this.branch,
-        });
+        this.provider = new Provider({ owner: this.owner, repository: this.repository, branch: this.branch });
     }
 
     async getCommits(date: Date, pageIndex: number): Promise<Commit[]> {

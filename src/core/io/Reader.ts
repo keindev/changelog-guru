@@ -54,6 +54,8 @@ export default class Reader {
     private async loadPackage(state: State, packageInfo: Package): Promise<void> {
         const prev = await this.#provider.getPrevPackage();
 
+
+
         state.setLicense(packageInfo.license, prev.license);
 
         Object.values(DependencyRuleType).forEach(type => {
