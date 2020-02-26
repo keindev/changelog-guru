@@ -14,6 +14,7 @@ export interface IRelease {
 
 export default abstract class GitProvider {
     readonly type: ServiceProvider;
+    readonly pageSize = 100;
 
     protected repository: string;
     protected owner: string;

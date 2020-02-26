@@ -13,8 +13,9 @@ export interface IPluginLintOptions {
 }
 
 export interface IPluginContext {
-    getLicense(): License | undefined;
-    getPackageRule(type: PackageRuleType): PackageRule | undefined;
+    license: License | undefined;
+
+    getChanges(type: PackageRuleType): PackageRule | undefined;
     addSection(title: string, position?: SectionPosition, order?: SectionOrder): Section | undefined;
     findSection(title: string): Section | undefined;
 }

@@ -68,6 +68,14 @@ export default class Section extends Entity {
         return priority;
     }
 
+    get isSubsection(): boolean {
+        return this.position === Position.Subsection;
+    }
+
+    get isGroup(): boolean {
+        return this.position === Position.Group;
+    }
+
     add(entity: Commit | Section | Message): void {
         if (!this.#entities.has(entity.name)) {
             this.#entities.set(entity.name, entity);

@@ -113,21 +113,24 @@ export default class PackageChangesInformer extends Plugin {
 
         if (context) {
             [...sections.values()].forEach((type, order) => {
-                const rule = context.getPackageRule(type);
+                const changes = context.getChanges(type);
 
-                if (rule) {
-                    const text = templates.reduce((acc, [name, value]) => {
-                        return [acc, ...rule.getChanges(value).map(change => renderListItem(name, change, task))].join(
-                            '\n'
-                        );
-                    }, '');
+                const text = templates.reduce(
+                    (acc, [name, value]) =>
+                        [
+                            acc,
+                            ...changes
+                                .filter(change => change.type === value)
+                                .map(change => renderListItem(name, change, task)),
+                        ].join('\n'),
+                    ''
+                );
 
-                    if (text) {
-                        const subsection = new Section(subtitles[type], SectionPosition.Subsection, order);
+                if (text) {
+                    const subsection = new Section(subtitles[type], SectionPosition.Subsection, order);
 
-                        subsection.add(new Message(text));
-                        section.add(subsection);
-                    }
+                    subsection.add(new Message(text));
+                    section.add(subsection);
                 }
             });
         }

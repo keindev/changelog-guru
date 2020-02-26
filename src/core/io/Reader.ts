@@ -1,14 +1,13 @@
 import { TaskTree } from 'tasktree-cli';
-import Provider from '../providers/Provider';
-import Package, { DependencyRuleType, RestrictionRuleType } from '../package/Package';
-import DependencyRule from '../package/properties/DependencyRule';
-import RestrictionRule from '../package/properties/RestrictionRule';
+import GitProvider from '../providers/GitProvider';
+import Package, { Dependency, Restriction } from '../Package';
 import State from '../State';
+import License from '../License';
 
 export default class Reader {
-    #provider: Provider;
+    #provider: GitProvider;
 
-    constructor(provider: Provider) {
+    constructor(provider: GitProvider) {
         this.#provider = provider;
     }
 
@@ -27,14 +26,14 @@ export default class Reader {
             task.warn(`Branch don't have commits since ${date}`);
         }
 
-        await this.loadPackage(state, packageInfo);
+        state.license = await this.loadPackage(state, packageInfo);
         task.complete(`Release information:`);
 
         return state;
     }
 
     private async loadCommits(count: number, state: State, date: Date): Promise<void> {
-        const pagesCount = Math.ceil(count / Provider.PAGE_SIZE);
+        const pagesCount = Math.ceil(count / this.#provider.pageSize);
         const task = TaskTree.add('Loading commits...');
         const bar = task.bar(':bar :percent :etas', { total: count });
         const promises = [];
@@ -51,19 +50,17 @@ export default class Reader {
         task.complete(`{bold ${count}} commits loaded`, true);
     }
 
-    private async loadPackage(state: State, packageInfo: Package): Promise<void> {
-        const prev = await this.#provider.getPrevPackage();
+    private async loadPackage(state: State, currPackage: Package): Promise<License> {
+        const prevPackage = await this.#provider.getPrevPackage();
 
-
-
-        state.setLicense(packageInfo.license, prev.license);
-
-        Object.values(DependencyRuleType).forEach(type => {
-            state.setPackageRule(new DependencyRule(type, packageInfo.getDependencies(type), prev[type]));
+        Object.values(Dependency).forEach(prop => {
+            prevPackage[prop] && state.setChanges(prop, currPackage.getDependenciesChanges(prop, new Map(Object.entries(prevPackage[prop]!))));
         });
 
-        Object.values(RestrictionRuleType).forEach(type => {
-            state.setPackageRule(new RestrictionRule(type, ...packageInfo.getRestrictionsStory(type, prev)));
+        Object.values(Restriction).forEach(prop => {
+            prevPackage[prop] && state.setChanges(prop, currPackage.getRestrictionsChanges(prop, prevPackage[prop]!));
         });
+
+        return new License(currPackage.license, prevPackage.license);
     }
 }

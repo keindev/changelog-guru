@@ -1,66 +1,66 @@
 import { TaskTree } from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/task';
-import Commit from '../entities/Commit';
-import Author from '../entities/Author';
-import Section, { SectionPosition, SectionOrder } from '../entities/Section';
-import License from '../package/License';
+import Commit from './entities/Commit';
+import Author from './entities/Author';
+import Section, { SectionPosition, SectionOrder } from './entities/Section';
+import License from './License';
 import { isSame, findSame, unify } from '../../utils/Text';
 import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
 import { ChangeLevel, ExclusionType, IPluginOption } from '../config/Config';
 import PluginLoader from '../../plugins/PluginLoader';
 import { IPluginContext } from '../../plugins/Plugin';
+import { IChange, Dependency, Restriction } from './Package';
+import License from './License';
 
 export default class State implements IPluginContext {
     protected pluginLoader = new PluginLoader();
 
-    private authors = new Map<string, Author>();
-    private commits = new Map<string, Commit>();
-    private sections: Section[] = [];
-    private license: License | undefined;
-    private rules: Map<PackageRuleType, PackageRule> = new Map();
+    #sections: Section[] = [];
+    #license: License | undefined;
+    #authors = new Map<string, Author>();
+    #commits = new Map<string, Commit>();
+    #changes = new Map<Dependency | Restriction, IChange[]>();
 
     get sections(): Section[] {
-        return this.sections;
+        return this.#sections;
     }
 
     get authors(): Author[] {
-        return [...this.authors.values()].filter(Author.filter).sort(Author.compare);
+        return [...this.#authors.values()].filter(Author.filter).sort(Author.compare);
     }
 
     get commits(): Commit[] {
-        return [...this.commits.values()].filter(Commit.filter).sort(Commit.compare);
+        return [...this.#commits.values()].filter(Commit.filter).sort(Commit.compare);
     }
 
     addCommit(commit: Commit): void {
-        const { commits, authors } = this;
-
-        if (!commits.has(commit.getName())) {
+        if (!this.#commits.has(commit.name)) {
             const { author } = commit;
 
-            commits.set(commit.getName(), commit);
+            this.#commits.set(commit.name, commit);
 
-            if (authors.has(author.getName())) {
-                author.increaseContribution();
+            if (this.#authors.has(author.name)) {
+                author.contribute();
             } else {
-                authors.set(author.getName(), author);
+                this.#authors.set(author.name, author);
             }
         }
     }
 
     get license(): License | undefined {
-        return this.license;
+        return this.#license;
     }
 
-    set license(id: string, prev?: string) {
-        this.license = new License(id, prev);
+    set license(license: License | undefined) {
+        if (!this.#license) this.#license = license;
     }
 
-    getPackageRule(type: PackageRuleType): PackageRule | undefined {
-        return this.rules.get(type);
+    getChanges(type: PackageRuleType): IChange[] {
+        return [...(this.#changes.get(type) ?? [])];
     }
 
-    setPackageRule(rule: PackageRule): void {
-        this.rules.set(rule.getType(), rule);
+    setChanges(type: PackageRuleType, changes: IChange[]): void {
+        this.#changes.set(type, changes);
     }
 
     get changesLevels(): [number, number, number] {
@@ -68,8 +68,8 @@ export default class State implements IPluginContext {
         let minor = 0;
         let patch = 0;
 
-        this.commits.forEach(commit => {
-            switch (commit.getChangeLevel()) {
+        this.#commits.forEach(commit => {
+            switch (commit.level) {
                 case ChangeLevel.Major:
                     major++;
                     break;
@@ -80,7 +80,7 @@ export default class State implements IPluginContext {
                     patch++;
                     break;
                 default:
-                    TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.getChangeLevel()}}`);
+                    TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.level}}`);
             }
         });
 
@@ -88,16 +88,13 @@ export default class State implements IPluginContext {
     }
 
     setCommitTypes(types: [string, ChangeLevel][]): void {
-        let typeName: string | undefined;
         let tuple: [string, ChangeLevel] | undefined;
 
-        this.commits.forEach(commit => {
-            typeName = commit.getTypeName();
+        this.#commits.forEach(commit => {
+            if (commit.type) {
+                tuple = types.find(([name]) => isSame(commit.type, name));
 
-            if (typeName) {
-                tuple = types.find(([name]) => isSame(typeName as string, name));
-
-                if (tuple) commit.setChangeLevel(tuple[1]);
+                if (tuple) commit.level = tuple[1];
             }
         });
     }
@@ -105,39 +102,27 @@ export default class State implements IPluginContext {
     addSection(name: string, position = SectionPosition.Group, order = SectionOrder.Default): Section | undefined {
         let section = this.findSection(name);
 
-        if (!section && unify(name)) {
-            section = new Section(name, position);
-            section.setOrder(order);
-            this.sections.push(section);
-        }
+        if (!section && unify(name)) this.#sections.push(section = new Section(name, position, order));
 
         return section;
     }
 
     findSection(name: string): Section | undefined {
-        return this.sections.find((section): boolean => isSame(section.name, name));
+        return this.#sections.find((section): boolean => isSame(section.name, name));
     }
 
     ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
-        const { authors, commits } = this;
+        const callbacks = {
+            [ExclusionType.AuthorLogin]: (rules: string[]) => this.#authors.forEach(a => rules.includes(a.name) && a.ignore());
+            [ExclusionType.CommitType]: (rules: string[]) => this.#commits.forEach(c => findSame(c.type, rules) && c.ignore());
+            [ExclusionType.CommitScope]: (rules: string[]) => this.#commits.forEach(c => findSame(c.scope, rules) && c.ignore());
+            [ExclusionType.CommitSubject]: (rules: string[]) => this.#commits.forEach(c => rules.some(item => c.subject.includes(item)) && c.ignore());
+        }
 
         exclusions.forEach(([type, rules]) => {
-            switch (type) {
-                case ExclusionType.AuthorLogin:
-                    authors.forEach(author => author.ignore(rules.indexOf(author.login) >= 0));
-                    break;
-                case ExclusionType.CommitType:
-                    commits.forEach(commit => commit.ignore(findSame(commit.getTypeName(), rules)));
-                    break;
-                case ExclusionType.CommitScope:
-                    commits.forEach(commit => commit.ignore(findSame(commit.getScope(), rules)));
-                    break;
-                case ExclusionType.CommitSubject:
-                    commits.forEach(commit => commit.ignore(rules.some(item => commit.getSubject().includes(item))));
-                    break;
-                default:
-                    TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
-            }
+            if (!callbacks[type]) TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
+
+            callbacks[type](rules);
         });
     }
 
@@ -152,23 +137,18 @@ export default class State implements IPluginContext {
     private rebuildSectionsTree(): void {
         const task = TaskTree.add('Bringing the section tree to a consistent state...');
         const sections = this.sections.sort(Section.compare);
+        const relations: Map<string, Section> = new Map();
+        const filter = (section: Section): boolean => Section.filter(section) && section.isSubsection;
 
-        if (sections.length) {
-            const relations: Map<string, Section> = new Map();
+        sections.forEach(section => {
+            if (section.isGroup) {
+                section.assignSubsection(relations);
+            } else {
+                section.assignSection(relations);
+            }
+        });
 
-            sections.forEach(section => {
-                if (section.position === SectionPosition.Group) {
-                    section.assignAsSubsection(relations);
-                } else {
-                    section.assignAsSection(relations);
-                }
-            });
-        }
-
-        this.sections = sections
-            .filter(Section.filter)
-            .filter(section => section.position !== SectionPosition.Subsection)
-            .sort(Section.compare);
+        this.#sections = sections.filter(filter).sort(Section.compare);
         task.complete('Section tree is consistently');
     }
 

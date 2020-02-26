@@ -58,11 +58,11 @@ export default class Entity {
         return this.#ignored;
     }
 
-    set ignored(condition: boolean) {
-        this.#ignored = this.#ignored || condition;
-    }
-
     get empty(): boolean {
         return this.#ignored;
+    }
+
+    ignore(): void {
+        this.#ignored = true;
     }
 }
