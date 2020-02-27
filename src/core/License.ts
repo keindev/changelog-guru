@@ -1,11 +1,11 @@
 export default class License {
-    readonly id: string;
+    readonly curr: string;
     readonly prev?: string;
     readonly isChanged: boolean;
 
-    constructor(id: string, prev?: string) {
-        this.id = id;
+    constructor(curr: string, prev?: string) {
+        this.curr = curr;
         this.prev = prev;
-        this.isChanged = !prev || !!id.localeCompare(prev);
+        this.isChanged = !prev || !!curr.localeCompare(prev);
     }
 }

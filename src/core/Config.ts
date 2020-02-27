@@ -1,8 +1,9 @@
 import path from 'path';
-import cosmiconfig from 'cosmiconfig';
+import { cosmiconfig } from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import { TaskTree } from 'tasktree-cli';
 import { IPluginConfig } from '../plugins/Plugin';
+import { ChangeType } from './Package';
 
 export enum ServiceProvider {
     GitHub = 'github',
@@ -29,17 +30,14 @@ export interface IConfigOptions {
     exclusions?: Map<ExclusionType, string[]>;
 }
 
-export interface IConfig extends cosmiconfig.Config {
+export interface IConfig {
+    provider?: ServiceProvider;
     changes?: { [key in ChangeLevel]: string[] };
     output?: { filePath?: string; exclude?: { [key in ExclusionType]: string[] } };
     plugins?: { [key: string]: IPluginConfig };
 }
 
 export default class Config {
-    static MODULE_NAME = 'changelog';
-    static DEFAULT_CONFIG_PATH = `../../../.changelogrc.default.yml`;
-    static DEFAULT_OUTPUT_FILE_NAME = 'CHANGELOG.md';
-
     private provider?: ServiceProvider;
     private filePath?: string;
     private types: Map<string, ChangeLevel>;
@@ -55,8 +53,8 @@ export default class Config {
 
     async load(): Promise<void> {
         const task = TaskTree.add('Reading configuration file...');
-        const explorer = cosmiconfig(Config.MODULE_NAME);
-        const conf = await explorer.load(path.join(__dirname, Config.DEFAULT_CONFIG_PATH));
+        const explorer = cosmiconfig('changelog');
+        const conf = await explorer.load(path.join(__dirname, `../../../.changelogrc.default.yml`));
 
         if (conf?.isEmpty !== false) task.fail('Default configuration file not found');
 
@@ -65,7 +63,7 @@ export default class Config {
             userConf?.isEmpty === false ? deepmerge(conf!.config, userConf.config) : conf!.config;
 
         if (!this.provider) this.provider = provider ?? ServiceProvider.GitHub;
-        if (!this.filePath) this.filePath = output?.filePath ?? Config.DEFAULT_OUTPUT_FILE_NAME;
+        if (!this.filePath) this.filePath = output?.filePath ?? 'CHANGELOG.md';
         if (!this.types.size) this.setTypes(changes);
         if (!this.exclusions.size) this.setExclusions(output);
 
