@@ -24,7 +24,7 @@ describe('Linter', () => {
     describe('Lint commit messages', () => {
         it('Default', done => {
             const linter = new MockLinter(task, {
-                config: { lowercaseTypesOnly: true, maxHeaderLength: MockLinter.DEFAULT_HEADER_MAX_LENGTH },
+                config: { maxLength: 100 },
                 plugins: config.getPlugins(),
                 types: config.getTypes().map(([name]) => name),
             });
@@ -41,7 +41,7 @@ describe('Linter', () => {
 
         it('Incorrect commit messages', done => {
             const linter = new MockLinter(task, {
-                config: { lowercaseTypesOnly: true, maxHeaderLength: MockLinter.DEFAULT_HEADER_MAX_LENGTH },
+                config: { 100 },
                 plugins: config.getPlugins(),
                 types: config.getTypes().map(([name]) => name),
             });

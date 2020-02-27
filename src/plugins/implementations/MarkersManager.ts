@@ -1,6 +1,6 @@
 import { Task } from 'tasktree-cli/lib/task';
-import Section, { SectionPosition, SectionOrder } from '../../core/entities/Section';
-import Commit, { CommitStatus } from '../../core/entities/Commit';
+import Section, { Position, Order } from '../../core/entities/Section';
+import Commit, { Status } from '../../core/entities/Commit';
 import { findSame } from '../../utils/Text';
 import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 
@@ -17,16 +17,16 @@ export enum MarkerType {
     Important = 'important',
 }
 
-const positions: { [key: string]: SectionPosition | undefined } = {
-    [MarkerType.Breaking]: SectionPosition.Header,
-    [MarkerType.Deprecated]: SectionPosition.Header,
-    [MarkerType.Important]: SectionPosition.Body,
+const positions: { [key: string]: Position | undefined } = {
+    [MarkerType.Breaking]: Position.Header,
+    [MarkerType.Deprecated]: Position.Header,
+    [MarkerType.Important]: Position.Body,
 };
 
-const statuses: { [key: string]: CommitStatus | undefined } = {
-    [MarkerType.Breaking]: CommitStatus.BreakingChanges,
-    [MarkerType.Deprecated]: CommitStatus.Deprecated,
-    [MarkerType.Important]: CommitStatus.Important,
+const statuses: { [key: string]: Status | undefined } = {
+    [MarkerType.Breaking]: Status.BreakingChanges,
+    [MarkerType.Deprecated]: Status.Deprecated,
+    [MarkerType.Important]: Status.Important,
 };
 
 export default class MarkersManager extends Plugin {
@@ -44,8 +44,8 @@ export default class MarkersManager extends Plugin {
         if (this.context) {
             this.sections = new Map(
                 Object.entries(joins).reduce((acc: [MarkerType, Section][], [type, title]) => {
-                    const position = positions[type] ?? SectionPosition.None;
-                    const section = this.context!.addSection(title, position, SectionOrder.Min);
+                    const position = positions[type] ?? Position.None;
+                    const section = this.context!.addSection(title, position, Order.Min);
 
                     if (section) {
                         this.markers.add(type as MarkerType);

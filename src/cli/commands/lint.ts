@@ -13,14 +13,10 @@ export const builder = {
         alias: 'm',
         description: 'Commit message for linting',
     },
-    length: {
+    maxLength: {
         number: true,
         alias: 'l',
         description: 'Max commit header length',
-    },
-    lowercase: {
-        boolean: true,
-        description: 'Uses only lowercase types',
     },
 };
 
@@ -30,12 +26,12 @@ interface ILintOptions {
     lowercase: boolean;
 }
 
-export const handler = (argv: Arguments<ILintOptions>): Promise<void> => {
+export const handler = ({ message, maxLength }: Arguments<ILintOptions>): Promise<void> => {
     const tree = TaskTree.tree().start();
     const changelog = new Changelog();
 
     return changelog
-        .lint(argv.message, { maxHeaderLength: argv.length, lowercaseTypesOnly: argv.lowercase })
+        .lint(message, { maxLength })
         .then(() => tree.exit(ExitCode.Success))
         .catch(TaskTree.fail);
 };

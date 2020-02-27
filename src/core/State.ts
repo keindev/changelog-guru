@@ -1,16 +1,11 @@
 import { TaskTree } from 'tasktree-cli';
-import { Task } from 'tasktree-cli/lib/task';
 import Commit from './entities/Commit';
 import Author from './entities/Author';
-import Section, { SectionPosition, SectionOrder } from './entities/Section';
-import License from './License';
-import { isSame, findSame, unify } from '../../utils/Text';
-import PackageRule, { PackageRuleType } from '../package/rules/PackageRule';
-import { ChangeLevel, ExclusionType, IPluginOption } from '../config/Config';
-import PluginLoader from '../../plugins/PluginLoader';
-import { IPluginContext } from '../../plugins/Plugin';
 import { IChange, Dependency, Restriction } from './Package';
 import License from './License';
+import { IPluginContext } from '../plugins/Plugin';
+import PluginLoader from '../plugins/PluginLoader';
+import Section from './entities/Section';
 
 export default class State implements IPluginContext {
     protected pluginLoader = new PluginLoader();
@@ -55,11 +50,11 @@ export default class State implements IPluginContext {
         if (!this.#license) this.#license = license;
     }
 
-    getChanges(type: PackageRuleType): IChange[] {
+    getChanges(type: Dependency | Restriction): IChange[] {
         return [...(this.#changes.get(type) ?? [])];
     }
 
-    setChanges(type: PackageRuleType, changes: IChange[]): void {
+    setChanges(type: Dependency | Restriction, changes: IChange[]): void {
         this.#changes.set(type, changes);
     }
 

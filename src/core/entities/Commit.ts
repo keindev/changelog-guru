@@ -20,11 +20,11 @@ export interface ICommitOptions {
     author: Author;
 }
 
-export const splitHeader = (text: string): [string | undefined, string | undefined, string | undefined] => {
+export const splitHeader = (text: string): [string, string, string] => {
     const match = text.match(/^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i);
-    let type: string | undefined;
-    let scope: string | undefined;
-    let subject: string | undefined;
+    let type = '';
+    let scope = '';
+    let subject = '';
 
     if (match) {
         const { groups } = match;

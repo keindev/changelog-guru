@@ -1,8 +1,8 @@
-import { Task } from 'tasktree-cli/lib/task';
+import { Task } from 'tasktree-cli/lib/Task';
 import Commit from '../core/entities/Commit';
-import License from '../core/package/License';
-import PackageRule, { PackageRuleType } from '../core/package/properties/PackageRule';
-import Section, { SectionPosition, SectionOrder } from '../core/entities/Section';
+import License from '../core/License';
+import Section, { Position, Order } from '../core/entities/Section';
+import { IChange, Dependency, Restriction } from '../core/Package';
 
 export interface IPluginLintOptions {
     header: string;
@@ -15,8 +15,8 @@ export interface IPluginLintOptions {
 export interface IPluginContext {
     license: License | undefined;
 
-    getChanges(type: PackageRuleType): PackageRule | undefined;
-    addSection(title: string, position?: SectionPosition, order?: SectionOrder): Section | undefined;
+    getChanges(type: Dependency | Restriction): IChange[] | undefined;
+    addSection(title: string, position?: Position, order?: Order): Section | undefined;
     findSection(title: string): Section | undefined;
 }
 
