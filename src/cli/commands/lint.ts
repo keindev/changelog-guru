@@ -1,5 +1,5 @@
 import { Arguments } from 'yargs';
-import { TaskTree, ExitCode } from 'tasktree-cli';
+import { TaskTree } from 'tasktree-cli';
 import { Changelog } from '../../Changelog';
 
 export const command = 'lint';
@@ -32,6 +32,6 @@ export const handler = ({ message, maxLength }: Arguments<ILintOptions>): Promis
 
     return changelog
         .lint(message, { maxLength })
-        .then(() => tree.exit(ExitCode.Success))
+        .then(() => tree.exit())
         .catch(TaskTree.fail);
 };

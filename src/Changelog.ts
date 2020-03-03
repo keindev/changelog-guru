@@ -64,7 +64,6 @@ export class Changelog {
                 break;
             default:
                 TaskTree.fail(`Service provider not specified`);
-                break;
         }
 
         return provider as Provider;
@@ -83,7 +82,7 @@ export class Changelog {
         const reader = new Reader(provider);
         const state = await reader.read(this.#package);
 
-        state.setCommitTypes(config.getTypes());
+        state.updateCommitsChangeLevel(config.getTypes());
         state.ignoreEntities(config.getExclusions());
         await state.modify(config.getPlugins());
 

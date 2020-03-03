@@ -75,7 +75,7 @@ describe('State', () => {
                 state.addCommit(commit1);
                 state.addCommit(commit4);
                 section1.add(commit1);
-                state.setCommitTypes(config.getTypes());
+                state.updateCommitsChangeLevel(config.getTypes());
 
                 expect(state.getAuthors()).toStrictEqual([author1, author2, author3]);
                 expect(state.getCommits()).toStrictEqual([commit4, commit2, commit3, commit1]);

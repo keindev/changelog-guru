@@ -1,7 +1,6 @@
 import { LookupManager } from 'string-lookup-manager';
-import Entity, { Compare, Priority } from './Entity';
+import Entity, { Compare, Priority, ChangeLevel } from './Entity';
 import Author from './Author';
-import { ChangeLevel } from '../Config';
 import { wrap } from '../../utils/Markdown';
 
 export enum Status {
@@ -84,8 +83,8 @@ export default class Commit extends Entity {
         return [...this.#accents.values()];
     }
 
-    get type(): string | undefined {
-        return this.#type;
+    get type(): string {
+        return this.#type ?? '';
     }
 
     get priority(): Priority {

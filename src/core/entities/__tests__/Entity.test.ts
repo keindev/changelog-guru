@@ -32,7 +32,6 @@ describe('Entity', () => {
     describe('Change entity', () => {
         it('Default options are set correctly', () => {
             expect(entity.getName()).toBe(name);
-            expect(entity.getShortName()).toBe(name.substr(0, 7));
             expect(entity.getChangeLevel()).toBe(ChangeLevel.Patch);
             expect(entity.getPriority()).toBe(Priority.Low);
             expect(entity.isIgnored()).toBeFalsy();

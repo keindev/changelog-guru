@@ -1,14 +1,5 @@
 import Entity, { Priority } from './Entity';
 
-const resize = (avatar: string, size = 40): string => {
-    const url = new URL(avatar);
-
-    url.searchParams.delete('s');
-    url.searchParams.append('s', `${size}`);
-
-    return `${url}`;
-}
-
 export default class Author extends Entity {
     readonly url: string;
     readonly avatar: string;
@@ -18,12 +9,12 @@ export default class Author extends Entity {
     constructor(name: string, url: string, avatar: string) {
         super(`@${name}`);
 
-        this.url = url;
-        this.avatar = resize(avatar);
-    }
+        const avatarUrl = new URL(avatar);
 
-    get shortName(): string {
-        return this.name;
+        avatarUrl.searchParams.delete('s');
+        avatarUrl.searchParams.append('s', `${40}`);
+        this.url = url;
+        this.avatar = `${url}`;
     }
 
     get priority(): Priority | number {

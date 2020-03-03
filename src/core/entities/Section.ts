@@ -18,16 +18,15 @@ export enum Order {
 }
 
 export default class Section extends Entity {
-    order: number;
-    position: Position;
-
+    #order: number;
+    #position: Position;
     #entities = new Map<string, Entity>();
 
     constructor(title: string, position: Position, order: number = Order.Default) {
         super(title);
 
-        this.order = order;
-        this.position = position;
+        this.#order = order;
+        this.#position = position;
     }
 
     static compare(a: Section, b: Section): Compare {
@@ -68,6 +67,14 @@ export default class Section extends Entity {
         return priority;
     }
 
+    get position(): Position {
+        return this.#position;
+    }
+
+    get order(): number {
+        return this.#order;
+    }
+
     get isSubsection(): boolean {
         return this.position === Position.Subsection;
     }
@@ -76,22 +83,26 @@ export default class Section extends Entity {
         return this.position === Position.Group;
     }
 
+    get isEmpty(): boolean {
+        return !this.#entities.size;
+    }
+
     add(entity: Commit | Section | Message): void {
         if (!this.#entities.has(entity.name)) {
             this.#entities.set(entity.name, entity);
 
-            if (entity instanceof Section) entity.position = Position.Subsection;
+            if (entity instanceof Section) entity.updatePosition(Position.Subsection);
         }
     }
 
     remove(entity: Commit | Section | Message): void {
         if (this.#entities.delete(entity.name)) {
-            if (entity instanceof Section) entity.position = Position.Group;
+            if (entity instanceof Section) entity.updatePosition(Position.Group);
         }
     }
 
-    get empty(): boolean {
-        return !this.#entities.size;
+    updatePosition(position: Position): void {
+        this.#position = position;
     }
 
     assignSubsection(relations: Map<string, Section>): void {

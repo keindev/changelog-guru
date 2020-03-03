@@ -1,5 +1,3 @@
-import { ChangeLevel } from '../Config';
-
 export enum Priority {
     High = 1000,
     Medium = 100,
@@ -12,6 +10,12 @@ export enum Compare {
     Equal = 0,
 }
 
+export enum ChangeLevel {
+    Major = 'major',
+    Minor = 'minor',
+    Patch = 'patch',
+}
+
 const priorities = {
     [ChangeLevel.Major]: Priority.High,
     [ChangeLevel.Minor]: Priority.Medium,
@@ -19,8 +23,6 @@ const priorities = {
 };
 
 export default class Entity {
-    static SHORT_NAME_LENGTH = 7;
-
     readonly name: string;
 
     #ignored = false;
@@ -36,10 +38,6 @@ export default class Entity {
 
     static filter(e: Entity): boolean {
         return !e.empty && !e.ignored;
-    }
-
-    get shortName(): string {
-        return this.name.substr(0, Entity.SHORT_NAME_LENGTH);
     }
 
     get priority(): Priority {

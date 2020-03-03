@@ -4,9 +4,8 @@ import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
 import Author from '../entities/Author';
 import Commit from '../entities/Commit';
-import { ServiceProvider } from '../Config';
 import GitProvider from './GitProvider';
-import { IReleaseInfo } from './Provider';
+import { IReleaseInfo, ServiceProvider } from './Provider';
 
 export default class GitHubProvider extends GitProvider {
     private provider: Provider;

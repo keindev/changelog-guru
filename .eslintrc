@@ -12,7 +12,7 @@
         "prettier/@typescript-eslint",
         "plugin:jest/recommended"
     ],
-    "plugins": ["@typescript-eslint", "jest"],
+    "plugins": ["import", "@typescript-eslint", "jest"],
     "rules": {
         "@typescript-eslint/member-ordering": "error",
         "@typescript-eslint/interface-name-prefix": ["error", { "prefixWithI": "always" }],
@@ -54,15 +54,18 @@
         }
     ],
     "settings": {
-        "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
         "import/parsers": {
             "@typescript-eslint/parser": [".ts", ".tsx"]
         },
         "import/resolver": {
+            "typescript": {
+                "alwaysTryTypes": true
+            },
             "node": {
                 "paths": ["src"],
                 "extensions": [".js", ".jsx", ".ts", ".tsx"]
             }
-        }
+        },
+        "import/extensions": [".js", ".jsx", ".ts", ".tsx"]
     }
 }

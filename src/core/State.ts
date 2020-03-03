@@ -6,6 +6,16 @@ import License from './License';
 import { IPluginContext } from '../plugins/Plugin';
 import PluginLoader from '../plugins/PluginLoader';
 import Section from './entities/Section';
+import { ChangeLevel } from './entities/Entity';
+import { isSame } from '../utils/Text';
+import { ExclusionType } from './Config';
+
+export enum ExclusionType {
+    AuthorLogin = 'authorLogin',
+    CommitType = 'commitType',
+    CommitScope = 'commitScope',
+    CommitSubject = 'commitSubject',
+}
 
 export default class State implements IPluginContext {
     protected pluginLoader = new PluginLoader();
@@ -82,15 +92,11 @@ export default class State implements IPluginContext {
         return [major, minor, patch];
     }
 
-    setCommitTypes(types: [string, ChangeLevel][]): void {
-        let tuple: [string, ChangeLevel] | undefined;
-
+    updateCommitsChangeLevel(types: [string, ChangeLevel][]): void {
         this.#commits.forEach(commit => {
-            if (commit.type) {
-                tuple = types.find(([name]) => isSame(commit.type, name));
+            const [, level] = types.find(([name]) => isSame(commit.type, name)) ?? [];
 
-                if (tuple) commit.level = tuple[1];
-            }
+            if (level) commit.level = level;
         });
     }
 

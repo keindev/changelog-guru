@@ -1,5 +1,5 @@
 import { Arguments } from 'yargs';
-import { TaskTree, ExitCode } from 'tasktree-cli';
+import { TaskTree } from 'tasktree-cli';
 import { Changelog, IOptions } from '../../Changelog';
 
 export const command = 'generate';
@@ -34,6 +34,6 @@ export const handler = (argv: Arguments<IOptions>): Promise<void> => {
 
     return changelog
         .build()
-        .then(() => tree.exit(ExitCode.Success))
+        .then(() => tree.exit())
         .catch(TaskTree.fail);
 };

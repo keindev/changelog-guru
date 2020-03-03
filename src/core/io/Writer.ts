@@ -5,8 +5,8 @@ import Section from '../entities/Section';
 import Commit from '../entities/Commit';
 import Author from '../entities/Author';
 import * as md from '../../utils/Markdown';
-import { findSame } from '../../utils/Text';
 import Message from '../entities/Message';
+import { findSame } from '~/utils/Text';
 
 const render = (commits: Commit[]): string[] => {
     const groups = new Map<string, Commit[]>();
@@ -32,7 +32,7 @@ const render = (commits: Commit[]): string[] => {
 
         group.forEach(commit => {
             commit.accents.forEach(accents.add);
-            links.push(md.commitLink(commit.shortName, commit.url));
+            links.push(md.commitLink(commit.name.substr(0, 7), commit.url));
         });
 
         if (accents.size) output.push(md.strong(`[${[...accents.values()].map(md.capitalize).join(', ')}]`));

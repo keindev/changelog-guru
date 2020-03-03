@@ -4,8 +4,12 @@ import { PackageJson } from 'read-pkg';
 import { getUserAgent } from 'universal-user-agent';
 import findupSync from 'findup-sync';
 import { TaskTree } from 'tasktree-cli';
-import { ServiceProvider } from '../Config';
 import Commit from '../entities/Commit';
+
+export enum ServiceProvider {
+    GitHub = 'github',
+    GitLab = 'gitlab',
+}
 
 export interface IRelease {
     tag: string | undefined;
