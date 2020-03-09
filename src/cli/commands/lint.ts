@@ -1,6 +1,7 @@
 import { Arguments } from 'yargs';
 import { TaskTree } from 'tasktree-cli';
 import { Changelog } from '../../Changelog';
+import { ILintOptions } from '../../Linter';
 
 export const command = 'lint';
 export const alias = 'l';
@@ -20,18 +21,11 @@ export const builder = {
     },
 };
 
-interface ILintOptions {
-    message: string;
-    length: number;
-    lowercase: boolean;
-}
-
-export const handler = ({ message, maxLength }: Arguments<ILintOptions>): Promise<void> => {
+export const handler = ({ message, maxLength }: Arguments<{ message: string } & ILintOptions>): Promise<void> => {
     const tree = TaskTree.tree().start();
-    const changelog = new Changelog();
 
-    return changelog
-        .lint(message, { maxLength })
+    return new Changelog()
+        .lint({ message, maxLength })
         .then(() => tree.exit())
         .catch(TaskTree.fail);
 };

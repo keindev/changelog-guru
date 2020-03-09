@@ -54,7 +54,7 @@ export default class PackageStatistic extends Plugin {
     private sections: (Dependency | Restriction)[] = [];
     private templates = new Map<string, string>();
 
-    async init(config: IPluginConfig): Promise<void> {
+    constructor(config: IPluginConfig, context?: IPluginContext) {
         const { title, templates, sections } = config as {
             title: string;
             templates: { [key in ChangeType]: string };

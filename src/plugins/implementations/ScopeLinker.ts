@@ -7,7 +7,7 @@ export default class ScopeLinker extends Plugin {
     #onlyPresented = false;
     #names = new Map<string, string>();
 
-    async init(config: IPluginConfig): Promise<void> {
+    constructor(config: IPluginConfig, context?: IPluginContext) {
         const { onlyPresented, names } = config as {
             onlyPresented: boolean;
             names: { [key: string]: string };

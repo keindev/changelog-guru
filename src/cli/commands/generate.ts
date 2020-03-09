@@ -24,16 +24,15 @@ export const builder = {
     output: {
         string: true,
         alias: 'o',
-        description: 'File path to write change log to it',
+        description: 'Output file path',
     },
 };
 
-export const handler = (argv: Arguments<IOptions>): Promise<void> => {
+export const handler = ({ bump, branch, provider, output }: Arguments<IBuildOptions>): Promise<void> => {
     const tree = TaskTree.tree().start();
-    const changelog = new Changelog(argv);
 
-    return changelog
-        .build()
+    return new Changelog()
+        .build({ bump, branch, provider, output })
         .then(() => tree.exit())
         .catch(TaskTree.fail);
 };

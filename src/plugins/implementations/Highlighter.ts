@@ -4,7 +4,7 @@ import Plugin, { IPluginConfig } from '../Plugin';
 export default class Highlighter extends Plugin {
     #masks: RegExp[] = [];
 
-    async init(config: IPluginConfig): Promise<void> {
+    constructor(config: IPluginConfig, context?: IPluginContext) {
         const { masks, camelCase } = config as {
             camelCase?: boolean;
             masks?: string[];

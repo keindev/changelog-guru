@@ -33,7 +33,7 @@ export default class MarkersManager extends Plugin {
     private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 
-    async init(config: IPluginConfig): Promise<void> {
+    constructor(config: IPluginConfig, context?: IPluginContext) {
         const { actions, joins } = config as {
             actions: (MarkerType.Ignore | MarkerType.Grouped)[];
             joins: { [key in MarkerType.Breaking | MarkerType.Deprecated | MarkerType.Important]: string };

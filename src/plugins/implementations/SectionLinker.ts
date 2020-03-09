@@ -7,7 +7,7 @@ import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
 export default class SectionLinker extends Plugin {
     #blocks = new Map<string, Section>();
 
-    async init(config: IPluginConfig): Promise<void> {
+    constructor(config: IPluginConfig, context?: IPluginContext) {
         if (this.context) {
             Object.entries(config).forEach(([name, types], order) => {
                 if (Array.isArray(types) && types.length) {

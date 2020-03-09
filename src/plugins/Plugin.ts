@@ -25,16 +25,18 @@ export interface IPluginConfig {
 }
 
 export interface IPlugin {
-    init: (config: IPluginConfig) => Promise<void>;
     modify?: (task: Task) => Promise<void>;
     parse?: (commit: Commit) => Promise<void>;
     lint?: (options: IPluginLintOptions, task: Task) => void;
 }
 
+// TODO: create interface instead class
 export default abstract class Plugin implements IPlugin {
     protected context?: IPluginContext;
+    protected config: IPluginConfig;
 
-    constructor(context?: IPluginContext) {
+    constructor(config: IPluginConfig, context?: IPluginContext) {
+        this.config = config;
         this.context = context;
     }
 
