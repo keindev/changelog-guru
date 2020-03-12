@@ -3,9 +3,9 @@ import { TaskTree } from 'tasktree-cli';
 import Section, { Position, Order } from '../../core/entities/Section';
 import Message from '../../core/entities/Message';
 import * as md from '../../utils/Markdown';
-import Plugin, { IPluginConfig } from '../Plugin';
+import Plugin, { IConfig, IContext } from '../Plugin';
 import { Dependency, Restriction, ChangeType, IChange } from '../../core/Package';
-import { ChangeLevel } from '../../core/Config';
+import { ChangeLevel } from '../../core/entities/Entity';
 
 export enum AttentionTemplateLiteral {
     Name = '%name%',
@@ -54,25 +54,24 @@ export default class PackageStatistic extends Plugin {
     private sections: (Dependency | Restriction)[] = [];
     private templates = new Map<string, string>();
 
-    constructor(config: IPluginConfig, context?: IPluginContext) {
+    constructor(config: IConfig, context: IContext) {
+        super(config, context);
+
         const { title, templates, sections } = config as {
             title: string;
             templates: { [key in ChangeType]: string };
             sections: (Dependency | Restriction)[];
         };
+        const changes = Object.values<string>(ChangeType);
 
-        if (this.context) {
-            const changes = Object.values<string>(ChangeType);
+        this.main = this.context!.addSection(title, Position.Header);
+        this.templates = new Map(Object.entries(templates).filter(([name]) => changes.includes(name)));
+        this.sections = [...new Set(sections)];
 
-            this.main = this.context.addSection(title, Position.Header);
-            this.templates = new Map(Object.entries(templates).filter(([name]) => changes.includes(name)));
-            this.sections = [...new Set(sections)];
-
-            if (this.main) this.main.order = Order.Min;
-        }
+        if (this.main) this.main.order = Order.Min;
     }
 
-    async modify(task: Task): Promise<void> {
+    modify(task: Task): void {
         const { main } = this;
 
         if (main) {
@@ -86,19 +85,11 @@ export default class PackageStatistic extends Plugin {
 
         if (context?.license?.isChanged) {
             const subsection = new Section('License', Position.Subsection);
-            const { id, prev } = context.license;
-            let message: Message;
+            const { current, previous, message } = context.license;
 
-            task.warn(`License changed from {bold.underline ${prev}} to {bold.underline ${id}}.`);
+            task.warn(`License changed from {bold.underline ${previous}} to {bold.underline ${current}}.`);
 
-            if (prev) {
-                message = new Message(`License changed from ${md.licenseLink(prev)} to ${md.licenseLink(id)}.`);
-                message.level = ChangeLevel.Major;
-            } else {
-                message = new Message(`Source code now under ${md.wrap(id)} license.`);
-            }
-
-            subsection.add(message);
+            subsection.add(new Message(message, ChangeLevel.Major));
             section.add(subsection);
         }
     }

@@ -13,7 +13,6 @@ export default class Reader {
 
     async read(packageInfo: Package): Promise<State> {
         const task = TaskTree.add('Loading a release state...');
-        const state = new State();
         const { date, tag } = await this.#provider.getLastRelease();
         const count = await this.#provider.getCommitsCount(date);
 

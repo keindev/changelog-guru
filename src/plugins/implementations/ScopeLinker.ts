@@ -1,13 +1,15 @@
 import { Task } from 'tasktree-cli/lib/task';
 import Commit from '../../core/entities/Commit';
 import { unify, findSame } from '../../utils/Text';
-import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
+import Plugin, { IConfig, IContext, ILintOptions } from '../Plugin';
 
 export default class ScopeLinker extends Plugin {
     #onlyPresented = false;
     #names = new Map<string, string>();
 
-    constructor(config: IPluginConfig, context?: IPluginContext) {
+    constructor(config: IConfig, context: IContext) {
+        super(config, context);
+
         const { onlyPresented, names } = config as {
             onlyPresented: boolean;
             names: { [key: string]: string };
@@ -17,7 +19,7 @@ export default class ScopeLinker extends Plugin {
         this.#names = new Map(Object.entries(names).map(([abbr, name]) => [unify(abbr), name]));
     }
 
-    async parse(commit: Commit): Promise<void> {
+    parse(commit: Commit): void {
         if (commit.scope) {
             commit.scope.split(',').forEach(name => {
                 const actualName = findSame(name, [...this.#names.keys()]);
@@ -31,7 +33,7 @@ export default class ScopeLinker extends Plugin {
         }
     }
 
-    lint({ scope }: IPluginLintOptions, task: Task): void {
+    lint({ scope }: ILintOptions, task: Task): void {
         const names = [...this.#names.keys()];
 
         scope.split(',').forEach(name => {

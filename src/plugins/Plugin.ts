@@ -4,15 +4,7 @@ import License from '../core/License';
 import Section, { Position, Order } from '../core/entities/Section';
 import { IChange, Dependency, Restriction } from '../core/Package';
 
-export interface IPluginLintOptions {
-    header: string;
-    body: string[];
-    type: string;
-    scope: string;
-    subject: string;
-}
-
-export interface IPluginContext {
+export interface IContext {
     license: License | undefined;
 
     getChanges(type: Dependency | Restriction): IChange[] | undefined;
@@ -20,25 +12,31 @@ export interface IPluginContext {
     findSection(title: string): Section | undefined;
 }
 
-export interface IPluginConfig {
-    [key: string]: string | boolean | number | string[] | undefined | IPluginConfig | IPluginConfig[];
+export interface IConfig {
+    [key: string]: string | boolean | number | string[] | undefined | IConfig | IConfig[];
 }
 
-export interface IPlugin {
-    modify?: (task: Task) => Promise<void>;
-    parse?: (commit: Commit) => Promise<void>;
-    lint?: (options: IPluginLintOptions, task: Task) => void;
+export interface ILintOptions {
+    task: Task;
+    header: string;
+    body: string[];
+    type: string;
+    scope: string;
+    subject: string;
 }
 
-// TODO: create interface instead class
-export default abstract class Plugin implements IPlugin {
-    protected context?: IPluginContext;
-    protected config: IPluginConfig;
+export type IPlugin = {
+    context: IContext;
 
-    constructor(config: IPluginConfig, context?: IPluginContext) {
-        this.config = config;
+    modify?: (task: Task) => void;
+    parse?: (commit: Commit) => void;
+    lint?: (options: ILintOptions) => void;
+};
+
+export default class Plugin implements IPlugin {
+    context: IContext;
+
+    constructor(config: IConfig, context: IContext) {
         this.context = context;
     }
-
-    abstract async init(config: IPluginConfig): Promise<void>;
 }

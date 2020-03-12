@@ -2,29 +2,20 @@ import fs from 'fs';
 import readline from 'readline';
 import path from 'path';
 import dotenv from 'dotenv';
+import { cosmiconfig } from 'cosmiconfig';
+import deepmerge from 'deepmerge';
+import { once } from 'events';
 import { TaskTree } from 'tasktree-cli';
 import Reader from './core/io/Reader';
 import Writer from './core/io/Writer';
-import Config, { ServiceProvider } from './core/config/Config';
-import Package from './core/package/Package';
-import ConfigLoader, { IConfigLoaderOptions } from './core/config/ConfigLoader';
-import State from './core/state/State';
-import Provider from './core/providers/Provider';
-import GitHubProvider from './core/providers/GitHubProvider';
-import { cosmiconfig } from 'cosmiconfig';
 import { ChangeLevel } from './core/entities/Entity';
-import { ExclusionType } from './core/State';
-import { IPluginConfig, IPlugin } from './plugins/Plugin';
-import deepmerge from 'deepmerge';
-import { once } from 'events';
-import { Task } from 'tasktree-cli/lib/Task';
 import { splitHeader } from './core/entities/Commit';
-import PluginLoader from './plugins/PluginLoader';
 import { unify, findSame } from './utils/Text';
-import { IPluginConfig } from './plugins/Plugin';
-import { Provider } from 'gh-gql';
-import GitProvider from './core/providers/GitProvider';
-import { IPluginContext, IPlugin, IPluginConfig } from './plugins/Plugin';
+import GitProvider, { ServiceProvider } from './core/providers/GitProvider';
+import GitHubProvider from './core/providers/GitHubProvider';
+import GitLabProvider from './core/providers/GitLabProvider';
+import State, { ExclusionType } from './core/State';
+import { IPlugin } from './plugins/Plugin';
 
 export interface IBuildOptions {
     bump?: boolean;
@@ -39,10 +30,11 @@ export interface ILintOptions {
 }
 
 interface IConfig {
-    provider: Provider;
+    state: State;
+    provider: GitProvider;
     filePath: string;
-    types: Map<string, ChangeLevel>;
-    exclusions: [ExclusionType, string[]];
+    types: [string, ChangeLevel][];
+    exclusions: [ExclusionType, string[]][];
     plugins: IPlugin[];
 }
 
@@ -57,7 +49,7 @@ interface IConfig {
 
 export class Changelog {
     #package = new Package();
-    #types = Object.values(ExclusionType);
+    #exclusions = Object.values(ExclusionType);
     #levels = Object.values(ChangeLevel);
     #plugins = new Map<string, { new (context: IPluginContext): IPlugin }>([
         ['package-changes', PackageChangesInformer],
@@ -116,15 +108,13 @@ export class Changelog {
         if (header.length > maxLength) task.error(`Header is longer than {bold ${maxLength}}`);
         if (!type) task.error('Type is not defined or is not separated from the subject with "{bold :}"');
         if (type !== unify(type)) task.error('Type is not in lowercase');
-        if (!findSame(type, [...types.keys()])) task.error('Unknown commit type!');
+        if (!findSame(type, types.map(([name]) => name))) task.error('Unknown commit type!');
         if (!subject) task.error('Subject is empty');
         if (subject.length < 10)  task.error('Subject is not informative');
 
         task.log(`Header: {dim ${header || undefined}}`);
-        await Promise.all([...plugins.entries()].map(([name, config]) => loader.getPlugin(name, config))).then(plugins => {
-            plugins.forEach((plugin) => {
-                if (plugin?.lint) plugin.lint({ header, body, type, scope, subject }, task);
-            })
+        plugins.forEach((plugin) => {
+            if (plugin.lint) plugin.lint({ task, header, body, type, scope, subject });
         });
 
         if (task.haveErrors()) task.fail('Incorrect commit message:'); else task.complete('Commit message is correct');
@@ -138,42 +128,58 @@ export class Changelog {
 
         if (baseConf?.isEmpty !== false) task.fail('Default configuration file not found');
 
-        const { provider = options?.provider ?? ServiceProvider.GitHub, output, changes, plugins }: {
+        const config: {
             provider?: string;
             changes?: { [key in ChangeLevel]: string[] };
             output?: { filePath?: string; exclude?: { [key in ExclusionType]: string[] } };
             plugins?: { [key: string]: IPluginConfig };
         } = userConf?.isEmpty === false ? deepmerge(baseConf!.config, userConf.config) : baseConf!.config;
-
-        if (!Object.values(ServiceProvider).includes(provider)) task.fail(`Service provider not supported`);
-
-        const config: IConfig = {
-            filePath: options?.output ?? output?.filePath ?? 'CHANGELOG.md',
-            provider: {
-                [ServiceProvider.GitHub]: (r: string, b?: string): GitProvider => new GitHubProvider(r, b),
-                [ServiceProvider.GitLab]: (r: string, b?: string): GitProvider => new GitLabProvider(r, b),
-            }[provider as ServiceProvider](this.#package.repository, options?.branch)!,
-            types: Object.entries(changes).map(([level, names]) => {
-                if (!Array.isArray(names)) TaskTree.fail(`Names of change level "${level}" must be array`);
-                if (!levels.includes(level as ChangeLevel)) TaskTree.fail(`Unexpected level "${level}" of changes`);
-
-                return [name, level as ChangeLevel]
-            }),
-            exclusions: Object.entries(output?.exclude ?? {}).map(([name, rules]) => {
-                if (!types.includes(name as ExclusionType)) TaskTree.fail('Unexpected exclusion name');
-
-                return [name as ExclusionType, [...new Set(rules)]];
-            }),
-            plugins: [...Object.entries<IPluginConfig>(plugins)].map(([name, config]) => {
-                if (!this.#plugins.has(name)) task.fail('Unknown plugin name');
-
-                return new (this.#plugins.get(name)!)(ctx, config);
-            })
-        }
+        const state = new State();
+        const filePath = options?.output ?? config.output?.filePath ?? 'CHANGELOG.md';
+        const provider = this.getProvider(config.provider ?? options?.provider ?? ServiceProvider.GitHub);
+        const types = config.changes ? this.getTypes(config.changes) : [];
+        const exclusions = config.output?.exclude ? this.getExclusions(config.output?.exclude) : [];
+        const plugins = config.plugins ? this.getPlugins(config.plugins, state) : [];
 
         task.log(`Config file: {bold ${path.relative(process.cwd(), (baseConf?.filepath || userConf?.filepath)!)}}`);
         task.complete('Configuration initialized with:');
 
-        return config;
+        return { state, filePath, provider, types, exclusions, plugins };
+    }
+
+    private getProvider(provider: ServiceProvider, branch?: string): GitProvider {
+        if (!Object.values(ServiceProvider).includes(provider)) TaskTree.fail(`Service provider not supported`);
+
+        return {
+            [ServiceProvider.GitHub]: (r: string, b?: string): GitProvider => new GitHubProvider(r, b),
+            [ServiceProvider.GitLab]: (r: string, b?: string): GitProvider => new GitLabProvider(r, b),
+        }[provider](this.#package.repository, branch)!
+    }
+
+    private getTypes(changes: { [key in ChangeLevel]: string[] }): IConfig['types'] {
+        return Object.entries(changes).reduce((acc, [level, names]) => {
+            if (!Array.isArray(names)) TaskTree.fail(`Names of change level "${level}" must be array`);
+            if (!this.#levels.includes(level as ChangeLevel)) TaskTree.fail(`Unexpected level "${level}" of changes`);
+
+            names.forEach((name) => acc.push([name, level as ChangeLevel]));
+
+            return acc;
+        }, [] as IConfig['types']);
+    }
+
+    private getExclusions(exclusions: { [key in ExclusionType]: string[] }): IConfig['exclusions'] {
+        return Object.entries(exclusions).map(([name, rules]) => {
+            if (!this.#exclusions.includes(name as ExclusionType)) TaskTree.fail('Unexpected exclusion name');
+
+            return [name as ExclusionType, [...(new Set(rules))]];
+        })
+    }
+
+    private getPlugins(plugins: { [key: string]: IPluginConfig }, state: State): IConfig['plugins'] {
+        return [...Object.entries<IPluginConfig>(plugins)].map(([name, configuration]) => {
+            if (!this.#plugins.has(name)) TaskTree.fail(`Unknown plugin {bold ${name}}`);
+
+            return new (this.#plugins.get(name)!)(configuration, state);
+        });
     }
 }

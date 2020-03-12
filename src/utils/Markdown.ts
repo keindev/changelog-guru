@@ -19,14 +19,12 @@ export const wrap = (text: SemVer | string | undefined): string => `\`${text}\``
 
 export const line = (): string => '---\n';
 
-export const image = (text: string, url: string): string => `![${text}](${url})`;
+export const image = (text: string, img: string, url: string): string => link(`![${text}](${url})`, url);
 
-export const imageLink = (text: string, img: string, url: string): string => link(image(text, img), url);
+export const commit = (text: string, url: string): string => link(wrap(text), url);
 
-export const commitLink = (text: string, url: string): string => link(wrap(text), url);
+export const author = ({ name, avatar, url }: Author): string => image(name, avatar, url);
 
-export const authorLink = (author: Author): string => imageLink(author.name, author.avatar, author.url);
-
-export const licenseLink = (license: string): string => link(license, `https://spdx.org/licenses/${license}.html`);
+export const license = (type: string): string => link(type, `https://spdx.org/licenses/${type}.html`);
 
 export const contributors = (links: string[]): string => [line(), title('Contributors'), ...links].join('\n');

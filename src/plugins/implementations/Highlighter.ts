@@ -1,10 +1,12 @@
 import Commit from '../../core/entities/Commit';
-import Plugin, { IPluginConfig } from '../Plugin';
+import Plugin, { IConfig, IContext } from '../Plugin';
 
 export default class Highlighter extends Plugin {
     #masks: RegExp[] = [];
 
-    constructor(config: IPluginConfig, context?: IPluginContext) {
+    constructor(config: IConfig, context: IContext) {
+        super(config, context);
+
         const { masks, camelCase } = config as {
             camelCase?: boolean;
             masks?: string[];
@@ -16,7 +18,7 @@ export default class Highlighter extends Plugin {
         if (camelCase) this.#masks.push(/[a-zA-Z]+[A-Z]+[a-z]+/g);
     }
 
-    async parse(commit: Commit): Promise<void> {
+    parse(commit: Commit): void {
         let match: RegExpExecArray | null;
 
         this.#masks.forEach(mask => {

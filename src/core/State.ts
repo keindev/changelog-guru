@@ -3,12 +3,10 @@ import Commit from './entities/Commit';
 import Author from './entities/Author';
 import { IChange, Dependency, Restriction } from './Package';
 import License from './License';
-import { IPluginContext } from '../plugins/Plugin';
-import PluginLoader from '../plugins/PluginLoader';
-import Section from './entities/Section';
+import { IContext, IPlugin } from '../plugins/Plugin';
+import Section, { Position, Order } from './entities/Section';
 import { ChangeLevel } from './entities/Entity';
-import { isSame } from '../utils/Text';
-import { ExclusionType } from './Config';
+import { isSame, unify, findSame } from '../utils/Text';
 
 export enum ExclusionType {
     AuthorLogin = 'authorLogin',
@@ -17,9 +15,7 @@ export enum ExclusionType {
     CommitSubject = 'commitSubject',
 }
 
-export default class State implements IPluginContext {
-    protected pluginLoader = new PluginLoader();
-
+export default class State implements IContext {
     #sections: Section[] = [];
     #license: License | undefined;
     #authors = new Map<string, Author>();
@@ -100,7 +96,7 @@ export default class State implements IPluginContext {
         });
     }
 
-    addSection(name: string, position = SectionPosition.Group, order = SectionOrder.Default): Section | undefined {
+    addSection(name: string, position = Position.Group, order = Order.Default): Section | undefined {
         let section = this.findSection(name);
 
         if (!section && unify(name)) this.#sections.push(section = new Section(name, position, order));
@@ -114,10 +110,10 @@ export default class State implements IPluginContext {
 
     ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
         const callbacks = {
-            [ExclusionType.AuthorLogin]: (rules: string[]) => this.#authors.forEach(a => rules.includes(a.name) && a.ignore());
-            [ExclusionType.CommitType]: (rules: string[]) => this.#commits.forEach(c => findSame(c.type, rules) && c.ignore());
-            [ExclusionType.CommitScope]: (rules: string[]) => this.#commits.forEach(c => findSame(c.scope, rules) && c.ignore());
-            [ExclusionType.CommitSubject]: (rules: string[]) => this.#commits.forEach(c => rules.some(item => c.subject.includes(item)) && c.ignore());
+            [ExclusionType.AuthorLogin]: (rules: string[]) => this.#authors.forEach(author => rules.includes(author.name) && author.ignore());
+            [ExclusionType.CommitType]: (rules: string[]) => this.#commits.forEach(commit => findSame(commit.type, rules) && commit.ignore());
+            [ExclusionType.CommitScope]: (rules: string[]) => this.#commits.forEach(commit => commit.scope && findSame(commit.scope, rules) && commit.ignore());
+            [ExclusionType.CommitSubject]: (rules: string[]) => this.#commits.forEach(commit => rules.some(item => commit.subject.includes(item)) && commit.ignore());
         }
 
         exclusions.forEach(([type, rules]) => {
@@ -127,19 +123,17 @@ export default class State implements IPluginContext {
         });
     }
 
-    async modify(plugins: [string, IPluginOption][]): Promise<void> {
+    async modify(plugins: IPlugin[]): Promise<void> {
         const task = TaskTree.add('Modifying release state...');
 
-        await Promise.all(plugins.map(([name, options]) => this.modifyWithPlugin(name, options, task)));
-        this.rebuildSectionsTree();
-        task.complete('Release status modified');
-    }
+        plugins.forEach((plugin) => {
+            if (plugin.parse) this.commits.forEach((commit) => plugin.parse!(commit));
+            if (plugin.modify) plugin.modify(task);
+        });
 
-    private rebuildSectionsTree(): void {
-        const task = TaskTree.add('Bringing the section tree to a consistent state...');
+        const subtask = task.add('Bringing the section tree to a consistent state...');
         const sections = this.sections.sort(Section.compare);
         const relations: Map<string, Section> = new Map();
-        const filter = (section: Section): boolean => Section.filter(section) && section.isSubsection;
 
         sections.forEach(section => {
             if (section.isGroup) {
@@ -149,18 +143,8 @@ export default class State implements IPluginContext {
             }
         });
 
-        this.#sections = sections.filter(filter).sort(Section.compare);
-        task.complete('Section tree is consistently');
-    }
-
-    private async modifyWithPlugin(name: string, config: IPluginOption, task: Task): Promise<void> {
-        const plugin = await this.pluginLoader.load(task, { name, config, context: this });
-
-        if (plugin.parse) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            await Promise.all([...this.commits.values()].map(commit => plugin.parse!(commit, task)));
-        }
-
-        if (plugin.modify) await plugin.modify(task);
+        this.#sections = sections.filter((section): boolean => Section.filter(section) && section.isSubsection).sort(Section.compare);
+        subtask.complete('Section tree is consistently');
+        task.complete('Release status modified');
     }
 }

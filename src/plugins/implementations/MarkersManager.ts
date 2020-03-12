@@ -1,8 +1,7 @@
-import { Task } from 'tasktree-cli/lib/task';
 import Section, { Position, Order } from '../../core/entities/Section';
 import Commit, { Status } from '../../core/entities/Commit';
 import { findSame } from '../../utils/Text';
-import Plugin, { IPluginLintOptions, IPluginConfig } from '../Plugin';
+import Plugin, { IConfig, IContext, ILintOptions } from '../Plugin';
 
 export enum MarkerType {
     // !break - indicates major changes breaking backward compatibility
@@ -33,32 +32,31 @@ export default class MarkersManager extends Plugin {
     private markers: Set<MarkerType> = new Set();
     private sections: Map<MarkerType, Section> = new Map();
 
-    constructor(config: IPluginConfig, context?: IPluginContext) {
+    constructor(config: IConfig, context: IContext) {
+        super(config, context);
+
         const { actions, joins } = config as {
             actions: (MarkerType.Ignore | MarkerType.Grouped)[];
             joins: { [key in MarkerType.Breaking | MarkerType.Deprecated | MarkerType.Important]: string };
         };
 
         this.markers = new Set(actions.filter(action => action === MarkerType.Ignore || action === MarkerType.Grouped));
+        this.sections = new Map(
+            Object.entries(joins).reduce((acc: [MarkerType, Section][], [type, title]) => {
+                const position = positions[type] ?? Position.None;
+                const section = this.context!.addSection(title, position, Order.Min);
 
-        if (this.context) {
-            this.sections = new Map(
-                Object.entries(joins).reduce((acc: [MarkerType, Section][], [type, title]) => {
-                    const position = positions[type] ?? Position.None;
-                    const section = this.context!.addSection(title, position, Order.Min);
+                if (section) {
+                    this.markers.add(type as MarkerType);
+                    acc.push([type as MarkerType, section]);
+                }
 
-                    if (section) {
-                        this.markers.add(type as MarkerType);
-                        acc.push([type as MarkerType, section]);
-                    }
-
-                    return acc;
-                }, [])
-            );
-        }
+                return acc;
+            }, [])
+        );
     }
 
-    async parse(commit: Commit): Promise<void> {
+    parse(commit: Commit): void {
         const { context } = this;
         const markers = this.getMarkersFrom(commit.body[0]);
         let section: Section | undefined;
@@ -74,8 +72,7 @@ export default class MarkersManager extends Plugin {
         }
     }
 
-    lint(options: IPluginLintOptions, task: Task): void {
-        const { body } = options;
+    lint({ task, body }: ILintOptions): void {
         const markersLine = body[0];
         const blackLine = body[1];
         const bodyFirstLine = body[2];
@@ -102,15 +99,11 @@ export default class MarkersManager extends Plugin {
         if (text) {
             const expression = /!(?<name>[a-z]+)(\((?<value>[\w &]+)\)|)( |)/gi;
             let match: RegExpExecArray | null;
-            let marker: MarkerType | undefined;
+            let marker: string | undefined;
 
-            // eslint-disable-next-line no-cond-assign
             while ((match = expression.exec(text)) !== null) {
-                if (match.groups && match.groups.type) {
-                    const { name, value } = match.groups;
-
-                    if ((marker = findSame(name, [...this.markers]) as MarkerType | undefined))
-                        markers.push([marker, value, name]);
+                if (match.groups?.type && (marker = findSame(match.groups.name, [...this.markers]))) {
+                    markers.push([marker as MarkerType, match.groups.value, match.groups.name]);
                 }
             }
         }
