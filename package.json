@@ -56,7 +56,7 @@
         "tasktree-cli": "^3.0.1",
         "universal-user-agent": "^5.0.0",
         "write-pkg": "^4.0.0",
-        "yargs": "^15.1.0"
+        "yargs": "^16.1.1"
     },
     "devDependencies": {
         "@types/faker": "^4.1.10",
