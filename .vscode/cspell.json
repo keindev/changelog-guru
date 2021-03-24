@@ -1,4 +1,16 @@
 {
   "language": "en",
-  "words": []
+  "words": [
+    "EDITMSG",
+    "changelogrc",
+    "cosmiconfig",
+    "deepmerge",
+    "dependabot",
+    "findup",
+    "gitlab",
+    "keindev",
+    "pval",
+    "pver",
+    "tasktree"
+  ]
 }
