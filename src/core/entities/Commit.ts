@@ -1,126 +1,137 @@
 import { LookupManager } from 'string-lookup-manager';
-import Entity, { Compare, Priority, ChangeLevel } from './Entity';
-import Author from './Author';
-import { wrap } from '../../utils/Markdown';
 
-export enum Status {
-    BreakingChanges = 1,
-    Deprecated = 2,
-    Important = 4,
-    Default = 8,
+import { splitHeadline } from '../../utils/commit';
+import { wrap } from '../../utils/markdown';
+import { IAuthor } from './Author';
+import Entity, { ChangeLevel, Compare, IEntity, Priority } from './Entity';
+
+export enum CommitChangeType {
+  BreakingChanges = 1,
+  Deprecated = 2,
+  Important = 4,
+  Default = 8,
+}
+
+const COMMIT_SHOT_NAME_LENGTH = 7;
+
+export interface ICommit extends IEntity {
+  readonly body: readonly string[];
+  readonly timestamp: number;
+  readonly url: string;
+  readonly author: IAuthor;
+  readonly scope?: string;
+  readonly accents: string[];
+  readonly type: string;
+  readonly shortName: string;
+
+  changeType: CommitChangeType;
+  subject: string;
+
+  accent(text: string): void;
+  replacement(value: string, position: number): void;
+  is(status: CommitChangeType): boolean;
 }
 
 export interface ICommitOptions {
-    hash: string;
-    timestamp: number;
-    header: string;
-    body?: string;
-    url: string;
-    author: Author;
+  hash: string;
+  timestamp: number;
+  headline: string;
+  body?: string;
+  url: string;
+  author: IAuthor;
 }
 
-export const splitHeader = (text: string): [string, string, string] => {
-    const match = text.match(/^(?<type>[a-z ]+) {0,1}(\((?<scope>[a-z0-9& ,:-]+)\)){0,1}(?=:):(?<subject>[\S ]+)/i);
-    let type = '';
-    let scope = '';
-    let subject = '';
+export default class Commit extends Entity implements ICommit {
+  readonly body: readonly string[] = [];
+  readonly timestamp: number;
+  readonly url: string;
+  readonly author: IAuthor;
+  readonly scope?: string;
 
-    if (match) {
-        const { groups } = match;
+  #subject = '';
+  #type?: string;
+  #accents = new Set<string>();
+  #changeType = CommitChangeType.Default;
+  #replacements = new LookupManager();
 
-        if (groups) {
-            if (groups.type) type = groups.type.trim();
-            if (groups.scope) scope = groups.scope.trim();
-            if (groups.subject) subject = groups.subject.trim();
-        }
-    }
+  constructor({ hash, timestamp, headline, body, url, author }: ICommitOptions) {
+    super(hash);
 
-    return [type, scope, subject];
-}
+    this.timestamp = timestamp;
+    this.url = url;
+    this.author = author;
 
-export default class Commit extends Entity {
-    readonly body: readonly string[] = [];
-    readonly timestamp: number;
-    readonly url: string;
-    readonly author: Author;
-    readonly scope?: string;
+    const [type, scope, subject] = splitHeadline(headline);
 
-    #subject = '';
-    #type?: string;
-    #accents = new Set<string>();
-    #status = Status.Default;
-    #replacements = new LookupManager<{}>();
+    if (type) this.#type = type.toLocaleLowerCase();
+    if (scope) this.scope = scope;
+    if (subject) this.#subject = subject;
+    if (body) this.body = body.split('\n').map(line => line.trim());
+  }
 
-    constructor({ hash, timestamp, header, body, url, author }: ICommitOptions) {
-        super(hash);
+  static compare(a: ICommit, b: ICommit): Compare {
+    const { scope: x } = a;
+    const { scope: y } = b;
+    let result = super.compare(a, b);
 
-        this.timestamp = timestamp;
-        this.url = url;
-        this.author = author;
+    if (x && !y) result--;
+    if (!x && y) result++;
+    if (x && y) result = x.localeCompare(y);
+    if (result === Compare.Equal) result = a.timestamp - b.timestamp;
 
-        const [type, scope, subject] = splitHeader(header);
+    return Math.min(Math.max(result, Compare.Less), Compare.More);
+  }
 
-        if (type) this.#type = type.toLocaleLowerCase();
-        if (scope) this.scope = scope;
-        if (subject) this.#subject = subject;
-        if (body) this.body = body.split('\n').map(line => line.trim());
-    }
+  get accents(): string[] {
+    return [...this.#accents.values()];
+  }
 
-    static compare(a: Commit, b: Commit): Compare {
-        const { scope: x } = a;
-        const { scope: y } = b;
-        let result = super.compare(a, b);
+  get type(): string {
+    return this.#type ?? '';
+  }
 
-        if (x && !y) result--;
-        if (!x && y) result++;
-        if (x && y) result = x.localeCompare(y);
-        if (result === Compare.Equal) result = a.timestamp - b.timestamp;
+  get priority(): Priority {
+    let priority = super.priority;
 
-        return Math.min(Math.max(result, Compare.Less), Compare.More);
-    }
+    if (this.is(CommitChangeType.BreakingChanges)) priority += Priority.High;
+    if (this.is(CommitChangeType.Deprecated)) priority += Priority.Medium;
+    if (this.is(CommitChangeType.Important)) priority += Priority.Low;
 
-    get accents(): string[] {
-        return [...this.#accents.values()];
-    }
+    return priority;
+  }
 
-    get type(): string {
-        return this.#type ?? '';
-    }
+  get subject(): string {
+    return this.#replacements.replace(this.#subject, item => wrap(item.value));
+  }
 
-    get priority(): Priority {
-        let priority = super.priority;
+  set subject(subject: string) {
+    this.#subject = subject;
+  }
 
-        if (this.hasStatus(Status.BreakingChanges)) priority += Priority.High;
-        if (this.hasStatus(Status.Deprecated)) priority += Priority.Medium;
-        if (this.hasStatus(Status.Important)) priority += Priority.Low;
+  get changeType(): CommitChangeType {
+    return this.#changeType;
+  }
 
-        return priority;
-    }
+  set changeType(type: CommitChangeType) {
+    this.#changeType |= type;
 
-    get subject(): string {
-        return this.#replacements.replace(this.#subject, item => wrap(item.value));
-    }
+    if (this.is(CommitChangeType.Deprecated)) this.level = ChangeLevel.Minor;
+    if (this.is(CommitChangeType.BreakingChanges)) this.level = ChangeLevel.Major;
+  }
 
-    set subject(subject: string) {
-        this.#subject = subject;
-    }
+  get shortName(): string {
+    return this.name.substr(0, COMMIT_SHOT_NAME_LENGTH);
+  }
 
-    addAccent(text: string): void {
-        this.#accents.add(text);
-    }
+  accent(text: string): void {
+    this.#accents.add(text);
+  }
 
-    addReplacement(value: string, position: number): void {
-        this.#replacements.add(value, position);
-    }
+  replacement(value: string, position: number): void {
+    this.#replacements.add(value, position);
+  }
 
-    addStatus(status: Status): void {
-        this.#status = status;
-
-        if (this.hasStatus(Status.Deprecated)) this.level = ChangeLevel.Minor;
-        if (this.hasStatus(Status.BreakingChanges)) this.level = ChangeLevel.Major;
-    }
-
-    hasStatus(status: Status): boolean {
-        return !!(this.#status & status);
-    }
+  is(type: CommitChangeType): boolean {
+    return !!(this.#changeType & type);
+  }
 }

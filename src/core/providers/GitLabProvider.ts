@@ -1,30 +1,23 @@
 import { PackageJson } from 'read-pkg';
-import Commit from '../entities/Commit';
-import GitProvider from './GitProvider';
-import { IReleaseInfo, ServiceProvider } from './Provider';
+
+import { GitServiceProvider } from '../Config';
+import { ICommit } from '../entities/Commit';
+import GitProvider, { IGitProviderOptions } from './GitProvider';
 
 export default class GitLabProvider extends GitProvider {
-    constructor(url: string, branch?: string) {
-        super(ServiceProvider.GitHub, url, branch);
-    }
+  constructor(url: string, branch: IGitProviderOptions['branch']) {
+    super({ type: GitServiceProvider.GitLab, url, branch });
+  }
 
-    // eslint-disable-next-line class-methods-use-this
-    async getCommits(date: Date, pageIndex: number): Promise<Commit[]> {
-        return [];
-    }
+  async getLastChangeDate(): Promise<Date> {
+    return new Date();
+  }
 
-    // eslint-disable-next-line class-methods-use-this
-    async getCommitsCount(date: Date): Promise<number> {
-        return 0;
-    }
+  async getCommits(_since: Date): Promise<ICommit[]> {
+    return [];
+  }
 
-    // eslint-disable-next-line class-methods-use-this
-    async getLastRelease(): Promise<IReleaseInfo> {
-        return { tag: undefined, date: new Date(0) };
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    async getPrevPackage(): Promise<PackageJson> {
-        return {};
-    }
+  async getPrevPackage(_since: Date): Promise<PackageJson> {
+    return {};
+  }
 }

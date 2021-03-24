@@ -1,71 +1,84 @@
-import { GitHubProvider as Provider } from 'gh-gql';
-import { GitHubResponseCommit, GitHubResponseCommitAuthor } from 'gh-gql/lib/queries/commit';
+import Provider from 'gh-gql';
+import { ICommit as IGitHubCommit } from 'gh-gql/lib/queries/Commit';
 import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
-import Author from '../entities/Author';
-import Commit from '../entities/Commit';
-import GitProvider from './GitProvider';
-import { IReleaseInfo, ServiceProvider } from './Provider';
+
+import { GitServiceProvider } from '../Config';
+import Author, { IAuthor } from '../entities/Author';
+import Commit, { ICommit } from '../entities/Commit';
+import GitProvider, { IGitProviderOptions } from './GitProvider';
 
 export default class GitHubProvider extends GitProvider {
-    private provider: Provider;
-    private authors = new Map<number, Author>();
-    private release: IReleaseInfo | undefined;
+  #provider: Provider;
+  #authors = new Map<number, Author>();
 
-    constructor(url: string, branch?: string) {
-        super(ServiceProvider.GitHub, url, branch);
+  constructor(url: string, branch: IGitProviderOptions['branch']) {
+    super({ type: GitServiceProvider.GitHub, url, branch });
 
-        this.provider = new Provider({ owner: this.owner, repository: this.repository, branch: this.branch });
+    this.#provider = new Provider();
+  }
+
+  async getLastChangeDate(): Promise<Date> {
+    const lastCommit = await this.#provider.query.commit.getLastCommit({
+      owner: this.owner,
+      repository: this.repository,
+      branch: this.branch.main,
+    });
+
+    return new Date(lastCommit?.committedDate ?? Date.now());
+  }
+
+  async getCommits(since: Date): Promise<ICommit[]> {
+    const commits: ICommit[] = [];
+    const list = await this.#provider.query.commit.getList({
+      owner: this.owner,
+      repository: this.repository,
+      branch: this.branch.dev,
+      since: since.toISOString(),
+    });
+
+    commits.push(...list.map(commit => this.parseCommit(commit)));
+
+    return commits;
+  }
+
+  async getPrevPackage(since: Date): Promise<PackageJson> {
+    const task = TaskTree.add('Loading previous release {bold package.json} state...');
+    const { owner, repository, branch, package: filePath } = this;
+    let data: PackageJson = {};
+
+    const id = await this.#provider.query.file.getId({
+      branch: branch.main,
+      until: since.toISOString(),
+      owner,
+      repository,
+      filePath,
+    });
+
+    if (id) {
+      const text = await this.#provider.query.file.getContent({ filePath, owner, repository, oid: id });
+
+      if (text) {
+        data = JSON.parse(text);
+
+        task.complete('Previous release {bold package.json} state loaded');
+      }
+    } else {
+      task.skip('The previous release did not contain package.json');
     }
 
-    async getCommits(date: Date, pageIndex: number): Promise<Commit[]> {
-        const commits = await this.provider.commit.getList(date, pageIndex);
+    return data;
+  }
 
-        return commits.map(this.parseCommit.bind(this));
-    }
+  private parseCommit({ author, committedDate, ...commit }: IGitHubCommit): ICommit {
+    return new Commit({ ...commit, author: this.parseAuthor(author), timestamp: new Date(committedDate).getTime() });
+  }
 
-    async getCommitsCount(date: Date): Promise<number> {
-        const count = await this.provider.commit.getCount(date);
+  private parseAuthor({ avatarUrl, user: { databaseId, login, url } }: IGitHubCommit['author']): IAuthor {
+    const author = this.#authors.get(databaseId) ?? new Author(login, url, avatarUrl);
 
-        return count;
-    }
+    if (!this.#authors.has(databaseId)) this.#authors.set(databaseId, author);
 
-    async getLastRelease(): Promise<IReleaseInfo> {
-        if (!this.release) {
-            const response = await this.provider.release.getLast();
-
-            this.release = { tag: response?.tag, date: new Date(response?.date ?? 0) };
-        }
-
-        return this.release as IReleaseInfo;
-    }
-
-    async getPrevPackage(): Promise<PackageJson> {
-        const task = TaskTree.add(`Loading previous release {bold package.json} state...`);
-        const release = await this.getLastRelease();
-        const change = await this.provider.package.getLastChange(release.date);
-        let data: PackageJson = {};
-
-        if (change) {
-            data = await this.provider.package.getContent(change);
-
-            task.complete('Previous release {bold package.json} state loaded');
-        } else {
-            task.skip('The previous release did not contain package.json');
-        }
-
-        return data;
-    }
-
-    private parseCommit({ author, date, ...others }: GitHubResponseCommit): Commit {
-        return new Commit({ ...others, author: this.parseAuthor(author), timestamp: new Date(date).getTime() });
-    }
-
-    private parseAuthor({ avatar, user: { id, login, url } }: GitHubResponseCommitAuthor): Author {
-        const { authors } = this;
-
-        if (!authors.has(id)) authors.set(id, new Author(login, url, avatar));
-
-        return authors.get(id) as Author;
-    }
+    return author;
+  }
 }

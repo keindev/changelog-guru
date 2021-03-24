@@ -2,6 +2,7 @@
 **/__mocks__/**
 **/__tests__/**
 node_modules/
+example/
 coverage/
 media/
 src/
@@ -18,17 +19,14 @@ docs/
 .huskyrc
 .prettierignore
 .prettierrc
-.travis.yml
-.yarnclean
 .changelogrc.yml
+codegen.yml
+.ghinfo
 jest.config.js
 tsconfig.json
-yarn.lock
+typedoc.json
 
 # docs
-README.md
 CHANGELOG.md
 CODE_OF_CONDUCT.md
 
-# logs
-yarn-error.log

@@ -1,150 +1,144 @@
 import { TaskTree } from 'tasktree-cli';
-import Commit from './entities/Commit';
-import Author from './entities/Author';
-import { IChange, Dependency, Restriction } from './Package';
-import License from './License';
-import { IContext, IPlugin } from '../plugins/Plugin';
-import Section, { Position, Order } from './entities/Section';
+
+import { findSame, isSame, unify } from '../utils/text';
+import { Exclusion } from './Config';
+import Author, { IAuthor } from './entities/Author';
+import Commit, { ICommit } from './entities/Commit';
 import { ChangeLevel } from './entities/Entity';
-import { isSame, unify, findSame } from '../utils/Text';
+import Section, { ISection, SectionOrder, SectionPosition } from './entities/Section';
+import { Dependency, IPackageChange, Restriction } from './Package';
+import { IRule, IRuleContext } from './rules/BaseRule';
 
-export enum ExclusionType {
-    AuthorLogin = 'authorLogin',
-    CommitType = 'commitType',
-    CommitScope = 'commitScope',
-    CommitSubject = 'commitSubject',
-}
+export default class State implements IRuleContext {
+  #sections: ISection[] = [];
+  #authors = new Map<string, IAuthor>();
+  #commits = new Map<string, ICommit>();
+  #changes = new Map<Dependency | Restriction, IPackageChange[]>();
 
-export default class State implements IContext {
-    #sections: Section[] = [];
-    #license: License | undefined;
-    #authors = new Map<string, Author>();
-    #commits = new Map<string, Commit>();
-    #changes = new Map<Dependency | Restriction, IChange[]>();
+  readonly currentLicense: string;
+  readonly previousLicense?: string;
+  readonly hasChangedLicense: boolean;
 
-    get sections(): Section[] {
-        return this.#sections;
+  constructor(currentLicense: string, previousLicense?: string) {
+    this.currentLicense = currentLicense;
+    this.previousLicense = previousLicense;
+    this.hasChangedLicense = !previousLicense || !!currentLicense.localeCompare(previousLicense);
+  }
+
+  get sections(): ISection[] {
+    return this.#sections;
+  }
+
+  get authors(): IAuthor[] {
+    return [...this.#authors.values()].filter(Author.filter).sort(Author.compare);
+  }
+
+  get commits(): ICommit[] {
+    return [...this.#commits.values()].filter(Commit.filter).sort(Commit.compare);
+  }
+
+  addCommit(commit: ICommit): void {
+    if (!this.#commits.has(commit.name)) {
+      const { author } = commit;
+
+      this.#commits.set(commit.name, commit);
+
+      if (this.#authors.has(author.name)) author.contribute();
+      else this.#authors.set(author.name, author);
     }
+  }
 
-    get authors(): Author[] {
-        return [...this.#authors.values()].filter(Author.filter).sort(Author.compare);
-    }
+  getChanges(type: Dependency | Restriction): IPackageChange[] {
+    return [...(this.#changes.get(type) ?? [])];
+  }
 
-    get commits(): Commit[] {
-        return [...this.#commits.values()].filter(Commit.filter).sort(Commit.compare);
-    }
+  addChanges(type: Dependency | Restriction, changes: IPackageChange[]): void {
+    this.#changes.set(type, changes);
+  }
 
-    addCommit(commit: Commit): void {
-        if (!this.#commits.has(commit.name)) {
-            const { author } = commit;
+  get changesLevels(): [number, number, number] {
+    let major = 0;
+    let minor = 0;
+    let patch = 0;
 
-            this.#commits.set(commit.name, commit);
+    this.#commits.forEach(commit => {
+      switch (commit.level) {
+        case ChangeLevel.Major:
+          major++;
+          break;
+        case ChangeLevel.Minor:
+          minor++;
+          break;
+        case ChangeLevel.Patch:
+          patch++;
+          break;
+        default:
+          TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.level}}`);
+      }
+    });
 
-            if (this.#authors.has(author.name)) {
-                author.contribute();
-            } else {
-                this.#authors.set(author.name, author);
-            }
-        }
-    }
+    return [major, minor, patch];
+  }
 
-    get license(): License | undefined {
-        return this.#license;
-    }
+  updateCommitsChangeLevel(types: [string, ChangeLevel][]): void {
+    this.#commits.forEach(commit => {
+      const [, level] = types.find(([name]) => isSame(commit.type, name)) ?? [];
 
-    set license(license: License | undefined) {
-        if (!this.#license) this.#license = license;
-    }
+      if (level) commit.level = level;
+    });
+  }
 
-    getChanges(type: Dependency | Restriction): IChange[] {
-        return [...(this.#changes.get(type) ?? [])];
-    }
+  addSection(name: string, position = SectionPosition.Group, order = SectionOrder.Default): ISection | undefined {
+    let section = this.findSection(name);
 
-    setChanges(type: Dependency | Restriction, changes: IChange[]): void {
-        this.#changes.set(type, changes);
-    }
+    if (!section && unify(name)) this.#sections.push((section = new Section(name, position, order)));
 
-    get changesLevels(): [number, number, number] {
-        let major = 0;
-        let minor = 0;
-        let patch = 0;
+    return section;
+  }
 
-        this.#commits.forEach(commit => {
-            switch (commit.level) {
-                case ChangeLevel.Major:
-                    major++;
-                    break;
-                case ChangeLevel.Minor:
-                    minor++;
-                    break;
-                case ChangeLevel.Patch:
-                    patch++;
-                    break;
-                default:
-                    TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.level}}`);
-            }
-        });
+  findSection(name: string): ISection | undefined {
+    return this.#sections.find((section): boolean => isSame(section.name, name));
+  }
 
-        return [major, minor, patch];
-    }
+  ignore(exclusions: [Exclusion, string[]][]): void {
+    const callbacks = {
+      [Exclusion.AuthorLogin]: (rules: string[]) =>
+        this.#authors.forEach(author => (author.isIgnored = rules.includes(author.name))),
+      [Exclusion.CommitType]: (rules: string[]) =>
+        this.#commits.forEach(commit => (commit.isIgnored = !!findSame(commit.type, rules))),
+      [Exclusion.CommitScope]: (rules: string[]) =>
+        this.#commits.forEach(commit => (commit.isIgnored = !!(commit.scope && findSame(commit.scope, rules)))),
+      [Exclusion.CommitSubject]: (rules: string[]) =>
+        this.#commits.forEach(commit => (commit.isIgnored = rules.some(item => commit.subject.includes(item)))),
+    };
 
-    updateCommitsChangeLevel(types: [string, ChangeLevel][]): void {
-        this.#commits.forEach(commit => {
-            const [, level] = types.find(([name]) => isSame(commit.type, name)) ?? [];
+    exclusions.forEach(([type, rules]) => {
+      if (callbacks[type]) callbacks[type](rules);
+      else TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
+    });
+  }
 
-            if (level) commit.level = level;
-        });
-    }
+  modify(rules: IRule[]): void {
+    const task = TaskTree.add('Modifying release state...');
 
-    addSection(name: string, position = Position.Group, order = Order.Default): Section | undefined {
-        let section = this.findSection(name);
+    rules.forEach(rule => rule.prepare && rule.prepare({ context: this }));
+    rules.forEach(rule => {
+      if (rule.parse) this.commits.forEach(commit => rule.parse && rule.parse({ commit, context: this }));
+      if (rule.modify) rule.modify({ task, context: this });
+    });
 
-        if (!section && unify(name)) this.#sections.push(section = new Section(name, position, order));
+    const subtask = task.add('Bringing the section tree to a consistent state...');
+    const sections = this.sections.sort(Section.compare);
+    const relations: Map<string, Section> = new Map();
 
-        return section;
-    }
+    sections.forEach(section => {
+      section.assign(relations, section.isGroup ? SectionPosition.Subsection : undefined);
+    });
 
-    findSection(name: string): Section | undefined {
-        return this.#sections.find((section): boolean => isSame(section.name, name));
-    }
-
-    ignoreEntities(exclusions: [ExclusionType, string[]][]): void {
-        const callbacks = {
-            [ExclusionType.AuthorLogin]: (rules: string[]) => this.#authors.forEach(author => rules.includes(author.name) && author.ignore());
-            [ExclusionType.CommitType]: (rules: string[]) => this.#commits.forEach(commit => findSame(commit.type, rules) && commit.ignore());
-            [ExclusionType.CommitScope]: (rules: string[]) => this.#commits.forEach(commit => commit.scope && findSame(commit.scope, rules) && commit.ignore());
-            [ExclusionType.CommitSubject]: (rules: string[]) => this.#commits.forEach(commit => rules.some(item => commit.subject.includes(item)) && commit.ignore());
-        }
-
-        exclusions.forEach(([type, rules]) => {
-            if (!callbacks[type]) TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
-
-            callbacks[type](rules);
-        });
-    }
-
-    async modify(plugins: IPlugin[]): Promise<void> {
-        const task = TaskTree.add('Modifying release state...');
-
-        plugins.forEach((plugin) => {
-            if (plugin.parse) this.commits.forEach((commit) => plugin.parse!(commit));
-            if (plugin.modify) plugin.modify(task);
-        });
-
-        const subtask = task.add('Bringing the section tree to a consistent state...');
-        const sections = this.sections.sort(Section.compare);
-        const relations: Map<string, Section> = new Map();
-
-        sections.forEach(section => {
-            if (section.isGroup) {
-                section.assignSubsection(relations);
-            } else {
-                section.assignSection(relations);
-            }
-        });
-
-        this.#sections = sections.filter((section): boolean => Section.filter(section) && section.isSubsection).sort(Section.compare);
-        subtask.complete('Section tree is consistently');
-        task.complete('Release status modified');
-    }
+    this.#sections = sections
+      .filter((section): boolean => Section.filter(section) && section.isSubsection)
+      .sort(Section.compare);
+    subtask.complete('Section tree is consistently');
+    task.complete('Release status modified');
+  }
 }

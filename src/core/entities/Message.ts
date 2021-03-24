@@ -1,16 +1,20 @@
-import Entity, { ChangeLevel } from './Entity';
+import Entity, { ChangeLevel, IEntity } from './Entity';
 
-export default class Message extends Entity {
-    readonly text: string;
+export interface IMessage extends IEntity {
+  readonly text: string;
+}
 
-    constructor(text: string, level: ChangeLevel = ChangeLevel.Patch) {
-        super();
+export default class Message extends Entity implements IMessage {
+  readonly text: string;
 
-        this.text = text.trim();
-        this.level = level;
-    }
+  constructor(text: string, level: ChangeLevel = ChangeLevel.Patch) {
+    super();
 
-    get empty(): boolean {
-        return !this.text.length;
-    }
+    this.text = text.trim();
+    this.level = level;
+  }
+
+  get isEmpty(): boolean {
+    return !this.text.length;
+  }
 }

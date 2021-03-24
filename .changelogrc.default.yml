@@ -1,6 +1,8 @@
 ---
 # Specifies the type of service provider to receive project information
 provider: github
+# Branch for compare with current branch and get a changelog
+branch: master
 # Commit levels of changes
 changes:
     # Incompatible API changes
@@ -51,10 +53,37 @@ output:
         commitScope: ['deps', 'deps-dev']
         # Excludes commits that contain the specified words in the subject
         commitSubject: ['merge']
-# Plugins that extend the basic functionality and modify the output in the change log
-plugins:
+# Rules that extend the basic functionality and modify the output in the change log
+rules:
+    # Highlights variables and code snippets in subject of commit
+    - highlight:
+          # Highlight camelCase and UpperCamelCase words
+          camelCase: true
+          # Highlight by regex mask
+          masks: [
+                  # Tags
+                  '<[^>]*>',
+                  # Words which start with '$', '@' or '!' symbol
+                  '[$@!]\S+',
+                  # CLI commands
+                  '((?<= )|^)-{1,2}[a-z0-9_-]+',
+                  # Dashed words
+                  '(?<= |^)[a-z]+-[a-z-]+',
+                  # Dotted words
+                  '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+',
+              ]
+    # Allows you to add additional useful information to the commit
+    - mark:
+          # Join markers combine commits in sections
+          joins:
+              # !important - place a commit title to special section on top of changelog
+              important: Important Internal Changes
+              # !deprecated - place a commit title to special section with deprecated properties
+              deprecated: DEPRECATIONS
+              # !break - indicates major changes breaking backward compatibility
+              break: BREAKING CHANGES
     # Displays information about changes to package.json in the change log
-    - package-changes:
+    - package:
           # Main section title
           title: Important Changes
           # The change message templates
@@ -81,41 +110,8 @@ plugins:
               - peerDependencies
               - optionalDependencies
               - bundledDependencies
-    # Highlights variables and code snippets in subject of commit
-    - highlights:
-          # Highlight camelCase and UpperCamelCase words
-          camelCase: true
-          # Highlight by regex mask
-          masks: [
-                  # Tags
-                  '<[^>]*>',
-                  # Words which start with '$', '@' or '!' symbol
-                  '[$@!]\S+',
-                  # CLI commands
-                  '((?<= )|^)-{1,2}[a-z0-9_-]+',
-                  # Dashed words
-                  '(?<= |^)[a-z]+-[a-z-]+',
-                  # Dotted words
-                  '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+',
-              ]
-    # Allows you to add additional useful information to the commit
-    - markers:
-          # Action markers performs operations on commits objects when building a changelog
-          actions:
-              # !ignore - ignore a commit in output
-              - ignore
-              # !group(NAME) - creates a group of commits with the <NAME>
-              - group
-          # Join markers combine commits in sections
-          joins:
-              # !important - place a commit title to special section on top of changelog
-              important: Important Internal Changes
-              # !deprecated - place a commit title to special section with deprecated properties
-              deprecated: DEPRECATIONS
-              # !break - indicates major changes breaking backward compatibility
-              break: BREAKING CHANGES
     # Renames scopes and abbreviations to a more human-readable format
-    - scopes:
+    - scope:
           # In the case of true will only rename the specified names
           onlyPresented: false
           # List of abbreviations and their human-readable versions
@@ -126,7 +122,7 @@ plugins:
               fc: Functional Components
               dts: TypeScript Declaration Improvements
     # Distributes commits with the specified types into sections
-    - sections:
+    - section:
           Features: [feat]
           Improvements: [improve]
           Bug Fixes: [fix]

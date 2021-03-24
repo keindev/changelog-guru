@@ -1,55 +1,35 @@
-import { Task } from 'tasktree-cli/lib/task';
-import ConfigLoader from '../core/config/ConfigLoader';
-import Config from '../core/config/Config';
-import { MockLinter } from '../__mocks__/Linter.mock';
+import { Task } from 'tasktree-cli/lib/Task';
 
-let task: Task;
-let config: Config;
+import { Config } from '../core/Config';
+import { Linter } from '../core/Linter';
 
 describe('Linter', () => {
-    beforeAll(done => {
-        const loader = new ConfigLoader();
+  const config = new Config();
+  const linter = new Linter(config, 100);
+  let task: Task;
 
-        loader.load().then(defaultConfig => {
-            config = defaultConfig;
+  beforeAll(async () => {
+    await config.init();
+  });
 
-            done();
-        });
+  beforeEach(() => {
+    task = new Task('Lint');
+  });
+
+  describe('Lint commit messages', () => {
+    it('Correct commit messages', async () => {
+      await linter.lint('test(core): some subject message 1');
+      await linter.lint('test: some subject message 2');
+
+      expect(task.haveErrors).toBeFalsy();
     });
 
-    beforeEach(() => {
-        task = new Task('Lint commit header');
+    it('Incorrect commit messages', async () => {
+      await linter.lint('');
+      await linter.lint('Test:');
+      await linter.lint('wow: some subject message');
+
+      expect(task.haveErrors).toBeTruthy();
     });
-
-    describe('Lint commit messages', () => {
-        it('Default', done => {
-            const linter = new MockLinter(task, {
-                config: { maxLength: 100 },
-                plugins: config.getPlugins(),
-                types: config.getTypes().map(([name]) => name),
-            });
-
-            Promise.all([
-                linter.lint('test(core): some subject message 1'),
-                linter.lint('test: some subject message 2'),
-            ]).then(() => {
-                expect(task.haveErrors()).toBeFalsy();
-
-                done();
-            });
-        });
-
-        it('Incorrect commit messages', done => {
-            const linter = new MockLinter(task, {
-                config: { 100 },
-                plugins: config.getPlugins(),
-                types: config.getTypes().map(([name]) => name),
-            });
-
-            Promise.all([linter.lint(''), linter.lint('Test:'), linter.lint('wow: some subject message')]).then(() => {
-                expect(task.haveErrors()).toBeTruthy();
-                done();
-            });
-        });
-    });
+  });
 });

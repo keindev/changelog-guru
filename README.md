@@ -14,26 +14,29 @@ Automated changelog generator:package::zap::clipboard:
 
 ## Install
 
-### Yarn
-
-```console
-yarn add changelog-guru
-```
-
-### NPM
-
 ```console
 npm install changelog-guru
 ```
 
 ## Contents
 
--   [What is **changelog-guru**](#what-is-changelog-guru)
--   [Getting started](#getting-started)
-    -   [Configuration](#configuration)
-    -   [Generate changelog](#generate-changelog)
-    -   [Lint commit message](#lint-commit-message)
--   [Plugins](docs/plugins/plugins.md)
+- [Install](#install)
+- [Contents](#contents)
+  - [What is **changelog-guru**](#what-is-changelog-guru)
+  - [Goals](#goals)
+  - [Format of the commit message](#format-of-the-commit-message)
+    - [Type](#type)
+    - [Scope](#scope)
+    - [Subject](#subject)
+    - [Markers](#markers)
+    - [Body and Footer](#body-and-footer)
+- [Getting started](#getting-started)
+  - [Configuration](#configuration)
+    - [Provider](#provider)
+  - [Generate changelog](#generate-changelog)
+  - [Lint commit message](#lint-commit-message)
+- [API](#api)
+- [License](#license)
 
 ### What is **changelog-guru**
 
@@ -203,11 +206,11 @@ To lint commits before they are created you can use Husky's 'commit-msg' hook:
 
 ```json
 {
-    "husky": {
-        "hooks": {
-            "commit-msg": "changelog lint --message HUSKY_GIT_PARAMS"
-        }
+  "husky": {
+    "hooks": {
+      "commit-msg": "changelog lint --message HUSKY_GIT_PARAMS"
     }
+  }
 }
 ```
 
@@ -216,6 +219,10 @@ For a more meticulous check, the following options are available:
 -   `--message <text>` - Required. Commit message for linting
 -   `--length number` - Max commit header length
 -   `--lowercase-only boolean` - Uses only lowercase types
+
+## API
+
+Read the [API documentation](docs/api/index.md) for more information.
 
 ## License
 
