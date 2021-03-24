@@ -70,12 +70,16 @@ export default class GitHubProvider extends GitProvider {
     return data;
   }
 
-  private parseCommit({ author, committedDate, ...commit }: IGitHubCommit): ICommit {
-    return new Commit({ ...commit, author: this.parseAuthor(author), timestamp: new Date(committedDate).getTime() });
+  private parseCommit(commit: IGitHubCommit): ICommit {
+    const { url, oid: hash, messageHeadline: headline, messageBody: body } = commit;
+    const timestamp = new Date(commit.committedDate).getTime();
+    const author = this.parseAuthor(commit.author);
+
+    return new Commit({ hash, headline, body, author, timestamp, url });
   }
 
   private parseAuthor({ avatarUrl, user: { databaseId, login, url } }: IGitHubCommit['author']): IAuthor {
-    const author = this.#authors.get(databaseId) ?? new Author(login, url, avatarUrl);
+    const author = this.#authors.get(databaseId) ?? new Author({ name: login, url, avatar: avatarUrl });
 
     if (!this.#authors.has(databaseId)) this.#authors.set(databaseId, author);
 

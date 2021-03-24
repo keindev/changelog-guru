@@ -26,7 +26,7 @@ describe('Author', () => {
     });
 
     it('Avatar size changed', () => {
-      expect(author.avatar).toBe(`${avatar}&size=40`);
+      expect(author.avatar).toBe(`${avatar}&s=40`);
     });
   });
 });
