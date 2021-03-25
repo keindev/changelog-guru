@@ -56,77 +56,77 @@ output:
 # Rules that extend the basic functionality and modify the output in the change log
 rules:
     # Highlights variables and code snippets in subject of commit
-    - highlight:
-          # Highlight camelCase and UpperCamelCase words
-          camelCase: true
-          # Highlight by regex mask
-          masks: [
-                  # Tags
-                  '<[^>]*>',
-                  # Words which start with '$', '@' or '!' symbol
-                  '[$@!]\S+',
-                  # CLI commands
-                  '((?<= )|^)-{1,2}[a-z0-9_-]+',
-                  # Dashed words
-                  '(?<= |^)[a-z]+-[a-z-]+',
-                  # Dotted words
-                  '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+',
-              ]
+    highlight:
+        # Highlight camelCase and UpperCamelCase words
+        camelCase: true
+        # Highlight by regex mask
+        masks: [
+                # Tags
+                '<[^>]*>',
+                # Words which start with '$', '@' or '!' symbol
+                '[$@!]\S+',
+                # CLI commands
+                '((?<= )|^)-{1,2}[a-z0-9_-]+',
+                # Dashed words
+                '(?<= |^)[a-z]+-[a-z-]+',
+                # Dotted words
+                '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+',
+            ]
     # Allows you to add additional useful information to the commit
-    - mark:
-          # Join markers combine commits in sections
-          joins:
-              # !important - place a commit title to special section on top of changelog
-              important: Important Internal Changes
-              # !deprecated - place a commit title to special section with deprecated properties
-              deprecated: DEPRECATIONS
-              # !break - indicates major changes breaking backward compatibility
-              break: BREAKING CHANGES
+    mark:
+        # Join markers combine commits in sections
+        joins:
+            # !important - place a commit title to special section on top of changelog
+            important: Important Internal Changes
+            # !deprecated - place a commit title to special section with deprecated properties
+            deprecated: DEPRECATIONS
+            # !break - indicates major changes breaking backward compatibility
+            break: BREAKING CHANGES
     # Displays information about changes to package.json in the change log
-    - package:
-          # Main section title
-          title: Important Changes
-          # The change message templates
-          templates:
-              # Template for added Dependencies
-              added: 'Added %name% with %val%'
-              # Template for dependencies whose values is not `SemVer` and has been changed
-              changed: 'Changed %name% from %pval% to %val%'
-              # Template for dependencies whose version was bumped
-              bumped: 'Bumped %name% from %pver% to %ver%'
-              # Template for dependencies whose version was downgraded
-              downgraded: 'Downgraded %name% from %pver% to %ver%'
-              # Template for removed dependencies
-              removed: 'Removed %name%, with %pval%'
-          # List of available for output sections.
-          # If you do not want to see a section in the changelog, simply remove its name from the list.
-          sections:
-              - license
-              - os
-              - cpu
-              - engines
-              - dependencies
-              - devDependencies
-              - peerDependencies
-              - optionalDependencies
-              - bundledDependencies
+    package:
+        # Main section title
+        title: Important Changes
+        # The change message templates
+        templates:
+            # Template for added Dependencies
+            added: 'Added %name% with %val%'
+            # Template for dependencies whose values is not `SemVer` and has been changed
+            changed: 'Changed %name% from %pval% to %val%'
+            # Template for dependencies whose version was bumped
+            bumped: 'Bumped %name% from %pver% to %ver%'
+            # Template for dependencies whose version was downgraded
+            downgraded: 'Downgraded %name% from %pver% to %ver%'
+            # Template for removed dependencies
+            removed: 'Removed %name%, with %pval%'
+        # List of available for output sections.
+        # If you do not want to see a section in the changelog, simply remove its name from the list.
+        sections:
+            - license
+            - os
+            - cpu
+            - engines
+            - dependencies
+            - devDependencies
+            - peerDependencies
+            - optionalDependencies
+            - bundledDependencies
     # Renames scopes and abbreviations to a more human-readable format
-    - scope:
-          # In the case of true will only rename the specified names
-          onlyPresented: false
-          # List of abbreviations and their human-readable versions
-          names:
-              core: Core
-              api: API
-              ssr: Server Side Rendering
-              fc: Functional Components
-              dts: TypeScript Declaration Improvements
+    scope:
+        # In the case of true will only rename the specified names
+        onlyPresented: false
+        # List of abbreviations and their human-readable versions
+        names:
+            core: Core
+            api: API
+            ssr: Server Side Rendering
+            fc: Functional Components
+            dts: TypeScript Declaration Improvements
     # Distributes commits with the specified types into sections
-    - section:
-          Features: [feat]
-          Improvements: [improve]
-          Bug Fixes: [fix]
-          Internal changes: [types, workflow, build, test, chore, docs]
-          Performance Improvements: [perf]
-          Code Refactoring: [refactor]
-          Reverts: [revert]
+    section:
+        Features: [feat]
+        Improvements: [improve]
+        Bug Fixes: [fix]
+        Internal changes: [types, workflow, build, test, chore, docs]
+        Performance Improvements: [perf]
+        Code Refactoring: [refactor]
+        Reverts: [revert]
