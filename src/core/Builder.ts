@@ -54,20 +54,10 @@ export default class Builder {
       const previousPackage = await provider.getPrevPackage(date);
       const state = new State(this.#package.license, previousPackage.license);
 
-      Object.values(Dependency).forEach(name => {
-        const dependencies = previousPackage[name];
+      [...Object.values(Dependency), ...Object.values(Restriction)].forEach(name => {
+        const previousValues = previousPackage[name];
 
-        if (dependencies) {
-          state.addChanges(name, this.#package.getDependenciesChanges(name, new Map(Object.entries(dependencies))));
-        }
-      });
-
-      Object.values(Restriction).forEach(name => {
-        const restrictions = previousPackage[name];
-
-        if (restrictions) {
-          state.addChanges(name, this.#package.getRestrictionsChanges(name, restrictions));
-        }
+        if (previousValues) state.addChanges(name, this.#package.getChanges(name, previousValues));
       });
 
       commits.forEach(commit => state.addCommit(commit));

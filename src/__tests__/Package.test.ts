@@ -9,8 +9,8 @@ describe('Package', () => {
   const pkg = new Package();
   const data = readPkg.sync({ normalize: false });
 
-  describe('Create new package', () => {
-    it('Package version and repository read', () => {
+  describe('Package', () => {
+    it('Version and repository read', () => {
       const version = semver.valid(pkg.version);
 
       expect(version).not.toBeNull();
@@ -20,47 +20,40 @@ describe('Package', () => {
     it('Bump package version', async () => {
       const version = semver.valid(pkg.version) as string;
 
-      await pkg.bump(1, 0, 0);
+      await pkg.bump(1, 1, 99);
 
       expect(semver.major(pkg.version)).toBeGreaterThan(semver.major(version));
+      expect(semver.minor(pkg.version)).toBe(0);
+      expect(semver.patch(pkg.version)).toBe(0);
     });
   });
 
   describe('Dependencies', () => {
-    it('Get list of added packages', () => {
-      let dependencies = data[Dependency.Dependencies] ?? {};
-      let changes = pkg.getDependenciesChanges(Dependency.Dependencies, new Map(Object.entries(dependencies)));
+    it('Get list of removed packages', () => {
+      const dependencies = data[Dependency.Dependencies] ?? {};
 
-      expect(changes).toStrictEqual([]);
-
-      dependencies = { ...dependencies, test: '^1.0.0' };
-      changes = pkg.getDependenciesChanges(Dependency.Dependencies, new Map(Object.entries(dependencies)));
-
-      expect(changes).toStrictEqual([
+      expect(pkg.getChanges(Dependency.Dependencies, dependencies)).toStrictEqual([]);
+      expect(pkg.getChanges(Dependency.Dependencies, { ...dependencies, test: '^1.0.0' })).toStrictEqual([
         {
           name: 'test',
-          type: DependencyChangeType.Added,
+          type: DependencyChangeType.Removed,
           link: 'https://www.npmjs.com/package/test/v/1.0.0',
-          value: '^1.0.0',
-          version: semver.coerce('^1.0.0'),
-          prevValue: undefined,
-          prevVersion: undefined,
+          prevValue: '^1.0.0',
+          prevVersion: semver.coerce('^1.0.0'),
         },
       ]);
     });
   });
 
-  describe('RestrictionRule', () => {
+  describe('Restrictions', () => {
     it('Get list of added restrictions', () => {
-      let restrictions = data[Restriction.OS] ?? [];
-      let changes = pkg.getRestrictionsChanges(Restriction.OS, restrictions);
+      const restrictions = data[Restriction.OS] ?? [];
 
-      expect(changes).toStrictEqual([]);
-
-      restrictions = [...restrictions, 'linux'];
-      changes = pkg.getRestrictionsChanges(Restriction.OS, restrictions);
-
-      expect(changes).toStrictEqual([{ name: 'linux', type: DependencyChangeType.Added, value: 'linux' }]);
+      expect(pkg.getChanges(Restriction.OS, restrictions)).toStrictEqual([]);
+      expect(pkg.getChanges(Restriction.OS, [...restrictions, 'linux', '!win32'])).toStrictEqual([
+        { name: 'linux', type: 'removed', prevValue: 'linux' },
+        { name: 'win32', type: 'removed', prevValue: '!win32' },
+      ]);
     });
   });
 });

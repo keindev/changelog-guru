@@ -21,7 +21,7 @@ export default class Author extends Entity implements IAuthor {
   readonly url: string;
   readonly avatar: string;
 
-  #priority = 0;
+  #priority = Priority.Low;
 
   constructor({ name, url, avatar }: IAuthorOptions) {
     super(`@${name}`);
@@ -39,6 +39,6 @@ export default class Author extends Entity implements IAuthor {
   }
 
   contribute(value = PRIORITY_INCREASE_STEP): void {
-    if (value > 0) this.#priority += value;
+    this.#priority += Math.max(0, value);
   }
 }

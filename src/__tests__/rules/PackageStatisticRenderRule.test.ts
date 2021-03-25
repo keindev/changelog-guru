@@ -19,32 +19,38 @@ describe('Package statistic rule', () => {
 
   it('Modify', () => {
     const task = new Task('Test');
-    const currentLicense = 'MIT';
-    const context = new State(currentLicense);
-    const prevVersion = coerce(faker.system.semver()) as SemVer;
+    const name = faker.git.branch();
+    const version = faker.system.semver();
+    const license = 'MIT';
+    const link = `https://www.npmjs.com/package/${name}/v/${version}`;
+    const context = new State(license);
     const dependency = {
-      name: faker.git.branch(),
+      name,
       type: DependencyChangeType.Bumped,
-      version: coerce(inc(prevVersion, 'major')) as SemVer,
-      prevVersion,
+      version: coerce(inc(version, 'major')) as SemVer,
+      prevVersion: coerce(version) as SemVer,
+      link,
     };
 
     context.addChanges(Dependency.Dependencies, [dependency]);
     rule.modify({ task, context });
 
     const section = context.findSection('Important Changes');
-    const [license, dependencies] = section?.sections ?? [];
-    const licenseMessages = (license?.messages ?? []).map(message => [message.level, message.text]);
-    const dependenciesMessages = (dependencies?.messages ?? []).map(message => [message.level, message.text]);
-    const path = `[${dependency.name}](https://www.npmjs.com/package/${dependency.name}/v/${dependency.version})`;
-    const version = `from \`${dependency.prevVersion}\` to \`${dependency.version}\``;
 
     expect(section).toBeDefined();
-    expect(license).toBeDefined();
-    expect(license?.name).toBe('License');
-    expect(licenseMessages).toMatchObject([['patch', `Source code now under \`${currentLicense}\` license.`]]);
-    expect(dependencies).toBeDefined();
-    expect(dependencies?.name).toBe('Dependencies');
-    expect(dependenciesMessages).toMatchObject([['patch', `-   Bumped **${path}** ${version}`]]);
+    expect(
+      (section?.sections ?? []).map(({ messages, ...others }) =>
+        messages.map(message => [others.name, message.level, message.text])
+      )
+    ).toMatchObject([
+      [['License', 'major', `Source code now under \`${license}\` license.`]],
+      [
+        [
+          'Dependencies',
+          'patch',
+          `-   Bumped **[${name}](${link})** from \`${dependency.prevVersion}\` to \`${dependency.version}\``,
+        ],
+      ],
+    ]);
   });
 });

@@ -104,16 +104,12 @@ export default class Commit extends Entity implements ICommit {
     return this.#replacements.replace(this.#subject, item => wrap(item.value));
   }
 
-  set subject(subject: string) {
-    this.#subject = subject;
-  }
-
   get changeType(): CommitChangeType {
     return this.#changeType;
   }
 
   set changeType(type: CommitChangeType) {
-    this.#changeType |= type;
+    this.#changeType = this.#changeType | type;
 
     if (this.is(CommitChangeType.Deprecated)) this.level = ChangeLevel.Minor;
     if (this.is(CommitChangeType.BreakingChanges)) this.level = ChangeLevel.Major;

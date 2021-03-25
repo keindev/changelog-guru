@@ -19,7 +19,7 @@ describe('Commit', () => {
       avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
       url: `https://github.com/${name}`,
     });
-    commit = new Commit({ author, hash, timestamp: 0, body, url, headline: 'feat(Jest): subject' });
+    commit = new Commit({ author, hash, timestamp, body, url, headline: 'feat(Jest): subject' });
   });
 
   describe('Static methods', () => {
@@ -28,7 +28,7 @@ describe('Commit', () => {
       const a = new Commit({ ...options, hash: `${hash}1`, headline: 'feat(Test): subject' });
       const b = new Commit({ ...options, hash: `${hash}2`, headline: 'feat(Test): subject' });
       const c = new Commit({ ...options, hash: `${hash}3`, headline: 'feat: subject' });
-      const d = new Commit({ ...options, hash: `${hash}4`, headline: 'feat: subject', timestamp: 1 });
+      const d = new Commit({ ...options, hash: `${hash}4`, headline: 'feat: subject', timestamp: timestamp + 1 });
 
       expect(Commit.compare(a, c)).toBe(Compare.Less);
       expect(Commit.compare(c, d)).toBe(Compare.Less);

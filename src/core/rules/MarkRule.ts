@@ -105,12 +105,12 @@ export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule
       let match: RegExpExecArray | null;
 
       while ((match = expression.exec(text)) !== null) {
-        const { type, name, value } = match.groups ?? {};
+        const { name, value } = match.groups ?? {};
 
-        if (type && name && value) {
+        if (name) {
           const marker = findSame(name, [...this.#markers]);
 
-          if (marker) markers.push([marker as MarkerType, value, name]);
+          if (marker) markers.push([marker as MarkerType, value ?? '', name]);
         }
       }
     }

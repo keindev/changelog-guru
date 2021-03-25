@@ -27,12 +27,9 @@ export default class ScopeRenameRule extends BaseRule<IScopeRenameRuleConfig> im
 
       scopes.forEach(name => {
         const actualName = findSame(name, [...this.#names.keys()]);
+        const accent = actualName ? this.#names.get(actualName) : undefined;
 
-        if (actualName) {
-          const accent = this.#names.get(actualName);
-
-          if (accent || (!this.#onlyPresented && name.length)) commit.accent((accent || name).trim());
-        }
+        if (accent || (!this.#onlyPresented && name.length)) commit.accent((accent || name).trim());
       });
     }
   }

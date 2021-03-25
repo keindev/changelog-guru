@@ -96,9 +96,34 @@ export default class Package {
     return this.#data.license ?? '';
   }
 
-  getDependenciesChanges(property: Dependency, prevDeps: Map<string, string>): IPackageChange[] {
+  async bump(major: number, minor: number, patch: number): Promise<void> {
+    const task = TaskTree.add('Updating package version');
+    let version: string | null | undefined;
+
+    if (major) version = inc(this.version, 'major');
+    if (!major && minor) version = inc(this.version, 'minor');
+    if (!major && !minor && patch) version = inc(this.version, 'patch');
+
+    if (version) {
+      this.#data.version = version;
+
+      await writePkg({ ...(this.#data as { [key: string]: string }) });
+      task.complete(`Package version updated to {bold ${version}}`);
+    } else {
+      task.fail('New package version is invalid or less (see https://semver.org/)');
+    }
+  }
+
+  getChanges(property: Dependency | Restriction, prevValues: { [key: string]: string } | string[]): IPackageChange[] {
+    return Array.isArray(prevValues)
+      ? this.getRestrictionsChanges(property as Restriction, prevValues)
+      : this.getDependenciesChanges(property as Dependency, prevValues);
+  }
+
+  private getDependenciesChanges(property: Dependency, dependencies: { [key: string]: string }): IPackageChange[] {
     const changes: IPackageChange[] = [];
     const currDeps = this.#data[property];
+    const prevDeps = new Map(Object.entries(dependencies));
 
     if (currDeps) {
       const getLink = (type: Dependency, name: string, ver?: string): string | undefined => {
@@ -107,7 +132,7 @@ export default class Package {
         return type !== Dependency.Engines && ver ? link : undefined;
       };
 
-      Object.entries(currDeps).forEach(([value, name]) => {
+      Object.entries(currDeps).forEach(([name, value]) => {
         const version = coerce(value);
 
         if (version) {
@@ -129,49 +154,30 @@ export default class Package {
       });
     }
 
-    return [...changes.values()];
+    return [...changes.values()].filter(change => change.type !== DependencyChangeType.Unchanged);
   }
 
-  getRestrictionsChanges(property: Restriction, prevRestrictions: string[]): IPackageChange[] {
+  private getRestrictionsChanges(property: Restriction, prevRestrictions: string[]): IPackageChange[] {
     const changes: IPackageChange[] = [];
-    const currRestrictions: string[] | undefined = this.#data[property];
+    const currRestrictions: string[] = this.#data[property] ?? [];
+    const restrictions = [...prevRestrictions];
     const getName = (name: string): string => (name[0] === '!' ? name.slice(1) : name);
 
-    if (currRestrictions) {
-      const restrictions = [...prevRestrictions];
+    changes.push(
+      ...currRestrictions.map(value => {
+        const index = restrictions.indexOf(value);
+        const prevValue = restrictions[index];
+        const type = prevValue
+          ? RESTRICTION_CHANGES_MAP[value.localeCompare(prevValue) as Compare]
+          : DependencyChangeType.Added;
 
-      changes.push(
-        ...currRestrictions.map(value => {
-          const index = restrictions.indexOf(value);
-          const prevValue = restrictions[index];
-          const type = prevValue
-            ? RESTRICTION_CHANGES_MAP[value.localeCompare(prevValue) as Compare]
-            : DependencyChangeType.Added;
+        if (prevValue) restrictions.splice(index, 1);
 
-          if (prevValue) restrictions.splice(index, 1);
+        return { name: getName(value), value, type, prevValue };
+      }),
+      ...restrictions.map(prevValue => ({ name: getName(prevValue), type: DependencyChangeType.Removed, prevValue }))
+    );
 
-          return { name: getName(value), value, type, prevValue };
-        }),
-        ...restrictions.map(prevValue => ({ name: getName(prevValue), type: DependencyChangeType.Removed, prevValue }))
-      );
-    }
-
-    return [...changes.values()];
-  }
-
-  async bump(major: number, minor: number, patch: number): Promise<void> {
-    const task = TaskTree.add('Updating package version');
-    let version: string | null | undefined;
-
-    if (major) version = inc(this.version, 'major');
-    if (!major && minor) version = inc(this.version, 'minor');
-    if (!major && !minor && patch) version = inc(this.version, 'patch');
-
-    if (version) {
-      await writePkg({ ...(this.#data as { [key: string]: string }), version });
-      task.complete(`Package version updated to {bold ${version}}`);
-    } else {
-      task.fail('New package version is invalid or less (see https://semver.org/)');
-    }
+    return [...changes.values()].filter(change => change.type !== DependencyChangeType.Unchanged);
   }
 }

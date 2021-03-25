@@ -93,7 +93,7 @@ export class Config {
   async init(): Promise<void> {
     const task = TaskTree.add('Reading configuration file...');
     const explorer = cosmiconfig('changelog-guru');
-    const baseConf = await explorer.load(path.join(__dirname, '../.changelogrc.default.yml'));
+    const baseConf = await explorer.load(path.join(__dirname, '../../.changelogrc.default.yml'));
     const userConf = await explorer.search();
 
     if (baseConf?.config && !baseConf.isEmpty) {
