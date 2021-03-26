@@ -45,8 +45,10 @@ export default class SectionGroupRule extends BaseRule<ISectionGroupRuleConfig> 
   }
 
   lint({ type, task }: IRuleLintOptions): void {
-    const key = findSame(type, this.#types);
+    if (type) {
+      const key = findSame(type, this.#types);
 
-    if (!key) task.error(`Commit type {bold ${type}} is not assigned with section`);
+      if (!key) task.error(`Commit type {bold ${type}} is not assigned with section`);
+    }
   }
 }

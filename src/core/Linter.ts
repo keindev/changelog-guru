@@ -52,21 +52,31 @@ export class Linter {
   }
 
   private lintMessage(task: Task, message: string[]): void {
-    const [headline = '', ...body] = message;
-    const [type, scope, subject] = splitHeadline(headline);
-    const changes = this.#config.types.map(([name]) => name);
+    const [headline, ...body] = message;
 
-    if (headline.length > this.#length) task.error(`Header is longer than {bold ${this.#length}}`);
-    if (!type) task.error('Type is not defined or is not separated from the subject with "{bold :}"');
-    if (type !== unify(type)) task.error('Type is not in lowercase');
-    if (!findSame(type, changes)) task.error('Unknown commit type!');
-    if (!subject) task.error('Subject is empty');
-    if (subject.length <= SUBJECT_MAX_LENGTH) task.error('Subject is not informative');
+    if (headline) {
+      const [type, scope, subject] = splitHeadline(headline);
+      const types = this.#config.types.map(([name]) => name);
 
-    this.#config.rules.forEach(rule => {
-      if (rule.lint) {
-        rule.lint({ task, headline, body, type, scope, subject });
+      if (headline.length > this.#length) {
+        task.error(`Headline has a length of ${headline.length}. Maximum allowed is {bold ${this.#length}}`);
       }
-    });
+
+      if (!type || !findSame(type, types)) task.error('Unknown commit type!');
+      if (type !== unify(type)) task.error('Type is not in lowercase');
+
+      if (type) {
+        if (!subject) task.error('Subject is empty');
+        if (subject && subject.length <= SUBJECT_MAX_LENGTH) task.error('Subject is not informative');
+      }
+
+      this.#config.rules.forEach(rule => {
+        if (rule.lint) {
+          rule.lint({ task, headline, body, type, scope, subject });
+        }
+      });
+    } else {
+      task.error('Headline is empty');
+    }
   }
 }

@@ -1,3 +1,8 @@
 import yargs from 'yargs';
 
-yargs.commandDir('commands').demandCommand().wrap(yargs.terminalWidth()).help().parse();
+yargs
+  .commandDir('commands', { extensions: ['js', 'ts'] })
+  .demandCommand()
+  .wrap(yargs.terminalWidth())
+  .help()
+  .parse();

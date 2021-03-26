@@ -23,15 +23,7 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "--nolazy",
-        "--inspect-brk=9229",
-        "bin/changelog",
-        "lint",
-        "--message",
-        "'.git/COMMIT_EDITMSG'",
-        "--lowercase-only"
-      ],
+      "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "lint", "--message", "'.git/COMMIT_EDITMSG'"],
       "port": 9229
     },
     {

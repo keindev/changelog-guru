@@ -16,7 +16,7 @@ docs/
 .gitattributes
 .eslintignore
 .eslintrc
-.huskyrc
+.husky
 .prettierignore
 .prettierrc
 .changelogrc.yml
