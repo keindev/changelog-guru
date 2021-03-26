@@ -79,7 +79,7 @@ export default class GitHubProvider extends GitProvider {
   }
 
   private parseAuthor({ avatarUrl, user: { databaseId, login, url } }: IGitHubCommit['author']): IAuthor {
-    const author = this.#authors.get(databaseId) ?? new Author({ name: login, url, avatar: avatarUrl });
+    const author = this.#authors.get(databaseId) ?? new Author({ login, url, avatar: avatarUrl });
 
     if (!this.#authors.has(databaseId)) this.#authors.set(databaseId, author);
 

@@ -43,8 +43,11 @@ export default class State implements IRuleContext {
 
       this.#commits.set(commit.name, commit);
 
-      if (this.#authors.has(author.name)) author.contribute();
-      else this.#authors.set(author.name, author);
+      if (this.#authors.has(author.name)) {
+        author.contribute();
+      } else {
+        this.#authors.set(author.name, author);
+      }
     }
   }
 
@@ -91,7 +94,9 @@ export default class State implements IRuleContext {
   addSection(name: string, position = SectionPosition.Group, order = SectionOrder.Default): ISection | undefined {
     let section = this.findSection(name);
 
-    if (!section && unify(name)) this.#sections.push((section = new Section(name, position, order)));
+    if (!section && unify(name)) {
+      this.#sections.push((section = new Section(name, position, order)));
+    }
 
     return section;
   }
@@ -103,7 +108,7 @@ export default class State implements IRuleContext {
   ignore(exclusions: [Exclusion, string[]][]): void {
     const callbacks = {
       [Exclusion.AuthorLogin]: (rules: string[]) =>
-        this.#authors.forEach(author => (author.isIgnored = rules.includes(author.name))),
+        this.#authors.forEach(author => (author.isIgnored = rules.includes(author.login))),
       [Exclusion.CommitType]: (rules: string[]) =>
         this.#commits.forEach(commit => (commit.isIgnored = !!findSame(commit.type, rules))),
       [Exclusion.CommitScope]: (rules: string[]) =>
@@ -113,8 +118,11 @@ export default class State implements IRuleContext {
     };
 
     exclusions.forEach(([type, rules]) => {
-      if (callbacks[type]) callbacks[type](rules);
-      else TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
+      if (callbacks[type]) {
+        callbacks[type](rules);
+      } else {
+        TaskTree.fail(`Unacceptable entity exclusion type - {bold ${type}}`);
+      }
     });
   }
 
@@ -135,9 +143,8 @@ export default class State implements IRuleContext {
       section.assign(relations, section.isGroup ? SectionPosition.Subsection : undefined);
     });
 
-    this.#sections = sections
-      .filter((section): boolean => Section.filter(section) && section.isSubsection)
-      .sort(Section.compare);
+    this.#sections = sections.filter(section => Section.filter(section) && !section.isSubsection).sort(Section.compare);
+
     subtask.complete('Section tree is consistently');
     task.complete('Release status modified');
   }

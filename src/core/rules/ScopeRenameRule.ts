@@ -37,9 +37,11 @@ export default class ScopeRenameRule extends BaseRule<IScopeRenameRuleConfig> im
   lint({ scope, task }: IRuleLintOptions): void {
     const names = [...this.#names.keys()];
 
-    scope.split(',').forEach(name => {
-      if (name.length < MIN_SCOPE_SHORTNAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
-      if (this.#onlyPresented && !findSame(name, names)) task.error(`Scope {bold ${name}} is not available`);
-    });
+    if (scope.length) {
+      scope.split(',').forEach(name => {
+        if (name.length < MIN_SCOPE_SHORTNAME_LENGTH) task.error(`Scope name {bold ${name}} is too short`);
+        if (this.#onlyPresented && !findSame(name, names)) task.error(`Scope {bold ${name}} is not available`);
+      });
+    }
   }
 }

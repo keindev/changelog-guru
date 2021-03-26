@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
 import { TaskTree } from 'tasktree-cli';
+import { Task } from 'tasktree-cli/lib/Task';
 
 import { splitHeadline } from '../utils/commit';
 import { findSame, unify } from '../utils/text';
@@ -19,29 +20,39 @@ export class Linter {
     this.#length = length;
   }
 
-  async lint(message: string): Promise<void> {
+  async lint(text: string): Promise<void> {
     const task = TaskTree.add('Lint commit message:');
     // The recommended method to specify -m with husky was `changelog lint -m $HUSKY_GIT_PARAMS`
     // This does not work properly with win32 systems, where env variable declarations use a different syntax
-    const parameter = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'].find(n => [message, `%${n}%`, `$${n}`].includes(n));
-    const body: string[] = [];
+    const parameter = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'].find(n => [text, `%${n}%`, `$${n}`].includes(n));
+    const message: string[] = [];
     let filePath: string | undefined;
 
-    if (!message) task.error('Empty commit message');
+    if (!text) task.error('Empty commit message');
     if (parameter && parameter in process.env) filePath = process.env[parameter];
-    if (message === '.git/COMMIT_EDITMSG') filePath = path.resolve(process.cwd(), message);
+    if (text === '.git/COMMIT_EDITMSG') filePath = path.resolve(process.cwd(), text);
     if (filePath) {
       if (!fs.existsSync(filePath)) task.fail(`${filePath} not found`);
 
       const rl = readline.createInterface({ input: fs.createReadStream(filePath), crlfDelay: Infinity });
 
-      rl.on('line', line => line.trim()[0] !== '#' && body.push(line));
+      rl.on('line', line => line.trim()[0] !== '#' && message.push(line));
       await once(rl, 'close');
     } else {
-      body.push(...message.split('\n'));
+      message.push(...text.split('\n'));
     }
 
-    const headline = body.shift() as string;
+    this.lintMessage(task, message);
+
+    if (task.haveErrors) {
+      task.fail('Incorrect commit message:');
+    } else {
+      task.complete('Commit message is correct');
+    }
+  }
+
+  private lintMessage(task: Task, message: string[]): void {
+    const [headline = '', ...body] = message;
     const [type, scope, subject] = splitHeadline(headline);
     const changes = this.#config.types.map(([name]) => name);
 
@@ -52,10 +63,10 @@ export class Linter {
     if (!subject) task.error('Subject is empty');
     if (subject.length <= SUBJECT_MAX_LENGTH) task.error('Subject is not informative');
 
-    task.log(`Header: {dim ${headline || undefined}}`);
-    this.#config.rules.forEach(rule => rule.lint && rule.lint({ task, headline, body, type, scope, subject }));
-
-    if (task.haveErrors) task.fail('Incorrect commit message:');
-    else task.complete('Commit message is correct');
+    this.#config.rules.forEach(rule => {
+      if (rule.lint) {
+        rule.lint({ task, headline, body, type, scope, subject });
+      }
+    });
   }
 }
