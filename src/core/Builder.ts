@@ -98,9 +98,9 @@ export default class Builder {
     if (commits.length) {
       commits.forEach(commit => {
         const subject = findSame(commit.subject, [...groups.keys()]) ?? commit.subject;
-        const { accents, links } = groups.get(subject) ?? { subject, accents: new Set<string>(), links: [] };
+        const { accents, links } = groups.get(subject) ?? { subject, accents: new Set(), links: [] };
 
-        commit.accents.forEach(accents.add);
+        commit.accents.forEach(accent => accents.add(accent));
         links.push(md.commit(commit.shortName, commit.url));
         groups.set(commit.subject, { subject, accents, links });
       });

@@ -7,7 +7,7 @@ import Message from '../../core/entities/Message';
 import Section, { SectionOrder, SectionPosition } from '../../core/entities/Section';
 
 describe('Section', () => {
-  const name = faker.internet.userName();
+  const login = faker.internet.userName();
   let section: Section;
   let message: Message;
   let author: Author;
@@ -17,9 +17,9 @@ describe('Section', () => {
     section = new Section(faker.lorem.word(), SectionPosition.Body);
     message = new Message(faker.lorem.words());
     author = new Author({
-      name,
+      login,
       avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
-      url: `https://github.com/${name}`,
+      url: `https://github.com/${login}`,
     });
     commit = new Commit({
       author,

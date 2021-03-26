@@ -35,7 +35,7 @@ describe('Section group rule', () => {
 
   it('Parse', async () => {
     const section = context.findSection('Bug Fixes');
-    const author = new Author({ name: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
+    const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
     const commit = new Commit({
       hash: faker.git.commitSha(),
       timestamp: 0,

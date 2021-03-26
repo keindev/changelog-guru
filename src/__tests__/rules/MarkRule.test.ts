@@ -10,7 +10,7 @@ import State from '../../core/State';
 describe('Mark rule', () => {
   const config = new Config();
   const context = new State('MIT');
-  const author = new Author({ name: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
+  const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
   const commitOptions = { timestamp: 0, headline: 'feat(Jest): subject', url: faker.internet.url(), author };
   let rule: MarkRule;
 

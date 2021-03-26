@@ -5,7 +5,7 @@ import Commit, { CommitChangeType } from '../../core/entities/Commit';
 import { ChangeLevel, Compare, Priority } from '../../core/entities/Entity';
 
 describe('Commit', () => {
-  const name = faker.internet.userName();
+  const login = faker.internet.userName();
   const hash = 'b816518030dace1b91838ae0abd56fa88eba19f';
   const timestamp = faker.random.number();
   const body = '\n\nbody\n\nfooter';
@@ -15,9 +15,9 @@ describe('Commit', () => {
 
   beforeAll(() => {
     author = new Author({
-      name,
+      login,
       avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
-      url: `https://github.com/${name}`,
+      url: `https://github.com/${login}`,
     });
     commit = new Commit({ author, hash, timestamp, body, url, headline: 'feat(Jest): subject' });
   });

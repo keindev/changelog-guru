@@ -15,7 +15,7 @@ describe('Scope rename rule', () => {
   });
 
   it('Parse', () => {
-    const author = new Author({ name: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
+    const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
     const commitOptions = { hash: faker.git.commitSha(), timestamp: 0, url: faker.internet.url(), author };
     const context = new State('MIT');
     let commit = new Commit({ ...commitOptions, headline: 'feat(core, Jest 1, Jest 2): subject' });

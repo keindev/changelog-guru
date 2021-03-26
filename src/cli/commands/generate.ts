@@ -34,7 +34,7 @@ const build = async (options: IBuildOptions): Promise<void> => {
   const changelog = new Changelog();
 
   try {
-    changelog.build(options);
+    await changelog.build(options);
     tree.exit();
   } catch (error) {
     tree.fail(error);

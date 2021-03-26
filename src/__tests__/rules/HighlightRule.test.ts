@@ -18,7 +18,7 @@ describe('Highlight rule', () => {
   });
 
   it('Generics highlight', () => {
-    const author = new Author({ name: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
+    const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
     const headlines: [string, string][] = [
       ['feat: <subject>', '`<subject>`'],
       ['feat: $subject', '`$subject`'],
