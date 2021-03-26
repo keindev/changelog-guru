@@ -4,7 +4,7 @@ import { Config, Exclusion } from '../core/Config';
 import Author from '../core/entities/Author';
 import Commit from '../core/entities/Commit';
 import { ChangeLevel } from '../core/entities/Entity';
-import { SectionPosition } from '../core/entities/Section';
+import { ISection, SectionPosition } from '../core/entities/Section';
 import State from '../core/State';
 
 describe('State', () => {
@@ -20,10 +20,10 @@ describe('State', () => {
   });
 
   it('Build state tree', async () => {
-    const author1 = new Author({ name: 'dev1', url: faker.internet.url(), avatar: faker.internet.avatar() });
-    const author2 = new Author({ name: 'dev2', url: faker.internet.url(), avatar: faker.internet.avatar() });
+    const author1 = new Author({ login: 'dev1', url: faker.internet.url(), avatar: faker.internet.avatar() });
+    const author2 = new Author({ login: 'dev2', url: faker.internet.url(), avatar: faker.internet.avatar() });
     const author3 = new Author({
-      name: 'dependabot-preview[bot]',
+      login: 'dependabot-preview[bot]',
       url: faker.internet.url(),
       avatar: faker.internet.avatar(),
     });
@@ -56,8 +56,8 @@ describe('State', () => {
       timestamp: 0,
       url: faker.internet.url(),
     });
-    const section1 = state.addSection('header section', SectionPosition.Header);
-    const section2 = state.addSection('empty section', SectionPosition.Footer);
+    const section1 = state.addSection('header section', SectionPosition.Header) as ISection;
+    const section2 = state.addSection('empty section', SectionPosition.Footer) as ISection;
 
     expect(section1).toBeDefined();
     expect(section2).toBeDefined();
@@ -66,11 +66,7 @@ describe('State', () => {
     state.addCommit(commit3);
     state.addCommit(commit1);
     state.addCommit(commit4);
-
-    if (section1) {
-      section1.add(commit1);
-    }
-
+    section1.add(commit1);
     state.updateCommitsChangeLevel(config.types);
 
     expect(state.authors).toStrictEqual([author1, author2, author3]);
@@ -103,12 +99,12 @@ describe('State', () => {
 
   it('Filter commits', () => {
     const bot = new Author({
-      name: 'bot',
+      login: 'bot',
       url: faker.internet.url(),
       avatar: faker.internet.avatar(),
     });
     const author = new Author({
-      name: 'dev1',
+      login: 'dev1',
       url: faker.internet.url(),
       avatar: faker.internet.avatar(),
     });
