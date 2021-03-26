@@ -37,8 +37,8 @@ export enum DependencyChangeType {
 }
 
 const VERSION_CHANGES_MAP = {
-  [Compare.Less]: DependencyChangeType.Bumped,
-  [Compare.More]: DependencyChangeType.Downgraded,
+  [Compare.Less]: DependencyChangeType.Downgraded,
+  [Compare.More]: DependencyChangeType.Bumped,
   [Compare.Equal]: DependencyChangeType.Unchanged,
 };
 const RESTRICTION_CHANGES_MAP = {
