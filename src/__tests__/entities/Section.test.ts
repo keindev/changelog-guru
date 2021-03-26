@@ -24,7 +24,7 @@ describe('Section', () => {
     commit = new Commit({
       author,
       hash: 'b816518030dace1b91838ae0abd56fa88eba19f',
-      timestamp: faker.random.number(),
+      timestamp: new Date().getTime(),
       body: '\n\nbody\n\nfooter',
       url: 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0',
       headline: 'feat(Jest): subject',

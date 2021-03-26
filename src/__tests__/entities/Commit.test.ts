@@ -7,7 +7,7 @@ import { ChangeLevel, Compare, Priority } from '../../core/entities/Entity';
 describe('Commit', () => {
   const login = faker.internet.userName();
   const hash = 'b816518030dace1b91838ae0abd56fa88eba19f';
-  const timestamp = faker.random.number();
+  const timestamp = new Date(0).getTime();
   const body = '\n\nbody\n\nfooter';
   const url = 'https://github.com/keindev/changelog-guru/commit/b816518030dace1b91838ae0abd56fa88eba19f0';
   let author: Author;
