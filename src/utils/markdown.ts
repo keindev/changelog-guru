@@ -13,7 +13,7 @@ export const image = (text: string, img: string, url: string): string => link(`!
 export const license = (type: string): string => link(type, `https://spdx.org/licenses/${type}.html`);
 export const line = (): string => '---\n';
 export const link = (text: string, url: string): string => `[${text}](${url})`;
-export const list = (text: string): string => `-   ${capitalize(text)}`;
+export const list = (text: string): string => `- ${capitalize(text)}`;
 export const strong = (text: string): string => `**${text}**`;
 export const title = (text: string, level = 1): string => `${header(level)} ${capitalize(text)}\n`;
 export const wrap = (text?: SemVer | string): string => `\`${text}\``;

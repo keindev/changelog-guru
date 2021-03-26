@@ -3,16 +3,16 @@
 exports[`Builder build 1`] = `
 "# Features
 
--   Feat commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000001) [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000002)
--   Another feat commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000003)
+- Feat commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000001) [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000002)
+- Another feat commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000003)
 
 # Internal changes
 
--   **[Builder]** Test commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000000)
+- **[Builder]** Test commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000000)
 
 # Performance Improvements
 
--   **[Core]** Pref subject [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000004) [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000005)
+- **[Core]** Pref subject [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000004) [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000005)
 
 ---
 

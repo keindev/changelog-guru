@@ -48,7 +48,7 @@ describe('Package statistic rule', () => {
         [
           'Dependencies',
           'patch',
-          `-   Bumped **[${name}](${link})** from \`${dependency.prevVersion}\` to \`${dependency.version}\``,
+          `- Bumped **[${name}](${link})** from \`${dependency.prevVersion}\` to \`${dependency.version}\``,
         ],
       ],
     ]);
