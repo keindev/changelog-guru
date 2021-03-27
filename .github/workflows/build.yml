@@ -2,10 +2,6 @@ name: Build
 
 on: [push, pull_request]
 
-env:
-  node-lts: 14.x
-  node-current: 15.x
-
 jobs:
   triage-labels:
     name: Add labels
@@ -21,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: ['${{env.node-lts}}', '${{ env.node-current }}']
+        node-version: [14.x, 15.x]
         os: [ubuntu-latest]
     steps:
     - name: Checkout repository
@@ -49,7 +45,7 @@ jobs:
         npm run test
 
     - name: Cache coverage
-      if: ${{ success() && matrix.node-version == env.node-current }}
+      if: ${{ success() && matrix.node-version == '15.x' }}
       uses: actions/cache@v2
       with:
         path: coverage
@@ -61,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['${{ env.node-current }}']
+        node-version: [15.x]
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -92,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['${{ env.node-current }}']
+        node-version: [15.x]
     steps:
     - name: Cache coverage
       id: cache-coverage
