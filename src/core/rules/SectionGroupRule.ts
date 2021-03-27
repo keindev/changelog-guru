@@ -5,17 +5,20 @@ import { ISection, SectionPosition } from '../entities/Section';
 import { BaseRule, IRule, IRuleConfig, IRuleLintOptions, IRuleParseOptions, IRulePrepareOptions } from './BaseRule';
 
 export interface ISectionGroupRuleConfig extends IRuleConfig {
-  [key: string]: string[];
+  [key: string]: {
+    emoji: string;
+    types: string[];
+  };
 }
 
 export default class SectionGroupRule extends BaseRule<ISectionGroupRuleConfig> implements IRule {
-  #types: string[];
+  #types: string[] = [];
   #blocks = new Map<string, ISection | undefined>();
 
   constructor(config: ISectionGroupRuleConfig) {
     super(config);
 
-    this.#types = [...Object.values(this.config)].flat();
+    this.#types = [...Object.values(this.config)].map(({ types }) => types).flat();
 
     if (this.#types.length > new Set(this.#types).size) {
       TaskTree.fail('One commit type assigned to {bold >2} sections');
@@ -23,9 +26,9 @@ export default class SectionGroupRule extends BaseRule<ISectionGroupRuleConfig> 
   }
 
   prepare({ context }: IRulePrepareOptions): void {
-    Object.entries(this.config).forEach(([name, types], order) => {
+    Object.entries(this.config).forEach(([name, { emoji, types }], order) => {
       if (Array.isArray(types) && types.length) {
-        const section = context.addSection(name, SectionPosition.Body, order);
+        const section = context.addSection({ name, position: SectionPosition.Body, order, emoji });
 
         if (section) types.forEach(type => this.#blocks.set(unify(type), section));
       }

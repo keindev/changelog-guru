@@ -61,11 +61,11 @@
 
 </details>
 
-# Improvements
+# :fire: Improvements
 
 - Update to husky `v5.x`, fix Linter bugs [`c22d62c`](https://github.com/keindev/changelog-guru/commit/c22d62cc15d4336c0649f5836303f72f93b03f24)
 
-# Bug Fixes
+# :bug: Bug Fixes
 
 - **[Package]** Fix version changes map [`f5812f5`](https://github.com/keindev/changelog-guru/commit/f5812f5159541925d093b5350743789727919890)
 - **[Utils]** Fix `md.list` item render [`64bcde7`](https://github.com/keindev/changelog-guru/commit/64bcde7456ce72277a2add7fc8bc61137a089eda)
@@ -73,7 +73,7 @@
 - Fix bugs after tests [`7fd6815`](https://github.com/keindev/changelog-guru/commit/7fd681517d26414c081dd6e0fbbd72f875803545)
 - Fix Builder, correct building MD [`2d2ae0a`](https://github.com/keindev/changelog-guru/commit/2d2ae0abcea12d66ac6b177b8608bb2c78e55111)
 
-# Internal changes
+# :memo: Internal changes
 
 - **[Cspell]** Add words to cspell config [`909bdca`](https://github.com/keindev/changelog-guru/commit/909bdcafca9961214f7d544ccdf81fe093c1935a)
 - Fix Author test, fix `GitHubProvider` [`a846805`](https://github.com/keindev/changelog-guru/commit/a846805255c2000b90618d78ec65277160ada4cd)
@@ -81,8 +81,9 @@
 - Refactor State test [`ec5dab7`](https://github.com/keindev/changelog-guru/commit/ec5dab7dcd55ddea84eafc23fed809522ea8d8e3)
 - Update husky config to `v5.x` [`525a3cc`](https://github.com/keindev/changelog-guru/commit/525a3ccc206d9a3caca32ef95d7bc2ad5ba29d24)
 - Replace faker to new Date in Commit & State tests [`4aee6f3`](https://github.com/keindev/changelog-guru/commit/4aee6f336af703b134479f2ec4575d6539ee6727)
+- Generate CHANGELOG.md [`8004278`](https://github.com/keindev/changelog-guru/commit/80042783bf525086887796683bd914e2de1a10c7)
 
-# Code Refactoring
+# :wrench: Code Refactoring
 
 - Rebuild project struct [`336f0ff`](https://github.com/keindev/changelog-guru/commit/336f0ffb2f611a2056a693c7b809f41c354bd477)
 

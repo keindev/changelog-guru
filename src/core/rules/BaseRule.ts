@@ -1,7 +1,7 @@
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { ICommit } from '../entities/Commit';
-import { ISection, SectionOrder, SectionPosition } from '../entities/Section';
+import { ISection, ISectionOptions } from '../entities/Section';
 import { Dependency, IPackageChange, Restriction } from '../Package';
 
 export enum Rule {
@@ -18,8 +18,8 @@ export interface IRuleContext {
   readonly hasChangedLicense: boolean;
 
   getChanges(type: Dependency | Restriction): IPackageChange[] | undefined;
-  addSection(title: string, position?: SectionPosition, order?: SectionOrder): ISection | undefined;
-  findSection(title: string): ISection | undefined;
+  addSection(options: ISectionOptions): ISection | undefined;
+  findSection(name: string): ISection | undefined;
 }
 
 export type IRuleActionOptions = { context: IRuleContext };

@@ -14,7 +14,7 @@ describe('Section', () => {
   let commit: Commit;
 
   beforeEach(() => {
-    section = new Section(faker.lorem.word(), SectionPosition.Body);
+    section = new Section({ name: faker.lorem.word(), position: SectionPosition.Body });
     message = new Message(faker.lorem.words());
     author = new Author({
       login,
@@ -33,8 +33,8 @@ describe('Section', () => {
 
   describe('Static', () => {
     it('Comparison is correct', () => {
-      const a = new Section('a', SectionPosition.Body);
-      const b = new Section('b', SectionPosition.Body);
+      const a = new Section({ name: 'a', position: SectionPosition.Body });
+      const b = new Section({ name: 'b', position: SectionPosition.Body });
 
       a.add(commit);
       b.add(message);
@@ -53,8 +53,8 @@ describe('Section', () => {
     });
 
     it('Sections is filtered', () => {
-      const a = new Section('a', SectionPosition.Body);
-      const b = new Section('b', SectionPosition.Subsection);
+      const a = new Section({ name: 'a', position: SectionPosition.Body });
+      const b = new Section({ name: 'b', position: SectionPosition.Subsection });
 
       b.add(commit);
       expect(Section.filter(a)).toBeFalsy();
@@ -84,7 +84,7 @@ describe('Section', () => {
     });
 
     it('Entities are added and removed from the section', () => {
-      const subsection = new Section('title', SectionPosition.Body);
+      const subsection = new Section({ name: 'title', position: SectionPosition.Body });
 
       section.add(subsection);
       expect(section.sections).toStrictEqual([subsection]);
@@ -131,7 +131,7 @@ describe('Section', () => {
     });
 
     it('Relations between subsections are built correctly', () => {
-      const subsection = new Section(faker.lorem.word(), SectionPosition.Body);
+      const subsection = new Section({ name: faker.lorem.word(), position: SectionPosition.Body });
       const relations: Map<string, Section> = new Map();
 
       section.add(commit);

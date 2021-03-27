@@ -42,7 +42,7 @@ describe('Config', () => {
       ['revert', 'patch'],
     ]);
     expect(config.exclusions).toMatchObject([
-      ['authorLogin', ['dependabot-preview[bot]']],
+      ['authorLogin', ['dependabot[bot]', 'dependabot-preview[bot]']],
       ['commitType', ['build']],
       ['commitScope', ['deps', 'deps-dev']],
       ['commitSubject', ['merge']],

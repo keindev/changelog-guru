@@ -89,7 +89,7 @@ export default class Builder {
     const sections = section.sections.filter(Section.filter);
     const commits = section.commits.filter(Commit.filter);
     const messages = section.messages.filter(Message.filter);
-    const output = section.isDetails ? [md.summary(section.name)] : [md.title(section.name, level)];
+    const output = section.isDetails ? [md.summary(section.title)] : [md.title(section.title, level)];
 
     if (messages.length) output.push(...messages.map(message => message.text), '');
     if (sections.length) output.push(...sections.map(subsection => this.renderSection(subsection, level + 1)));

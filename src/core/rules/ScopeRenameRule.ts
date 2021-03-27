@@ -5,6 +5,7 @@ const MIN_SCOPE_SHORTNAME_LENGTH = 2;
 
 export interface IScopeRenameRuleConfig extends IRuleConfig {
   onlyPresented: boolean;
+  patterns: string[];
   names: {
     [key: string]: string;
   };
@@ -29,7 +30,9 @@ export default class ScopeRenameRule extends BaseRule<IScopeRenameRuleConfig> im
         const actualName = findSame(name, [...this.#names.keys()]);
         const accent = actualName ? this.#names.get(actualName) : undefined;
 
-        if (accent || (!this.#onlyPresented && name.length)) commit.accent((accent || name).trim());
+        if (accent || (!this.#onlyPresented && name.length)) {
+          commit.accent((accent || name).trim());
+        }
       });
     }
   }
