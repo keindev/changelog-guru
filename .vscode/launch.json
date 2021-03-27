@@ -12,7 +12,13 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "generate"],
+      "runtimeArgs": [
+        "--nolazy",
+        "--inspect-brk=9229",
+        "node_modules/ts-node/dist/bin-script.js",
+        "src/cli/bin.ts",
+        "generate"
+      ],
       "port": 9229
     },
     {
@@ -23,7 +29,15 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "lint", "--message", "'.git/COMMIT_EDITMSG'"],
+      "runtimeArgs": [
+        "--nolazy",
+        "--inspect-brk=9229",
+        "node_modules/ts-node/dist/bin-script.js",
+        "src/cli/bin.ts",
+        "lint",
+        "--message",
+        "'.git/COMMIT_EDITMSG'"
+      ],
       "port": 9229
     },
     {
