@@ -5,7 +5,7 @@ import { Exclusion } from './Config';
 import Author, { IAuthor } from './entities/Author';
 import Commit, { ICommit } from './entities/Commit';
 import { ChangeLevel } from './entities/Entity';
-import Section, { ISection, SectionOrder, SectionPosition } from './entities/Section';
+import Section, { ISection, ISectionOptions, SectionOrder, SectionPosition } from './entities/Section';
 import { Dependency, IPackageChange, Restriction } from './Package';
 import { IRule, IRuleContext } from './rules/BaseRule';
 
@@ -91,11 +91,12 @@ export default class State implements IRuleContext {
     });
   }
 
-  addSection(name: string, position = SectionPosition.Group, order = SectionOrder.Default): ISection | undefined {
+  addSection(options: ISectionOptions): ISection | undefined {
+    const { name, position = SectionPosition.Group, order = SectionOrder.Default, emoji } = options;
     let section = this.findSection(name);
 
     if (!section && unify(name)) {
-      this.#sections.push((section = new Section(name, position, order)));
+      this.#sections.push((section = new Section({ name, position, order, emoji })));
     }
 
     return section;
@@ -145,7 +146,7 @@ export default class State implements IRuleContext {
 
     this.#sections = sections.filter(section => Section.filter(section) && !section.isSubsection).sort(Section.compare);
 
-    subtask.complete('Section tree is consistently');
-    task.complete('Release status modified');
+    subtask.complete();
+    task.complete('Release status modified', true);
   }
 }

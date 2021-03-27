@@ -4,7 +4,7 @@ import * as md from '../../utils/markdown';
 
 import { ChangeLevel } from '../entities/Entity';
 import Message from '../entities/Message';
-import Section, { SectionOrder, SectionPosition } from '../entities/Section';
+import Section, { ISection, SectionOrder, SectionPosition } from '../entities/Section';
 import { Dependency, DependencyChangeType, IPackageChange, Restriction } from '../Package';
 import { BaseRule, IRule, IRuleConfig, IRuleModifyOptions } from './BaseRule';
 
@@ -24,7 +24,7 @@ export interface IPackageStatisticRenderRuleConfig extends IRuleConfig {
   sections: (Dependency | Restriction)[];
 }
 
-const SUBTITLES_MAP = {
+const SECTION_TITLES_MAP = {
   [Dependency.Engines]: 'Engines',
   [Dependency.Dependencies]: 'Dependencies',
   [Dependency.DevDependencies]: 'Dev Dependencies',
@@ -34,6 +34,14 @@ const SUBTITLES_MAP = {
   [Restriction.CPU]: 'CPU',
   [Restriction.OS]: 'OS',
 };
+
+const COLLAPSIBLE_SECTIONS_MAP = [
+  Dependency.Dependencies,
+  Dependency.DevDependencies,
+  Dependency.OptionalDependencies,
+  Dependency.PeerDependencies,
+  Restriction.BundledDependencies,
+];
 
 export default class PackageStatisticRenderRule extends BaseRule<IPackageStatisticRenderRuleConfig> implements IRule {
   #sections: (Dependency | Restriction)[] = [];
@@ -49,41 +57,53 @@ export default class PackageStatisticRenderRule extends BaseRule<IPackageStatist
   }
 
   modify({ task, context }: IRuleModifyOptions): void {
-    const section = context.addSection(this.config.title, SectionPosition.Header);
+    const section = context.addSection({ name: this.config.title, position: SectionPosition.Header });
+    const dependencies = new Section({
+      name: 'Dependencies',
+      position: SectionPosition.Subsection,
+      order: this.#sections.length,
+    });
 
     if (section) {
       section.order = SectionOrder.Min;
-
-      if (context.hasChangedLicense) {
-        const subsection = new Section('License', SectionPosition.Subsection);
-        const { currentLicense, previousLicense } = context;
-        const message = previousLicense
-          ? `License changed from ${md.license(previousLicense)} to ${md.license(currentLicense)}.`
-          : `Source code now under ${md.wrap(currentLicense)} license.`;
-
-        task.warn(`License changed from {bold.underline ${previousLicense}} to {bold.underline ${currentLicense}}.`);
-        subsection.add(new Message(message, ChangeLevel.Major));
-        section.add(subsection);
-      }
+      this.createLicenseSection({ context, task, section });
 
       [...this.#sections.values()].forEach((type, order) => {
         const changes = context.getChanges(type);
 
         if (changes?.length) {
-          const text = this.render(changes, task);
+          const text = this.renderChanges(changes, task);
 
           if (text) {
-            const subsection = new Section(SUBTITLES_MAP[type], SectionPosition.Subsection, order);
+            const isDetails = COLLAPSIBLE_SECTIONS_MAP.includes(type);
+            const position = isDetails ? SectionPosition.Details : SectionPosition.Subsection;
+            const subsection = new Section({ name: SECTION_TITLES_MAP[type], position, order });
 
             subsection.add(new Message(text));
-            section.add(subsection);
+            (isDetails ? dependencies : section).add(subsection);
           }
         }
       });
+
+      if (dependencies.sections.length) section.add(dependencies);
     }
   }
 
-  private render(changes: IPackageChange[], task: Task): string {
+  private createLicenseSection({ task, context, section }: IRuleModifyOptions & { section: ISection }): void {
+    if (context.hasChangedLicense) {
+      const subsection = new Section({ name: 'License', position: SectionPosition.Subsection });
+      const { currentLicense, previousLicense } = context;
+      const message = previousLicense
+        ? `License changed from ${md.license(previousLicense)} to ${md.license(currentLicense)}.`
+        : `Source code now under ${md.wrap(currentLicense)} license.`;
+
+      task.warn(`License changed from {bold.underline ${previousLicense}} to {bold.underline ${currentLicense}}.`);
+      subsection.add(new Message(message, ChangeLevel.Major));
+      section.add(subsection);
+    }
+  }
+
+  private renderChanges(changes: IPackageChange[], task: Task): string {
     return this.#templates.reduce((acc, [type, template]) => {
       const items = changes
         .filter(change => change.type === type)

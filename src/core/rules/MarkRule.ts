@@ -48,8 +48,12 @@ export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule
 
   prepare({ context }: IRulePrepareOptions): void {
     this.#sections = new Map(
-      Object.entries(this.config.joins).reduce((acc: [MarkerType, ISection][], [type, title]) => {
-        const section = context.addSection(title, POSITIONS_MAP[type] ?? SectionPosition.None, SectionOrder.Min);
+      Object.entries(this.config.joins).reduce((acc: [MarkerType, ISection][], [type, name]) => {
+        const section = context.addSection({
+          name,
+          position: POSITIONS_MAP[type] ?? SectionPosition.None,
+          order: SectionOrder.Min,
+        });
 
         if (section) {
           this.#markers.add(type as MarkerType);
@@ -68,9 +72,9 @@ export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule
     commit.isIgnored = !!markers.find(([marker]) => marker === MarkerType.Ignore);
 
     if (!commit.isIgnored) {
-      markers.forEach(([marker, value]) => {
+      markers.forEach(([marker, name]) => {
         if (COMMIT_CHANGE_TYPES_MAP[marker]) commit.changeType = COMMIT_CHANGE_TYPES_MAP[marker] as CommitChangeType;
-        if (marker === MarkerType.Grouped && value && context) section = context.addSection(value);
+        if (marker === MarkerType.Grouped && name && context) section = context.addSection({ name });
         if ((section = section || this.#sections.get(marker))) section.add(commit);
       });
     }

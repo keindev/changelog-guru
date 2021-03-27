@@ -5,7 +5,7 @@ import * as md from '../utils/markdown';
 
 import { findSame } from '../utils/text';
 import { Config, GitServiceProvider } from './Config';
-import Commit from './entities/Commit';
+import Commit, { ICommit } from './entities/Commit';
 import Message from './entities/Message';
 import Section, { ISection } from './entities/Section';
 import Package, { Dependency, Restriction } from './Package';
@@ -74,7 +74,7 @@ export default class Builder {
     if (this.#state) {
       const { sections, authors, changesLevels } = this.#state;
       const task = TaskTree.add('Writing new changelog...');
-      const data = sections.map(subsection => this.render(subsection));
+      const data = sections.map(subsection => this.renderSection(subsection));
       const filePath = path.resolve(process.cwd(), this.#config.filePath);
 
       data.push(md.contributors(authors.map(({ name, avatar, url }) => md.image(name, avatar, url))), '');
@@ -85,42 +85,45 @@ export default class Builder {
     }
   }
 
-  private render(section: ISection, level = 1): string {
+  private renderSection(section: ISection, level = 1): string {
     const sections = section.sections.filter(Section.filter);
     const commits = section.commits.filter(Commit.filter);
     const messages = section.messages.filter(Message.filter);
-    const output = [md.title(section.name, level)];
-    const groups = new Map<string, { subject: string; accents: Set<string>; links: string[] }>();
+    const output = section.isDetails ? [md.summary(section.title)] : [md.title(section.title, level)];
 
     if (messages.length) output.push(...messages.map(message => message.text), '');
-    if (sections.length) output.push(...sections.map(subsection => this.render(subsection, level + 1)));
+    if (sections.length) output.push(...sections.map(subsection => this.renderSection(subsection, level + 1)));
     if (sections.length && commits.length) output.push(md.title('Others', level + 1));
-    if (commits.length) {
-      commits.forEach(commit => {
-        const subject = findSame(commit.subject, [...groups.keys()]) ?? commit.subject;
-        const { accents, links } = groups.get(subject) ?? { subject, accents: new Set(), links: [] };
+    if (commits.length) output.push(...this.renderCommits(commits));
 
-        commit.accents.forEach(accent => accents.add(accent));
-        links.push(md.commit(commit.shortName, commit.url));
-        groups.set(commit.subject, { subject, accents, links });
-      });
+    return section.isDetails ? md.details(output.join('\n')) : output.join('\n');
+  }
 
-      output.push(
-        ...[...groups.values()].map(({ subject, accents, links }) =>
-          md.list(
-            [
-              accents.size ? md.strong(`[${[...accents.values()].map(md.capitalize).join(', ')}]`) : '',
-              md.capitalize(subject),
-              ...links,
-            ]
-              .filter(Boolean)
-              .join(' ')
-          )
-        ),
-        ''
-      );
-    }
+  private renderCommits(commits: ICommit[]): string[] {
+    const groups = new Map<string, { subject: string; accents: Set<string>; links: string[] }>();
 
-    return output.join('\n');
+    commits.forEach(commit => {
+      const subject = findSame(commit.subject, [...groups.keys()]) ?? commit.subject;
+      const { accents, links } = groups.get(subject) ?? { subject, accents: new Set(), links: [] };
+
+      commit.accents.forEach(accent => accents.add(accent));
+      links.push(md.commit(commit.shortName, commit.url));
+      groups.set(commit.subject, { subject, accents, links });
+    });
+
+    return [
+      ...[...groups.values()].map(({ subject, accents, links }) =>
+        md.list(
+          [
+            accents.size ? md.strong(`[${[...accents.values()].map(md.capitalize).join(', ')}]`) : '',
+            md.capitalize(subject),
+            ...links,
+          ]
+            .filter(Boolean)
+            .join(' ')
+        )
+      ),
+      '',
+    ];
   }
 }

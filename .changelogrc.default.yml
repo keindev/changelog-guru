@@ -46,7 +46,7 @@ output:
     # One way to filter output by ignoring commits with a given type, scope, subject, or from certain authors
     exclude:
         # Excludes authors with the listed logins from the output file
-        authorLogin: ['dependabot-preview[bot]']
+        authorLogin: ['dependabot[bot]', 'dependabot-preview[bot]']
         # Excludes commits with the listed types from the output file
         commitType: ['build']
         # Excludes commits with the listed scopes from the output file
@@ -85,7 +85,7 @@ rules:
     # Displays information about changes to package.json in the change log
     package:
         # Main section title
-        title: Important Changes
+        title: "Important Changes"
         # The change message templates
         templates:
             # Template for added Dependencies
@@ -123,10 +123,24 @@ rules:
             dts: TypeScript Declaration Improvements
     # Distributes commits with the specified types into sections
     section:
-        Features: [feat]
-        Improvements: [improve]
-        Bug Fixes: [fix]
-        Internal changes: [types, workflow, build, test, chore, docs]
-        Performance Improvements: [perf]
-        Code Refactoring: [refactor]
-        Reverts: [revert]
+        Features:
+          emoji: ':tada:'
+          types: [feat]
+        Improvements:
+          emoji: ':fire:'
+          types: [improve]
+        Bug Fixes:
+          emoji: ':bug:'
+          types: [fix]
+        Internal changes:
+          emoji: ':memo:'
+          types: [types, workflow, build, test, chore, docs]
+        Performance Improvements:
+          emoji: ':zap:'
+          types: [perf]
+        Code Refactoring:
+          emoji: ':wrench:'
+          types: [refactor]
+        Reverts:
+          emoji: ':recycle:'
+          types: [revert]

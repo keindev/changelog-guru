@@ -56,8 +56,8 @@ describe('State', () => {
       timestamp: 0,
       url: faker.internet.url(),
     });
-    const section1 = state.addSection('header section', SectionPosition.Header) as ISection;
-    const section2 = state.addSection('empty section', SectionPosition.Footer) as ISection;
+    const section1 = state.addSection({ name: 'header section', position: SectionPosition.Header }) as ISection;
+    const section2 = state.addSection({ name: 'empty section', position: SectionPosition.Footer }) as ISection;
 
     expect(section1).toBeDefined();
     expect(section2).toBeDefined();
@@ -90,7 +90,7 @@ describe('State', () => {
   });
 
   it('Create sections', () => {
-    const section = state.addSection('header section', SectionPosition.Header);
+    const section = state.addSection({ name: 'header section', position: SectionPosition.Header });
 
     expect(section).toBeDefined();
     expect(state.findSection('header section')).toStrictEqual(section);

@@ -5,10 +5,11 @@ import Message, { IMessage } from './Message';
 export enum SectionPosition {
   None = 0,
   Subsection = 1,
-  Group = 2,
-  Footer = 3,
-  Body = 4,
-  Header = 5,
+  Details = 2,
+  Group = 3,
+  Footer = 4,
+  Body = 5,
+  Header = 6,
 }
 
 export enum SectionOrder {
@@ -18,10 +19,12 @@ export enum SectionOrder {
 }
 
 export interface ISection extends IEntity {
+  readonly title: string;
   readonly sections: ISection[];
   readonly commits: ICommit[];
   readonly messages: IMessage[];
   readonly isSubsection: boolean;
+  readonly isDetails: boolean;
   readonly isGroup: boolean;
   readonly isEmpty: boolean;
 
@@ -33,16 +36,25 @@ export interface ISection extends IEntity {
   assign(relations: Map<string, ISection>, type?: SectionPosition.Subsection): void;
 }
 
+export interface ISectionOptions {
+  name: string;
+  position?: SectionPosition;
+  order?: number;
+  emoji?: string;
+}
+
 export default class Section extends Entity implements ISection {
   #order: number;
+  #emoji: string | undefined;
   #position: SectionPosition;
   #entities = new Map<string, IEntity>();
 
-  constructor(title: string, position: SectionPosition, order: number = SectionOrder.Default) {
-    super(title);
+  constructor({ name, position, order, emoji }: ISectionOptions) {
+    super(name);
 
-    this.#order = order;
-    this.#position = position;
+    this.#order = order ?? SectionOrder.Default;
+    this.#emoji = emoji;
+    this.#position = position ?? SectionPosition.None;
   }
 
   static compare(a: ISection, b: ISection): Compare {
@@ -51,6 +63,10 @@ export default class Section extends Entity implements ISection {
     if (result === Compare.Equal) result = a.name.localeCompare(b.name);
 
     return Math.min(Math.max(result, Compare.Less), Compare.More);
+  }
+
+  get title(): string {
+    return this.#emoji ? `${this.#emoji} ${this.name}` : this.name;
   }
 
   get sections(): ISection[] {
@@ -97,6 +113,10 @@ export default class Section extends Entity implements ISection {
     return this.position === SectionPosition.Subsection;
   }
 
+  get isDetails(): boolean {
+    return this.position === SectionPosition.Details;
+  }
+
   get isGroup(): boolean {
     return this.position === SectionPosition.Group;
   }
@@ -109,7 +129,7 @@ export default class Section extends Entity implements ISection {
     if (!this.#entities.has(entity.name)) {
       this.#entities.set(entity.name, entity);
 
-      if (entity instanceof Section) entity.position = SectionPosition.Subsection;
+      if (entity instanceof Section && !entity.isDetails) entity.position = SectionPosition.Subsection;
     }
   }
 

@@ -3,6 +3,7 @@ import { coerce, inc, SemVer } from 'semver';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { Config } from '../../core/Config';
+import { ISection } from '../../core/entities/Section';
 import { Dependency, DependencyChangeType } from '../../core/Package';
 import PackageStatisticRenderRule from '../../core/rules/PackageStatisticRenderRule';
 import State from '../../core/State';
@@ -36,13 +37,13 @@ describe('Package statistic rule', () => {
     rule.modify({ task, context });
 
     const section = context.findSection('Important Changes');
+    const render = (items: ISection[]): string[][][] =>
+      items.map(item =>
+        [item.messages.map(message => [item.name, message.level, message.text]), ...render(item.sections)].flat()
+      );
 
     expect(section).toBeDefined();
-    expect(
-      (section?.sections ?? []).map(({ messages, ...others }) =>
-        messages.map(message => [others.name, message.level, message.text])
-      )
-    ).toMatchObject([
+    expect(render(section?.sections ?? [])).toMatchObject([
       [['License', 'major', `Source code now under \`${license}\` license.`]],
       [
         [

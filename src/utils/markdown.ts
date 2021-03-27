@@ -17,3 +17,5 @@ export const list = (text: string): string => `- ${capitalize(text)}`;
 export const strong = (text: string): string => `**${text}**`;
 export const title = (text: string, level = 1): string => `${header(level)} ${capitalize(text)}\n`;
 export const wrap = (text?: SemVer | string): string => `\`${text}\``;
+export const summary = (text: string): string => `<summary>${text}</summary>\n`;
+export const details = (text: string): string => `<details>\n${text}\n</details>\n`;
