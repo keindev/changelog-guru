@@ -1,37 +1,139 @@
-name: "Build"
-on:
-  push:
-    branches:
-      - '*'
-      - '*/*'
-      - '!master'
+name: Build
+
+on: [push, pull_request]
+
+env:
+  node-lts: 14.x
+  node-current: 15.x
 
 jobs:
+  triage-labels:
+    name: Add labels
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/labeler@main
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
   test:
+    name: Test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [14.x, 15.x]
+        node-version: ['${{env.node-lts}}', '${{ env.node-current }}']
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm test
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js v${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache node modules
+      id: cache-npm
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: npm-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install Dependencies
+      if: steps.cache-npm.outputs.cache-hit != 'true'
+      run: npm ci
+
+    - name: Lint and test
+      run: |
+        npm run check
+        npm run test
+
+    - name: Cache coverage
+      if: ${{ success() && matrix.node-version == env.node-current }}
+      uses: actions/cache@v2
+      with:
+        path: coverage
+        key: coverage-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('src/**/*.*', 'jest.config.js', '**/package-lock.json') }}
 
   build:
+    name: Build
+    needs: [test]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [15.x]
+        node-version: ['${{ env.node-current }}']
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run build:ts
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache node modules
+      id: cache-npm
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: npm-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install Dependencies
+      if: steps.cache-npm.outputs.cache-hit != 'true'
+      run: npm ci
+
+    - name: Build
+      run: npm run build
+
+  coverage:
+    name: Coverage
+    if: ${{ github.event_name == 'push' }}
+    needs: [build]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['${{ env.node-current }}']
+    steps:
+    - name: Cache coverage
+      id: cache-coverage
+      uses: actions/cache@v2
+      with:
+        path: coverage
+        key: coverage-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('src/**/*.*', 'jest.config.js', '**/package-lock.json') }}
+
+    - name: Checkout repository
+      if: steps.cache-coverage.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js v${{ matrix.node-version }}
+      if: steps.cache-coverage.outputs.cache-hit != 'true'
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Cache node modules
+      if: steps.cache-coverage.outputs.cache-hit != 'true'
+      id: cache-npm
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: npm-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
+    - name: Install Dependencies
+      if: steps.cache-coverage.outputs.cache-hit != 'true' && steps.cache-npm.outputs.cache-hit != 'true'
+      run: npm ci
+
+    - name: Test
+      if: steps.cache-coverage.outputs.cache-hit != 'true'
+      run: npm run test
+
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage/lcov.info
+
+
+
+
+
+
