@@ -145,7 +145,7 @@ export default class State implements IRuleContext {
 
     this.#sections = sections.filter(section => Section.filter(section) && !section.isSubsection).sort(Section.compare);
 
-    subtask.complete('Section tree is consistently');
-    task.complete('Release status modified');
+    subtask.complete();
+    task.complete('Release status modified', true);
   }
 }

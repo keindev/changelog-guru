@@ -138,8 +138,12 @@ export default class Package {
         if (version) {
           const prevValue = prevDeps.get(name);
           const prevVersion = coerce(prevValue) ?? undefined;
-          const type = prevVersion ? VERSION_CHANGES_MAP[compare(version, prevVersion)] : DependencyChangeType.Added;
           const link = getLink(property, name, version.version);
+          let type = prevVersion ? VERSION_CHANGES_MAP[compare(version, prevVersion)] : DependencyChangeType.Added;
+
+          if (type === DependencyChangeType.Unchanged && value !== prevValue) {
+            type = DependencyChangeType.Changed;
+          }
 
           changes.push({ name, value, type, version, link, prevValue, prevVersion });
           prevDeps.delete(name);

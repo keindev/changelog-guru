@@ -24,7 +24,7 @@ export interface IPackageStatisticRenderRuleConfig extends IRuleConfig {
   sections: (Dependency | Restriction)[];
 }
 
-const SUBTITLES_MAP = {
+const SECTION_TITLES_MAP = {
   [Dependency.Engines]: 'Engines',
   [Dependency.Dependencies]: 'Dependencies',
   [Dependency.DevDependencies]: 'Dev Dependencies',
@@ -34,6 +34,14 @@ const SUBTITLES_MAP = {
   [Restriction.CPU]: 'CPU',
   [Restriction.OS]: 'OS',
 };
+
+const COLLAPSIBLE_SECTIONS_MAP = [
+  Dependency.Dependencies,
+  Dependency.DevDependencies,
+  Dependency.OptionalDependencies,
+  Dependency.PeerDependencies,
+  Restriction.BundledDependencies,
+];
 
 export default class PackageStatisticRenderRule extends BaseRule<IPackageStatisticRenderRuleConfig> implements IRule {
   #sections: (Dependency | Restriction)[] = [];
@@ -50,6 +58,7 @@ export default class PackageStatisticRenderRule extends BaseRule<IPackageStatist
 
   modify({ task, context }: IRuleModifyOptions): void {
     const section = context.addSection(this.config.title, SectionPosition.Header);
+    const dependencies = new Section('Dependencies', SectionPosition.Subsection, this.#sections.length);
 
     if (section) {
       section.order = SectionOrder.Min;
@@ -73,13 +82,17 @@ export default class PackageStatisticRenderRule extends BaseRule<IPackageStatist
           const text = this.render(changes, task);
 
           if (text) {
-            const subsection = new Section(SUBTITLES_MAP[type], SectionPosition.Subsection, order);
+            const isDetails = COLLAPSIBLE_SECTIONS_MAP.includes(type);
+            const position = isDetails ? SectionPosition.Details : SectionPosition.Subsection;
+            const subsection = new Section(SECTION_TITLES_MAP[type], position, order);
 
             subsection.add(new Message(text));
-            section.add(subsection);
+            (isDetails ? dependencies : section).add(subsection);
           }
         }
       });
+
+      if (dependencies.sections.length) section.add(dependencies);
     }
   }
 

@@ -5,10 +5,11 @@ import Message, { IMessage } from './Message';
 export enum SectionPosition {
   None = 0,
   Subsection = 1,
-  Group = 2,
-  Footer = 3,
-  Body = 4,
-  Header = 5,
+  Details = 2,
+  Group = 3,
+  Footer = 4,
+  Body = 5,
+  Header = 6,
 }
 
 export enum SectionOrder {
@@ -22,6 +23,7 @@ export interface ISection extends IEntity {
   readonly commits: ICommit[];
   readonly messages: IMessage[];
   readonly isSubsection: boolean;
+  readonly isDetails: boolean;
   readonly isGroup: boolean;
   readonly isEmpty: boolean;
 
@@ -97,6 +99,10 @@ export default class Section extends Entity implements ISection {
     return this.position === SectionPosition.Subsection;
   }
 
+  get isDetails(): boolean {
+    return this.position === SectionPosition.Details;
+  }
+
   get isGroup(): boolean {
     return this.position === SectionPosition.Group;
   }
@@ -109,7 +115,7 @@ export default class Section extends Entity implements ISection {
     if (!this.#entities.has(entity.name)) {
       this.#entities.set(entity.name, entity);
 
-      if (entity instanceof Section) entity.position = SectionPosition.Subsection;
+      if (entity instanceof Section && !entity.isDetails) entity.position = SectionPosition.Subsection;
     }
   }
 
