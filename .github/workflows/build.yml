@@ -95,7 +95,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: coverage
-        key: coverage-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('src/**/*.*', 'jest.config.js', '**/package-lock.json') }}
+        key: coverage-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('src/**/*.*', 'jest.config.js', '**/package-lock.json') }}
 
     - name: Checkout repository
       if: steps.cache-coverage.outputs.cache-hit != 'true'
@@ -115,13 +115,11 @@ jobs:
         path: ~/.npm
         key: npm-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
-    - name: Install Dependencies
-      if: steps.cache-coverage.outputs.cache-hit != 'true' && steps.cache-npm.outputs.cache-hit != 'true'
-      run: npm ci
-
     - name: Test
       if: steps.cache-coverage.outputs.cache-hit != 'true'
-      run: npm run test
+      run: |
+        npm ci
+        npm run test
 
     - uses: codecov/codecov-action@v1
       with:
