@@ -5,7 +5,6 @@ const MIN_SCOPE_SHORTNAME_LENGTH = 2;
 
 export interface IScopeRenameRuleConfig extends IRuleConfig {
   onlyPresented: boolean;
-  patterns: string[];
   names: {
     [key: string]: string;
   };
