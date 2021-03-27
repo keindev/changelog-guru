@@ -36,7 +36,6 @@ jobs:
         key: npm-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
     - name: Install Dependencies
-      if: steps.cache-npm.outputs.cache-hit != 'true'
       run: npm ci
 
     - name: Lint and test
@@ -75,7 +74,6 @@ jobs:
         key: npm-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
     - name: Install Dependencies
-      if: steps.cache-npm.outputs.cache-hit != 'true'
       run: npm ci
 
     - name: Build
