@@ -57,6 +57,14 @@ export interface IPackageChange {
   prevVersion?: SemVer;
 }
 
+export interface IPackageBumpOptions {
+  major: number;
+  minor: number;
+  patch: number;
+  branch: string;
+  version?: string;
+}
+
 export default class Package {
   #version?: SemVer;
   #data: PackageJson;
@@ -94,26 +102,29 @@ export default class Package {
     return this.#version?.version ?? '';
   }
 
-  async bump(major: number, minor: number, patch: number, currentVersion?: SemVer): Promise<void> {
+  async bump({ major, minor, patch, branch, version }: IPackageBumpOptions): Promise<void> {
     const task = TaskTree.add('Updating package version');
-    let version: string | null | undefined;
 
     if (this.#version) {
-      if (currentVersion && compare(currentVersion, this.#version)) {
+      if (version && compare(version, this.#version)) {
         task.skip(
-          `Package version is already changed from {bold ${currentVersion.version}} to {bold ${this.#version.version}}`
+          `Package version is already changed from {bold ${version}(${branch})} to {bold ${
+            this.#version.version
+          }(current state)}`
         );
       } else {
-        if (major) version = inc(this.#version, 'major');
-        if (!major && minor) version = inc(this.#version, 'minor');
-        if (!major && !minor && patch) version = inc(this.#version, 'patch');
+        let nextVersion: string | null | undefined;
 
-        if (version) {
-          this.#data.version = version;
-          this.#version = coerce(version) ?? undefined;
+        if (major) nextVersion = inc(this.#version, 'major');
+        if (!major && minor) nextVersion = inc(this.#version, 'minor');
+        if (!major && !minor && patch) nextVersion = inc(this.#version, 'patch');
+
+        if (nextVersion) {
+          this.#data.version = nextVersion;
+          this.#version = coerce(nextVersion) ?? undefined;
 
           await writePkg({ ...(this.#data as { [key: string]: string }) });
-          task.complete(`Package version updated to {bold ${version}}`);
+          task.complete(`Package version updated to {bold ${nextVersion}}`);
         } else {
           task.fail('New package version is invalid or less (see https://semver.org/)');
         }
@@ -133,10 +144,10 @@ export default class Package {
     const prevDeps = new Map(Object.entries(dependencies));
 
     if (currDeps) {
-      const getLink = (type: Dependency, name: string, ver?: string): string | undefined => {
-        const link = `https://www.npmjs.com/package/${name}/v/${ver}`;
+      const getLink = (type: Dependency, name: string, version?: string): string | undefined => {
+        const link = `https://www.npmjs.com/package/${name}/v/${version}`;
 
-        return type !== Dependency.Engines && ver ? link : undefined;
+        return type !== Dependency.Engines && version ? link : undefined;
       };
 
       Object.entries(currDeps).forEach(([name, value]) => {

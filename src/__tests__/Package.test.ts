@@ -20,7 +20,7 @@ describe('Package', () => {
     it('Bump package version', async () => {
       const version = semver.valid(pkg.version) as string;
 
-      await pkg.bump(1, 1, 99);
+      await pkg.bump({ major: 1, minor: 1, patch: 99, branch: 'dev' });
 
       expect(semver.major(pkg.version)).toBeGreaterThan(semver.major(version));
       expect(semver.minor(pkg.version)).toBe(0);

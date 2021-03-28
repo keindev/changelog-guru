@@ -55,7 +55,6 @@ describe('Builder', () => {
       return Promise.resolve();
     });
 
-    await config.init();
     await builder.build();
 
     expect(output).toMatchSnapshot();

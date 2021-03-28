@@ -53,6 +53,7 @@ export class Config {
   #exclusions: [Exclusion, string[]][] = [];
   #types: [string, ChangeLevel][] = [];
   #rules: IRule[] = [];
+  #isInitialized = false;
 
   constructor(options?: IConfigOptions) {
     if (options?.provider && !Object.values(GitServiceProvider).includes(options.provider)) {
@@ -91,31 +92,35 @@ export class Config {
   }
 
   async init(): Promise<void> {
-    const task = TaskTree.add('Reading configuration file...');
-    const explorer = cosmiconfig('changelog-guru');
-    const baseConf = await explorer.load(path.join(__dirname, '../../.changelogrc.default.yml'));
-    const userConf = await explorer.search();
+    if (!this.#isInitialized) {
+      const task = TaskTree.add('Reading configuration file...');
+      const explorer = cosmiconfig('changelog-guru');
+      const baseConf = await explorer.load(path.join(__dirname, '../../.changelogrc.default.yml'));
+      const userConf = await explorer.search();
 
-    if (baseConf?.config && !baseConf.isEmpty) {
-      const config = deepmerge<IChangelogConfig>(baseConf.config, userConf?.config ?? {});
+      if (baseConf?.config && !baseConf.isEmpty) {
+        const config = deepmerge<IChangelogConfig>(baseConf.config, userConf?.config ?? {});
+        const filePath = path.relative(process.cwd(), userConf?.filepath ?? baseConf.filepath);
 
-      task.log(`Config file: {bold ${path.relative(process.cwd(), userConf?.filepath ?? baseConf.filepath)}}`);
-      task.complete('Configuration initialized with:');
+        this.#types = this.getTypes(config.changes);
+        this.#rules = this.getRules(config.rules);
+        this.#provider = this.#options?.provider ?? config.provider;
+        this.#branch = this.#options?.branch ?? config.branch;
+        this.#filePath = this.#options?.output ?? config.output.filePath;
+        this.#exclusions = Object.entries(config.output.exclude ?? {}).map(([name, rules]) => {
+          if (!Object.values(Exclusion).includes(name as Exclusion)) {
+            task.fail(`Unexpected exclusion name: {bold ${name}}`);
+          }
 
-      this.#types = this.getTypes(config.changes);
-      this.#rules = this.getRules(config.rules);
-      this.#provider = this.#options?.provider ?? config.provider;
-      this.#branch = this.#options?.branch ?? config.branch;
-      this.#filePath = this.#options?.output ?? config.output.filePath;
-      this.#exclusions = Object.entries(config.output.exclude ?? {}).map(([name, rules]) => {
-        if (!Object.values(Exclusion).includes(name as Exclusion)) {
-          TaskTree.fail(`Unexpected exclusion name: {bold ${name}}`);
-        }
+          return [name as Exclusion, [...new Set(rules)]];
+        });
 
-        return [name as Exclusion, [...new Set(rules)]];
-      });
+        task.complete(`Configuration initialized: {bold ${filePath}}`);
+      } else {
+        task.fail('Default configuration file not found');
+      }
     } else {
-      task.fail('Default configuration file not found');
+      this.#isInitialized = true;
     }
   }
 

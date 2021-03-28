@@ -128,7 +128,7 @@ export default class State implements IRuleContext {
   }
 
   modify(rules: IRule[]): void {
-    const task = TaskTree.add('Modifying release state...');
+    const task = TaskTree.add('Formate changelog structure...');
 
     rules.forEach(rule => rule.prepare && rule.prepare({ context: this }));
     rules.forEach(rule => {
@@ -147,6 +147,6 @@ export default class State implements IRuleContext {
     this.#sections = sections.filter(section => Section.filter(section) && !section.isSubsection).sort(Section.compare);
 
     subtask.complete();
-    task.complete('Release status modified', true);
+    task.complete('Changelog structure is formate!', true);
   }
 }

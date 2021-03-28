@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { coerce } from 'semver';
 import { TaskTree } from 'tasktree-cli';
 import * as md from '../utils/markdown';
 
@@ -24,36 +23,27 @@ export default class Builder {
   #config: Config;
   #package: Package;
   #state?: State;
-  #provider: IGitProvider;
 
   constructor(config: Config) {
     this.#config = config;
     this.#package = new Package();
-    this.#provider = new PROVIDERS_MAP[this.#config.provider](this.#package.repository, this.#config.branch);
   }
 
   async build(): Promise<void> {
-    await this.read();
+    await this.#config.init();
 
-    if (this.#state) {
-      this.#state.updateCommitsChangeLevel(this.#config.types);
-      this.#state.ignore(this.#config.exclusions);
-      await this.#state.modify(this.#config.rules);
-      await this.write();
+    const provider = new PROVIDERS_MAP[this.#config.provider](this.#package.repository, this.#config.branch);
 
-      if (this.#config.bump) await this.#package.bump(...this.#state.changesLevels);
-    }
+    await this.read(provider);
+    await this.write(provider);
   }
 
-  private async read(): Promise<void> {
-    const stage = TaskTree.add('Loading a release state...');
-    const task = stage.add('Loading repository changes...');
-    const date = await this.#provider.getLastChangeDate();
-    const commits = await this.#provider.getCommits(date);
-    const previousPackage = await this.#provider.getPreviousPackage(date);
+  private async read(provider: IGitProvider): Promise<void> {
+    const stage = TaskTree.add('Loading repository changes...');
+    const date = await provider.getLastChangeDate();
+    const commits = await provider.getCommits(date);
+    const previousPackage = await provider.getPreviousPackage(date);
     const state = new State(this.#package.license, previousPackage.license);
-
-    stage.log(`Main branch last changes date: {bold ${date}}`);
 
     [...Object.values(Dependency), ...Object.values(Restriction)].forEach(name => {
       const previousValues = previousPackage[name];
@@ -62,29 +52,38 @@ export default class Builder {
     });
 
     commits.forEach(commit => state.addCommit(commit));
-    task.complete(`{bold ${commits.length}} commits loaded`, true);
     this.#state = state;
 
+    stage.clear();
+    stage.log(`Branch {bold ${this.#config.branch}} last changes at: {bold ${date.toLocaleString()}}`);
+    stage.log(`{bold ${commits.length}} commits loaded`);
     stage.complete('Release information:');
   }
 
-  private async write(bump = false): Promise<void> {
+  private async write(provider: IGitProvider): Promise<void> {
     if (this.#state) {
-      const { sections, authors, changesLevels } = this.#state;
-      const task = TaskTree.add('Writing new changelog...');
-      const data = sections.map(subsection => this.renderSection(subsection));
+      const task = TaskTree.add('Generate changelog...');
+
+      this.#state.updateCommitsChangeLevel(this.#config.types);
+      this.#state.ignore(this.#config.exclusions);
+      await this.#state.modify(this.#config.rules);
+
+      const data = this.#state.sections.map(subsection => this.renderSection(subsection));
       const filePath = path.resolve(process.cwd(), this.#config.filePath);
 
-      data.push(md.contributors(authors.map(({ name, avatar, url }) => md.image(name, avatar, url))), '');
+      data.push(md.contributors(this.#state.authors.map(({ name, avatar, url }) => md.image(name, avatar, url))), '');
       await fs.promises.writeFile(filePath, data.join('\n'));
-      task.complete('Changelog generated!');
 
-      if (bump) {
-        const date = await this.#provider.getLastChangeDate(true);
-        const { version } = await this.#provider.getCurrentPackage(date);
+      if (this.#config.bump) {
+        const date = await provider.getLastChangeDate(true);
+        const { version } = await provider.getCurrentPackage(date);
+        const [major, minor, patch] = this.#state.changesLevels;
 
-        await this.#package.bump(...changesLevels, coerce(version) ?? undefined);
+        task.clear();
+        await this.#package.bump({ major, minor, patch, branch: provider.branch.dev, version });
       }
+
+      task.complete('Changelog generated!');
     }
   }
 

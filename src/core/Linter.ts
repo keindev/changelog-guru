@@ -22,6 +22,9 @@ export class Linter {
 
   async lint(text: string): Promise<void> {
     const task = TaskTree.add('Lint commit message:');
+
+    await this.#config.init();
+
     // The recommended method to specify -m with husky was `changelog lint -m $HUSKY_GIT_PARAMS`
     // This does not work properly with win32 systems, where env variable declarations use a different syntax
     const parameter = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'].find(n => [text, `%${n}%`, `$${n}`].includes(n));
@@ -47,7 +50,7 @@ export class Linter {
     if (task.haveErrors) {
       task.fail('Incorrect commit message:');
     } else {
-      task.complete('Commit message is correct');
+      task.complete('Commit message is correct', true);
     }
   }
 

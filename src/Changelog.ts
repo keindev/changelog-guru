@@ -16,7 +16,6 @@ export default class Changelog {
     const config = new Config(options);
     const builder = new Builder(config);
 
-    await config.init();
     await builder.build();
   }
 
@@ -25,7 +24,6 @@ export default class Changelog {
     const linter = new Linter(config, maxLength);
 
     if (message) {
-      await config.init();
       await linter.lint(message);
     }
   }

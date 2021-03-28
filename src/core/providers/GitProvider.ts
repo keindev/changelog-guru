@@ -16,6 +16,7 @@ export enum Branch {
 export interface IGitProvider {
   readonly type: GitServiceProvider;
   readonly package: string;
+  readonly branch: IGitBranch;
 
   getLastChangeDate(dev?: boolean): Promise<Date>;
   getCommits(since: Date): Promise<ICommit[]>;
@@ -37,10 +38,10 @@ export interface IGitProviderOptions {
 export default abstract class GitProvider implements IGitProvider {
   readonly type: GitServiceProvider;
   readonly package = 'package.json';
+  readonly branch: IGitBranch;
 
   protected repository: string;
   protected owner: string;
-  protected branch: IGitBranch;
   protected version = process.env.npm_package_version;
   protected userAgent: string;
 
