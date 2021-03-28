@@ -58,23 +58,22 @@ export interface IPackageChange {
 }
 
 export default class Package {
-  readonly version?: SemVer;
-
+  #version?: SemVer;
   #data: PackageJson;
 
   constructor() {
     const task = TaskTree.add('Reading package.json');
 
     this.#data = readPkg.sync({ normalize: false });
-    this.version = coerce(this.#data.version) ?? undefined;
+    this.#version = coerce(this.#data.version) ?? undefined;
 
     if (!this.#data.license) task.fail('Package license is not specified');
     if (!this.#data.version) task.fail('Package version is not specified');
     if (!this.#data.repository) task.fail('Package repository url is not specified');
-    if (!this.version) TaskTree.fail('Package version is empty or not SemVer (see https://semver.org/)');
-    if (!valid(this.version)) TaskTree.fail('Package version is not a valid SemVer (see https://semver.org/)');
+    if (!this.#version) TaskTree.fail('Package version is empty or not SemVer (see https://semver.org/)');
+    if (!valid(this.#version)) TaskTree.fail('Package version is not a valid SemVer (see https://semver.org/)');
 
-    task.log(`Version: {bold ${this.version.version}}`);
+    task.log(`Version: {bold ${this.#version.version}}`);
     task.log(`Repository: {bold ${this.repository}}`);
     task.complete('Package information:');
   }
@@ -91,22 +90,27 @@ export default class Package {
     return this.#data.license ?? '';
   }
 
+  get version(): string {
+    return this.#version?.version ?? '';
+  }
+
   async bump(major: number, minor: number, patch: number, currentVersion?: SemVer): Promise<void> {
     const task = TaskTree.add('Updating package version');
     let version: string | null | undefined;
 
-    if (this.version) {
-      if (currentVersion && compare(currentVersion, this.version)) {
+    if (this.#version) {
+      if (currentVersion && compare(currentVersion, this.#version)) {
         task.skip(
-          `Package version is already changed from {bold ${currentVersion.version}} to {bold ${this.version.version}}`
+          `Package version is already changed from {bold ${currentVersion.version}} to {bold ${this.#version.version}}`
         );
       } else {
-        if (major) version = inc(this.version, 'major');
-        if (!major && minor) version = inc(this.version, 'minor');
-        if (!major && !minor && patch) version = inc(this.version, 'patch');
+        if (major) version = inc(this.#version, 'major');
+        if (!major && minor) version = inc(this.#version, 'minor');
+        if (!major && !minor && patch) version = inc(this.#version, 'patch');
 
         if (version) {
           this.#data.version = version;
+          this.#version = coerce(version) ?? undefined;
 
           await writePkg({ ...(this.#data as { [key: string]: string }) });
           task.complete(`Package version updated to {bold ${version}}`);
