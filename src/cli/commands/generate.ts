@@ -29,16 +29,16 @@ export const builder = {
   },
 };
 
-const build = async (options: IBuildOptions): Promise<void> => {
+const generate = async (options: IBuildOptions): Promise<void> => {
   const tree = TaskTree.tree().start();
   const changelog = new Changelog();
 
   try {
-    await changelog.build(options);
+    await changelog.generate(options);
     tree.exit();
   } catch (error) {
     tree.fail(error);
   }
 };
 
-export const handler = (options: Arguments<IBuildOptions>): Promise<void> => build(options);
+export const handler = (options: Arguments<IBuildOptions>): Promise<void> => generate(options);
