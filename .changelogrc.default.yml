@@ -138,6 +138,7 @@ rules:
       fc: Functional Components
       dts: TypeScript Declaration Improvements
       gh-actions: GitHub Actions
+      pkg: Package
   # Distributes commits with the specified types into sections
   section:
     Features:
