@@ -17,9 +17,10 @@ export interface IGitProvider {
   readonly type: GitServiceProvider;
   readonly package: string;
 
-  getLastChangeDate(): Promise<Date>;
+  getLastChangeDate(dev?: boolean): Promise<Date>;
   getCommits(since: Date): Promise<ICommit[]>;
-  getPrevPackage(since: Date): Promise<PackageJson>;
+  getPreviousPackage(since: Date): Promise<PackageJson>;
+  getCurrentPackage(since: Date): Promise<PackageJson>;
 }
 
 export interface IGitBranch {
@@ -74,7 +75,8 @@ export default abstract class GitProvider implements IGitProvider {
     task.complete('Git provider:');
   }
 
-  abstract getLastChangeDate(): Promise<Date>;
+  abstract getLastChangeDate(dev?: boolean): Promise<Date>;
   abstract getCommits(since: Date): Promise<ICommit[]>;
-  abstract getPrevPackage(since: Date): Promise<PackageJson>;
+  abstract getPreviousPackage(since: Date): Promise<PackageJson>;
+  abstract getCurrentPackage(since: Date): Promise<PackageJson>;
 }

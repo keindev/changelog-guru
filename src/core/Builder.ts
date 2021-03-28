@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { coerce } from 'semver';
 import { TaskTree } from 'tasktree-cli';
 import * as md from '../utils/markdown';
 
@@ -11,6 +12,7 @@ import Section, { ISection } from './entities/Section';
 import Package, { Dependency, Restriction } from './Package';
 import GitHubProvider from './providers/GitHubProvider';
 import GitLabProvider from './providers/GitLabProvider';
+import { IGitProvider } from './providers/GitProvider';
 import State from './State';
 
 const PROVIDERS_MAP = {
@@ -22,10 +24,12 @@ export default class Builder {
   #config: Config;
   #package: Package;
   #state?: State;
+  #provider: IGitProvider;
 
   constructor(config: Config) {
     this.#config = config;
     this.#package = new Package();
+    this.#provider = new PROVIDERS_MAP[this.#config.provider](this.#package.repository, this.#config.branch);
   }
 
   async build(): Promise<void> {
@@ -43,29 +47,23 @@ export default class Builder {
 
   private async read(): Promise<void> {
     const stage = TaskTree.add('Loading a release state...');
-    const provider = new PROVIDERS_MAP[this.#config.provider](this.#package.repository, this.#config.branch);
-    const date = await provider.getLastChangeDate();
+    const task = stage.add('Loading repository changes...');
+    const date = await this.#provider.getLastChangeDate();
+    const commits = await this.#provider.getCommits(date);
+    const previousPackage = await this.#provider.getPreviousPackage(date);
+    const state = new State(this.#package.license, previousPackage.license);
 
     stage.log(`Main branch last changes date: {bold ${date}}`);
 
-    if (date) {
-      const task = stage.add('Loading repository changes...');
-      const commits = await provider.getCommits(date);
-      const previousPackage = await provider.getPrevPackage(date);
-      const state = new State(this.#package.license, previousPackage.license);
+    [...Object.values(Dependency), ...Object.values(Restriction)].forEach(name => {
+      const previousValues = previousPackage[name];
 
-      [...Object.values(Dependency), ...Object.values(Restriction)].forEach(name => {
-        const previousValues = previousPackage[name];
+      if (previousValues) state.addChanges(name, this.#package.getChanges(name, previousValues));
+    });
 
-        if (previousValues) state.addChanges(name, this.#package.getChanges(name, previousValues));
-      });
-
-      commits.forEach(commit => state.addCommit(commit));
-      task.complete(`{bold ${commits.length}} commits loaded`, true);
-      this.#state = state;
-    } else {
-      stage.warn(`Branch don't have commits since ${date}`);
-    }
+    commits.forEach(commit => state.addCommit(commit));
+    task.complete(`{bold ${commits.length}} commits loaded`, true);
+    this.#state = state;
 
     stage.complete('Release information:');
   }
@@ -81,7 +79,12 @@ export default class Builder {
       await fs.promises.writeFile(filePath, data.join('\n'));
       task.complete('Changelog generated!');
 
-      if (bump) await this.#package.bump(...changesLevels);
+      if (bump) {
+        const date = await this.#provider.getLastChangeDate(true);
+        const { version } = await this.#provider.getCurrentPackage(date);
+
+        await this.#package.bump(...changesLevels, coerce(version) ?? undefined);
+      }
     }
   }
 

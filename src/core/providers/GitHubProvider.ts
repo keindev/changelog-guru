@@ -18,11 +18,11 @@ export default class GitHubProvider extends GitProvider {
     this.#provider = new Provider();
   }
 
-  async getLastChangeDate(): Promise<Date> {
+  async getLastChangeDate(dev?: boolean): Promise<Date> {
     const lastCommit = await this.#provider.query.commit.getLastCommit({
       owner: this.owner,
       repository: this.repository,
-      branch: this.branch.main,
+      branch: dev ? this.branch.dev : this.branch.main,
     });
 
     return new Date(lastCommit?.committedDate ?? Date.now());
@@ -42,14 +42,26 @@ export default class GitHubProvider extends GitProvider {
     return commits;
   }
 
-  async getPrevPackage(since: Date): Promise<PackageJson> {
-    const task = TaskTree.add('Loading previous release {bold package.json} state...');
-    const { owner, repository, branch, package: filePath } = this;
+  async getPreviousPackage(since: Date): Promise<PackageJson> {
+    const data = await this.getPackage(this.branch.main, since);
+
+    return data;
+  }
+
+  async getCurrentPackage(since: Date): Promise<PackageJson> {
+    const data = await this.getPackage(this.branch.dev, since);
+
+    return data;
+  }
+
+  private async getPackage(branch: string, since: Date): Promise<PackageJson> {
+    const { owner, repository, package: filePath } = this;
+    const task = TaskTree.add(`Loading {bold package.json} from {bold ${branch}}...`);
     let data: PackageJson = {};
 
     const id = await this.#provider.query.file.getId({
-      branch: branch.main,
       until: since.toISOString(),
+      branch,
       owner,
       repository,
       filePath,
@@ -60,11 +72,10 @@ export default class GitHubProvider extends GitProvider {
 
       if (text) {
         data = JSON.parse(text);
-
-        task.complete('Previous release {bold package.json} state loaded');
+        task.complete(`File {bold package.json} is loaded for {bold ${branch}}`);
       }
     } else {
-      task.skip('The previous release did not contain package.json');
+      task.skip(`Branch {bold ${branch}} did not contain {bold package.json}`);
     }
 
     return data;

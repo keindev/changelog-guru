@@ -40,7 +40,8 @@ describe('Builder', () => {
   beforeAll(() => {
     jest.spyOn(GitHubProvider.prototype, 'getLastChangeDate').mockImplementation(() => Promise.resolve(new Date(0)));
     jest.spyOn(GitHubProvider.prototype, 'getCommits').mockImplementation(() => Promise.resolve([...commits]));
-    jest.spyOn(GitHubProvider.prototype, 'getPrevPackage').mockImplementation(() => readPkg({ normalize: false }));
+    jest.spyOn(GitHubProvider.prototype, 'getPreviousPackage').mockImplementation(() => readPkg({ normalize: false }));
+    jest.spyOn(GitHubProvider.prototype, 'getCurrentPackage').mockImplementation(() => readPkg({ normalize: false }));
   });
 
   it('build', async () => {
