@@ -1,0 +1,45 @@
+# Gray
+- name: docs
+  description: Pull requests that change documentation
+  color: BCBEC0
+- name: media
+  description: Pull requests that change media files
+  color: BCBEC0
+- name: example
+  description: Pull requests that change examples
+  color: BCBEC0
+# Violet
+- name: source
+  description: Pull requests that change sources
+  color: 4400B2
+- name: project
+  description: Pull requests that change main project files
+  color: 4400B2
+# Blue
+- name: release
+  description: Release candidate
+  color: 0260E8
+- name: test
+  description: Pull requests that change tests
+  color: 0260E8
+- name: config
+  description: Pull requests that change main config files
+  color: 0260E8
+# Mint
+- name: dependencies
+  description: Pull requests that update a dependency file
+  color: 00DFC8
+- name: workflow
+  description: Pull requests that update workflow files
+  color: 00DFC8
+# Orange
+- name: automatic
+  description: Automatically merged PR on CI success and review
+  color: FE634E
+- name: api
+  description: Pull requests that change bin, cli commands or API
+  color: FE634E
+# Red
+- name: security
+  description: Pull requests that address a security vulnerability
+  color: E20338

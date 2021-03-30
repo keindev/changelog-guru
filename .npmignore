@@ -1,34 +1,32 @@
-# Src folders
-test/
+# folders
+**/__mocks__/**
+**/__tests__/**
+node_modules/
+example/
 coverage/
 media/
 src/
 docs/
 
-# Dependency directories
-node_modules/
-
-# Configs
+# configs
+.github
 .vscode
 .env
 .editorconfig
 .gitattributes
 .eslintignore
 .eslintrc
-.huskyrc
+.husky
 .prettierignore
 .prettierrc
-.travis.yml
-.yarnclean
-.changelogrc.yaml
+.changelogrc.yml
+codegen.yml
+.ghinfo
 jest.config.js
 tsconfig.json
-yarn.lock
+typedoc.json
 
-# Docs
-README.md
+# docs
 CHANGELOG.md
 CODE_OF_CONDUCT.md
 
-# Yarn logs
-yarn-error.log

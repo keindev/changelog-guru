@@ -1,67 +1,21 @@
 import { SemVer } from 'semver';
-import { Author } from '../entities/author';
 
-export default class Markdown {
-    public static DEFAULT_HEADER_LEVEL = 1;
-    public static LINE_SEPARATOR = '\n';
-    public static ITEM_SEPARATOR = ', ';
-    public static WORD_SEPARATOR = ' ';
-    public static EMPTY_SEPARATOR = '';
+const MIN_HEADER_LEVEL = 1;
+const MAX_HEADER_LEVEL = 6;
 
-    public static title(text: string, level: number = Markdown.DEFAULT_HEADER_LEVEL): string {
-        return [
-            '#'.padStart(Math.max(Markdown.DEFAULT_HEADER_LEVEL, level), '#'),
-            Markdown.WORD_SEPARATOR,
-            Markdown.capitalize(text),
-            Markdown.LINE_SEPARATOR,
-        ].join(Markdown.EMPTY_SEPARATOR);
-    }
-
-    public static capitalize(text: string): string {
-        return text.charAt(0).toUpperCase() + text.slice(1);
-    }
-
-    public static bold(text: string): string {
-        return `**${text}**`;
-    }
-
-    public static listItem(text: string): string {
-        return `-   ${Markdown.capitalize(text)}`;
-    }
-
-    public static link(text: string, url: string): string {
-        return `[${text}](${url})`;
-    }
-
-    public static code(text: string, lang = ''): string {
-        return `\`\`\`${lang} ${text} \`\`\``;
-    }
-
-    public static wrap(text: SemVer | string | undefined): string {
-        return `\`${text}\``;
-    }
-
-    public static line(): string {
-        return `---${Markdown.LINE_SEPARATOR}`;
-    }
-
-    public static image(text: string, url: string): string {
-        return `![${text}](${url})`;
-    }
-
-    public static imageLink(text: string, img: string, url: string): string {
-        return Markdown.link(Markdown.image(text, img), url);
-    }
-
-    public static commitLink(text: string, url: string): string {
-        return Markdown.link(Markdown.wrap(text), url);
-    }
-
-    public static authorLink(author: Author): string {
-        return Markdown.imageLink(author.getName(), author.getAvatar(), author.url);
-    }
-
-    public static escape(text: string): string {
-        return text.replace(/ +(?= )/g, Markdown.EMPTY_SEPARATOR).replace(/([\]\\/[^$|`!_#><~{}()*+?.-])/g, '\\$1');
-    }
-}
+export const capitalize = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);
+export const code = (text: string, lang = ''): string => `\`\`\`${lang} ${text} \`\`\``;
+export const commit = (text: string, url: string): string => link(wrap(text), url);
+export const contributors = (links: string[]): string => [line(), title('Contributors'), ...links].join('\n');
+export const header = (level: number): string => '#'.padStart(headerLevel(level), '#');
+export const headerLevel = (level: number): number => Math.min(MAX_HEADER_LEVEL, Math.max(MIN_HEADER_LEVEL, level));
+export const image = (text: string, img: string, url: string): string => link(`![${text}](${img})`, url);
+export const license = (type: string): string => link(type, `https://spdx.org/licenses/${type}.html`);
+export const line = (): string => '---\n';
+export const link = (text: string, url: string): string => `[${text}](${url})`;
+export const list = (text: string): string => `- ${capitalize(text)}`;
+export const strong = (text: string): string => `**${text}**`;
+export const title = (text: string, level = 1): string => `${header(level)} ${capitalize(text)}\n`;
+export const wrap = (text?: SemVer | string): string => `\`${text}\``;
+export const summary = (text: string): string => `<summary>${text}</summary>\n`;
+export const details = (text: string): string => `<details>\n${text}\n</details>\n`;

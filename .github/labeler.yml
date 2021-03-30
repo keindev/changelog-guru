@@ -1,0 +1,44 @@
+test:
+  - src/__mocks__/**/*.test.ts
+  - src/__tests__/**/*.test.ts
+
+workflow:
+  - .github/**/*
+  - .vscode/**/*
+  - ./.gitignore
+  - ./.npmignore
+  - ./.editorconfig
+  - ./.eslintignore
+  - ./.prettierignore
+  - ./.prettierrc
+
+config:
+  - ./.eslintrc
+  - ./jest.config.js
+  - ./tsconfig.json
+  - ./.changelogrc.yml
+  - ./.changelogrc.default.yml
+  - ./.huskyrc
+
+project:
+  - ./package-lock.json
+  - ./package.json
+  - ./LICENSE
+
+source:
+- any: ['src/**/*', '!src/cli/*', '!src/__mocks__/*', '!src/__tests__/*']
+
+api:
+  - bin/**/*
+  - src/cli/**/*
+
+docs:
+  - docs/**/*
+  - ./*.md
+  - ./.ghinfo
+
+example:
+  - example/**/*
+
+media:
+  - media/**/*

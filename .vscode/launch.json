@@ -1,60 +1,58 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Generate changelog",
-            "type": "node",
-            "request": "launch",
-            "outputCapture": "std",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "node",
-            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "generate"],
-            "port": 9229
-        },
-        {
-            "name": "Lint commit",
-            "type": "node",
-            "request": "launch",
-            "outputCapture": "std",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "node",
-            "runtimeArgs": [
-                "--nolazy",
-                "--inspect-brk=9229",
-                "bin/changelog",
-                "lint",
-                "--message",
-                "'.git/COMMIT_EDITMSG'",
-                "--lowercase-only"
-            ],
-            "port": 9229
-        },
-        {
-            "name": "CLI --help",
-            "type": "node",
-            "request": "launch",
-            "outputCapture": "std",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "node",
-            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "--help"],
-            "port": 9229
-        },
-        {
-            "name": "CLI <command> --help",
-            "type": "node",
-            "request": "launch",
-            "outputCapture": "std",
-            "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}",
-            "runtimeExecutable": "node",
-            "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "bin/changelog", "generate", "--help"],
-            "port": 9229
-        }
-    ]
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Generate changelog",
+      "type": "node",
+      "request": "launch",
+      "outputCapture": "std",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--nolazy",
+        "--inspect-brk=9229",
+        "node_modules/ts-node/dist/bin-script.js",
+        "src/cli/bin.ts",
+        "generate"
+      ],
+      "port": 9229
+    },
+    {
+      "name": "Lint commit message",
+      "type": "node",
+      "request": "launch",
+      "outputCapture": "std",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--nolazy",
+        "--inspect-brk=9229",
+        "node_modules/ts-node/dist/bin-script.js",
+        "src/cli/bin.ts",
+        "lint",
+        "--message",
+        "'.git/COMMIT_EDITMSG'"
+      ],
+      "port": 9229
+    },
+    {
+      "name": "Jest",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "cwd": "${workspaceRoot}",
+      "args": ["--i", "--runInBand", "--coverage", "false", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
+    }
+  ]
 }
