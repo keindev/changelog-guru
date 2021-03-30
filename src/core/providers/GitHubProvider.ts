@@ -12,7 +12,7 @@ export default class GitHubProvider extends GitProvider {
   #provider: Provider;
   #authors = new Map<number, Author>();
 
-  constructor(url: string, branch: IGitProviderOptions['branch']) {
+  constructor(url: string, branch?: IGitProviderOptions['branch']) {
     super({ type: GitServiceProvider.GitHub, url, branch });
 
     this.#provider = new Provider();

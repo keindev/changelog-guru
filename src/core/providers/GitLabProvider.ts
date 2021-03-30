@@ -5,7 +5,7 @@ import { ICommit } from '../entities/Commit';
 import GitProvider, { IGitProviderOptions } from './GitProvider';
 
 export default class GitLabProvider extends GitProvider {
-  constructor(url: string, branch: IGitProviderOptions['branch']) {
+  constructor(url: string, branch?: IGitProviderOptions['branch']) {
     super({ type: GitServiceProvider.GitLab, url, branch });
   }
 
