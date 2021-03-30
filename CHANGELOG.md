@@ -82,6 +82,8 @@
 - Fix bugs after tests [`7fd6815`](https://github.com/keindev/changelog-guru/commit/7fd681517d26414c081dd6e0fbbd72f875803545)
 - Fix Builder, correct building MD [`2d2ae0a`](https://github.com/keindev/changelog-guru/commit/2d2ae0abcea12d66ac6b177b8608bb2c78e55111)
 - Fix tasktree structure, refactor tests [`0007e04`](https://github.com/keindev/changelog-guru/commit/0007e04d1d18fb71fe7eb2da7e3edb353d507f33)
+- Add Package scope name [`d272237`](https://github.com/keindev/changelog-guru/commit/d272237eee64ff659f07f77e76f7dc6fbacc7444)
+- Remove `read-pkg` from deps [`f87adb6`](https://github.com/keindev/changelog-guru/commit/f87adb636c36bb22b3c4ad50741a680495065d21)
 
 # :memo: Internal changes
 
@@ -91,6 +93,7 @@
 - **[Actions]** Fix `npm ci` in `build.yml` [`cb95d22`](https://github.com/keindev/changelog-guru/commit/cb95d22c1a39ea552d1a211801839fb734899f2d)
 - **[Actions]** Fix coverage action [`e8d5dea`](https://github.com/keindev/changelog-guru/commit/e8d5dea28c55c7c38df76499c319504ceac0c13f)
 - **[Cspell]** Add words to cspell config [`909bdca`](https://github.com/keindev/changelog-guru/commit/909bdcafca9961214f7d544ccdf81fe093c1935a)
+- **[Package]** Fix scripts [`6b648d7`](https://github.com/keindev/changelog-guru/commit/6b648d751fe6a4f693f90d6b839a14dbe7f2e91f)
 - Fix Author test, fix `GitHubProvider` [`a846805`](https://github.com/keindev/changelog-guru/commit/a846805255c2000b90618d78ec65277160ada4cd)
 - Fix test errors [`30e4cc9`](https://github.com/keindev/changelog-guru/commit/30e4cc923ebcfc120b0a5ce6db39e5cc9c413279)
 - Refactor State test [`ec5dab7`](https://github.com/keindev/changelog-guru/commit/ec5dab7dcd55ddea84eafc23fed809522ea8d8e3)
@@ -99,6 +102,7 @@
 - Generate CHANGELOG.md [`8004278`](https://github.com/keindev/changelog-guru/commit/80042783bf525086887796683bd914e2de1a10c7)
 - Change debugger launch options for `ts-node` [`0b902e1`](https://github.com/keindev/changelog-guru/commit/0b902e11c4f2f254201da6694b53c2de2f0d4f23)
 - Fix Scope test errors, change Jest coverage file format [`f799b8f`](https://github.com/keindev/changelog-guru/commit/f799b8f8cd3cbe990ee3b2df1b678a77bb436822)
+- Actualize docs, update logo, add `social-preview` [`815ee21`](https://github.com/keindev/changelog-guru/commit/815ee2172725e69ee470e7ada3935db31e0b6511)
 
 # :wrench: Code Refactoring
 
