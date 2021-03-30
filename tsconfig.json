@@ -19,5 +19,5 @@
     "resolveJsonModule": true,
     "strict": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["lib/**/*", "node_modules"]
 }

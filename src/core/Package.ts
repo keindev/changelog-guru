@@ -128,7 +128,7 @@ export default class Package {
           await writePkg({ ...(this.#data as { [key: string]: string }) });
           task.complete(`Package version updated to {bold ${nextVersion}}`);
         } else {
-          task.fail('New package version is invalid or less (see https://semver.org/)');
+          task.complete('Package version does not change');
         }
       }
     }
