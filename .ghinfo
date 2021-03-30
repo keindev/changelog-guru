@@ -1,6 +1,6 @@
 {
     "name": "changelog-guru",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Git changelog generator",
     "keywords": [
         "automated",
@@ -17,6 +17,7 @@
         "homepage": "https://github.com/keindev/changelog-guru#readme"
     },
     "files": {
-        "logo": "media/logo.svg"
+        "logo": "media/logo.svg",
+        "social-preview": "media/social-preview.png"
     }
 }

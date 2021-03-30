@@ -1,6 +1,6 @@
 {
   "name": "changelog-guru",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Git changelog generator",
   "homepage": "https://github.com/keindev/changelog-guru#readme",
   "license": "MIT",
@@ -30,7 +30,7 @@
   },
   "scripts": {
     "prepare:husky": "husky install",
-    "prepare:clean": "rimraf lib coverage",
+    "prepare:clean": "rimraf lib coverage docs/api",
     "prepare": "npm-run-all prepare:*",
     "check:lint": "eslint \"src/**\" --ext .ts",
     "check:spell": "cspell -c .vscode/cspell.json --no-summary \"README.md\" \"src/**/*.ts\"",
@@ -41,7 +41,7 @@
     "generate:ghinfo": "ghinfo generate -d media -t utils",
     "generate": "npm-run-all generate:*",
     "build": "rimraf lib && tsc",
-    "release": "npm-run-all check test generate build"
+    "release": "npm-run-all prepare check test generate build"
   },
   "engines": {
     "node": ">=14.0.0"
