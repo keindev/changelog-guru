@@ -1,6 +1,8 @@
-import readPkg, { PackageJson } from 'read-pkg';
+import fs from 'fs';
+import path from 'path';
 import { coerce, compare, inc, SemVer, valid } from 'semver';
 import { TaskTree } from 'tasktree-cli';
+import { PackageJson } from 'type-fest';
 import writePkg from 'write-pkg';
 
 import { Compare } from './entities/Entity';
@@ -72,7 +74,7 @@ export default class Package {
   constructor() {
     const task = TaskTree.add('Reading package.json');
 
-    this.#data = readPkg.sync({ normalize: false });
+    this.#data = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8')) as PackageJson;
     this.#version = coerce(this.#data.version) ?? undefined;
 
     if (!this.#data.license) task.fail('Package license is not specified');

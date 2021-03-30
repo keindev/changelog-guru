@@ -1,5 +1,6 @@
 import fs from 'fs';
-import readPkg from 'read-pkg';
+import path from 'path';
+import { PackageJson } from 'type-fest';
 
 import Builder from '../core/Builder';
 import { Config } from '../core/Config';
@@ -38,10 +39,12 @@ describe('Builder', () => {
   );
 
   beforeAll(() => {
+    const data = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8')) as PackageJson;
+
     jest.spyOn(GitHubProvider.prototype, 'getLastChangeDate').mockImplementation(() => Promise.resolve(new Date(0)));
     jest.spyOn(GitHubProvider.prototype, 'getCommits').mockImplementation(() => Promise.resolve([...commits]));
-    jest.spyOn(GitHubProvider.prototype, 'getPreviousPackage').mockImplementation(() => readPkg({ normalize: false }));
-    jest.spyOn(GitHubProvider.prototype, 'getCurrentPackage').mockImplementation(() => readPkg({ normalize: false }));
+    jest.spyOn(GitHubProvider.prototype, 'getPreviousPackage').mockImplementation(() => Promise.resolve(data));
+    jest.spyOn(GitHubProvider.prototype, 'getCurrentPackage').mockImplementation(() => Promise.resolve(data));
   });
 
   it('build', async () => {

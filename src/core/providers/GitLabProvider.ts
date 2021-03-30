@@ -1,4 +1,4 @@
-import { PackageJson } from 'read-pkg';
+import { PackageJson } from 'type-fest';
 
 import { GitServiceProvider } from '../Config';
 import { ICommit } from '../entities/Commit';

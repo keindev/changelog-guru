@@ -1,5 +1,3 @@
-import { nanoid } from 'nanoid';
-
 export enum Compare {
   More = 1,
   Less = -1,
@@ -39,8 +37,8 @@ export default class Entity implements IEntity {
   #isIgnored = false;
   #level: ChangeLevel = ChangeLevel.Patch;
 
-  constructor(name?: string) {
-    this.name = name || nanoid();
+  constructor(name = '') {
+    this.name = name;
   }
 
   static compare(a: IEntity, b: IEntity): Compare {

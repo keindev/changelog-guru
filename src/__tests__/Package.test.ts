@@ -1,5 +1,7 @@
-import readPkg from 'read-pkg';
+import fs from 'fs';
+import path from 'path';
 import * as semver from 'semver';
+import { PackageJson } from 'type-fest';
 
 import Package, { Dependency, DependencyChangeType, Restriction } from '../core/Package';
 
@@ -7,7 +9,6 @@ jest.mock('write-pkg', (): (() => Promise<void>) => (): Promise<void> => Promise
 
 describe('Package', () => {
   const pkg = new Package();
-  const data = readPkg.sync({ normalize: false });
 
   describe('Package', () => {
     it('Version and repository read', () => {
@@ -30,6 +31,7 @@ describe('Package', () => {
 
   describe('Dependencies', () => {
     it('Get list of removed packages', () => {
+      const data = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8')) as PackageJson;
       const dependencies = data[Dependency.Dependencies] ?? {};
 
       expect(pkg.getChanges(Dependency.Dependencies, dependencies)).toStrictEqual([]);
@@ -47,10 +49,8 @@ describe('Package', () => {
 
   describe('Restrictions', () => {
     it('Get list of added restrictions', () => {
-      const restrictions = data[Restriction.OS] ?? [];
-
-      expect(pkg.getChanges(Restriction.OS, restrictions)).toStrictEqual([]);
-      expect(pkg.getChanges(Restriction.OS, [...restrictions, 'linux', '!win32'])).toStrictEqual([
+      expect(pkg.getChanges(Restriction.OS, [])).toStrictEqual([]);
+      expect(pkg.getChanges(Restriction.OS, ['linux', '!win32'])).toStrictEqual([
         { name: 'linux', type: 'removed', prevValue: 'linux' },
         { name: 'win32', type: 'removed', prevValue: '!win32' },
       ]);

@@ -1,8 +1,8 @@
 import findupSync from 'findup-sync';
 import fs from 'fs';
 import path from 'path';
-import { PackageJson } from 'read-pkg';
 import { TaskTree } from 'tasktree-cli';
+import { PackageJson } from 'type-fest';
 import { getUserAgent } from 'universal-user-agent';
 
 import { GitServiceProvider } from '../Config';
