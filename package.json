@@ -1,6 +1,6 @@
 {
   "name": "changelog-guru",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "Git changelog generator",
   "homepage": "https://github.com/keindev/changelog-guru#readme",
   "license": "MIT",
@@ -36,12 +36,12 @@
     "check:spell": "cspell -c .vscode/cspell.json --no-summary \"README.md\" \"src/**/*.ts\"",
     "check": "npm-run-all check:*",
     "test": "jest",
-    "generate:docs": "rimraf docs/api && typedoc",
+    "generate:docs": "typedoc",
     "generate:changelog": "ts-node-script src/cli/bin.ts generate --bump",
     "generate:ghinfo": "ghinfo generate -d media -t utils",
-    "generate": "npm-run-all generate:*",
-    "build": "rimraf lib && tsc",
-    "release": "npm-run-all prepare check test generate build"
+    "generate": "npm-run-all generate:changelog generate:docs generate:ghinfo",
+    "build": "tsc",
+    "release": "npm-run-all prepare check test build generate"
   },
   "engines": {
     "node": ">=14.0.0"
