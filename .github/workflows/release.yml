@@ -35,9 +35,7 @@ jobs:
     - name: Build
       run: |
         npm ci
-        npm run check
-        npm run test
-        npm run build
+        npm release
 
     - name: Publish package
       uses: JS-DevTools/npm-publish@v1
