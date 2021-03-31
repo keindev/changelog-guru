@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 
 yargs
-  .commandDir('commands', { extensions: ['js', 'ts'] })
+  .commandDir('commands', { extensions: ['js', 'ts'], exclude: /.+\.d\.ts/ })
   .demandCommand()
   .wrap(yargs.terminalWidth())
   .help()
