@@ -5,7 +5,7 @@ on:
       - master
 
 jobs:
-  labels:
+  sync:
     name: Sync labels
     runs-on: ubuntu-latest
     steps:
@@ -19,6 +19,7 @@ jobs:
 
   publish:
     name: Publish
+    needs: [sync]
     runs-on: ubuntu-latest
     strategy:
       matrix:
