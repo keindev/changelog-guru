@@ -29,10 +29,8 @@
     "url": "https://github.com/keindev/changelog-guru/issues"
   },
   "scripts": {
-    "prepare:husky": "husky install",
-    "prepare:clean": "rimraf lib coverage",
-    "prepare": "npm-run-all prepare:*",
-    "check:lint": "eslint \"src/**\" --ext .ts",
+    "prepare": "husky install",
+    "check:lint": "rimraf coverage && eslint \"src/**\" --ext .ts",
     "check:spell": "cspell -c .vscode/cspell.json --no-summary \"README.md\" \"src/**/*.ts\"",
     "check": "npm-run-all check:*",
     "test": "jest",
@@ -40,7 +38,7 @@
     "generate:changelog": "ts-node-script src/cli/bin.ts generate --bump",
     "generate:ghinfo": "ghinfo generate -d media -t utils",
     "generate": "npm-run-all generate:changelog generate:docs generate:ghinfo",
-    "build": "tsc",
+    "build": "rimraf lib && tsc",
     "release": "npm-run-all prepare check test build generate"
   },
   "engines": {
