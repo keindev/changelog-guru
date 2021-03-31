@@ -43,3 +43,17 @@ jobs:
       uses: JS-DevTools/npm-publish@v1
       with:
         token: ${{ secrets.NPM_TOKEN }}
+
+    - name: Get package version
+      if: ${{ success() }}
+      run: node -p -e '`PACKAGE_VERSION=${require("./package.json").version}`' >> $GITHUB_ENV
+
+    - name: Add GitHub tag - v${{ env.PACKAGE_VERSION }}
+      if: ${{ success() }}
+      uses: pkgdeps/git-tag-action@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_repo: ${{ github.repository }}
+        version: ${{ env.PACKAGE_VERSION }}
+        git_commit_sha: ${{ github.sha }}
+        git_tag_prefix: "v"
