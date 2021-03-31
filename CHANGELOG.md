@@ -1,6 +1,6 @@
 # :bug: Bug Fixes
 
-- **[GitHub Actions]** Fix release action [`140ab75`](https://github.com/keindev/changelog-guru/commit/140ab75df715349e657fa1e8cf28f9eb865d28a5)
+- **[GitHub Actions]** Fix release action [`20097ce`](https://github.com/keindev/changelog-guru/commit/20097ce4253199eaf6f55a70c5ffbec83e8bd35f)
 
 ---
 
