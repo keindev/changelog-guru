@@ -1,6 +1,6 @@
-# :memo: Internal changes
+# :bug: Bug Fixes
 
-- **[GitHub Actions]** Change release action [`662f938`](https://github.com/keindev/changelog-guru/commit/662f938684de03bacc39a05a93707033b98a5f0f)
+- Add exclude `RegExp` for *.d.ts files in cli commands dir [`9d31f11`](https://github.com/keindev/changelog-guru/commit/9d31f117e8f9ca4360cafd7df6fbd31387dfa00b)
 
 ---
 
