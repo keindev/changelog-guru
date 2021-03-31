@@ -1,6 +1,10 @@
 # :bug: Bug Fixes
 
-- **[GitHub Actions]** Fix release action [`20097ce`](https://github.com/keindev/changelog-guru/commit/20097ce4253199eaf6f55a70c5ffbec83e8bd35f)
+- **[GitHub Actions]** Fix release action [`52a5136`](https://github.com/keindev/changelog-guru/commit/52a5136760d92a16ca231e48b64eb3d7fb661998)
+
+# :memo: Internal changes
+
+- Fix scripts [`149c2b2`](https://github.com/keindev/changelog-guru/commit/149c2b2d2eb08afaadfbb16177c67b77cce4c214)
 
 ---
 
