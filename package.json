@@ -38,7 +38,7 @@
     "generate:changelog": "ts-node-script src/cli/bin.ts generate --bump",
     "generate:ghinfo": "ghinfo generate -d media -t utils",
     "generate": "npm-run-all generate:changelog generate:docs generate:ghinfo",
-    "build": "rimraf lib && tsc",
+    "build": "rimraf lib && tsc --extendedDiagnostics",
     "release": "npm-run-all prepare check test build generate"
   },
   "engines": {
