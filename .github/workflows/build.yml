@@ -2,8 +2,6 @@ name: Build
 
 on: [push, pull_request]
 
-
-
 jobs:
   triage-labels:
     name: Add labels
@@ -147,24 +145,32 @@ jobs:
         nodetail: true
         username: ${{ env.DISCORD_USERNAME }}
         avatar_url: ${{ env.DISCORD_ERROR_AVATAR }}
-        title: 'Build for [commit](${{ github.event.head_commit.url }}) is failed :confused:'
+        title: 'Build failed :confused:'
         color: ${{ env.DISCORD_ERROR_COLOR }}
         description: |
           **Repository:** `${{ github.repository }}`
           **Branch:** `${{ github.event.ref }}`
           **Author:** [${{ github.event.head_commit.author.username }}](https://github.com/${{ github.event.head_commit.author.username }})
+          **Commit:** [${{ github.event.head_commit.id }}](${{ github.event.head_commit.url }})
+          **Message:** `${{ github.event.head_commit.message }}`
+
+    - name: Send error notification for pull_request
+      if: ${{ contains(needs.*.result, 'failure') && github.event_name == 'pull_request' }}
+      uses: sarisia/actions-status-discord@v1
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        nodetail: true
+        username: ${{ env.DISCORD_USERNAME }}
+        avatar_url: ${{ env.DISCORD_ERROR_AVATAR }}
+        title: 'Build failed :confused:'
+        color: ${{ env.DISCORD_ERROR_COLOR }}
+        description: |
+          **Repository:** `${{ github.repository }}`
+          **Merge:** into `${{ github.event.pull_request.base.ref }}` from `${{ github.event.pull_request.head.ref }}`
+          **Title:** ${{ github.event.pull_request.title }} [#${{ github.event.pull_request.number }}](${{github.event.pull_request.url}})
+          **Assignees:** `${{ join(github.event.pull_request.assignees.*.login, ', ')` }}
+          **Labels:** `${{ join(github.event.pull_request.labels.*.name, ', ')` }}
 
 
 
-
-
-
-
-#https://github.com/marketplace/actions/actions-status-discord
-#https://convertingcolors.com/hex-color-0ECAA8.html?search=#0ECAA8
-
-# https://github.community/t/run-next-job-sequentially-even-if-a-previous-job-fails/17404/2
-
-# https://github.com/keindev/changelog-guru/runs/2242003345?check_suite_focus=true
-# https://github.com/keindev/changelog-guru/runs/2242060706?check_suite_focus=true
 
