@@ -77,7 +77,7 @@ jobs:
       run: npm ci
 
     - name: Build
-      run: npm run build && exit 1
+      run: npm run build
 
   coverage:
     name: Coverage
@@ -134,8 +134,6 @@ jobs:
       DISCORD_ERROR_AVATAR: https://cdn.jsdelivr.net/gh/tagproject/art/bot/bot-error.png
       DISCORD_EVENT_COLOR: 53759
       DISCORD_EVENT_AVATAR: https://cdn.jsdelivr.net/gh/tagproject/art/bot/bot-event.png
-      DISCORD_SUCCESS_COLOR: 969384
-      DISCORD_SUCCESS_AVATAR: https://cdn.jsdelivr.net/gh/tagproject/art/bot/bot-success.png
     steps:
     - name: Send error notification after push commit
       if: ${{ contains(needs.*.result, 'failure') && github.event_name == 'push' }}
