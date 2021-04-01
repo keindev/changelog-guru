@@ -125,6 +125,7 @@ jobs:
 
   one:
     runs-on: ubuntu-latest
+    needs: [build, coverage]
     steps:
     - name: Dump GitHub context
       env:
