@@ -168,8 +168,8 @@ jobs:
           **Repository:** `${{ github.repository }}`
           **Merge:** into `${{ github.event.pull_request.base.ref }}` from `${{ github.event.pull_request.head.ref }}`
           **Title:** ${{ github.event.pull_request.title }} [#${{ github.event.pull_request.number }}](${{github.event.pull_request.url}})
-          **Assignees:** `${{ join(github.event.pull_request.assignees.*.login, ', ')` }}
-          **Labels:** `${{ join(github.event.pull_request.labels.*.name, ', ')` }}
+          **Assignees:** `${{ join(github.event.pull_request.assignees.*.login, ', ') }}`
+          **Labels:** `${{ join(github.event.pull_request.labels.*.name, ', ') }}`
 
 
 
