@@ -125,7 +125,7 @@ jobs:
 
   one:
     runs-on: ubuntu-latest
-    needs: [build, coverage]
+    needs: [build]
     steps:
     - name: Dump GitHub context
       env:
@@ -175,5 +175,5 @@ jobs:
 
 
 
-
+# https://github.com/keindev/changelog-guru/runs/2242003345?check_suite_focus=true
 
