@@ -139,6 +139,7 @@ rules:
       dts: TypeScript Declaration Improvements
       gh-actions: GitHub Actions
       pkg: Package
+      ts: TypeScript
   # Distributes commits with the specified types into sections
   section:
     Features:
