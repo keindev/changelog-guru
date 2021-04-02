@@ -114,7 +114,7 @@ jobs:
           **Version:** `v${{ env.PACKAGE_VERSION }}`
 
     - name: Send success notification
-      if: ${{ contains(needs.*.result, 'failure') && github.event_name == 'push' }}
+      if: ${{ !contains(needs.*.result, 'failure') && github.event_name == 'push' }}
       uses: sarisia/actions-status-discord@v1
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
