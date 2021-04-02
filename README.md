@@ -66,7 +66,7 @@ Changelog-guru can be used either through a command line interface with an optio
 
 ### Configuration
 
-Only the minimum necessary settings are described here, for more detailed configuration, see the [default](.changelogrc.default.yaml) configuration file.
+Only the minimum necessary settings are described here, for more detailed configuration, see the [default](https://github.com/keindev/changelog-guru/blob/master/.changelogrc.default.yml) configuration file.
 
 > Changelog-guru uses [cosmiconfig](https://www.npmjs.com/package/cosmiconfig) and you can configure the module in any way you like described in the documentation.
 
