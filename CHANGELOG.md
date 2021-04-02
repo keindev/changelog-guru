@@ -1,6 +1,7 @@
 # :memo: Internal changes
 
-- **[GitHub Actions]** Fix release notification [`447f550`](https://github.com/keindev/changelog-guru/commit/447f550fe43b789c5b13a74425e631f584c7f52d)
+- **[GitHub Actions]** Fix release notification urls [`f99d10d`](https://github.com/keindev/changelog-guru/commit/f99d10df4b4f372d16a224e8d21367c1bc937009)
+- Fix README.md urls [`9ee810a`](https://github.com/keindev/changelog-guru/commit/9ee810a6d5fa16e675db32af02fa8b85dbabbf1c)
 
 ---
 
