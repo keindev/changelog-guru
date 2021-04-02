@@ -120,10 +120,10 @@ jobs:
         webhook: ${{ secrets.DISCORD_WEBHOOK }}
         nodetail: true
         username: ${{ env.DISCORD_USERNAME }}
-        avatar_url: ${{ env.DISCORD_ERROR_AVATAR }}
+        avatar_url: ${{ env.DISCORD_SUCCESS_AVATAR }}
         title: 'Package successfully released :tada::tada::tada:'
-        color: ${{ env.DISCORD_ERROR_COLOR }}
+        color: ${{ env.DISCORD_SUCCESS_COLOR }}
         description: |
           **Repository:** [${{ github.repository }}](https://github.com/${{ github.repository }}/releases)
-          **Tag:** [v${{ env.PACKAGE_VERSION }}](https://github.com/${{ github.repository }}/releases/tag/${{ env.PACKAGE_VERSION }})
-          **NPM:** [${{ env.PACKAGE_NAME }}](https://www.npmjs.com/package/${{ env.PACKAGE_NAME }})
+          **Tag:** [v${{ env.PACKAGE_VERSION }}](https://github.com/${{ github.repository }}/releases/tag/v${{ env.PACKAGE_VERSION }})
+          **NPM:** [${{ env.PACKAGE_NAME }}](https://www.npmjs.com/package/${{ env.PACKAGE_NAME }}/v/${{ env.PACKAGE_VERSION }})
