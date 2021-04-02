@@ -140,6 +140,7 @@ rules:
       gh-actions: GitHub Actions
       pkg: Package
       ts: TypeScript
+      conf: Configuration
   # Distributes commits with the specified types into sections
   section:
     Features:
