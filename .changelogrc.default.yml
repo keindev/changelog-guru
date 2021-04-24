@@ -54,7 +54,7 @@ output:
     # Excludes commits with the listed scopes from the output file
     commitScope: ['deps', 'deps-dev']
     # Excludes commits that contain the specified words in the subject
-    commitSubject: ['merge']
+    commitSubject: []
 # Rules that extend the basic functionality and modify the output in the change log
 rules:
   # Highlights variables and code snippets in subject of commit

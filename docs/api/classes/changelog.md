@@ -31,9 +31,9 @@ Generate changelog file
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`options?` | [*IBuildOptions*](../index.md#ibuildoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [*IBuildOptions*](../index.md#ibuildoptions) |
 
 **Returns:** *Promise*<void\>
 
@@ -47,8 +47,8 @@ Lint commit message
 
 #### Parameters:
 
-Name | Type |
-:------ | :------ |
-`options?` | [*ILintOptions*](../index.md#ilintoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [*ILintOptions*](../index.md#ilintoptions) |
 
 **Returns:** *Promise*<void\>
