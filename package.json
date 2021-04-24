@@ -1,6 +1,6 @@
 {
   "name": "changelog-guru",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "description": "Git changelog generator",
   "homepage": "https://github.com/keindev/changelog-guru#readme",
   "license": "MIT",
@@ -74,7 +74,7 @@
     "eslint-plugin-jest": "^24.3.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-optimize-regex": "^1.2.0",
-    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-promise": "^5.1.0",
     "faker": "^5.5.2",
     "ghinfo": "^1.0.6",
     "husky": "^6.0.0",
