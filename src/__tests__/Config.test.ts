@@ -45,7 +45,7 @@ describe('Config', () => {
       ['authorLogin', ['dependabot[bot]', 'dependabot-preview[bot]']],
       ['commitType', ['build']],
       ['commitScope', ['deps', 'deps-dev']],
-      ['commitSubject', ['merge']],
+      ['commitSubject', []],
     ]);
   });
 });
