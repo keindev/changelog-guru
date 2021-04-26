@@ -27,7 +27,7 @@ export class Linter {
 
     // The recommended method to specify -m with husky was `changelog lint -m $HUSKY_GIT_PARAMS`
     // This does not work properly with win32 systems, where env variable declarations use a different syntax
-    const parameter = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'].find(n => [text, `%${n}%`, `$${n}`].includes(n));
+    const parameter = ['GIT_PARAMS'].find(n => [text, `%${n}%`, `$${n}`].includes(n));
     const message: string[] = [];
     let filePath: string | undefined;
 
