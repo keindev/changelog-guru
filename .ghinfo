@@ -1,6 +1,6 @@
 {
     "name": "changelog-guru",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "description": "Git changelog generator",
     "keywords": [
         "automated",
