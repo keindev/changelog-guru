@@ -9,19 +9,19 @@ export default class GitLabProvider extends GitProvider {
     super({ type: GitServiceProvider.GitLab, url, branch });
   }
 
-  async getLastChangeDate(_?: boolean): Promise<Date> {
-    return new Date();
+  getLastChangeDate(_?: boolean): Promise<Date> {
+    return Promise.resolve(new Date());
   }
 
-  async getCommits(_: Date): Promise<ICommit[]> {
-    return [];
+  getCommits(_: Date): Promise<ICommit[]> {
+    return Promise.resolve([]);
   }
 
-  async getPreviousPackage(_: Date): Promise<PackageJson> {
-    return {};
+  getPreviousPackage(_: Date): Promise<PackageJson> {
+    return Promise.resolve({});
   }
 
-  async getCurrentPackage(_: Date): Promise<PackageJson> {
-    return {};
+  getCurrentPackage(_: Date): Promise<PackageJson> {
+    return Promise.resolve({});
   }
 }

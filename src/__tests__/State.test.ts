@@ -19,7 +19,7 @@ describe('State', () => {
     state = new State('MIT');
   });
 
-  it('Build state tree', async () => {
+  it('Build state tree', () => {
     const author1 = new Author({ login: 'dev1', url: faker.internet.url(), avatar: faker.internet.avatar() });
     const author2 = new Author({ login: 'dev2', url: faker.internet.url(), avatar: faker.internet.avatar() });
     const author3 = new Author({
