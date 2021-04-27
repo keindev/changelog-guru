@@ -7,7 +7,7 @@
 
 - Added **[@babel/plugin-transform-runtime](https://www.npmjs.com/package/@babel/plugin-transform-runtime/v/7.13.15)** with `^7.13.15`
 - Added **[@babel/preset-env](https://www.npmjs.com/package/@babel/preset-env/v/7.13.15)** with `^7.13.15`
-- Added **[@tagproject/ts-package-shared-config](https://www.npmjs.com/package/@tagproject/ts-package-shared-config/v/1.5.4)** with `^1.5.4`
+- Added **[@tagproject/ts-package-shared-config](https://www.npmjs.com/package/@tagproject/ts-package-shared-config/v/1.5.5)** with `^1.5.5`
 - Added **[babel-jest](https://www.npmjs.com/package/babel-jest/v/26.6.3)** with `^26.6.3`
 - Added **[changelog-guru](https://www.npmjs.com/package/changelog-guru/v/2.0.16)** with `^2.0.16`
 - Changed **[typescript](https://www.npmjs.com/package/typescript/v/4.2.4)** from `4.2.4` to `^4.2.4`
