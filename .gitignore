@@ -16,7 +16,6 @@
 /jest.modules.json
 /typedoc.json
 babel.config.js
-codecov.yml
 coverage
 jest.config.js
 lib
