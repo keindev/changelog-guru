@@ -1,11 +1,9 @@
 {
-  "language": "en",
   "words": [
     "EDITMSG",
     "changelogrc",
     "cosmiconfig",
     "deepmerge",
-    "dependabot",
     "findup",
     "gitlab",
     "keindev",

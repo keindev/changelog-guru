@@ -22,20 +22,17 @@
 - name: test
   description: Pull requests that change tests
   color: 0260E8
-- name: config
-  description: Pull requests that change main config files
-  color: 0260E8
+- name: feature
+  description: Feature request
+  color: E20338
 # Mint
 - name: dependencies
-  description: Pull requests that update a dependency file
+  description: Pull requests that change a dependency file
   color: 00DFC8
 - name: workflow
-  description: Pull requests that update workflow files
+  description: Pull requests that change workflow files
   color: 00DFC8
 # Orange
-- name: automatic
-  description: Automatically merged PR on CI success and review
-  color: FE634E
 - name: api
   description: Pull requests that change bin, cli commands or API
   color: FE634E
@@ -43,3 +40,7 @@
 - name: security
   description: Pull requests that address a security vulnerability
   color: E20338
+- name: bug
+  description: Bug reporting
+  color: E20338
+

@@ -10,6 +10,8 @@ import { findSame, unify } from '../utils/text';
 import { Config } from './Config';
 
 const SUBJECT_MAX_LENGTH = 10;
+const GIT_PARAMETERS = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'];
+const GIT_MESSAGES_PATHS = ['.git/COMMIT_EDITMSG', '.git/MERGE_MSG', '.git/SQUASH_MSG'];
 
 export class Linter {
   #config: Config;
@@ -25,15 +27,13 @@ export class Linter {
 
     await this.#config.init();
 
-    // The recommended method to specify -m with husky was `changelog lint -m $HUSKY_GIT_PARAMS`
-    // This does not work properly with win32 systems, where env variable declarations use a different syntax
-    const parameter = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'].find(n => [text, `%${n}%`, `$${n}`].includes(n));
+    const parameter = GIT_PARAMETERS.find(n => [text, `%${n}%`, `$${n}`].includes(n));
     const message: string[] = [];
     let filePath: string | undefined;
 
     if (!text) task.error('Empty commit message');
     if (parameter && parameter in process.env) filePath = process.env[parameter];
-    if (text === '.git/COMMIT_EDITMSG') filePath = path.resolve(process.cwd(), text);
+    if (GIT_MESSAGES_PATHS.includes(text)) filePath = path.resolve(process.cwd(), text);
     if (filePath) {
       if (!fs.existsSync(filePath)) task.fail(`${filePath} not found`);
 

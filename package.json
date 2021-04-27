@@ -1,6 +1,6 @@
 {
   "name": "changelog-guru",
-  "version": "2.0.16",
+  "version": "2.3.0",
   "description": "Git changelog generator",
   "homepage": "https://github.com/keindev/changelog-guru#readme",
   "license": "MIT",
@@ -29,17 +29,21 @@
     "url": "https://github.com/keindev/changelog-guru/issues"
   },
   "scripts": {
-    "prepare": "husky install",
+    "build": "npm-run-all build:*",
+    "build:ts": "rimraf lib && tsc --extendedDiagnostics",
+    "check": "npm-run-all check:*",
     "check:lint": "rimraf coverage && eslint \"src/**\" --ext .ts",
     "check:spell": "cspell -c .vscode/cspell.json --no-summary \"README.md\" \"src/**/*.ts\"",
-    "check": "npm-run-all check:*",
-    "test": "jest",
+    "generate": "npm-run-all generate:*",
+    "generate:changelog": "changelog generate --bump",
     "generate:docs": "rimraf docs/api && typedoc",
-    "generate:changelog": "ts-node-script src/cli/bin.ts generate --bump",
     "generate:ghinfo": "ghinfo generate -d media -t utils",
-    "generate": "npm-run-all generate:changelog generate:docs generate:ghinfo",
-    "build": "rimraf lib && tsc --extendedDiagnostics",
-    "release": "npm-run-all prepare check test build generate"
+    "prepare": "npm-run-all prepare:*",
+    "prepare:config": "ts-package-shared-config",
+    "prepare:husky": "husky install",
+    "release": "npm-run-all prepare check test build generate",
+    "test": "npm-run-all test:*",
+    "test:jest": "jest"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -58,19 +62,24 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.13.15",
+    "@babel/preset-env": "^7.13.15",
+    "@tagproject/ts-package-shared-config": "^1.5.5",
     "@types/faker": "^5.5.3",
     "@types/findup-sync": "^2.0.2",
-    "@types/jest": "^26.0.22",
-    "@types/node": "^14.14.41",
-    "@types/semver": "^7.3.4",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.0.1",
+    "@types/semver": "^7.3.5",
     "@types/yargs": "^16.0.1",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "babel-jest": "^26.6.3",
+    "changelog-guru": "^2.0.16",
     "cspell": "^5.3.12",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.3.5",
+    "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-optimize-regex": "^1.2.0",
     "eslint-plugin-promise": "^5.1.0",
@@ -85,7 +94,7 @@
     "ts-node": "^9.1.1",
     "type-fest": "^1.0.2",
     "typedoc": "^0.20.36",
-    "typedoc-plugin-markdown": "^3.7.1",
-    "typescript": "4.2.4"
+    "typedoc-plugin-markdown": "^3.7.2",
+    "typescript": "^4.2.4"
   }
 }

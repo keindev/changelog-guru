@@ -4,38 +4,23 @@ test:
 
 workflow:
   - .github/**/*
-  - .vscode/**/*
-  - ./.gitignore
-  - ./.npmignore
-  - ./.editorconfig
-  - ./.eslintignore
-  - ./.prettierignore
-  - ./.prettierrc
-
-config:
-  - ./.eslintrc
-  - ./jest.config.js
-  - ./tsconfig.json
-  - ./.changelogrc.yml
-  - ./.changelogrc.default.yml
-  - ./.huskyrc
+  - .gitignore
+  - .npmignore
 
 project:
-  - ./package-lock.json
-  - ./package.json
-  - ./LICENSE
+  - package-lock.json
+  - package.json
+  - LICENSE
 
 source:
-- any: ['src/**/*', '!src/cli/*', '!src/__mocks__/*', '!src/__tests__/*']
+  - any: ['src/**/*', '!src/cli/*', '!src/__mocks__/*', '!src/__tests__/*']
 
 api:
   - bin/**/*
   - src/cli/**/*
 
 docs:
-  - docs/**/*
-  - ./*.md
-  - ./.ghinfo
+  - any: ['docs/**/*', '*.md', '.ghinfo']
 
 example:
   - example/**/*

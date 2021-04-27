@@ -33,7 +33,7 @@ describe('Section group rule', () => {
     expect(context.findSection('Reverts')).toBeDefined();
   });
 
-  it('Parse', async () => {
+  it('Parse', () => {
     const section = context.findSection('Bug Fixes');
     const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
     const commit = new Commit({
