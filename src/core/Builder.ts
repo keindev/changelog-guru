@@ -71,7 +71,10 @@ export default class Builder {
       const data = this.#state.sections.map(subsection => this.renderSection(subsection));
       const filePath = path.resolve(process.cwd(), this.#config.filePath);
 
-      data.push(md.contributors(this.#state.authors.map(({ name, avatar, url }) => md.image(name, avatar, url))), '');
+      if (this.#state.authors) {
+        data.push(md.contributors(this.#state.authors.map(({ name, avatar, url }) => md.image(name, avatar, url))), '');
+      }
+
       await fs.promises.writeFile(filePath, data.join('\n'));
 
       if (this.#config.bump) {
