@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { TaskTree } from 'tasktree-cli';
 
 import Builder from './core/Builder';
 import { Config, GitServiceProvider } from './core/Config';
@@ -32,19 +33,27 @@ export class Changelog {
 
   /** Generate changelog file */
   async generate(options?: IBuildOptions): Promise<void> {
-    const config = new Config(options);
-    const builder = new Builder(config);
+    try {
+      const config = new Config(options);
+      const builder = new Builder(config);
 
-    await builder.build();
+      await builder.build();
+    } catch (error) {
+      TaskTree.fail(error);
+    }
   }
 
   /** Lint commit message */
   async lint(options?: ILintOptions): Promise<void> | never {
-    const config = new Config();
-    const linter = new Linter(config, options?.maxLength);
+    try {
+      const config = new Config();
+      const linter = new Linter(config, options?.maxLength);
 
-    if (options?.message) {
-      await linter.lint(options.message);
+      if (options?.message) {
+        await linter.lint(options.message);
+      }
+    } catch (error) {
+      TaskTree.fail(error);
     }
   }
 }
