@@ -6,7 +6,7 @@ const MAX_HEADER_LEVEL = 6;
 export const capitalize = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);
 export const code = (text: string, lang = ''): string => `\`\`\`${lang} ${text} \`\`\``;
 export const commit = (text: string, url: string): string => link(wrap(text), url);
-export const contributors = (links: string[]): string => [line(), title('Contributors'), ...links].join('\n');
+export const contributors = (links: string[]): string => [line(), title('Contributors'), links.join(' ')].join('\n');
 export const header = (level: number): string => '#'.padStart(headerLevel(level), '#');
 export const headerLevel = (level: number): number => Math.min(MAX_HEADER_LEVEL, Math.max(MIN_HEADER_LEVEL, level));
 export const image = (text: string, img: string, url: string): string => link(`![${text}](${img})`, url);
