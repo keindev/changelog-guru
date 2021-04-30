@@ -1,4 +1,4 @@
-import { LookupManager } from 'string-lookup-manager';
+import LookupManager from 'string-lookup-manager';
 
 import { splitHeadline } from '../../utils/commit';
 import { wrap } from '../../utils/markdown';
