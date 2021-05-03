@@ -43,20 +43,17 @@ export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule
   constructor(config: IMarkRuleConfig) {
     super(config);
 
-    this.#markers = new Set([MarkerType.Ignore, MarkerType.Grouped]);
+    this.#markers = new Set(Object.values(MarkerType));
   }
 
   prepare({ context }: IRulePrepareOptions): void {
+    const order = SectionOrder.Min;
+
     this.#sections = new Map(
       Object.entries(this.config.joins).reduce((acc: [MarkerType, ISection][], [type, name]) => {
-        const section = context.addSection({
-          name,
-          position: POSITIONS_MAP[type] ?? SectionPosition.None,
-          order: SectionOrder.Min,
-        });
+        const section = context.addSection({ name, position: POSITIONS_MAP[type] ?? SectionPosition.None, order });
 
         if (section) {
-          this.#markers.add(type as MarkerType);
           acc.push([type as MarkerType, section]);
         }
 
@@ -96,7 +93,7 @@ export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule
       if (bodyFirstLine && blackLine && blackLine.trim().length) {
         task.error('Missing blank line between markers and body');
       }
-    } else if (markersLine && markersLine.length) {
+    } else if (markersLine) {
       task.error('Missing blank line between header and body');
     }
   }

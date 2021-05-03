@@ -14,6 +14,7 @@ describe('Linter', () => {
       try {
         await linter.lint('test(core): some subject message 1');
         await linter.lint('test: some subject message 2');
+        await linter.lint('improve: move to ESM\n!break');
       } finally {
         expect(task.haveErrors).toBeFalsy();
         task.complete();
