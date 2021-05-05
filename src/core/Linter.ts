@@ -2,7 +2,7 @@ import { once } from 'events';
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import { TaskTree } from 'tasktree-cli';
+import TaskTree from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { splitHeadline } from '../utils/commit';

@@ -1,14 +1,3 @@
 {
-  "words": [
-    "EDITMSG",
-    "changelogrc",
-    "cosmiconfig",
-    "deepmerge",
-    "findup",
-    "gitlab",
-    "keindev",
-    "pval",
-    "pver",
-    "tasktree"
-  ]
+  "words": ["EDITMSG", "cosmiconfig", "changelogrc", "deepmerge", "findup", "gitlab", "pval", "pver"]
 }

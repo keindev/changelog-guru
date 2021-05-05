@@ -1,9 +1,14 @@
 import { cosmiconfig } from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import path from 'path';
-import { TaskTree } from 'tasktree-cli';
+import TaskTree from 'tasktree-cli';
 
 import { ChangeLevel } from './entities/Entity';
+// FIXME: remove after bump jest & ts-jest to 27.x (https://github.com/facebook/jest/issues/9430)
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import fix from './fix/dirname.cjs';
+// import { fileURLToPath } from 'url';
 import { BaseRule, IRule, IRuleConfig, Rule } from './rules/BaseRule';
 import HighlightRule from './rules/HighlightRule';
 import MarkRule from './rules/MarkRule';
@@ -93,9 +98,12 @@ export class Config {
 
   async init(): Promise<void> {
     if (!this.#isInitialized) {
+      // FIXME: remove after bump jest & ts-jest to 27.x (https://github.com/facebook/jest/issues/9430)
+      const { dirname } = fix;
+      // const dirname = path.dirname(fileURLToPath(import.meta.url));
       const task = TaskTree.add('Reading configuration file...');
       const explorer = cosmiconfig('changelog-guru');
-      const baseConf = await explorer.load(path.join(__dirname, '../../.changelogrc.default.yml'));
+      const baseConf = await explorer.load(path.join(dirname, '.changelogrc.default.yml'));
       const userConf = await explorer.search();
 
       if (baseConf?.config && !baseConf.isEmpty) {

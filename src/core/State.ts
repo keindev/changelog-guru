@@ -1,4 +1,4 @@
-import { TaskTree } from 'tasktree-cli';
+import TaskTree from 'tasktree-cli';
 
 import { findSame, isSame, unify } from '../utils/text';
 import { Exclusion } from './Config';

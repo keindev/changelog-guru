@@ -9,9 +9,11 @@
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "node",
       "runtimeArgs": [
+        "--experimental-specifier-resolution=node",
         "--nolazy",
         "--inspect-brk=9229",
-        "node_modules/ts-node/dist/bin-script.js",
+        "--loader",
+        "ts-node/esm",
         "src/cli/bin.ts",
         "generate"
       ],
@@ -26,9 +28,11 @@
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "node",
       "runtimeArgs": [
+        "--experimental-specifier-resolution=node",
         "--nolazy",
         "--inspect-brk=9229",
-        "node_modules/ts-node/dist/bin-script.js",
+        "--loader",
+        "ts-node/esm",
         "src/cli/bin.ts",
         "lint",
         "--message",

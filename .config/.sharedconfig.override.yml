@@ -1,5 +1,6 @@
 overrideScripts:
   "generate:changelog": "ts-node-script src/cli/bin.ts generate --bump"
+  "prepare:config": "ts-package-shared-config"
 
 ignoreDependencies: ["changelog-guru"]
 

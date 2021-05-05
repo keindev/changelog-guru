@@ -1,7 +1,7 @@
-import { TaskTree } from 'tasktree-cli';
+import TaskTree from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/Task';
-import * as md from '../../utils/markdown';
 
+import md from '../../utils/markdown';
 import { ChangeLevel } from '../entities/Entity';
 import Message from '../entities/Message';
 import Section, { ISection, SectionOrder, SectionPosition } from '../entities/Section';

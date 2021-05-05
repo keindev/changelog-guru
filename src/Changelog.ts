@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { TaskTree } from 'tasktree-cli';
+import TaskTree from 'tasktree-cli';
 
 import Builder from './core/Builder';
 import { Config, GitServiceProvider } from './core/Config';

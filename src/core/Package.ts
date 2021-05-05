@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { coerce, compare, inc, SemVer, valid } from 'semver';
-import { TaskTree } from 'tasktree-cli';
+import semver, { SemVer } from 'semver';
+import TaskTree from 'tasktree-cli';
 import { PackageJson } from 'type-fest';
 import writePkg from 'write-pkg';
 
@@ -75,13 +75,13 @@ export default class Package {
     const task = TaskTree.add('Reading package.json');
 
     this.#data = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8')) as PackageJson;
-    this.#version = coerce(this.#data.version) ?? undefined;
+    this.#version = semver.coerce(this.#data.version) ?? undefined;
 
     if (!this.#data.license) task.fail('Package license is not specified');
     if (!this.#data.version) task.fail('Package version is not specified');
     if (!this.#data.repository) task.fail('Package repository url is not specified');
     if (!this.#version) TaskTree.fail('Package version is empty or not SemVer (see https://semver.org/)');
-    if (!valid(this.#version)) TaskTree.fail('Package version is not a valid SemVer (see https://semver.org/)');
+    if (!semver.valid(this.#version)) TaskTree.fail('Package version is not a valid SemVer (see https://semver.org/)');
 
     task.log(`Version: {bold ${this.#version.version}}`);
     task.log(`Repository: {bold ${this.repository}}`);
@@ -108,7 +108,7 @@ export default class Package {
     const task = TaskTree.add('Updating package version');
 
     if (this.#version) {
-      if (version && compare(version, this.#version)) {
+      if (version && semver.compare(version, this.#version)) {
         task.skip(
           `Package version is already changed from {bold ${version}(${branch})} to {bold ${
             this.#version.version
@@ -117,13 +117,13 @@ export default class Package {
       } else {
         let nextVersion: string | null | undefined;
 
-        if (major) nextVersion = inc(this.#version, 'major');
-        if (!major && minor) nextVersion = inc(this.#version, 'minor');
-        if (!major && !minor && patch) nextVersion = inc(this.#version, 'patch');
+        if (major) nextVersion = semver.inc(this.#version, 'major');
+        if (!major && minor) nextVersion = semver.inc(this.#version, 'minor');
+        if (!major && !minor && patch) nextVersion = semver.inc(this.#version, 'patch');
 
         if (nextVersion) {
           this.#data.version = nextVersion;
-          this.#version = coerce(nextVersion) ?? undefined;
+          this.#version = semver.coerce(nextVersion) ?? undefined;
 
           await writePkg({ ...(this.#data as { [key: string]: string }) });
           task.complete(`Package version updated to {bold ${nextVersion}}`);
@@ -153,17 +153,17 @@ export default class Package {
       };
 
       Object.entries(currDeps).forEach(([name, value]) => {
-        const version = coerce(value);
+        const version = semver.coerce(value);
 
         if (version) {
           const prevValue = prevDeps.get(name);
-          const prevVersion = coerce(prevValue) ?? undefined;
+          const prevVersion = semver.coerce(prevValue) ?? undefined;
           const link = getLink(property, name, version.version);
-          let type = prevVersion ? VERSION_CHANGES_MAP[compare(version, prevVersion)] : DependencyChangeType.Added;
+          let type = prevVersion
+            ? VERSION_CHANGES_MAP[semver.compare(version, prevVersion)]
+            : DependencyChangeType.Added;
 
-          if (type === DependencyChangeType.Unchanged && value !== prevValue) {
-            type = DependencyChangeType.Changed;
-          }
+          if (type === DependencyChangeType.Unchanged && value !== prevValue) type = DependencyChangeType.Changed;
 
           changes.push({ name, value, type, version, link, prevValue, prevVersion });
           prevDeps.delete(name);
@@ -171,7 +171,7 @@ export default class Package {
       });
 
       prevDeps.forEach((prevValue, name) => {
-        const prevVersion = coerce(prevValue) ?? undefined;
+        const prevVersion = semver.coerce(prevValue) ?? undefined;
         const link = getLink(property, name, prevVersion?.version);
 
         changes.push({ name, type: DependencyChangeType.Removed, link, prevValue, prevVersion });
