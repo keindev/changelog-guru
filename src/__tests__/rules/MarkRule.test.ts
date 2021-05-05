@@ -96,6 +96,8 @@ describe('Mark rule', () => {
 
     rule.lint({ ...options, task, body: [''] });
     rule.lint({ ...options, task, body: ['!group(name)'] });
+    rule.lint({ ...options, task, body: ['!important !deprecated !break !ignore'] });
+    rule.lint({ ...options, task, body: ['!important !deprecated !break !ignore', ''] });
     rule.lint({ ...options, task, body: ['!important !deprecated !break !ignore', '', 'text'] });
 
     expect(task.haveErrors).toBeFalsy();

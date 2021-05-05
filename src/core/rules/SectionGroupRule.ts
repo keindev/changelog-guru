@@ -1,4 +1,4 @@
-import { TaskTree } from 'tasktree-cli';
+import TaskTree from 'tasktree-cli';
 
 import { findSame, unify } from '../../utils/text';
 import { ISection, SectionPosition } from '../entities/Section';

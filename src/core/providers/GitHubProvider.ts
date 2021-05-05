@@ -1,6 +1,6 @@
 import Provider from 'gh-gql';
 import { ICommit as IGitHubCommit } from 'gh-gql/lib/queries/Commit';
-import { TaskTree } from 'tasktree-cli';
+import TaskTree from 'tasktree-cli';
 import { PackageJson } from 'type-fest';
 
 import { GitServiceProvider } from '../Config';

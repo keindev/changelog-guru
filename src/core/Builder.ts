@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { TaskTree } from 'tasktree-cli';
-import * as md from '../utils/markdown';
+import TaskTree from 'tasktree-cli';
 
+import md from '../utils/markdown';
 import { findSame } from '../utils/text';
 import { Config, GitServiceProvider } from './Config';
 import Commit, { ICommit } from './entities/Commit';

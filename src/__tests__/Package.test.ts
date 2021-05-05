@@ -1,6 +1,6 @@
 import faker from 'faker';
 import fs from 'fs';
-import * as semver from 'semver';
+import semver from 'semver';
 
 import Package, { Dependency, DependencyChangeType, Restriction } from '../core/Package';
 
