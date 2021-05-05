@@ -3,11 +3,11 @@ import deepmerge from 'deepmerge';
 import path from 'path';
 import TaskTree from 'tasktree-cli';
 
-import { ChangeLevel } from './entities/Entity';
 // FIXME: remove after bump jest & ts-jest to 27.x (https://github.com/facebook/jest/issues/9430)
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import fix from './fix/dirname.cjs';
+import fix from '../../fix/dirname.cjs';
+import { ChangeLevel } from './entities/Entity';
 // import { fileURLToPath } from 'url';
 import { BaseRule, IRule, IRuleConfig, Rule } from './rules/BaseRule';
 import HighlightRule from './rules/HighlightRule';
