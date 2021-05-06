@@ -27,7 +27,7 @@ Renames and exports: [Changelog](classes/changelog.md)
 
 Ƭ **IBuildOptions**: *object*
 
-#### Type declaration:
+#### Type declaration
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
@@ -42,7 +42,7 @@ ___
 
 Ƭ **ILintOptions**: *object*
 
-#### Type declaration:
+#### Type declaration
 
 | Name | Type | Description |
 | :------ | :------ | :------ |

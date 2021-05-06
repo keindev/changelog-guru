@@ -29,7 +29,7 @@ Changelog manger
 
 Generate changelog file
 
-#### Parameters:
+#### Parameters
 
 | Name | Type |
 | :------ | :------ |
@@ -45,7 +45,7 @@ ___
 
 Lint commit message
 
-#### Parameters:
+#### Parameters
 
 | Name | Type |
 | :------ | :------ |
