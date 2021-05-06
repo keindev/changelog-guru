@@ -1,6 +1,5 @@
 overrideScripts:
   "generate:changelog": "node --experimental-specifier-resolution=node --loader ts-node/esm src/cli/bin.ts generate --bump"
-  "prepare:config": "ts-package-shared-config"
 
 ignoreDependencies: ["changelog-guru"]
 
