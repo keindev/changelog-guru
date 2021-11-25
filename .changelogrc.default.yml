@@ -2,7 +2,7 @@
 # Specifies the type of service provider to receive project information
 provider: github
 # Branch for compare with current branch and get a changelog
-branch: master
+branch: main
 # Commit levels of changes
 # The commits with the specified types will be distributed by change levels.
 # For a list of change types by level, see https://semver.org/.  For example:
