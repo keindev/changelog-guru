@@ -53,7 +53,7 @@
     "cosmiconfig": "^7.0.0",
     "deepmerge": "^4.2.2",
     "dotenv": "^9.0.0",
-    "findup-sync": "^4.0.0",
+    "findup-sync": "^5.0.0",
     "gh-gql": "^2.0.1",
     "semver": "^7.3.5",
     "string-lookup-manager": "^2.0.1",
