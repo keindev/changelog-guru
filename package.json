@@ -17,7 +17,11 @@
   ],
   "types": "./lib/index.d.ts",
   "type": "module",
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./lib/utils/*": "./lib/utils/*.js",
+    "./lib/core/*": "./lib/core/*.js"
+  },
   "bin": {
     "changelog": "bin/changelog.js",
     "changelog-guru": "bin/changelog.js"
