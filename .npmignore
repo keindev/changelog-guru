@@ -6,6 +6,7 @@
 .env
 .eslintignore
 .eslintrc
+.figma.yml
 .ghinfo
 .gitattributes
 .github
@@ -14,17 +15,14 @@
 .prettierrc
 .vscode
 CODE_OF_CONDUCT.md
-babel.config.cjs
 codecov.yml
 codegen.yml
 coverage/
 docs/
 example/
-jest.config.cjs
-jest.modules.json
+jest.config.js
 media/
 node_modules/
 src/
-tsconfig.build.json
 tsconfig.json
-typedoc.json
+typings/
