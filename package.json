@@ -83,7 +83,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-optimize-regex": "^1.2.0",
     "eslint-plugin-promise": "^5.1.0",
-    "faker": "^5.5.3",
+    "faker": "^6.6.6",
     "ghinfo": "^2.0.3",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
