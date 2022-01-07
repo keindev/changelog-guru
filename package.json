@@ -67,7 +67,7 @@
     "@babel/preset-env": "^7.14.1",
     "@tagproject/ts-package-shared-config": "^3.0.0",
     "@types/faker": "^5.5.4",
-    "@types/findup-sync": "^2.0.2",
+    "@types/findup-sync": "^4.0.2",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.0.2",
     "@types/semver": "^7.3.5",
