@@ -1,23 +1,23 @@
 {
   "name": "changelog-guru",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "Git changelog generator",
   "keywords": [
     "automated",
     "changelog",
-    "generator",
     "cli",
+    "generator",
     "github"
   ],
   "repo": "keindev/changelog-guru",
   "type": "utils",
   "links": {
+    "homepage": "https://github.com/keindev/changelog-guru#readme",
     "git": "https://github.com/keindev/changelog-guru",
-    "npm": "https://www.npmjs.com/package/changelog-guru",
-    "homepage": "https://github.com/keindev/changelog-guru#readme"
+    "npm": "https://www.npmjs.com/package/changelog-guru"
   },
   "files": {
-    "logo": "media/logo.svg",
-    "social-preview": "media/social-preview.png"
+    "banner": "media/banner.svg",
+    "logo": "media/logo.svg"
   }
 }
