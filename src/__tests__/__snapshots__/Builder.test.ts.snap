@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Builder build 1`] = `
-"# :tada: Features
+Array [
+  Array [
+    "CHANGELOG.md",
+    "# :tada: Features
 
 - Feat commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000001) [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000002)
 - Another feat commit [\`0000000\`](https://github.com/keindev/changelog-guru/commit/0000000000000000000000000000000000000003)
@@ -19,5 +22,7 @@ exports[`Builder build 1`] = `
 # Contributors
 
 [![@keindev](https://avatars.githubusercontent.com/u/4527292?s=40)](https://github.com/keindev)
-"
+",
+  ],
+]
 `;
