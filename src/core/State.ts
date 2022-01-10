@@ -41,21 +41,29 @@ export default class State implements IRuleContext {
     let minor = 0;
     let patch = 0;
 
-    this.#commits.forEach(commit => {
-      switch (commit.level) {
-        case ChangeLevel.Major:
-          major++;
-          break;
-        case ChangeLevel.Minor:
-          minor++;
-          break;
-        case ChangeLevel.Patch:
-          patch++;
-          break;
-        default:
-          TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.level}}`);
-      }
-    });
+    if (
+      this.#changes.has(PackageDependency.Engines) ||
+      this.#changes.has(PackageRestriction.OS) ||
+      this.#changes.has(PackageRestriction.CPU)
+    ) {
+      major++;
+    } else {
+      this.#commits.forEach(commit => {
+        switch (commit.level) {
+          case ChangeLevel.Major:
+            major++;
+            break;
+          case ChangeLevel.Minor:
+            minor++;
+            break;
+          case ChangeLevel.Patch:
+            patch++;
+            break;
+          default:
+            TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.level}}`);
+        }
+      });
+    }
 
     return [major, minor, patch];
   }

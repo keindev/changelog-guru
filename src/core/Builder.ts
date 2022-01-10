@@ -59,11 +59,13 @@ export default class Builder {
         if (major || minor || patch) {
           this.#package.bump({ major, minor, patch });
           await this.#package.save();
-          task.log(`Package version updated to {bold ${this.#package.version}}`);
+          task.complete(`Package version updated to {bold ${this.#package.version}}`);
         } else {
-          task.log('Package version does not change');
+          task.skip('Package version does not change');
         }
       }
+
+      task.clear();
     }
   }
 
