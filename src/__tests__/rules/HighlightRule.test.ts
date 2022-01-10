@@ -1,5 +1,3 @@
-import faker from 'faker';
-
 import { Config } from '../../core/Config';
 import Author from '../../core/entities/Author';
 import Commit from '../../core/entities/Commit';
@@ -18,7 +16,11 @@ describe('Highlight rule', () => {
   });
 
   it('Generics highlight', () => {
-    const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
+    const author = new Author({
+      login: 'keindev',
+      url: 'https://github.com/keindev',
+      avatar: 'https://avatars.githubusercontent.com/u/4527292?v=4',
+    });
     const headlines: [string, string][] = [
       ['feat: <subject>', '`<subject>`'],
       ['feat: $subject', '`$subject`'],
@@ -31,10 +33,10 @@ describe('Highlight rule', () => {
 
     headlines.map(([headline, result]) => {
       const commit = new Commit({
-        hash: faker.git.commitSha(),
+        hash: '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
         timestamp: 0,
         body: '',
-        url: faker.internet.url(),
+        url: 'https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
         author,
         headline,
       });

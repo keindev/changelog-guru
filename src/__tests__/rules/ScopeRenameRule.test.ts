@@ -1,4 +1,3 @@
-import faker from 'faker';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { Config } from '../../core/Config';
@@ -15,8 +14,17 @@ describe('Scope rename rule', () => {
   });
 
   it('Parse', () => {
-    const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
-    const commitOptions = { hash: faker.git.commitSha(), timestamp: 0, url: faker.internet.url(), author };
+    const author = new Author({
+      login: 'keindev',
+      url: 'https://github.com/keindev',
+      avatar: 'https://avatars.githubusercontent.com/u/4527292?v=4',
+    });
+    const commitOptions = {
+      hash: '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
+      timestamp: 0,
+      url: 'https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
+      author,
+    };
     const context = new State('MIT');
     let commit = new Commit({ ...commitOptions, headline: 'feat(core, Jest 1, Jest 2): subject' });
     let rule = config.rules.find(item => item instanceof ScopeRenameRule) as ScopeRenameRule;
@@ -34,7 +42,7 @@ describe('Scope rename rule', () => {
 
   it('Lint', () => {
     const task = new Task('Lint');
-    const subject = faker.git.commitMessage();
+    const subject = 'Commit message subject';
     const options = { body: [], type: 'test', subject, task };
     const rule = new ScopeRenameRule({ onlyPresented: true, names: { core: 'Core', api: 'API' } });
 

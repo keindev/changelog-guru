@@ -1,8 +1,8 @@
 import findupSync from 'findup-sync';
 import fs from 'fs';
+import Package from 'package-json-helper';
 import path from 'path';
 import TaskTree from 'tasktree-cli';
-import { PackageJson } from 'type-fest';
 import { getUserAgent } from 'universal-user-agent';
 
 import { GitServiceProvider } from '../Config';
@@ -14,36 +14,36 @@ export enum Branch {
 }
 
 export interface IGitProvider {
-  readonly type: GitServiceProvider;
-  readonly package: string;
   readonly branch: IGitBranch;
+  readonly package: string;
+  readonly type: GitServiceProvider;
 
-  getLastChangeDate(dev?: boolean): Promise<Date>;
   getCommits(since: Date): Promise<ICommit[]>;
-  getPreviousPackage(since: Date): Promise<PackageJson>;
-  getCurrentPackage(since: Date): Promise<PackageJson>;
+  getCurrentPackage(since: Date): Promise<Package>;
+  getLastChangeDate(dev?: boolean): Promise<Date>;
+  getPreviousPackage(since: Date): Promise<Package>;
 }
 
 export interface IGitBranch {
-  [Branch.Main]: string;
   [Branch.Dev]: string;
+  [Branch.Main]: string;
 }
 
 export interface IGitProviderOptions {
+  branch?: string;
   type: GitServiceProvider;
   url: string;
-  branch?: string;
 }
 
 export default abstract class GitProvider implements IGitProvider {
-  readonly type: GitServiceProvider;
-  readonly package = 'package.json';
   readonly branch: IGitBranch;
+  readonly package = 'package.json';
+  readonly type: GitServiceProvider;
 
-  protected repository: string;
   protected owner: string;
-  protected version = process.env.npm_package_version;
+  protected repository: string;
   protected userAgent: string;
+  protected version = process.env.npm_package_version;
 
   constructor({ type, url, branch }: IGitProviderOptions) {
     const task = TaskTree.add('Initializing git provider');
@@ -76,8 +76,8 @@ export default abstract class GitProvider implements IGitProvider {
     task.complete('Git provider:');
   }
 
-  abstract getLastChangeDate(dev?: boolean): Promise<Date>;
   abstract getCommits(since: Date): Promise<ICommit[]>;
-  abstract getPreviousPackage(since: Date): Promise<PackageJson>;
-  abstract getCurrentPackage(since: Date): Promise<PackageJson>;
+  abstract getCurrentPackage(since: Date): Promise<Package>;
+  abstract getLastChangeDate(dev?: boolean): Promise<Date>;
+  abstract getPreviousPackage(since: Date): Promise<Package>;
 }

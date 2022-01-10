@@ -12,8 +12,8 @@ export interface ISectionGroupRuleConfig extends IRuleConfig {
 }
 
 export default class SectionGroupRule extends BaseRule<ISectionGroupRuleConfig> implements IRule {
-  #types: string[] = [];
   #blocks = new Map<string, ISection | undefined>();
+  #types: string[] = [];
 
   constructor(config: ISectionGroupRuleConfig) {
     super(config);
@@ -25,14 +25,12 @@ export default class SectionGroupRule extends BaseRule<ISectionGroupRuleConfig> 
     }
   }
 
-  prepare({ context }: IRulePrepareOptions): void {
-    Object.entries(this.config).forEach(([name, { emoji, types }], order) => {
-      if (Array.isArray(types) && types.length) {
-        const section = context.addSection({ name, position: SectionPosition.Body, order, emoji });
+  lint({ type, task }: IRuleLintOptions): void {
+    if (type) {
+      const key = findSame(type, this.#types);
 
-        if (section) types.forEach(type => this.#blocks.set(unify(type), section));
-      }
-    });
+      if (!key) task.error(`Commit type {bold ${type}} is not assigned with section`);
+    }
   }
 
   parse({ commit }: IRuleParseOptions): void {
@@ -47,11 +45,13 @@ export default class SectionGroupRule extends BaseRule<ISectionGroupRuleConfig> 
     }
   }
 
-  lint({ type, task }: IRuleLintOptions): void {
-    if (type) {
-      const key = findSame(type, this.#types);
+  prepare({ context }: IRulePrepareOptions): void {
+    Object.entries(this.config).forEach(([name, { emoji, types }], order) => {
+      if (Array.isArray(types) && types.length) {
+        const section = context.addSection({ name, position: SectionPosition.Body, order, emoji });
 
-      if (!key) task.error(`Commit type {bold ${type}} is not assigned with section`);
-    }
+        if (section) types.forEach(type => this.#blocks.set(unify(type), section));
+      }
+    });
   }
 }

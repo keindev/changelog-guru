@@ -1,7 +1,7 @@
 import Provider from 'gh-gql';
 import { ICommit as IGitHubCommit } from 'gh-gql/lib/queries/Commit';
+import Package from 'package-json-helper';
 import TaskTree from 'tasktree-cli';
-import { PackageJson } from 'type-fest';
 
 import { GitServiceProvider } from '../Config';
 import Author, { IAuthor } from '../entities/Author';
@@ -9,23 +9,13 @@ import Commit, { ICommit } from '../entities/Commit';
 import GitProvider, { IGitProviderOptions } from './GitProvider';
 
 export default class GitHubProvider extends GitProvider {
-  #provider: Provider;
   #authors = new Map<number, Author>();
+  #provider: Provider;
 
   constructor(url: string, branch?: IGitProviderOptions['branch']) {
     super({ type: GitServiceProvider.GitHub, url, branch });
 
     this.#provider = new Provider();
-  }
-
-  async getLastChangeDate(dev?: boolean): Promise<Date> {
-    const lastCommit = await this.#provider.query.commit.getLastCommit({
-      owner: this.owner,
-      repository: this.repository,
-      branch: dev ? this.branch.dev : this.branch.main,
-    });
-
-    return new Date(lastCommit?.committedDate ?? Date.now());
   }
 
   async getCommits(since: Date): Promise<ICommit[]> {
@@ -42,23 +32,31 @@ export default class GitHubProvider extends GitProvider {
     return commits;
   }
 
-  async getPreviousPackage(since: Date): Promise<PackageJson> {
-    const data = await this.getPackage(this.branch.main, since);
+  async getCurrentPackage(since: Date): Promise<Package> {
+    const pkg = await this.getPackage(this.branch.dev, since);
 
-    return data;
+    return pkg;
   }
 
-  async getCurrentPackage(since: Date): Promise<PackageJson> {
-    const data = await this.getPackage(this.branch.dev, since);
+  async getLastChangeDate(dev?: boolean): Promise<Date> {
+    const lastCommit = await this.#provider.query.commit.getLastCommit({
+      owner: this.owner,
+      repository: this.repository,
+      branch: dev ? this.branch.dev : this.branch.main,
+    });
 
-    return data;
+    return new Date(lastCommit?.committedDate ?? Date.now());
   }
 
-  private async getPackage(branch: string, since: Date): Promise<PackageJson> {
+  async getPreviousPackage(since: Date): Promise<Package> {
+    const pkg = await this.getPackage(this.branch.main, since);
+
+    return pkg;
+  }
+
+  private async getPackage(branch: string, since: Date): Promise<Package> {
     const { owner, repository, package: filePath } = this;
     const task = TaskTree.add(`Loading {bold package.json} from {bold ${branch}}...`);
-    let data: PackageJson = {};
-
     const id = await this.#provider.query.file.getId({
       until: since.toISOString(),
       branch,
@@ -66,6 +64,7 @@ export default class GitHubProvider extends GitProvider {
       repository,
       filePath,
     });
+    let data = {};
 
     if (id) {
       const text = await this.#provider.query.file.getContent({ filePath, owner, repository, oid: id });
@@ -78,15 +77,7 @@ export default class GitHubProvider extends GitProvider {
       task.skip(`Branch {bold ${branch}} did not contain {bold package.json}`);
     }
 
-    return data;
-  }
-
-  private parseCommit(commit: IGitHubCommit): ICommit {
-    const { url, oid: hash, messageHeadline: headline, messageBody: body } = commit;
-    const timestamp = new Date(commit.committedDate).getTime();
-    const author = this.parseAuthor(commit.author);
-
-    return new Commit({ hash, headline, body, author, timestamp, url });
+    return new Package(data);
   }
 
   private parseAuthor({ avatarUrl, user: { databaseId, login, url } }: IGitHubCommit['author']): IAuthor {
@@ -95,5 +86,13 @@ export default class GitHubProvider extends GitProvider {
     if (!this.#authors.has(databaseId)) this.#authors.set(databaseId, author);
 
     return author;
+  }
+
+  private parseCommit(commit: IGitHubCommit): ICommit {
+    const { url, oid: hash, messageHeadline: headline, messageBody: body } = commit;
+    const timestamp = new Date(commit.committedDate).getTime();
+    const author = this.parseAuthor(commit.author);
+
+    return new Commit({ hash, headline, body, author, timestamp, url });
   }
 }

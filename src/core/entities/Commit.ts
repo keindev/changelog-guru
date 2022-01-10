@@ -15,44 +15,43 @@ export enum CommitChangeType {
 const COMMIT_SHOT_NAME_LENGTH = 7;
 
 export interface ICommit extends IEntity {
-  readonly body: readonly string[];
-  readonly timestamp: number;
-  readonly url: string;
-  readonly author: IAuthor;
-  readonly scope?: string;
   readonly accents: string[];
-  readonly type: string;
-  readonly shortName: string;
-
+  readonly author: IAuthor;
+  readonly body: readonly string[];
   changeType: CommitChangeType;
+  readonly scope?: string;
+  readonly shortName: string;
   subject: string;
+  readonly timestamp: number;
+  readonly type: string;
+
+  readonly url: string;
 
   accent(text: string): void;
-  replacement(value: string, position: number): void;
   is(status: CommitChangeType): boolean;
+  replacement(value: string, position: number): void;
 }
 
 export interface ICommitOptions {
-  hash: string;
-  timestamp: number;
-  headline: string;
-  body?: string;
-  url: string;
   author: IAuthor;
+  body?: string;
+  hash: string;
+  headline: string;
+  timestamp: number;
+  url: string;
 }
 
 export default class Commit extends Entity implements ICommit {
-  readonly body: readonly string[] = [];
-  readonly timestamp: number;
-  readonly url: string;
-  readonly author: IAuthor;
-  readonly scope?: string;
-
-  #subject = '';
-  #type?: string;
   #accents = new Set<string>();
+  readonly author: IAuthor;
+  readonly body: readonly string[] = [];
   #changeType = CommitChangeType.Default;
   #replacements = new LookupManager();
+  readonly scope?: string;
+  #subject = '';
+  readonly timestamp: number;
+  #type?: string;
+  readonly url: string;
 
   constructor({ hash, timestamp, headline, body, url, author }: ICommitOptions) {
     super(hash);
@@ -123,11 +122,11 @@ export default class Commit extends Entity implements ICommit {
     this.#accents.add(text);
   }
 
-  replacement(value: string, position: number): void {
-    this.#replacements.add(value, position);
-  }
-
   is(type: CommitChangeType): boolean {
     return !!(this.#changeType & type);
+  }
+
+  replacement(value: string, position: number): void {
+    this.#replacements.add(value, position);
   }
 }

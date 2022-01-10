@@ -2,13 +2,9 @@ import { cosmiconfig } from 'cosmiconfig';
 import deepmerge from 'deepmerge';
 import path from 'path';
 import TaskTree from 'tasktree-cli';
+import { fileURLToPath } from 'url';
 
-// FIXME: remove after bump jest & ts-jest to 27.x (https://github.com/facebook/jest/issues/9430)
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import fix from '../../fix/dirname.cjs';
 import { ChangeLevel } from './entities/Entity';
-// import { fileURLToPath } from 'url';
 import { BaseRule, IRule, IRuleConfig, Rule } from './rules/BaseRule';
 import HighlightRule from './rules/HighlightRule';
 import MarkRule from './rules/MarkRule';
@@ -29,36 +25,36 @@ export enum GitServiceProvider {
 }
 
 export interface IConfigOptions {
-  bump?: boolean;
   branch?: string;
-  provider?: GitServiceProvider;
+  bump?: boolean;
   output?: string;
+  provider?: GitServiceProvider;
 }
 
 export interface IChangelogConfig {
-  provider: GitServiceProvider;
   branch: string;
   changes: {
     [key in ChangeLevel]: string[];
   };
   output: {
-    filePath: string;
     exclude: { [key in Exclusion]: string[] };
+    filePath: string;
   };
+  provider: GitServiceProvider;
   rules: {
     [key in Rule]: IRuleConfig;
   };
 }
 
 export class Config {
+  #branch = '';
+  #exclusions: [Exclusion, string[]][] = [];
+  #filePath = 'CHANGELOG.md';
+  #isInitialized = false;
   #options: IConfigOptions;
   #provider = GitServiceProvider.GitHub;
-  #branch = '';
-  #filePath = 'CHANGELOG.md';
-  #exclusions: [Exclusion, string[]][] = [];
-  #types: [string, ChangeLevel][] = [];
   #rules: IRule[] = [];
-  #isInitialized = false;
+  #types: [string, ChangeLevel][] = [];
 
   constructor(options?: IConfigOptions) {
     if (options?.provider && !Object.values(GitServiceProvider).includes(options.provider)) {
@@ -98,12 +94,10 @@ export class Config {
 
   async init(): Promise<void> {
     if (!this.#isInitialized) {
-      // FIXME: remove after bump jest & ts-jest to 27.x (https://github.com/facebook/jest/issues/9430)
-      const { dirname } = fix;
-      // const dirname = path.dirname(fileURLToPath(import.meta.url));
+      const dirname = path.dirname(fileURLToPath(import.meta.url));
       const task = TaskTree.add('Reading configuration file...');
       const explorer = cosmiconfig('changelog-guru');
-      const baseConf = await explorer.load(path.join(dirname, '.changelogrc.default.yml'));
+      const baseConf = await explorer.load(path.join(dirname, '../../.changelogrc.default.yml'));
       const userConf = await explorer.search();
 
       if (baseConf?.config && !baseConf.isEmpty) {
@@ -132,6 +126,18 @@ export class Config {
     }
   }
 
+  private getRules(configs: IChangelogConfig['rules']): IRule[] {
+    const map = {
+      [Rule.Highlight]: HighlightRule,
+      [Rule.Mark]: MarkRule,
+      [Rule.PackageStatisticRender]: PackageStatisticRenderRule,
+      [Rule.ScopeRename]: ScopeRenameRule,
+      [Rule.SectionGroup]: SectionGroupRule,
+    };
+
+    return [...Object.values(Rule)].map(rule => new (map[rule] as typeof BaseRule)(configs[rule]) as IRule);
+  }
+
   private getTypes(changes: IChangelogConfig['changes']): [string, ChangeLevel][] {
     const levels = Object.values(ChangeLevel);
 
@@ -143,17 +149,5 @@ export class Config {
 
       return acc;
     }, [] as [string, ChangeLevel][]);
-  }
-
-  private getRules(configs: IChangelogConfig['rules']): IRule[] {
-    const map = {
-      [Rule.Highlight]: HighlightRule,
-      [Rule.Mark]: MarkRule,
-      [Rule.PackageStatisticRender]: PackageStatisticRenderRule,
-      [Rule.ScopeRename]: ScopeRenameRule,
-      [Rule.SectionGroup]: SectionGroupRule,
-    };
-
-    return [...Object.values(Rule)].map(rule => new (map[rule] as typeof BaseRule)(configs[rule]) as IRule);
   }
 }

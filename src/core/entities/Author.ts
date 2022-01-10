@@ -1,17 +1,17 @@
 import Entity, { IEntity, Priority } from './Entity';
 
 export interface IAuthor extends IEntity {
-  readonly url: string;
-  readonly login: string;
   readonly avatar: string;
+  readonly login: string;
+  readonly url: string;
 
   contribute(value?: number): void;
 }
 
 export interface IAuthorOptions {
+  avatar: string;
   login: string;
   url: string;
-  avatar: string;
 }
 
 const DEFAULT_AVATAR_SIZE = 40;
@@ -19,11 +19,10 @@ const PRIORITY_INCREASE_STEP = 1;
 const URL_SIZE_PARAMETER_NAME = 's';
 
 export default class Author extends Entity implements IAuthor {
-  readonly url: string;
-  readonly login: string;
   readonly avatar: string;
-
+  readonly login: string;
   #priority = Priority.Low;
+  readonly url: string;
 
   constructor({ login, url, avatar }: IAuthorOptions) {
     super(`@${login}`);

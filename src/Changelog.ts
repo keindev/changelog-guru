@@ -6,21 +6,21 @@ import { Config, GitServiceProvider } from './core/Config';
 import { Linter } from './core/Linter';
 
 export type IBuildOptions = {
-  /** Bumps package version in package.json if specified */
-  bump?: boolean;
   /** Sets the branch by which the change log will be generated */
   branch?: string;
-  /** Specifies the type of service provider to receive project information */
-  provider?: GitServiceProvider;
+  /** Bumps package version in package.json if specified */
+  bump?: boolean;
   /** Output file path */
   output?: string;
+  /** Specifies the type of service provider to receive project information */
+  provider?: GitServiceProvider;
 };
 
 export type ILintOptions = {
-  /** Commit message for linting */
-  message?: string;
   /** Max commit header length */
   maxLength?: number;
+  /** Commit message for linting */
+  message?: string;
 };
 
 /**

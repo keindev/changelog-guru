@@ -1,4 +1,4 @@
-import { PackageJson } from 'type-fest';
+import Package from 'package-json-helper';
 
 import { GitServiceProvider } from '../Config';
 import { ICommit } from '../entities/Commit';
@@ -9,19 +9,19 @@ export default class GitLabProvider extends GitProvider {
     super({ type: GitServiceProvider.GitLab, url, branch });
   }
 
-  getLastChangeDate(_?: boolean): Promise<Date> {
-    return Promise.resolve(new Date());
-  }
-
   getCommits(_: Date): Promise<ICommit[]> {
-    return Promise.resolve([]);
+    throw new Error();
   }
 
-  getPreviousPackage(_: Date): Promise<PackageJson> {
-    return Promise.resolve({});
+  getCurrentPackage(_: Date): Promise<Package> {
+    throw new Error();
   }
 
-  getCurrentPackage(_: Date): Promise<PackageJson> {
-    return Promise.resolve({});
+  getLastChangeDate(_?: boolean): Promise<Date> {
+    throw new Error();
+  }
+
+  getPreviousPackage(_: Date): Promise<Package> {
+    throw new Error();
   }
 }
