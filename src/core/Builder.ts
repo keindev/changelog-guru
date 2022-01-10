@@ -42,6 +42,31 @@ export default class Builder {
     }
   }
 
+  private async bumpPackage(provider: IGitProvider): Promise<void> {
+    if (this.#config.bump && this.#package.version && this.#state) {
+      const task = TaskTree.add('Updating package version');
+      const date = await provider.getLastChangeDate(true);
+      const { version: prevVersion } = await provider.getCurrentPackage(date);
+      const { version } = this.#package;
+
+      if (prevVersion && prevVersion !== version) {
+        task.skip(
+          `Package version is already changed from {bold ${prevVersion}(${provider.branch.dev})} to {bold ${version}}`
+        );
+      } else {
+        const [major, minor, patch] = this.#state.changesLevels;
+
+        if (major || minor || patch) {
+          this.#package.bump({ major, minor, patch });
+          await this.#package.save();
+          task.log(`Package version updated to {bold ${this.#package.version}}`);
+        } else {
+          task.log('Package version does not change');
+        }
+      }
+    }
+  }
+
   private async read(provider: IGitProvider): Promise<void> {
     const stage = TaskTree.add('Loading repository changes...');
     const date = await provider.getLastChangeDate();
@@ -125,25 +150,7 @@ export default class Builder {
       }
 
       await fs.writeFile(filePath, data.join('\n'));
-
-      if (this.#config.bump && this.#package.version) {
-        const date = await provider.getLastChangeDate(true);
-        const { version: prevVersion } = await provider.getCurrentPackage(date);
-        const { version } = this.#package;
-
-        task.clear();
-
-        if (prevVersion && prevVersion !== version) {
-          task.skip(
-            `Package version is already changed from {bold ${prevVersion}(${provider.branch.dev})} to {bold ${version}}`
-          );
-        } else {
-          const [major, minor, patch] = this.#state.changesLevels;
-
-          this.#package.bump({ major, minor, patch });
-          await this.#package.save();
-        }
-      }
+      await this.bumpPackage(provider);
 
       task.complete('Changelog generated!');
     }
