@@ -1,4 +1,3 @@
-import faker from 'faker';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { Config } from '../../core/Config';
@@ -8,10 +7,20 @@ import MarkRule from '../../core/rules/MarkRule';
 import State from '../../core/State';
 
 describe('Mark rule', () => {
+  const hash = '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6';
   const config = new Config();
   const context = new State('MIT');
-  const author = new Author({ login: 'keindev', url: 'https://github.com/keindev', avatar: faker.internet.avatar() });
-  const commitOptions = { timestamp: 0, headline: 'feat(Jest): subject', url: faker.internet.url(), author };
+  const author = new Author({
+    login: 'keindev',
+    url: 'https://github.com/keindev',
+    avatar: 'https://avatars.githubusercontent.com/u/4527292?v=4',
+  });
+  const commitOptions = {
+    timestamp: 0,
+    headline: 'feat(Jest): subject',
+    url: 'https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
+    author,
+  };
   let rule: MarkRule;
 
   beforeAll(async () => {
@@ -32,7 +41,7 @@ describe('Mark rule', () => {
   describe('Parse', () => {
     it('!deprecated marker', () => {
       const section = context.findSection('DEPRECATIONS');
-      const commit = new Commit({ ...commitOptions, hash: faker.git.commitSha(), body: '!deprecated' });
+      const commit = new Commit({ ...commitOptions, hash, body: '!deprecated' });
 
       expect(section).toBeDefined();
       expect(commit.is(CommitChangeType.Deprecated)).toBeFalsy();
@@ -45,7 +54,7 @@ describe('Mark rule', () => {
 
     it('!break marker', () => {
       const section = context.findSection('BREAKING CHANGES');
-      const commit = new Commit({ ...commitOptions, hash: faker.git.commitSha(), body: '!break' });
+      const commit = new Commit({ ...commitOptions, hash, body: '!break' });
 
       expect(section).toBeDefined();
       expect(commit.is(CommitChangeType.BreakingChanges)).toBeFalsy();
@@ -57,7 +66,7 @@ describe('Mark rule', () => {
     });
 
     it('!ignore marker', () => {
-      const commit = new Commit({ ...commitOptions, hash: faker.git.commitSha(), body: '!ignore' });
+      const commit = new Commit({ ...commitOptions, hash, body: '!ignore' });
 
       expect(commit.isIgnored).toBeFalsy();
 
@@ -67,7 +76,7 @@ describe('Mark rule', () => {
     });
 
     it('!group marker', () => {
-      const commit = new Commit({ ...commitOptions, hash: faker.git.commitSha(), body: '!group(Jest markers test)' });
+      const commit = new Commit({ ...commitOptions, hash, body: '!group(Jest markers test)' });
       const count = context.sections.length;
 
       rule.parse({ commit, context });
@@ -78,7 +87,7 @@ describe('Mark rule', () => {
 
     it('!important marker', () => {
       const section = context.findSection('Important Internal Changes');
-      const commit = new Commit({ ...commitOptions, hash: faker.git.commitSha(), body: '!important' });
+      const commit = new Commit({ ...commitOptions, hash, body: '!important' });
 
       expect(section).toBeDefined();
       expect(commit.is(CommitChangeType.Important)).toBeFalsy();

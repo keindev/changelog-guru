@@ -1,3 +1,6 @@
+import {
+    IPackageChange, PackageDependency, PackageDependencyChangeType, PackageRestriction,
+} from 'package-json-helper/lib/types';
 import TaskTree from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/Task';
 
@@ -5,52 +8,49 @@ import md from '../../utils/markdown';
 import { ChangeLevel } from '../entities/Entity';
 import Message from '../entities/Message';
 import Section, { ISection, SectionOrder, SectionPosition } from '../entities/Section';
-import { Dependency, DependencyChangeType, IPackageChange, Restriction } from '../Package';
 import { BaseRule, IRule, IRuleConfig, IRuleModifyOptions } from './BaseRule';
 
 export enum TemplateLiteral {
   Name = '%name%',
-  Version = '%ver%',
-  PrevVersion = '%pver%',
   Value = '%val%',
   PrevValue = '%pval%',
 }
 
 export interface IPackageStatisticRenderRuleConfig extends IRuleConfig {
-  title: string;
+  sections: (PackageDependency | PackageRestriction)[];
   templates: {
-    [key in DependencyChangeType]: string;
+    [key in PackageDependencyChangeType]: string;
   };
-  sections: (Dependency | Restriction)[];
+  title: string;
 }
 
 const SECTION_TITLES_MAP = {
-  [Dependency.Engines]: 'Engines',
-  [Dependency.Dependencies]: 'Dependencies',
-  [Dependency.DevDependencies]: 'Dev Dependencies',
-  [Dependency.OptionalDependencies]: 'Optional Dependencies',
-  [Dependency.PeerDependencies]: 'Peer Dependencies',
-  [Restriction.BundledDependencies]: 'Bundled Dependencies',
-  [Restriction.CPU]: 'CPU',
-  [Restriction.OS]: 'OS',
+  [PackageDependency.Engines]: 'Engines',
+  [PackageDependency.Dependencies]: 'Dependencies',
+  [PackageDependency.DevDependencies]: 'Dev Dependencies',
+  [PackageDependency.OptionalDependencies]: 'Optional Dependencies',
+  [PackageDependency.PeerDependencies]: 'Peer Dependencies',
+  [PackageRestriction.BundledDependencies]: 'Bundled Dependencies',
+  [PackageRestriction.CPU]: 'CPU',
+  [PackageRestriction.OS]: 'OS',
 };
 
 const COLLAPSIBLE_SECTIONS_MAP = [
-  Dependency.Dependencies,
-  Dependency.DevDependencies,
-  Dependency.OptionalDependencies,
-  Dependency.PeerDependencies,
-  Restriction.BundledDependencies,
+  PackageDependency.Dependencies,
+  PackageDependency.DevDependencies,
+  PackageDependency.OptionalDependencies,
+  PackageDependency.PeerDependencies,
+  PackageRestriction.BundledDependencies,
 ];
 
 export default class PackageStatisticRenderRule extends BaseRule<IPackageStatisticRenderRuleConfig> implements IRule {
-  #sections: (Dependency | Restriction)[] = [];
+  #sections: (PackageDependency | PackageRestriction)[] = [];
   #templates: [string, string][];
 
   constructor(config: IPackageStatisticRenderRuleConfig) {
     super(config);
 
-    const changes = Object.values<string>(DependencyChangeType);
+    const changes = Object.values<string>(PackageDependencyChangeType);
 
     this.#templates = Object.entries(config.templates).filter(([type]) => changes.includes(type));
     this.#sections = [...new Set(config.sections)];
@@ -114,13 +114,9 @@ export default class PackageStatisticRenderRule extends BaseRule<IPackageStatist
                 case TemplateLiteral.Name:
                   return md.strong(link ? md.link(name, link) : name);
                 case TemplateLiteral.Value:
-                  return md.wrap(change.value);
-                case TemplateLiteral.Version:
-                  return md.wrap(change.version);
+                  return md.wrap(change.value.current);
                 case TemplateLiteral.PrevValue:
-                  return md.wrap(change.prevValue);
-                case TemplateLiteral.PrevVersion:
-                  return md.wrap(change.prevVersion);
+                  return md.wrap(change.value.previous);
                 default:
                   (task || TaskTree).fail(`Unexpected template literal: {bold ${substring}}`);
                   break;

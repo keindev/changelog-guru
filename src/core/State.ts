@@ -1,3 +1,4 @@
+import { IPackageChange, PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
 import TaskTree from 'tasktree-cli';
 
 import { findSame, isSame, unify } from '../utils/text';
@@ -6,18 +7,16 @@ import Author, { IAuthor } from './entities/Author';
 import Commit, { ICommit } from './entities/Commit';
 import { ChangeLevel } from './entities/Entity';
 import Section, { ISection, ISectionOptions, SectionOrder, SectionPosition } from './entities/Section';
-import { Dependency, IPackageChange, Restriction } from './Package';
 import { IRule, IRuleContext } from './rules/BaseRule';
 
 export default class State implements IRuleContext {
-  #sections: ISection[] = [];
   #authors = new Map<string, IAuthor>();
+  #changes = new Map<PackageDependency | PackageRestriction, IPackageChange[]>();
   #commits = new Map<string, ICommit>();
-  #changes = new Map<Dependency | Restriction, IPackageChange[]>();
-
   readonly currentLicense: string;
-  readonly previousLicense?: string;
   readonly hasChangedLicense: boolean;
+  readonly previousLicense?: string;
+  #sections: ISection[] = [];
 
   constructor(currentLicense: string, previousLicense?: string) {
     this.currentLicense = currentLicense;
@@ -37,6 +36,42 @@ export default class State implements IRuleContext {
     return [...this.#commits.values()].filter(Commit.filter).sort(Commit.compare);
   }
 
+  get changesLevels(): [number, number, number] {
+    let major = 0;
+    let minor = 0;
+    let patch = 0;
+
+    if (
+      this.#changes.has(PackageDependency.Engines) ||
+      this.#changes.has(PackageRestriction.OS) ||
+      this.#changes.has(PackageRestriction.CPU)
+    ) {
+      major++;
+    } else {
+      this.#commits.forEach(commit => {
+        switch (commit.level) {
+          case ChangeLevel.Major:
+            major++;
+            break;
+          case ChangeLevel.Minor:
+            minor++;
+            break;
+          case ChangeLevel.Patch:
+            patch++;
+            break;
+          default:
+            TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.level}}`);
+        }
+      });
+    }
+
+    return [major, minor, patch];
+  }
+
+  addChanges(type: PackageDependency | PackageRestriction, changes: IPackageChange[]): void {
+    this.#changes.set(type, changes);
+  }
+
   addCommit(commit: ICommit): void {
     if (!this.#commits.has(commit.name)) {
       const { author } = commit;
@@ -49,46 +84,6 @@ export default class State implements IRuleContext {
         this.#authors.set(author.name, author);
       }
     }
-  }
-
-  getChanges(type: Dependency | Restriction): IPackageChange[] {
-    return [...(this.#changes.get(type) ?? [])];
-  }
-
-  addChanges(type: Dependency | Restriction, changes: IPackageChange[]): void {
-    this.#changes.set(type, changes);
-  }
-
-  get changesLevels(): [number, number, number] {
-    let major = 0;
-    let minor = 0;
-    let patch = 0;
-
-    this.#commits.forEach(commit => {
-      switch (commit.level) {
-        case ChangeLevel.Major:
-          major++;
-          break;
-        case ChangeLevel.Minor:
-          minor++;
-          break;
-        case ChangeLevel.Patch:
-          patch++;
-          break;
-        default:
-          TaskTree.fail(`Incompatible ChangeLevel - {bold ${commit.level}}`);
-      }
-    });
-
-    return [major, minor, patch];
-  }
-
-  updateCommitsChangeLevel(types: [string, ChangeLevel][]): void {
-    this.#commits.forEach(commit => {
-      const [, level] = types.find(([name]) => isSame(commit.type, name)) ?? [];
-
-      if (level) commit.level = level;
-    });
   }
 
   addSection(options: ISectionOptions): ISection | undefined {
@@ -104,6 +99,10 @@ export default class State implements IRuleContext {
 
   findSection(name: string): ISection | undefined {
     return this.#sections.find((section): boolean => isSame(section.name, name));
+  }
+
+  getChanges(type: PackageDependency | PackageRestriction): IPackageChange[] {
+    return [...(this.#changes.get(type) ?? [])];
   }
 
   ignore(exclusions: [Exclusion, string[]][]): void {
@@ -148,5 +147,13 @@ export default class State implements IRuleContext {
 
     subtask.complete();
     task.complete('Changelog structure is formate!', true);
+  }
+
+  updateCommitsChangeLevel(types: [string, ChangeLevel][]): void {
+    this.#commits.forEach(commit => {
+      const [, level] = types.find(([name]) => isSame(commit.type, name)) ?? [];
+
+      if (level) commit.level = level;
+    });
   }
 }

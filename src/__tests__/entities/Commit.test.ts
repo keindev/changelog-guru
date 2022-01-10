@@ -1,11 +1,9 @@
-import faker from 'faker';
-
 import Author from '../../core/entities/Author';
 import Commit, { CommitChangeType } from '../../core/entities/Commit';
 import { ChangeLevel, Compare, Priority } from '../../core/entities/Entity';
 
 describe('Commit', () => {
-  const login = faker.internet.userName();
+  const login = 'keindev';
   const hash = 'b816518030dace1b91838ae0abd56fa88eba19f';
   const timestamp = new Date(0).getTime();
   const body = '\n\nbody\n\nfooter';
@@ -67,8 +65,8 @@ describe('Commit', () => {
     });
 
     it('Only unique accents added', () => {
-      const a = faker.system.fileName();
-      const b = faker.system.fileName();
+      const a = 'test';
+      const b = 'jest';
 
       commit.accent(a);
       commit.accent(a);

@@ -1,5 +1,3 @@
-import faker from 'faker';
-
 import Author from '../../core/entities/Author';
 import Commit from '../../core/entities/Commit';
 import { ChangeLevel, Compare, Priority } from '../../core/entities/Entity';
@@ -7,15 +5,15 @@ import Message from '../../core/entities/Message';
 import Section, { SectionOrder, SectionPosition } from '../../core/entities/Section';
 
 describe('Section', () => {
-  const login = faker.internet.userName();
+  const login = 'keindev';
   let section: Section;
   let message: Message;
   let author: Author;
   let commit: Commit;
 
   beforeEach(() => {
-    section = new Section({ name: faker.lorem.word(), position: SectionPosition.Body });
-    message = new Message(faker.lorem.words());
+    section = new Section({ name: 'Dependencies', position: SectionPosition.Body });
+    message = new Message('Bump dependencies');
     author = new Author({
       login,
       avatar: 'https://avatars3.githubusercontent.com/u/4527292?v=4',
@@ -131,7 +129,7 @@ describe('Section', () => {
     });
 
     it('Relations between subsections are built correctly', () => {
-      const subsection = new Section({ name: faker.lorem.word(), position: SectionPosition.Body });
+      const subsection = new Section({ name: 'Engines', position: SectionPosition.Body });
       const relations: Map<string, Section> = new Map();
 
       section.add(commit);

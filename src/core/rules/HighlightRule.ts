@@ -1,8 +1,8 @@
 import { BaseRule, IRule, IRuleConfig, IRuleParseOptions } from './BaseRule';
 
 export interface IHighlightRuleConfig extends IRuleConfig {
-  masks: string[];
   camelCase: boolean;
+  masks: string[];
 }
 
 export default class HighlightRule extends BaseRule<IHighlightRuleConfig> implements IRule {

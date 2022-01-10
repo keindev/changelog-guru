@@ -46,37 +46,6 @@ export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule
     this.#markers = new Set(Object.values(MarkerType));
   }
 
-  prepare({ context }: IRulePrepareOptions): void {
-    const order = SectionOrder.Min;
-
-    this.#sections = new Map(
-      Object.entries(this.config.joins).reduce((acc: [MarkerType, ISection][], [type, name]) => {
-        const section = context.addSection({ name, position: POSITIONS_MAP[type] ?? SectionPosition.None, order });
-
-        if (section) {
-          acc.push([type as MarkerType, section]);
-        }
-
-        return acc;
-      }, [])
-    );
-  }
-
-  parse({ commit, context }: IRuleParseOptions): void {
-    const markers = this.getMarkersFrom(commit.body[0]);
-    let section: ISection | undefined;
-
-    commit.isIgnored = !!markers.find(([marker]) => marker === MarkerType.Ignore);
-
-    if (!commit.isIgnored) {
-      markers.forEach(([marker, name]) => {
-        if (COMMIT_CHANGE_TYPES_MAP[marker]) commit.changeType = COMMIT_CHANGE_TYPES_MAP[marker] as CommitChangeType;
-        if (marker === MarkerType.Grouped && name && context) section = context.addSection({ name });
-        if ((section = section || this.#sections.get(marker))) section.add(commit);
-      });
-    }
-  }
-
   lint({ task, body }: IRuleLintOptions): void {
     const [markersLine, blackLine, bodyFirstLine] = body;
     const markers = this.getMarkersFrom(markersLine);
@@ -96,6 +65,37 @@ export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule
     } else if (markersLine) {
       task.error('Missing blank line between header and body');
     }
+  }
+
+  parse({ commit, context }: IRuleParseOptions): void {
+    const markers = this.getMarkersFrom(commit.body[0]);
+    let section: ISection | undefined;
+
+    commit.isIgnored = !!markers.find(([marker]) => marker === MarkerType.Ignore);
+
+    if (!commit.isIgnored) {
+      markers.forEach(([marker, name]) => {
+        if (COMMIT_CHANGE_TYPES_MAP[marker]) commit.changeType = COMMIT_CHANGE_TYPES_MAP[marker] as CommitChangeType;
+        if (marker === MarkerType.Grouped && name && context) section = context.addSection({ name });
+        if ((section = section || this.#sections.get(marker))) section.add(commit);
+      });
+    }
+  }
+
+  prepare({ context }: IRulePrepareOptions): void {
+    const order = SectionOrder.Min;
+
+    this.#sections = new Map(
+      Object.entries(this.config.joins).reduce((acc: [MarkerType, ISection][], [type, name]) => {
+        const section = context.addSection({ name, position: POSITIONS_MAP[type] ?? SectionPosition.None, order });
+
+        if (section) {
+          acc.push([type as MarkerType, section]);
+        }
+
+        return acc;
+      }, [])
+    );
   }
 
   private getMarkersFrom(text?: string): [MarkerType, string, string][] {

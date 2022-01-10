@@ -1,10 +1,8 @@
-import faker from 'faker';
-import { coerce, inc, SemVer } from 'semver';
+import { PackageDependency, PackageDependencyChangeType } from 'package-json-helper/lib/types';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { Config } from '../../core/Config';
 import { ISection } from '../../core/entities/Section';
-import { Dependency, DependencyChangeType } from '../../core/Package';
 import PackageStatisticRenderRule from '../../core/rules/PackageStatisticRenderRule';
 import State from '../../core/State';
 
@@ -20,20 +18,18 @@ describe('Package statistic rule', () => {
 
   it('Modify', () => {
     const task = new Task('Test');
-    const name = faker.git.branch();
-    const version = faker.system.semver();
+    const name = 'test-package';
     const license = 'MIT';
-    const link = `https://www.npmjs.com/package/${name}/v/${version}`;
+    const link = `https://www.npmjs.com/package/${name}/v/6.1.2`;
     const context = new State(license);
     const dependency = {
       name,
-      type: DependencyChangeType.Bumped,
-      version: coerce(inc(version, 'major')) as SemVer,
-      prevVersion: coerce(version) as SemVer,
       link,
+      type: PackageDependencyChangeType.Bumped,
+      value: { current: '6.1.2', previous: '5.0.8' },
     };
 
-    context.addChanges(Dependency.Dependencies, [dependency]);
+    context.addChanges(PackageDependency.Dependencies, [dependency]);
     rule.modify({ task, context });
 
     const section = context.findSection('Important Changes');
@@ -49,7 +45,7 @@ describe('Package statistic rule', () => {
         [
           'Dependencies',
           'patch',
-          `- Bumped **[${name}](${link})** from \`${dependency.prevVersion}\` to \`${dependency.version}\``,
+          `- Bumped **[${name}](${link})** from \`${dependency.value.previous}\` to \`${dependency.value.current}\``,
         ],
       ],
     ]);

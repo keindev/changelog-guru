@@ -19,35 +19,34 @@ export enum SectionOrder {
 }
 
 export interface ISection extends IEntity {
-  readonly title: string;
-  readonly sections: ISection[];
   readonly commits: ICommit[];
-  readonly messages: IMessage[];
-  readonly isSubsection: boolean;
   readonly isDetails: boolean;
-  readonly isGroup: boolean;
   readonly isEmpty: boolean;
-
+  readonly isGroup: boolean;
+  readonly isSubsection: boolean;
+  readonly messages: IMessage[];
   order: number;
   position: SectionPosition;
+  readonly sections: ISection[];
+  readonly title: string;
 
   add(entity: ICommit | ISection | IMessage): void;
-  remove(entity: ICommit | ISection | IMessage): void;
   assign(relations: Map<string, ISection>, type?: SectionPosition.Subsection): void;
+  remove(entity: ICommit | ISection | IMessage): void;
 }
 
 export interface ISectionOptions {
-  name: string;
-  position?: SectionPosition;
-  order?: number;
   emoji?: string;
+  name: string;
+  order?: number;
+  position?: SectionPosition;
 }
 
 export default class Section extends Entity implements ISection {
-  #order: number;
   #emoji: string | undefined;
-  #position: SectionPosition;
   #entities = new Map<string, IEntity>();
+  #order: number;
+  #position: SectionPosition;
 
   constructor({ name, position, order, emoji }: ISectionOptions) {
     super(name);
@@ -133,10 +132,6 @@ export default class Section extends Entity implements ISection {
     }
   }
 
-  remove(entity: ICommit | ISection | IMessage): void {
-    if (this.#entities.delete(entity.name) && entity instanceof Section) entity.position = SectionPosition.Group;
-  }
-
   assign(relations: Map<string, ISection>, type?: SectionPosition.Subsection): void {
     const { commits } = this;
 
@@ -157,6 +152,10 @@ export default class Section extends Entity implements ISection {
     } else {
       commits.forEach(commit => (relations.has(commit.name) ? this.remove(commit) : relations.set(commit.name, this)));
     }
+  }
+
+  remove(entity: ICommit | ISection | IMessage): void {
+    if (this.#entities.delete(entity.name) && entity instanceof Section) entity.position = SectionPosition.Group;
   }
 
   private listOf(cls: typeof Section | typeof Commit | typeof Message): IEntity[] {

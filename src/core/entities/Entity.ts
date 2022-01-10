@@ -17,12 +17,11 @@ export enum Priority {
 }
 
 export interface IEntity {
+  readonly isEmpty: boolean;
+  isIgnored: boolean;
+  level: ChangeLevel;
   readonly name: string;
   readonly priority: Priority;
-  readonly isEmpty: boolean;
-
-  level: ChangeLevel;
-  isIgnored: boolean;
 }
 
 const ENTITY_PRIORITY_MAP = {
@@ -32,10 +31,9 @@ const ENTITY_PRIORITY_MAP = {
 };
 
 export default class Entity implements IEntity {
-  readonly name: string;
-
   #isIgnored = false;
   #level: ChangeLevel = ChangeLevel.Patch;
+  readonly name: string;
 
   constructor(name = '') {
     this.name = name;

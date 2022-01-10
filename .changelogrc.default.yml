@@ -2,7 +2,7 @@
 # Specifies the type of service provider to receive project information
 provider: github
 # Branch for compare with current branch and get a changelog
-branch: master
+branch: main
 # Commit levels of changes
 # The commits with the specified types will be distributed by change levels.
 # For a list of change types by level, see https://semver.org/.  For example:
@@ -99,8 +99,6 @@ rules:
     #
     # Literals available for substitution in Templates:
     # - %name% - dependency name
-    # - %ver% - semantic version of dependency
-    # - %pver% - previous semantic version of dependency
     # - %val% - dependency version value
     # - %pval% - previous dependency version
     templates:
@@ -109,9 +107,9 @@ rules:
       # Template for dependencies whose values is not `SemVer` and has been changed
       changed: 'Changed %name% from %pval% to %val%'
       # Template for dependencies whose version was bumped
-      bumped: 'Bumped %name% from %pver% to %ver%'
+      bumped: 'Bumped %name% from %pval% to %val%'
       # Template for dependencies whose version was downgraded
-      downgraded: 'Downgraded %name% from %pver% to %ver%'
+      downgraded: 'Downgraded %name% from %pval% to %val%'
       # Template for removed dependencies
       removed: 'Removed %name%, with %pval%'
     # List of available for output sections.

@@ -1,4 +1,6 @@
-import faker from 'faker';
+// @see https://github.com/facebook/jest/issues/9430
+// eslint-disable-next-line node/no-extraneous-import
+import { jest } from '@jest/globals';
 import { default as GQLCommit } from 'gh-gql/lib/queries/Commit';
 import { default as GQLFile } from 'gh-gql/lib/queries/File';
 
@@ -6,30 +8,32 @@ import Author from '../../core/entities/Author';
 import Commit from '../../core/entities/Commit';
 import GitHubProvider from '../../core/providers/GitHubProvider';
 
+jest.useFakeTimers();
+
 const lastCommitData = {
-  commitUrl: faker.internet.url(),
+  commitUrl: 'https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
   committedDate: new Date(0).toISOString(),
-  committer: { name: faker.internet.userName() },
+  committer: { name: 'keindev' },
 };
 const commitData = {
-  oid: faker.git.commitSha(),
+  oid: '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
   messageHeadline: 'fix: test',
-  messageBody: faker.git.commitMessage(),
+  messageBody: 'Merge branch master into dev',
   url: lastCommitData.commitUrl,
   committedDate: lastCommitData.committedDate,
   author: {
-    avatarUrl: faker.internet.avatar(),
+    avatarUrl: 'https://avatars.githubusercontent.com/u/4527292?v=4',
     user: {
       databaseId: 1,
       login: lastCommitData.committer.name,
-      url: faker.internet.url(),
+      url: 'https://github.com/keindev',
     },
   },
 };
-const fileId = faker.git.commitSha();
+const fileId = '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6';
 const fileData = {
   name: 'changelog-guru',
-  version: faker.system.semver(),
+  version: '3.0.1',
   description: 'Git changelog generator',
   homepage: 'https://github.com/keindev/changelog-guru#readme',
   license: 'MIT',
@@ -41,7 +45,7 @@ jest.spyOn(GQLFile.prototype, 'getId').mockImplementation(() => Promise.resolve(
 jest.spyOn(GQLFile.prototype, 'getContent').mockImplementation(() => Promise.resolve(JSON.stringify(fileData)));
 
 describe('GitHubProvider', () => {
-  const provider = new GitHubProvider(faker.internet.url());
+  const provider = new GitHubProvider('https://github.com/keindev/changelog-guru');
 
   it('Get last change date', async () => {
     const date = await provider.getLastChangeDate();

@@ -1,5 +1,3 @@
-import faker from 'faker';
-
 import { Config, Exclusion } from '../core/Config';
 import Author from '../core/entities/Author';
 import Commit from '../core/entities/Commit';
@@ -9,6 +7,15 @@ import State from '../core/State';
 
 describe('State', () => {
   const config = new Config();
+  const getCommitBase = ((): ((timestamp?: number) => { hash: string; timestamp: number; url: string }) => {
+    let i = 0;
+
+    return (timestamp = i) => ({
+      hash: `779ed9b4803da533c1d55f26e5cc7d58ff3d47b${i}`,
+      url: `https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b${i++}`,
+      timestamp,
+    });
+  })();
   let state: State;
 
   beforeAll(async () => {
@@ -20,42 +27,15 @@ describe('State', () => {
   });
 
   it('Build state tree', () => {
-    const author1 = new Author({ login: 'dev1', url: faker.internet.url(), avatar: faker.internet.avatar() });
-    const author2 = new Author({ login: 'dev2', url: faker.internet.url(), avatar: faker.internet.avatar() });
-    const author3 = new Author({
-      login: 'dependabot-preview[bot]',
-      url: faker.internet.url(),
-      avatar: faker.internet.avatar(),
-    });
-
-    const commit1 = new Commit({
-      hash: faker.git.commitSha(),
-      author: author2,
-      headline: 'feat(State): message1',
-      timestamp: 0,
-      url: faker.internet.url(),
-    });
-    const commit2 = new Commit({
-      hash: faker.git.commitSha(),
-      author: author1,
-      headline: 'test(State): message2',
-      timestamp: 0,
-      url: faker.internet.url(),
-    });
-    const commit3 = new Commit({
-      hash: faker.git.commitSha(),
-      author: author1,
-      headline: 'test(State): message3',
-      timestamp: 0,
-      url: faker.internet.url(),
-    });
-    const commit4 = new Commit({
-      hash: faker.git.commitSha(),
-      author: author3,
-      headline: 'build(deps): ignore this message',
-      timestamp: 0,
-      url: faker.internet.url(),
-    });
+    const avatar = 'https://avatars.githubusercontent.com/u/4527292?v=4';
+    const url = 'https://github.com/keindev';
+    const author1 = new Author({ login: 'dev1', url, avatar });
+    const author2 = new Author({ login: 'dev2', url, avatar });
+    const author3 = new Author({ login: 'dependabot-preview[bot]', url, avatar });
+    const commit1 = new Commit({ ...getCommitBase(0), author: author2, headline: 'feat(State): message1' });
+    const commit2 = new Commit({ ...getCommitBase(0), author: author1, headline: 'test(State): message2' });
+    const commit3 = new Commit({ ...getCommitBase(0), author: author1, headline: 'test(State): message3' });
+    const commit4 = new Commit({ ...getCommitBase(0), author: author3, headline: 'build(deps): ignore this message' });
     const section1 = state.addSection({ name: 'header section', position: SectionPosition.Header }) as ISection;
     const section2 = state.addSection({ name: 'empty section', position: SectionPosition.Footer }) as ISection;
 
@@ -98,48 +78,15 @@ describe('State', () => {
   });
 
   it('Filter commits', () => {
-    const bot = new Author({
-      login: 'bot',
-      url: faker.internet.url(),
-      avatar: faker.internet.avatar(),
-    });
-    const author = new Author({
-      login: 'dev1',
-      url: faker.internet.url(),
-      avatar: faker.internet.avatar(),
-    });
+    const avatar = 'https://avatars.githubusercontent.com/u/4527292?v=4';
+    const url = 'https://github.com/keindev';
+    const bot = new Author({ login: 'bot', url, avatar });
+    const author = new Author({ login: 'dev1', url, avatar });
 
-    const A = new Commit({
-      author,
-      hash: faker.git.commitSha(),
-      timestamp: 1,
-      headline: 'feat(AAA): AAA',
-      url: faker.internet.url(),
-    });
-
-    const B = new Commit({
-      author,
-      hash: faker.git.commitSha(),
-      timestamp: 2,
-      headline: 'fix(BBB): BBB',
-      url: faker.internet.url(),
-    });
-
-    const C = new Commit({
-      author,
-      hash: faker.git.commitSha(),
-      timestamp: 2,
-      headline: 'fix(CCC): CCC',
-      url: faker.internet.url(),
-    });
-
-    const D = new Commit({
-      author: bot,
-      hash: faker.git.commitSha(),
-      timestamp: 2,
-      headline: 'build(DDD): DDD',
-      url: faker.internet.url(),
-    });
+    const A = new Commit({ ...getCommitBase(), author, headline: 'feat(AAA): AAA' });
+    const B = new Commit({ ...getCommitBase(), author, headline: 'fix(BBB): BBB' });
+    const C = new Commit({ ...getCommitBase(), author, headline: 'fix(CCC): CCC' });
+    const D = new Commit({ ...getCommitBase(), author: bot, headline: 'build(DDD): DDD' });
 
     state.addCommit(A);
     state.addCommit(B);

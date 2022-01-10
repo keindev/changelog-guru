@@ -1,4 +1,4 @@
-<p align="center"><img width="600" src="https://cdn.jsdelivr.net/gh/keindev/changelog-guru/media/logo.svg" alt="Changelog-guru logo"></p>
+<p align="center"><img src="https://cdn.jsdelivr.net/gh/keindev/changelog-guru/media/banner.svg" alt="Package logo"></p>
 
 <p align="center">
     <a href="https://github.com/keindev/changelog-guru/actions"><img src="https://github.com/keindev/changelog-guru/actions/workflows/build.yml/badge.svg" alt="Build Status"></a>
@@ -14,7 +14,7 @@ Automated changelog generator:package::zap::clipboard:
 ## Install
 
 ```console
-npm install changelog-guru
+npm install changelog-guru --save-dev
 ```
 
 ## Goals

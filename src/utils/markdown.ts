@@ -1,5 +1,3 @@
-import { SemVer } from 'semver';
-
 const MIN_HEADER_LEVEL = 1;
 const MAX_HEADER_LEVEL = 6;
 
@@ -18,7 +16,7 @@ export const list = (text: string): string => `- ${capitalize(text)}`;
 export const strong = (text: string): string => `**${text}**`;
 export const summary = (text: string): string => `<summary>${text}</summary>\n`;
 export const title = (text: string, level = 1): string => `${header(level)} ${capitalize(text)}\n`;
-export const wrap = (text?: SemVer | string): string => `\`${text}\``;
+export const wrap = (text?: string): string => `\`${text}\``;
 
 export default {
   capitalize,

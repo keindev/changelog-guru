@@ -1,7 +1,12 @@
+// @see https://github.com/facebook/jest/issues/9430
+// eslint-disable-next-line node/no-extraneous-import
+import { jest } from '@jest/globals';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { Config } from '../core/Config';
 import { Linter } from '../core/Linter';
+
+jest.useFakeTimers();
 
 describe('Linter', () => {
   const config = new Config();

@@ -1,8 +1,8 @@
+import { IPackageChange, PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { ICommit } from '../entities/Commit';
 import { ISection, ISectionOptions } from '../entities/Section';
-import { Dependency, IPackageChange, Restriction } from '../Package';
 
 export enum Rule {
   Highlight = 'highlight',
@@ -14,12 +14,12 @@ export enum Rule {
 
 export interface IRuleContext {
   readonly currentLicense: string;
-  readonly previousLicense?: string;
   readonly hasChangedLicense: boolean;
+  readonly previousLicense?: string;
 
-  getChanges(type: Dependency | Restriction): IPackageChange[] | undefined;
   addSection(options: ISectionOptions): ISection | undefined;
   findSection(name: string): ISection | undefined;
+  getChanges(type: PackageDependency | PackageRestriction): IPackageChange[] | undefined;
 }
 
 export type IRuleActionOptions = { context: IRuleContext };
@@ -27,19 +27,19 @@ export type IRulePrepareOptions = IRuleActionOptions;
 export type IRuleModifyOptions = { task: Task } & IRuleActionOptions;
 export type IRuleParseOptions = { commit: ICommit } & IRuleActionOptions;
 export type IRuleLintOptions = {
-  task: Task;
-  headline: string;
   body: string[];
-  type: string;
+  headline: string;
   scope: string;
   subject: string;
+  task: Task;
+  type: string;
 };
 
 export type IRule = {
-  prepare?: (options: IRulePrepareOptions) => void;
+  lint?: (options: IRuleLintOptions) => void;
   modify?: (options: IRuleModifyOptions) => void;
   parse?: (options: IRuleParseOptions) => void;
-  lint?: (options: IRuleLintOptions) => void;
+  prepare?: (options: IRulePrepareOptions) => void;
 };
 
 export interface IRuleConfig {

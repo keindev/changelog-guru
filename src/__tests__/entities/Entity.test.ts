@@ -1,9 +1,7 @@
-import faker from 'faker';
-
 import Entity, { ChangeLevel, Compare, Priority } from '../../core/entities/Entity';
 
 describe('Entity', () => {
-  const name = faker.internet.userName(faker.name.firstName(), faker.name.lastName());
+  const name = 'Entity';
   const entity: Entity = new Entity(name);
 
   describe('Static methods', () => {
@@ -19,8 +17,8 @@ describe('Entity', () => {
     });
 
     it('Entities is filtered', () => {
-      const a = new Entity(faker.name.firstName());
-      const b = new Entity(faker.name.firstName());
+      const a = new Entity('A');
+      const b = new Entity('B');
 
       b.isIgnored = true;
 

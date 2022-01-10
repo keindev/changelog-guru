@@ -1,4 +1,6 @@
-import fs from 'fs';
+import { promises as fs } from 'fs';
+import Package from 'package-json-helper';
+import { PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
 import path from 'path';
 import TaskTree from 'tasktree-cli';
 
@@ -8,16 +10,10 @@ import { Config, GitServiceProvider } from './Config';
 import Commit, { ICommit } from './entities/Commit';
 import Message from './entities/Message';
 import Section, { ISection } from './entities/Section';
-import Package, { Dependency, Restriction } from './Package';
 import GitHubProvider from './providers/GitHubProvider';
 import GitLabProvider from './providers/GitLabProvider';
 import { IGitProvider } from './providers/GitProvider';
 import State from './State';
-
-const PROVIDERS_MAP = {
-  [GitServiceProvider.GitHub]: GitHubProvider,
-  [GitServiceProvider.GitLab]: GitLabProvider,
-};
 
 export default class Builder {
   #config: Config;
@@ -31,11 +27,46 @@ export default class Builder {
 
   async build(): Promise<void> {
     await this.#config.init();
+    await this.#package.read();
 
-    const provider = new PROVIDERS_MAP[this.#config.provider](this.#package.repository, this.#config.branch);
+    if (this.#package.repository?.url) {
+      const provider = new {
+        [GitServiceProvider.GitHub]: GitHubProvider,
+        [GitServiceProvider.GitLab]: GitLabProvider,
+      }[this.#config.provider](this.#package.repository.url, this.#config.branch);
 
-    await this.read(provider);
-    await this.write(provider);
+      await this.read(provider);
+      await this.write(provider);
+    } else {
+      TaskTree.fail('Package repository url is not defined!');
+    }
+  }
+
+  private async bumpPackage(provider: IGitProvider): Promise<void> {
+    if (this.#config.bump && this.#package.version && this.#state) {
+      const task = TaskTree.add('Updating package version');
+      const date = await provider.getLastChangeDate(true);
+      const { version: prevVersion } = await provider.getCurrentPackage(date);
+      const { version } = this.#package;
+
+      if (prevVersion && prevVersion !== version) {
+        task.skip(
+          `Package version is already changed from {bold ${prevVersion}(${provider.branch.dev})} to {bold ${version}}`
+        );
+      } else {
+        const [major, minor, patch] = this.#state.changesLevels;
+
+        if (major || minor || patch) {
+          this.#package.bump({ major, minor, patch });
+          await this.#package.save();
+          task.complete(`Package version updated to {bold ${this.#package.version}}`);
+        } else {
+          task.skip('Package version does not change');
+        }
+      }
+
+      task.clear();
+    }
   }
 
   private async read(provider: IGitProvider): Promise<void> {
@@ -43,69 +74,28 @@ export default class Builder {
     const date = await provider.getLastChangeDate();
     const commits = await provider.getCommits(date);
     const previousPackage = await provider.getPreviousPackage(date);
-    const state = new State(this.#package.license, previousPackage.license);
 
-    [...Object.values(Dependency), ...Object.values(Restriction)].forEach(name => {
-      const previousValues = previousPackage[name];
+    if (this.#package.license) {
+      const state = new State(this.#package.license, previousPackage.license);
 
-      if (previousValues) state.addChanges(name, this.#package.getChanges(name, previousValues));
-    });
+      [...Object.values(PackageDependency), ...Object.values(PackageRestriction)].forEach(name => {
+        state.addChanges(name, this.#package.getChanges(name, previousPackage));
+      });
 
-    commits.forEach(commit => state.addCommit(commit));
-    this.#state = state;
+      commits.forEach(commit => state.addCommit(commit));
+      this.#state = state;
 
-    stage.clear();
-    stage.log(`Branch {bold ${this.#config.branch}} last changes at: {bold ${date.toLocaleString()}}`);
-    stage.log(`{bold ${commits.length}} commits loaded`);
-    stage.complete('Release information:');
-  }
-
-  private async write(provider: IGitProvider): Promise<void> {
-    if (this.#state) {
-      const task = TaskTree.add('Generate changelog...');
-
-      this.#state.updateCommitsChangeLevel(this.#config.types);
-      this.#state.ignore(this.#config.exclusions);
-      await this.#state.modify(this.#config.rules);
-
-      const data = this.#state.sections.map(subsection => this.renderSection(subsection));
-      const filePath = path.resolve(process.cwd(), this.#config.filePath);
-
-      if (this.#state.authors) {
-        data.push(md.contributors(this.#state.authors.map(({ name, avatar, url }) => md.image(name, avatar, url))), '');
-      }
-
-      await fs.promises.writeFile(filePath, data.join('\n'));
-
-      if (this.#config.bump) {
-        const date = await provider.getLastChangeDate(true);
-        const { version } = await provider.getCurrentPackage(date);
-        const [major, minor, patch] = this.#state.changesLevels;
-
-        task.clear();
-        await this.#package.bump({ major, minor, patch, branch: provider.branch.dev, version });
-      }
-
-      task.complete('Changelog generated!');
+      stage.clear();
+      stage.log(`Branch {bold ${this.#config.branch}} last changes at: {bold ${date.toLocaleString()}}`);
+      stage.log(`{bold ${commits.length}} commits loaded`);
+      stage.complete('Release information:');
+    } else {
+      stage.fail('Package license is not defined');
     }
   }
 
-  private renderSection(section: ISection, level = 1): string {
-    const sections = section.sections.filter(Section.filter);
-    const commits = section.commits.filter(Commit.filter);
-    const messages = section.messages.filter(Message.filter);
-    const output = section.isDetails ? [md.summary(section.title)] : [md.title(section.title, level)];
-
-    if (messages.length) output.push(...messages.map(message => message.text), '');
-    if (sections.length) output.push(...sections.map(subsection => this.renderSection(subsection, level + 1)));
-    if (sections.length && commits.length) output.push(md.title('Others', level + 1));
-    if (commits.length) output.push(...this.renderCommits(commits));
-
-    return section.isDetails ? md.details(output.join('\n')) : output.join('\n');
-  }
-
   private renderCommits(commits: ICommit[]): string[] {
-    const groups = new Map<string, { subject: string; accents: Set<string>; links: string[] }>();
+    const groups = new Map<string, { accents: Set<string>; links: string[]; subject: string }>();
 
     commits.forEach(commit => {
       const subject = findSame(commit.subject, [...groups.keys()]) ?? commit.subject;
@@ -130,5 +120,41 @@ export default class Builder {
       ),
       '',
     ];
+  }
+
+  private renderSection(section: ISection, level = 1): string {
+    const sections = section.sections.filter(Section.filter);
+    const commits = section.commits.filter(Commit.filter);
+    const messages = section.messages.filter(Message.filter);
+    const output = section.isDetails ? [md.summary(section.title)] : [md.title(section.title, level)];
+
+    if (messages.length) output.push(...messages.map(message => message.text), '');
+    if (sections.length) output.push(...sections.map(subsection => this.renderSection(subsection, level + 1)));
+    if (sections.length && commits.length) output.push(md.title('Others', level + 1));
+    if (commits.length) output.push(...this.renderCommits(commits));
+
+    return section.isDetails ? md.details(output.join('\n')) : output.join('\n');
+  }
+
+  private async write(provider: IGitProvider): Promise<void> {
+    if (this.#state) {
+      const task = TaskTree.add('Generate changelog...');
+
+      this.#state.updateCommitsChangeLevel(this.#config.types);
+      this.#state.ignore(this.#config.exclusions);
+      await this.#state.modify(this.#config.rules);
+
+      const data = this.#state.sections.map(subsection => this.renderSection(subsection));
+      const filePath = path.resolve(process.cwd(), this.#config.filePath);
+
+      if (this.#state.authors) {
+        data.push(md.contributors(this.#state.authors.map(({ name, avatar, url }) => md.image(name, avatar, url))), '');
+      }
+
+      await fs.writeFile(filePath, data.join('\n'));
+      await this.bumpPackage(provider);
+
+      task.complete('Changelog generated!');
+    }
   }
 }
