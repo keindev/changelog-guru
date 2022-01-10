@@ -37,15 +37,14 @@ export default class State implements IRuleContext {
   }
 
   get changesLevels(): [number, number, number] {
+    const engines = this.#changes.get(PackageDependency.Engines);
+    const os = this.#changes.get(PackageRestriction.OS);
+    const cpu = this.#changes.get(PackageRestriction.CPU);
     let major = 0;
     let minor = 0;
     let patch = 0;
 
-    if (
-      this.#changes.has(PackageDependency.Engines) ||
-      this.#changes.has(PackageRestriction.OS) ||
-      this.#changes.has(PackageRestriction.CPU)
-    ) {
+    if (engines?.length || os?.length || cpu?.length) {
       major++;
     } else {
       this.#commits.forEach(commit => {
