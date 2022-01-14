@@ -53,7 +53,7 @@
   "dependencies": {
     "cosmiconfig": "^7.0.1",
     "deepmerge": "^4.2.2",
-    "dotenv": "^10.0.0",
+    "dotenv": "^11.0.0",
     "findup-sync": "^5.0.0",
     "gh-gql": "^3.0.3",
     "package-json-helper": "^4.0.0",
