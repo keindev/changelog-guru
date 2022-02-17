@@ -71,26 +71,31 @@ export default class Builder {
 
   private async read(provider: IGitProvider): Promise<void> {
     const stage = TaskTree.add('Loading repository changes...');
-    const date = await provider.getLastChangeDate();
-    const commits = await provider.getCommits(date);
-    const previousPackage = await provider.getPreviousPackage(date);
 
-    if (this.#package.license) {
-      const state = new State(this.#package.license, previousPackage.license);
+    try {
+      const date = await provider.getLastChangeDate();
+      const commits = await provider.getCommits(date);
+      const previousPackage = await provider.getPreviousPackage(date);
 
-      [...Object.values(PackageDependency), ...Object.values(PackageRestriction)].forEach(name => {
-        state.addChanges(name, this.#package.getChanges(name, previousPackage));
-      });
+      if (this.#package.license) {
+        const state = new State(this.#package.license, previousPackage.license);
 
-      commits.forEach(commit => state.addCommit(commit));
-      this.#state = state;
+        [...Object.values(PackageDependency), ...Object.values(PackageRestriction)].forEach(name => {
+          state.addChanges(name, this.#package.getChanges(name, previousPackage));
+        });
 
-      stage.clear();
-      stage.log(`Branch {bold ${this.#config.branch}} last changes at: {bold ${date.toLocaleString()}}`);
-      stage.log(`{bold ${commits.length}} commits loaded`);
-      stage.complete('Release information:');
-    } else {
-      stage.fail('Package license is not defined');
+        commits.forEach(commit => state.addCommit(commit));
+        this.#state = state;
+
+        stage.clear();
+        stage.log(`Branch {bold ${this.#config.branch}} last changes at: {bold ${date.toLocaleString()}}`);
+        stage.log(`{bold ${commits.length}} commits loaded`);
+        stage.complete('Release information:');
+      } else {
+        stage.fail('Package license is not defined');
+      }
+    } catch (error) {
+      stage.error(error, true);
     }
   }
 

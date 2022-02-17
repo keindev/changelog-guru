@@ -46,7 +46,7 @@ export interface IRuleConfig {
   [key: string]: string | boolean | number | string[] | undefined | IRuleConfig | IRuleConfig[];
 }
 
-export class BaseRule<T = IRuleConfig> {
+export class BaseRule<T> {
   protected config: T;
 
   constructor(config: T) {
