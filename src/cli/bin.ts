@@ -1,8 +1,8 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import generate from './commands/generate';
-import lint from './commands/lint';
+import generate from './commands/generate.js';
+import lint from './commands/lint.js';
 
 const argv = yargs(hideBin(process.argv));
 

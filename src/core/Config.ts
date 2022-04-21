@@ -4,13 +4,13 @@ import path from 'path';
 import TaskTree from 'tasktree-cli';
 import { fileURLToPath } from 'url';
 
-import { ChangeLevel } from './entities/Entity';
-import { BaseRule, IRule, IRuleConfig, Rule } from './rules/BaseRule';
-import HighlightRule from './rules/HighlightRule';
-import MarkRule from './rules/MarkRule';
-import PackageStatisticRenderRule from './rules/PackageStatisticRenderRule';
-import ScopeRenameRule from './rules/ScopeRenameRule';
-import SectionGroupRule from './rules/SectionGroupRule';
+import { ChangeLevel } from './entities/Entity.js';
+import { BaseRule, IRule, IRuleConfig, Rule } from './rules/BaseRule.js';
+import HighlightRule from './rules/HighlightRule.js';
+import MarkRule from './rules/MarkRule.js';
+import PackageStatisticRenderRule from './rules/PackageStatisticRenderRule.js';
+import ScopeRenameRule from './rules/ScopeRenameRule.js';
+import SectionGroupRule from './rules/SectionGroupRule.js';
 
 export enum Exclusion {
   AuthorLogin = 'authorLogin',

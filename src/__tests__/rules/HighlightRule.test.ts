@@ -1,8 +1,8 @@
-import { Config } from '../../core/Config';
-import Author from '../../core/entities/Author';
-import Commit from '../../core/entities/Commit';
-import HighlightRule from '../../core/rules/HighlightRule';
-import State from '../../core/State';
+import { Config } from '../../core/Config.js';
+import Author from '../../core/entities/Author.js';
+import Commit from '../../core/entities/Commit.js';
+import HighlightRule from '../../core/rules/HighlightRule.js';
+import State from '../../core/State.js';
 
 describe('Highlight rule', () => {
   const config = new Config();

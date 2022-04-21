@@ -1,4 +1,4 @@
-import Author from '../../core/entities/Author';
+import Author from '../../core/entities/Author.js';
 
 describe('Author', () => {
   const login = 'keindev';

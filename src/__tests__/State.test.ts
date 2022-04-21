@@ -1,9 +1,9 @@
-import { Config, Exclusion } from '../core/Config';
-import Author from '../core/entities/Author';
-import Commit from '../core/entities/Commit';
-import { ChangeLevel } from '../core/entities/Entity';
-import { ISection, SectionPosition } from '../core/entities/Section';
-import State from '../core/State';
+import { Config, Exclusion } from '../core/Config.js';
+import Author from '../core/entities/Author.js';
+import Commit from '../core/entities/Commit.js';
+import { ChangeLevel } from '../core/entities/Entity.js';
+import { ISection, SectionPosition } from '../core/entities/Section.js';
+import State from '../core/State.js';
 
 describe('State', () => {
   const config = new Config();

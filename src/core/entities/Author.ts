@@ -1,4 +1,4 @@
-import Entity, { IEntity, Priority } from './Entity';
+import Entity, { IEntity, Priority } from './Entity.js';
 
 export interface IAuthor extends IEntity {
   readonly avatar: string;

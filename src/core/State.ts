@@ -1,13 +1,13 @@
 import { IPackageChange, PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
 import TaskTree from 'tasktree-cli';
 
-import { findSame, isSame, unify } from '../utils/text';
-import { Exclusion } from './Config';
-import Author, { IAuthor } from './entities/Author';
-import Commit, { ICommit } from './entities/Commit';
-import { ChangeLevel } from './entities/Entity';
-import Section, { ISection, ISectionOptions, SectionOrder, SectionPosition } from './entities/Section';
-import { IRule, IRuleContext } from './rules/BaseRule';
+import { findSame, isSame, unify } from '../utils/text.js';
+import { Exclusion } from './Config.js';
+import Author, { IAuthor } from './entities/Author.js';
+import Commit, { ICommit } from './entities/Commit.js';
+import { ChangeLevel } from './entities/Entity.js';
+import Section, { ISection, ISectionOptions, SectionOrder, SectionPosition } from './entities/Section.js';
+import { IRule, IRuleContext } from './rules/BaseRule.js';
 
 export default class State implements IRuleContext {
   #authors = new Map<string, IAuthor>();

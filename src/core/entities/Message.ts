@@ -1,4 +1,4 @@
-import Entity, { ChangeLevel, IEntity } from './Entity';
+import Entity, { ChangeLevel, IEntity } from './Entity.js';
 
 export interface IMessage extends IEntity {
   readonly text: string;

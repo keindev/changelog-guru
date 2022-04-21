@@ -1,4 +1,4 @@
-import Entity, { ChangeLevel, Compare, Priority } from '../../core/entities/Entity';
+import Entity, { ChangeLevel, Compare, Priority } from '../../core/entities/Entity.js';
 
 describe('Entity', () => {
   const name = 'Entity';

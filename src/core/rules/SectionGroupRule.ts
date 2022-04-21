@@ -1,8 +1,8 @@
 import TaskTree from 'tasktree-cli';
 
-import { findSame, unify } from '../../utils/text';
-import { ISection, SectionPosition } from '../entities/Section';
-import { BaseRule, IRule, IRuleConfig, IRuleLintOptions, IRuleParseOptions, IRulePrepareOptions } from './BaseRule';
+import { findSame, unify } from '../../utils/text.js';
+import { ISection, SectionPosition } from '../entities/Section.js';
+import { BaseRule, IRule, IRuleConfig, IRuleLintOptions, IRuleParseOptions, IRulePrepareOptions } from './BaseRule.js';
 
 export interface ISectionGroupRuleConfig extends IRuleConfig {
   [key: string]: {

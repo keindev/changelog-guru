@@ -1,10 +1,10 @@
 import { PackageDependency, PackageDependencyChangeType } from 'package-json-helper/lib/types';
 import { Task } from 'tasktree-cli/lib/Task';
 
-import { Config } from '../../core/Config';
-import { ISection } from '../../core/entities/Section';
-import PackageStatisticRenderRule from '../../core/rules/PackageStatisticRenderRule';
-import State from '../../core/State';
+import { Config } from '../../core/Config.js';
+import { ISection } from '../../core/entities/Section.js';
+import PackageStatisticRenderRule from '../../core/rules/PackageStatisticRenderRule.js';
+import State from '../../core/State.js';
 
 describe('Package statistic rule', () => {
   const config = new Config();

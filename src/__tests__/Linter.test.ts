@@ -3,8 +3,8 @@
 import { jest } from '@jest/globals';
 import { Task } from 'tasktree-cli/lib/Task';
 
-import { Config } from '../core/Config';
-import { Linter } from '../core/Linter';
+import { Config } from '../core/Config.js';
+import { Linter } from '../core/Linter.js';
 
 jest.useFakeTimers();
 

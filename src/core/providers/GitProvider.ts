@@ -5,8 +5,8 @@ import path from 'path';
 import TaskTree from 'tasktree-cli';
 import { getUserAgent } from 'universal-user-agent';
 
-import { GitServiceProvider } from '../Config';
-import { ICommit } from '../entities/Commit';
+import { GitServiceProvider } from '../Config.js';
+import { ICommit } from '../entities/Commit.js';
 
 export enum Branch {
   Main = 'main',

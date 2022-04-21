@@ -5,9 +5,9 @@ import readline from 'readline';
 import TaskTree from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/Task';
 
-import { splitHeadline } from '../utils/commit';
-import { findSame, unify } from '../utils/text';
-import { Config } from './Config';
+import { splitHeadline } from '../utils/commit.js';
+import { findSame, unify } from '../utils/text.js';
+import { Config } from './Config.js';
 
 const SUBJECT_MAX_LENGTH = 10;
 const GIT_PARAMETERS = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'];

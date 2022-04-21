@@ -1,10 +1,10 @@
 import { Task } from 'tasktree-cli/lib/Task';
 
-import { Config } from '../../core/Config';
-import Author from '../../core/entities/Author';
-import Commit from '../../core/entities/Commit';
-import ScopeRenameRule from '../../core/rules/ScopeRenameRule';
-import State from '../../core/State';
+import { Config } from '../../core/Config.js';
+import Author from '../../core/entities/Author.js';
+import Commit from '../../core/entities/Commit.js';
+import ScopeRenameRule from '../../core/rules/ScopeRenameRule.js';
+import State from '../../core/State.js';
 
 describe('Scope rename rule', () => {
   const config = new Config();

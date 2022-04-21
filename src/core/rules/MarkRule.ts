@@ -1,7 +1,7 @@
-import { findSame } from '../../utils/text';
-import { CommitChangeType } from '../entities/Commit';
-import { ISection, SectionOrder, SectionPosition } from '../entities/Section';
-import { BaseRule, IRule, IRuleConfig, IRuleLintOptions, IRuleParseOptions, IRulePrepareOptions } from './BaseRule';
+import { findSame } from '../../utils/text.js';
+import { CommitChangeType } from '../entities/Commit.js';
+import { ISection, SectionOrder, SectionPosition } from '../entities/Section.js';
+import { BaseRule, IRule, IRuleConfig, IRuleLintOptions, IRuleParseOptions, IRulePrepareOptions } from './BaseRule.js';
 
 export enum MarkerType {
   // !break - indicates major changes breaking backward compatibility
