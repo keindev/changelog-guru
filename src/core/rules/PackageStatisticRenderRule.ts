@@ -4,11 +4,11 @@ import {
 import TaskTree from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/Task';
 
-import md from '../../utils/markdown';
-import { ChangeLevel } from '../entities/Entity';
-import Message from '../entities/Message';
-import Section, { ISection, SectionOrder, SectionPosition } from '../entities/Section';
-import { BaseRule, IRule, IRuleConfig, IRuleModifyOptions } from './BaseRule';
+import md from '../../utils/markdown.js';
+import { ChangeLevel } from '../entities/Entity.js';
+import Message from '../entities/Message.js';
+import Section, { ISection, SectionOrder, SectionPosition } from '../entities/Section.js';
+import { BaseRule, IRule, IRuleConfig, IRuleModifyOptions } from './BaseRule.js';
 
 export enum TemplateLiteral {
   Name = '%name%',

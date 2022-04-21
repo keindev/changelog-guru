@@ -1,10 +1,10 @@
 import { Task } from 'tasktree-cli/lib/Task';
 
-import { Config } from '../../core/Config';
-import Author from '../../core/entities/Author';
-import Commit from '../../core/entities/Commit';
-import SectionGroupRule from '../../core/rules/SectionGroupRule';
-import State from '../../core/State';
+import { Config } from '../../core/Config.js';
+import Author from '../../core/entities/Author.js';
+import Commit from '../../core/entities/Commit.js';
+import SectionGroupRule from '../../core/rules/SectionGroupRule.js';
+import State from '../../core/State.js';
 
 describe('Section group rule', () => {
   const config = new Config();

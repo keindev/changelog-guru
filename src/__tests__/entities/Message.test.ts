@@ -1,4 +1,4 @@
-import Message from '../../core/entities/Message';
+import Message from '../../core/entities/Message.js';
 
 describe('Message', () => {
   it('Spaces characters are ignored when creating', () => {

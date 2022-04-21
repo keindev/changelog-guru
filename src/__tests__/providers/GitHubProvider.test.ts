@@ -4,9 +4,9 @@ import { jest } from '@jest/globals';
 import { default as GQLCommit } from 'gh-gql/lib/queries/Commit';
 import { default as GQLFile } from 'gh-gql/lib/queries/File';
 
-import Author from '../../core/entities/Author';
-import Commit from '../../core/entities/Commit';
-import GitHubProvider from '../../core/providers/GitHubProvider';
+import Author from '../../core/entities/Author.js';
+import Commit from '../../core/entities/Commit.js';
+import GitHubProvider from '../../core/providers/GitHubProvider.js';
 
 jest.useFakeTimers();
 

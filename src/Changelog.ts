@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 import TaskTree from 'tasktree-cli';
 
-import Builder from './core/Builder';
-import { Config, GitServiceProvider } from './core/Config';
-import { Linter } from './core/Linter';
+import Builder from './core/Builder.js';
+import { Config, GitServiceProvider } from './core/Config.js';
+import { Linter } from './core/Linter.js';
 
 export type IBuildOptions = {
   /** Sets the branch by which the change log will be generated */

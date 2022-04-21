@@ -1,8 +1,8 @@
 import Package from 'package-json-helper';
 
-import { GitServiceProvider } from '../Config';
-import { ICommit } from '../entities/Commit';
-import GitProvider, { IGitProviderOptions } from './GitProvider';
+import { GitServiceProvider } from '../Config.js';
+import { ICommit } from '../entities/Commit.js';
+import GitProvider, { IGitProviderOptions } from './GitProvider.js';
 
 export default class GitLabProvider extends GitProvider {
   constructor(url: string, branch?: IGitProviderOptions['branch']) {

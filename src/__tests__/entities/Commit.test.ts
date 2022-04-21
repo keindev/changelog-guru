@@ -1,6 +1,6 @@
-import Author from '../../core/entities/Author';
-import Commit, { CommitChangeType } from '../../core/entities/Commit';
-import { ChangeLevel, Compare, Priority } from '../../core/entities/Entity';
+import Author from '../../core/entities/Author.js';
+import Commit, { CommitChangeType } from '../../core/entities/Commit.js';
+import { ChangeLevel, Compare, Priority } from '../../core/entities/Entity.js';
 
 describe('Commit', () => {
   const login = 'keindev';

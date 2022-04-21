@@ -1,10 +1,10 @@
 import { Task } from 'tasktree-cli/lib/Task';
 
-import { Config } from '../../core/Config';
-import Author from '../../core/entities/Author';
-import Commit, { CommitChangeType } from '../../core/entities/Commit';
-import MarkRule from '../../core/rules/MarkRule';
-import State from '../../core/State';
+import { Config } from '../../core/Config.js';
+import Author from '../../core/entities/Author.js';
+import Commit, { CommitChangeType } from '../../core/entities/Commit.js';
+import MarkRule from '../../core/rules/MarkRule.js';
+import State from '../../core/State.js';
 
 describe('Mark rule', () => {
   const hash = '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6';

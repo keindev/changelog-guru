@@ -1,4 +1,4 @@
-import { BaseRule, IRule, IRuleConfig, IRuleParseOptions } from './BaseRule';
+import { BaseRule, IRule, IRuleConfig, IRuleParseOptions } from './BaseRule.js';
 
 export interface IHighlightRuleConfig extends IRuleConfig {
   camelCase: boolean;

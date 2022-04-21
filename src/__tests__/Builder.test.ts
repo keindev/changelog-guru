@@ -5,11 +5,11 @@ import fs from 'fs';
 import Package from 'package-json-helper';
 import path from 'path';
 
-import Builder from '../core/Builder';
-import { Config } from '../core/Config';
-import Author from '../core/entities/Author';
-import Commit from '../core/entities/Commit';
-import GitHubProvider from '../core/providers/GitHubProvider';
+import Builder from '../core/Builder.js';
+import { Config } from '../core/Config.js';
+import Author from '../core/entities/Author.js';
+import Commit from '../core/entities/Commit.js';
+import GitHubProvider from '../core/providers/GitHubProvider.js';
 
 jest.useFakeTimers();
 jest.mock('../core/providers/GitHubProvider.ts');

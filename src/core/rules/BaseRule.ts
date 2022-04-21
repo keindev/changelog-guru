@@ -1,8 +1,8 @@
 import { IPackageChange, PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
 import { Task } from 'tasktree-cli/lib/Task';
 
-import { ICommit } from '../entities/Commit';
-import { ISection, ISectionOptions } from '../entities/Section';
+import { ICommit } from '../entities/Commit.js';
+import { ISection, ISectionOptions } from '../entities/Section.js';
 
 export enum Rule {
   Highlight = 'highlight',

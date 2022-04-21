@@ -1,6 +1,6 @@
-import Commit, { ICommit } from './Commit';
-import Entity, { Compare, IEntity, Priority } from './Entity';
-import Message, { IMessage } from './Message';
+import Commit, { ICommit } from './Commit.js';
+import Entity, { Compare, IEntity, Priority } from './Entity.js';
+import Message, { IMessage } from './Message.js';
 
 export enum SectionPosition {
   None = 0,

@@ -4,16 +4,16 @@ import { PackageDependency, PackageRestriction } from 'package-json-helper/lib/t
 import path from 'path';
 import TaskTree from 'tasktree-cli';
 
-import md from '../utils/markdown';
-import { findSame } from '../utils/text';
-import { Config, GitServiceProvider } from './Config';
-import Commit, { ICommit } from './entities/Commit';
-import Message from './entities/Message';
-import Section, { ISection } from './entities/Section';
-import GitHubProvider from './providers/GitHubProvider';
-import GitLabProvider from './providers/GitLabProvider';
-import { IGitProvider } from './providers/GitProvider';
-import State from './State';
+import md from '../utils/markdown.js';
+import { findSame } from '../utils/text.js';
+import { Config, GitServiceProvider } from './Config.js';
+import Commit, { ICommit } from './entities/Commit.js';
+import Message from './entities/Message.js';
+import Section, { ISection } from './entities/Section.js';
+import GitHubProvider from './providers/GitHubProvider.js';
+import GitLabProvider from './providers/GitLabProvider.js';
+import { IGitProvider } from './providers/GitProvider.js';
+import State from './State.js';
 
 export default class Builder {
   #config: Config;

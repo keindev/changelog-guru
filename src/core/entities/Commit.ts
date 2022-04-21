@@ -1,9 +1,9 @@
 import LookupManager from 'string-lookup-manager';
 
-import { splitHeadline } from '../../utils/commit';
-import { wrap } from '../../utils/markdown';
-import { IAuthor } from './Author';
-import Entity, { ChangeLevel, Compare, IEntity, Priority } from './Entity';
+import { splitHeadline } from '../../utils/commit.js';
+import { wrap } from '../../utils/markdown.js';
+import { IAuthor } from './Author.js';
+import Entity, { ChangeLevel, Compare, IEntity, Priority } from './Entity.js';
 
 export enum CommitChangeType {
   BreakingChanges = 1,

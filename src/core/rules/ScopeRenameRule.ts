@@ -1,5 +1,5 @@
-import { findSame, unify } from '../../utils/text';
-import { BaseRule, IRule, IRuleConfig, IRuleLintOptions, IRuleParseOptions } from './BaseRule';
+import { findSame, unify } from '../../utils/text.js';
+import { BaseRule, IRule, IRuleConfig, IRuleLintOptions, IRuleParseOptions } from './BaseRule.js';
 
 const MIN_SCOPE_SHORTNAME_LENGTH = 2;
 

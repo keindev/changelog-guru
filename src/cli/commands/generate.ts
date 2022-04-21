@@ -1,7 +1,7 @@
 import TaskTree from 'tasktree-cli';
 import { Arguments } from 'yargs';
 
-import Changelog, { IBuildOptions } from '../../Changelog';
+import Changelog, { IBuildOptions } from '../../Changelog.js';
 
 const generate = async (options: IBuildOptions): Promise<void> => {
   const tree = TaskTree.tree().start();

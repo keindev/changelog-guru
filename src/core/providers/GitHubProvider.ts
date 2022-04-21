@@ -3,10 +3,10 @@ import { ICommit as IGitHubCommit } from 'gh-gql/lib/queries/Commit';
 import Package from 'package-json-helper';
 import TaskTree from 'tasktree-cli';
 
-import { GitServiceProvider } from '../Config';
-import Author, { IAuthor } from '../entities/Author';
-import Commit, { ICommit } from '../entities/Commit';
-import GitProvider, { IGitProviderOptions } from './GitProvider';
+import { GitServiceProvider } from '../Config.js';
+import Author, { IAuthor } from '../entities/Author.js';
+import Commit, { ICommit } from '../entities/Commit.js';
+import GitProvider, { IGitProviderOptions } from './GitProvider.js';
 
 export default class GitHubProvider extends GitProvider {
   #authors = new Map<number, Author>();

@@ -1,5 +1,5 @@
-import { splitHeadline } from '../utils/commit';
-import { findSame, isSame, unify } from '../utils/text';
+import { splitHeadline } from '../utils/commit.js';
+import { findSame, isSame, unify } from '../utils/text.js';
 
 describe('Utils', () => {
   describe('commit', () => {
