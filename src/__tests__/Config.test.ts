@@ -1,10 +1,4 @@
-// @see https://github.com/facebook/jest/issues/9430
-// eslint-disable-next-line node/no-extraneous-import
-import { jest } from '@jest/globals';
-
 import { Config, GitServiceProvider } from '../core/Config.js';
-
-jest.useFakeTimers();
 
 describe('Config', () => {
   let config: Config;
