@@ -9,6 +9,7 @@
 - Changed **[dotenv](https://www.npmjs.com/package/dotenv)** from `^16.0.0` to `^16.0.3`
 - Changed **[universal-user-agent](https://www.npmjs.com/package/universal-user-agent)** from `^7.0.0` to `^7.0.1`
 - Changed **[yargs](https://www.npmjs.com/package/yargs)** from `^17.4.1` to `^17.6.2`
+- Bumped **[gh-gql](https://www.npmjs.com/package/gh-gql)** from `^3.0.11` to `^4.0.0`
 
 </details>
 
@@ -20,8 +21,9 @@
 - Changed **[@types/semver](https://www.npmjs.com/package/@types/semver)** from `^7.3.9` to `^7.3.13`
 - Changed **[@typescript-eslint/eslint-plugin](https://www.npmjs.com/package/@typescript-eslint/eslint-plugin)** from `^5.20.0` to `^5.43.0`
 - Changed **[@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser)** from `^5.20.0` to `^5.43.0`
-- Changed **[eslint](https://www.npmjs.com/package/eslint)** from `^8.13.0` to `^8.27.0`
+- Changed **[eslint](https://www.npmjs.com/package/eslint)** from `^8.13.0` to `^8.28.0`
 - Changed **[eslint-plugin-promise](https://www.npmjs.com/package/eslint-plugin-promise)** from `^6.0.0` to `^6.1.1`
+- Changed **[ghinfo](https://www.npmjs.com/package/ghinfo)** from `^3.0.6` to `^3.0.7`
 - Changed **[prettier](https://www.npmjs.com/package/prettier)** from `^2.6.2` to `^2.7.1`
 - Changed **[ts-node](https://www.npmjs.com/package/ts-node)** from `^10.7.0` to `^10.9.1`
 - Changed **[typescript](https://www.npmjs.com/package/typescript)** from `^4.6.3` to `^4.9.3`
