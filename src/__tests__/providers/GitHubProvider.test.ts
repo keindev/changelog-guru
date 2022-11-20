@@ -8,8 +8,6 @@ import Author from '../../core/entities/Author.js';
 import Commit from '../../core/entities/Commit.js';
 import GitHubProvider from '../../core/providers/GitHubProvider.js';
 
-jest.useFakeTimers();
-
 const lastCommitData = {
   commitUrl: 'https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
   committedDate: new Date(0).toISOString(),
@@ -39,13 +37,15 @@ const fileData = {
   license: 'MIT',
 };
 
-jest.spyOn(GQLCommit.prototype, 'getLastCommit').mockImplementation(() => Promise.resolve(lastCommitData));
-jest.spyOn(GQLCommit.prototype, 'getList').mockImplementation(() => Promise.resolve([commitData]));
-jest.spyOn(GQLFile.prototype, 'getId').mockImplementation(() => Promise.resolve(fileId));
-jest.spyOn(GQLFile.prototype, 'getContent').mockImplementation(() => Promise.resolve(JSON.stringify(fileData)));
-
 describe('GitHubProvider', () => {
   const provider = new GitHubProvider('https://github.com/keindev/changelog-guru');
+
+  beforeAll(() => {
+    jest.spyOn(GQLCommit.prototype, 'getLastCommit').mockImplementation(() => Promise.resolve(lastCommitData));
+    jest.spyOn(GQLCommit.prototype, 'getList').mockImplementation(() => Promise.resolve([commitData]));
+    jest.spyOn(GQLFile.prototype, 'getId').mockImplementation(() => Promise.resolve(fileId));
+    jest.spyOn(GQLFile.prototype, 'getContent').mockImplementation(() => Promise.resolve(JSON.stringify(fileData)));
+  });
 
   it('Get last change date', async () => {
     const date = await provider.getLastChangeDate();

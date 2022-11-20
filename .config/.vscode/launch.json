@@ -8,15 +8,7 @@
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "--experimental-specifier-resolution=node",
-        "--nolazy",
-        "--inspect-brk=9229",
-        "--loader",
-        "ts-node/esm",
-        "src/cli/bin.ts",
-        "generate"
-      ],
+      "runtimeArgs": ["--nolazy", "--inspect-brk=9229", "--loader", "ts-node/esm", "src/cli/bin.ts", "generate"],
       "port": 9229
     },
     {
@@ -28,7 +20,6 @@
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "node",
       "runtimeArgs": [
-        "--experimental-specifier-resolution=node",
         "--nolazy",
         "--inspect-brk=9229",
         "--loader",

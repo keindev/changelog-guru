@@ -1,5 +1,4 @@
 import Provider from 'gh-gql';
-import { ICommit as IGitHubCommit } from 'gh-gql/lib/queries/Commit';
 import Package from 'package-json-helper';
 import TaskTree from 'tasktree-cli';
 
@@ -9,7 +8,7 @@ import Commit, { ICommit } from '../entities/Commit.js';
 import GitProvider, { IGitProviderOptions } from './GitProvider.js';
 
 export default class GitHubProvider extends GitProvider {
-  #authors = new Map<number, Author>();
+  #authors = new Map<string, Author>();
   #provider: Provider;
 
   constructor(url: string, branch?: IGitProviderOptions['branch']) {
@@ -80,15 +79,34 @@ export default class GitHubProvider extends GitProvider {
     return new Package(data);
   }
 
-  private parseAuthor({ avatarUrl, user: { databaseId, login, url } }: IGitHubCommit['author']): IAuthor {
-    const author = this.#authors.get(databaseId) ?? new Author({ login, url, avatar: avatarUrl });
+  private parseAuthor({
+    avatarUrl,
+    user: { login, url },
+  }: {
+    avatarUrl: string;
+    user: { login: string; url: string };
+  }): IAuthor {
+    const author = this.#authors.get(login) ?? new Author({ login, url, avatar: avatarUrl });
 
-    if (!this.#authors.has(databaseId)) this.#authors.set(databaseId, author);
+    if (!this.#authors.has(login)) this.#authors.set(login, author);
 
     return author;
   }
 
-  private parseCommit(commit: IGitHubCommit): ICommit {
+  private parseCommit(commit: {
+    author: {
+      avatarUrl: string;
+      user: {
+        login: string;
+        url: string;
+      };
+    };
+    committedDate: string;
+    messageBody: string;
+    messageHeadline: string;
+    oid: string;
+    url: string;
+  }): ICommit {
     const { url, oid: hash, messageHeadline: headline, messageBody: body } = commit;
     const timestamp = new Date(commit.committedDate).getTime();
     const author = this.parseAuthor(commit.author);

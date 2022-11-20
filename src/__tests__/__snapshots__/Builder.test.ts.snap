@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Builder build 1`] = `
-Array [
-  Array [
+[
+  [
     "CHANGELOG.md",
     "# :tada: Features
 

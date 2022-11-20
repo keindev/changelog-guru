@@ -11,7 +11,6 @@ import Author from '../core/entities/Author.js';
 import Commit from '../core/entities/Commit.js';
 import GitHubProvider from '../core/providers/GitHubProvider.js';
 
-jest.useFakeTimers();
 jest.mock('../core/providers/GitHubProvider.ts');
 
 describe('Builder', () => {
