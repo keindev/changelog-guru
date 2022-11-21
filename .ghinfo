@@ -1,6 +1,6 @@
 {
   "name": "changelog-guru",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "description": "Git changelog generator",
   "keywords": [
     "automated",
@@ -16,8 +16,5 @@
     "git": "https://github.com/keindev/changelog-guru",
     "npm": "https://www.npmjs.com/package/changelog-guru"
   },
-  "files": {
-    "banner": "media/banner.svg",
-    "logo": "media/logo.svg"
-  }
+  "files": {}
 }

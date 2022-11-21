@@ -1,4 +1,4 @@
-<p align="center"><img src="https://cdn.jsdelivr.net/gh/keindev/changelog-guru/media/banner.svg" alt="Package logo"></p>
+<p align="center"><img src="https://cdn.jsdelivr.net/gh/tagproject/art/packages/changelog-guru/banner.svg" alt="Package logo"></p>
 
 <p align="center">
     <a href="https://github.com/keindev/changelog-guru/actions"><img src="https://github.com/keindev/changelog-guru/actions/workflows/build.yml/badge.svg" alt="Build Status"></a>
