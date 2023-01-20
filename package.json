@@ -60,7 +60,7 @@
     "gh-gql": "^4.0.1",
     "package-json-helper": "^4.0.6",
     "string-lookup-manager": "^3.0.8",
-    "tasktree-cli": "^6.0.5",
+    "tasktree-cli": "^7.0.0",
     "universal-user-agent": "^7.0.1",
     "yargs": "^17.6.2"
   },
