@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
-import Package from 'package-json-helper';
-import { PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
+import { Package } from 'package-json-helper';
+import { Dependencies, Restriction } from 'package-json-helper/types/package';
 import path from 'path';
 import TaskTree from 'tasktree-cli';
 
@@ -80,7 +80,7 @@ export default class Builder {
       if (this.#package.license) {
         const state = new State(this.#package.license, previousPackage.license);
 
-        [...Object.values(PackageDependency), ...Object.values(PackageRestriction)].forEach(name => {
+        [...Object.values(Dependencies), ...Object.values(Restriction)].forEach(name => {
           state.addChanges(name, this.#package.getChanges(name, previousPackage));
         });
 

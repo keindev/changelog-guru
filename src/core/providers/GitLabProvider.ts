@@ -1,4 +1,4 @@
-import Package from 'package-json-helper';
+import { Package } from 'package-json-helper';
 
 import { GitServiceProvider } from '../Config.js';
 import { ICommit } from '../entities/Commit.js';

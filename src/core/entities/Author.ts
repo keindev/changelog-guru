@@ -21,8 +21,9 @@ const URL_SIZE_PARAMETER_NAME = 's';
 export default class Author extends Entity implements IAuthor {
   readonly avatar: string;
   readonly login: string;
-  #priority = Priority.Low;
   readonly url: string;
+
+  #priority = Priority.Low;
 
   constructor({ login, url, avatar }: IAuthorOptions) {
     super(`@${login}`);

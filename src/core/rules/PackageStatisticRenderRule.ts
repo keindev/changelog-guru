@@ -1,6 +1,4 @@
-import {
-    IPackageChange, PackageDependency, PackageDependencyChangeType, PackageRestriction,
-} from 'package-json-helper/lib/types';
+import { ChangeType, Dependencies, IChange, Restriction } from 'package-json-helper/types/package';
 import TaskTree from 'tasktree-cli';
 import { Task } from 'tasktree-cli/lib/Task';
 
@@ -17,40 +15,40 @@ export enum TemplateLiteral {
 }
 
 export interface IPackageStatisticRenderRuleConfig extends IRuleConfig {
-  sections: (PackageDependency | PackageRestriction)[];
+  sections: (Dependencies | Restriction)[];
   templates: {
-    [key in PackageDependencyChangeType]: string;
+    [key in ChangeType]: string;
   };
   title: string;
 }
 
 const SECTION_TITLES_MAP = {
-  [PackageDependency.Engines]: 'Engines',
-  [PackageDependency.Dependencies]: 'Dependencies',
-  [PackageDependency.DevDependencies]: 'Dev Dependencies',
-  [PackageDependency.OptionalDependencies]: 'Optional Dependencies',
-  [PackageDependency.PeerDependencies]: 'Peer Dependencies',
-  [PackageRestriction.BundledDependencies]: 'Bundled Dependencies',
-  [PackageRestriction.CPU]: 'CPU',
-  [PackageRestriction.OS]: 'OS',
+  [Dependencies.Engines]: 'Engines',
+  [Dependencies.Dependencies]: 'Dependencies',
+  [Dependencies.DevDependencies]: 'Dev Dependencies',
+  [Dependencies.OptionalDependencies]: 'Optional Dependencies',
+  [Dependencies.PeerDependencies]: 'Peer Dependencies',
+  [Restriction.BundledDependencies]: 'Bundled Dependencies',
+  [Restriction.CPU]: 'CPU',
+  [Restriction.OS]: 'OS',
 };
 
 const COLLAPSIBLE_SECTIONS_MAP = [
-  PackageDependency.Dependencies,
-  PackageDependency.DevDependencies,
-  PackageDependency.OptionalDependencies,
-  PackageDependency.PeerDependencies,
-  PackageRestriction.BundledDependencies,
+  Dependencies.Dependencies,
+  Dependencies.DevDependencies,
+  Dependencies.OptionalDependencies,
+  Dependencies.PeerDependencies,
+  Restriction.BundledDependencies,
 ];
 
 export default class PackageStatisticRenderRule extends BaseRule<IPackageStatisticRenderRuleConfig> implements IRule {
-  #sections: (PackageDependency | PackageRestriction)[] = [];
+  #sections: (Dependencies | Restriction)[] = [];
   #templates: [string, string][];
 
   constructor(config: IPackageStatisticRenderRuleConfig) {
     super(config);
 
-    const changes = Object.values<string>(PackageDependencyChangeType);
+    const changes = Object.values<string>(ChangeType);
 
     this.#templates = Object.entries(config.templates).filter(([type]) => changes.includes(type));
     this.#sections = [...new Set(config.sections)];
@@ -103,7 +101,7 @@ export default class PackageStatisticRenderRule extends BaseRule<IPackageStatist
     }
   }
 
-  private renderChanges(changes: IPackageChange[], task: Task): string {
+  private renderChanges(changes: IChange[], task: Task): string {
     return this.#templates.reduce((acc, [type, template]) => {
       const items = changes
         .filter(change => change.type === type)

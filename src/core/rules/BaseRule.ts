@@ -1,4 +1,4 @@
-import { IPackageChange, PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
+import { Dependencies, IChange, Restriction } from 'package-json-helper/types/package';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { ICommit } from '../entities/Commit.js';
@@ -19,7 +19,7 @@ export interface IRuleContext {
 
   addSection(options: ISectionOptions): ISection | undefined;
   findSection(name: string): ISection | undefined;
-  getChanges(type: PackageDependency | PackageRestriction): IPackageChange[] | undefined;
+  getChanges(type: Dependencies | Restriction): IChange[] | undefined;
 }
 
 export type IRuleActionOptions = { context: IRuleContext };

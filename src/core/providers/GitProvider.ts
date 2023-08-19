@@ -1,6 +1,6 @@
 import findupSync from 'findup-sync';
 import fs from 'fs';
-import Package from 'package-json-helper';
+import { Package } from 'package-json-helper';
 import path from 'path';
 import TaskTree from 'tasktree-cli';
 import { getUserAgent } from 'universal-user-agent';
