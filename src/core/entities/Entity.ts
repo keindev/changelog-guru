@@ -31,9 +31,10 @@ const ENTITY_PRIORITY_MAP = {
 };
 
 export default class Entity implements IEntity {
+  readonly name: string;
+
   #isIgnored = false;
   #level: ChangeLevel = ChangeLevel.Patch;
-  readonly name: string;
 
   constructor(name = '') {
     this.name = name;

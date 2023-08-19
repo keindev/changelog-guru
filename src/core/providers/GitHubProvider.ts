@@ -1,5 +1,5 @@
 import Provider from 'gh-gql';
-import Package from 'package-json-helper';
+import { Package } from 'package-json-helper';
 import TaskTree from 'tasktree-cli';
 
 import { GitServiceProvider } from '../Config.js';

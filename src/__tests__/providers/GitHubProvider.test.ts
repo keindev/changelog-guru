@@ -1,8 +1,9 @@
 // @see https://github.com/facebook/jest/issues/9430
-// eslint-disable-next-line node/no-extraneous-import
-import { jest } from '@jest/globals';
 import { default as GQLCommit } from 'gh-gql/lib/queries/Commit';
 import { default as GQLFile } from 'gh-gql/lib/queries/File';
+
+// eslint-disable-next-line node/no-extraneous-import
+import { jest } from '@jest/globals';
 
 import Author from '../../core/entities/Author.js';
 import Commit from '../../core/entities/Commit.js';

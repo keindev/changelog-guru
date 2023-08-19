@@ -141,13 +141,16 @@ export class Config {
   private getTypes(changes: IChangelogConfig['changes']): [string, ChangeLevel][] {
     const levels = Object.values(ChangeLevel);
 
-    return Object.entries(changes).reduce((acc, [level, names]) => {
-      if (!Array.isArray(names)) TaskTree.fail(`Names of change level "${level}" must be array`);
-      if (!levels.includes(level as ChangeLevel)) TaskTree.fail(`Unexpected level "${level}" of changes`);
+    return Object.entries(changes).reduce(
+      (acc, [level, names]) => {
+        if (!Array.isArray(names)) TaskTree.fail(`Names of change level "${level}" must be array`);
+        if (!levels.includes(level as ChangeLevel)) TaskTree.fail(`Unexpected level "${level}" of changes`);
 
-      names.forEach(name => acc.push([name, level as ChangeLevel]));
+        names.forEach(name => acc.push([name, level as ChangeLevel]));
 
-      return acc;
-    }, [] as [string, ChangeLevel][]);
+        return acc;
+      },
+      [] as [string, ChangeLevel][]
+    );
   }
 }

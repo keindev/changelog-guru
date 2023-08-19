@@ -42,16 +42,17 @@ export interface ICommitOptions {
 }
 
 export default class Commit extends Entity implements ICommit {
-  #accents = new Set<string>();
   readonly author: IAuthor;
   readonly body: readonly string[] = [];
+  readonly scope?: string;
+  readonly timestamp: number;
+  readonly url: string;
+
+  #accents = new Set<string>();
   #changeType = CommitChangeType.Default;
   #replacements = new LookupManager();
-  readonly scope?: string;
   #subject = '';
-  readonly timestamp: number;
   #type?: string;
-  readonly url: string;
 
   constructor({ hash, timestamp, headline, body, url, author }: ICommitOptions) {
     super(hash);

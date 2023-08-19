@@ -1,4 +1,4 @@
-import { IPackageChange, PackageDependency, PackageRestriction } from 'package-json-helper/lib/types';
+import { Dependencies, IChange, Restriction } from 'package-json-helper/types/package';
 import TaskTree from 'tasktree-cli';
 
 import { findSame, isSame, unify } from '../utils/text.js';
@@ -10,12 +10,13 @@ import Section, { ISection, ISectionOptions, SectionOrder, SectionPosition } fro
 import { IRule, IRuleContext } from './rules/BaseRule.js';
 
 export default class State implements IRuleContext {
-  #authors = new Map<string, IAuthor>();
-  #changes = new Map<PackageDependency | PackageRestriction, IPackageChange[]>();
-  #commits = new Map<string, ICommit>();
   readonly currentLicense: string;
   readonly hasChangedLicense: boolean;
   readonly previousLicense?: string;
+
+  #authors = new Map<string, IAuthor>();
+  #changes = new Map<Dependencies | Restriction, IChange[]>();
+  #commits = new Map<string, ICommit>();
   #sections: ISection[] = [];
 
   constructor(currentLicense: string, previousLicense?: string) {
@@ -37,9 +38,9 @@ export default class State implements IRuleContext {
   }
 
   get changesLevels(): [number, number, number] {
-    const engines = this.#changes.get(PackageDependency.Engines);
-    const os = this.#changes.get(PackageRestriction.OS);
-    const cpu = this.#changes.get(PackageRestriction.CPU);
+    const engines = this.#changes.get(Dependencies.Engines);
+    const os = this.#changes.get(Restriction.OS);
+    const cpu = this.#changes.get(Restriction.CPU);
     let major = 0;
     let minor = 0;
     let patch = 0;
@@ -67,7 +68,7 @@ export default class State implements IRuleContext {
     return [major, minor, patch];
   }
 
-  addChanges(type: PackageDependency | PackageRestriction, changes: IPackageChange[]): void {
+  addChanges(type: Dependencies | Restriction, changes: IChange[]): void {
     this.#changes.set(type, changes);
   }
 
@@ -100,7 +101,7 @@ export default class State implements IRuleContext {
     return this.#sections.find((section): boolean => isSame(section.name, name));
   }
 
-  getChanges(type: PackageDependency | PackageRestriction): IPackageChange[] {
+  getChanges(type: Dependencies | Restriction): IChange[] {
     return [...(this.#changes.get(type) ?? [])];
   }
 

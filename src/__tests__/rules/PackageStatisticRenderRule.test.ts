@@ -1,4 +1,4 @@
-import { PackageDependency, PackageDependencyChangeType } from 'package-json-helper/lib/types';
+import { ChangeType, Dependencies } from 'package-json-helper/types/package';
 import { Task } from 'tasktree-cli/lib/Task';
 
 import { Config } from '../../core/Config.js';
@@ -25,11 +25,11 @@ describe('Package statistic rule', () => {
     const dependency = {
       name,
       link,
-      type: PackageDependencyChangeType.Bumped,
+      type: ChangeType.Bumped,
       value: { current: '6.1.2', previous: '5.0.8' },
     };
 
-    context.addChanges(PackageDependency.Dependencies, [dependency]);
+    context.addChanges(Dependencies.Dependencies, [dependency]);
     rule.modify({ task, context });
 
     const section = context.findSection('Important Changes');
