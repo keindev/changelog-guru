@@ -1,9 +1,10 @@
 // @see https://github.com/facebook/jest/issues/9430
+import fs from 'fs';
+import { Package } from 'package-json-helper';
+import path from 'path';
+
 // eslint-disable-next-line node/no-extraneous-import
 import { jest } from '@jest/globals';
-import fs from 'fs';
-import Package from 'package-json-helper';
-import path from 'path';
 
 import Builder from '../core/Builder.js';
 import { Config } from '../core/Config.js';
