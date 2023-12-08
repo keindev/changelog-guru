@@ -50,7 +50,7 @@
     "test:jest": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "dependencies": {
-    "cosmiconfig": "^8.2.0",
+    "cosmiconfig": "^9.0.0",
     "deepmerge": "^4.3.1",
     "dotenv": "^16.3.1",
     "findup-sync": "^5.0.0",
