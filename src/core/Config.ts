@@ -4,6 +4,7 @@ import path from 'path';
 import TaskTree from 'tasktree-cli';
 import { fileURLToPath } from 'url';
 
+import { arrayMerge } from '../utils/merge.js';
 import { ChangeLevel } from './entities/Entity.js';
 import { BaseRule, IRule, IRuleConfig, Rule } from './rules/BaseRule.js';
 import HighlightRule from './rules/HighlightRule.js';
@@ -51,7 +52,7 @@ export class Config {
   #exclusions: [Exclusion, string[]][] = [];
   #filePath = 'CHANGELOG.md';
   #isInitialized = false;
-  #options: IConfigOptions;
+  readonly #options: IConfigOptions;
   #provider = GitServiceProvider.GitHub;
   #rules: IRule[] = [];
   #types: [string, ChangeLevel][] = [];
@@ -92,16 +93,17 @@ export class Config {
     return !!this.#options.bump;
   }
 
+  // eslint-disable-next-line max-lines-per-function
   async init(): Promise<void> {
     if (!this.#isInitialized) {
       const dirname = path.dirname(fileURLToPath(import.meta.url));
       const task = TaskTree.add('Reading configuration file...');
-      const explorer = cosmiconfig('changelog-guru');
+      const explorer = cosmiconfig('changelog');
       const baseConf = await explorer.load(path.join(dirname, '../../.changelogrc.default.yml'));
       const userConf = await explorer.search();
 
       if (baseConf?.config && !baseConf.isEmpty) {
-        const config = deepmerge<IChangelogConfig>(baseConf.config, userConf?.config ?? {});
+        const config = deepmerge<IChangelogConfig>(baseConf.config, userConf?.config ?? {}, { arrayMerge });
         const filePath = path.relative(process.cwd(), userConf?.filepath ?? baseConf.filepath);
 
         this.#types = this.getTypes(config.changes);
