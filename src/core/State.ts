@@ -14,9 +14,9 @@ export default class State implements IRuleContext {
   readonly hasChangedLicense: boolean;
   readonly previousLicense?: string;
 
-  #authors = new Map<string, IAuthor>();
-  #changes = new Map<Dependencies | Restriction, IChange[]>();
-  #commits = new Map<string, ICommit>();
+  readonly #authors = new Map<string, IAuthor>();
+  readonly #changes = new Map<Dependencies | Restriction, IChange[]>();
+  readonly #commits = new Map<string, ICommit>();
   #sections: ISection[] = [];
 
   constructor(currentLicense: string, previousLicense?: string) {

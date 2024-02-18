@@ -12,12 +12,11 @@ export interface ISectionGroupRuleConfig extends IRuleConfig {
 }
 
 export default class SectionGroupRule extends BaseRule<ISectionGroupRuleConfig> implements IRule {
-  #blocks = new Map<string, ISection | undefined>();
-  #types: string[] = [];
+  readonly #blocks = new Map<string, ISection | undefined>();
+  readonly #types: string[] = [];
 
   constructor(config: ISectionGroupRuleConfig) {
     super(config);
-
     this.#types = [...Object.values(this.config)].map(({ types }) => types).flat();
 
     if (this.#types.length > new Set(this.#types).size) {

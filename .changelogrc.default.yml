@@ -63,17 +63,17 @@ rules:
     camelCase: true
     # Highlight by regex mask
     masks: [
-      # Tags
-      '<[^>]*>',
-      # Words which start with '$', '@' or '!' symbol
-      '[$@!]\S+',
-      # CLI commands
-      '((?<= )|^)-{1,2}[a-z0-9_-]+',
-      # Dashed words
-      '(?<= |^)[a-z]+-[a-z-]+',
-      # Dotted words
-      '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+',
-    ]
+        # Tags
+        '<[^>]*>',
+        # Words which start with '$', '@' or '!' symbol
+        '[$@!]\S+',
+        # CLI commands
+        '((?<= )|^)-{1,2}[a-z0-9_-]+',
+        # Dashed words
+        '(?<= |^)[a-z]+-[a-z-]+',
+        # Dotted words
+        '(?<= |^)[a-z0-9_$\[\]()]+\.[a-z0-9_$.()]+',
+      ]
   # Allows you to add additional useful information to the commit
   #
   # The following markers are available:
@@ -94,7 +94,7 @@ rules:
   # Displays information about changes to package.json in the change log
   package:
     # Main section title
-    title: "Important Changes"
+    title: 'Important Changes'
     # The change message templates
     #
     # Literals available for substitution in Templates:
@@ -143,7 +143,7 @@ rules:
   section:
     Features:
       emoji: ':tada:'
-      types: [feat]
+      types: ['feat']
     Improvements:
       emoji: ':fire:'
       types: [improve]

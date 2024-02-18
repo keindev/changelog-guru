@@ -37,7 +37,7 @@ const COMMIT_CHANGE_TYPES_MAP: { [key: string]: CommitChangeType | undefined } =
 };
 
 export default class MarkRule extends BaseRule<IMarkRuleConfig> implements IRule {
-  #markers = new Set<MarkerType>();
+  readonly #markers = new Set<MarkerType>();
   #sections = new Map<MarkerType, ISection>();
 
   constructor(config: IMarkRuleConfig) {

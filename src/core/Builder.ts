@@ -16,8 +16,8 @@ import { IGitProvider } from './providers/GitProvider.js';
 import State from './State.js';
 
 export default class Builder {
-  #config: Config;
-  #package: Package;
+  readonly #config: Config;
+  readonly #package: Package;
   #state?: State;
 
   constructor(config: Config) {

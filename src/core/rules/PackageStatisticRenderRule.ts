@@ -42,8 +42,8 @@ const COLLAPSIBLE_SECTIONS_MAP = [
 ];
 
 export default class PackageStatisticRenderRule extends BaseRule<IPackageStatisticRenderRuleConfig> implements IRule {
-  #sections: (Dependencies | Restriction)[] = [];
-  #templates: [string, string][];
+  readonly #sections: (Dependencies | Restriction)[] = [];
+  readonly #templates: [string, string][];
 
   constructor(config: IPackageStatisticRenderRuleConfig) {
     super(config);
