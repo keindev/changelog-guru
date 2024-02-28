@@ -1,6 +1,6 @@
 {
   "name": "changelog-guru",
-  "version": "5.0.0",
+  "version": "5.0.2",
   "description": "Git changelog generator",
   "license": "MIT",
   "homepage": "https://github.com/keindev/changelog-guru#readme",
@@ -50,21 +50,21 @@
     "test:jest": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "dependencies": {
-    "cosmiconfig": "^8.2.0",
+    "cosmiconfig": "9.0.0",
     "deepmerge": "^4.3.1",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "findup-sync": "^5.0.0",
-    "gh-gql": "^5.0.0",
-    "package-json-helper": "^6.0.0",
-    "string-lookup-manager": "^4.0.0",
-    "tasktree-cli": "^8.0.0",
-    "universal-user-agent": "^7.0.1",
+    "gh-gql": "^5.0.1",
+    "package-json-helper": "^6.0.1",
+    "string-lookup-manager": "^4.0.2",
+    "tasktree-cli": "^8.1.0",
+    "universal-user-agent": "^7.0.2",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@tagproject/ts-package-shared-config": "^11.0.1",
-    "@types/findup-sync": "^4.0.2",
-    "@types/semver": "^7.5.0",
-    "ts-node": "^10.9.1"
+    "@tagproject/ts-package-shared-config": "^11.0.4",
+    "@types/findup-sync": "^4.0.4",
+    "@types/semver": "^7.5.8",
+    "ts-node": "^10.9.2"
   }
 }

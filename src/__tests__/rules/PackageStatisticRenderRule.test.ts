@@ -7,12 +7,12 @@ import PackageStatisticRenderRule from '../../core/rules/PackageStatisticRenderR
 import State from '../../core/State.js';
 
 describe('Package statistic rule', () => {
-  const config = new Config();
+  let config: Config;
   let rule: PackageStatisticRenderRule;
 
   beforeAll(async () => {
+    config = new Config();
     await config.init();
-
     rule = config.rules.find(item => item instanceof PackageStatisticRenderRule) as PackageStatisticRenderRule;
   });
 

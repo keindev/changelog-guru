@@ -48,11 +48,11 @@ export default class Commit extends Entity implements ICommit {
   readonly timestamp: number;
   readonly url: string;
 
-  #accents = new Set<string>();
+  readonly #accents = new Set<string>();
   #changeType = CommitChangeType.Default;
-  #replacements = new LookupManager();
-  #subject = '';
-  #type?: string;
+  readonly #replacements = new LookupManager();
+  readonly #subject: string = '';
+  readonly #type?: string;
 
   constructor({ hash, timestamp, headline, body, url, author }: ICommitOptions) {
     super(hash);

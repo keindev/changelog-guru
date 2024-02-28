@@ -6,26 +6,31 @@ import Commit, { CommitChangeType } from '../../core/entities/Commit.js';
 import MarkRule from '../../core/rules/MarkRule.js';
 import State from '../../core/State.js';
 
+const AUTHOR = {
+  login: 'keindev',
+  url: 'https://github.com/keindev',
+  avatar: 'https://avatars.githubusercontent.com/u/4527292?v=4',
+};
+
+const COMMIT = {
+  timestamp: 0,
+  headline: 'feat(Jest): subject',
+  url: 'https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
+  hash: '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
+};
+
 describe('Mark rule', () => {
-  const hash = '779ed9b4803da533c1d55f26e5cc7d58ff3d47b6';
-  const config = new Config();
-  const context = new State('MIT');
-  const author = new Author({
-    login: 'keindev',
-    url: 'https://github.com/keindev',
-    avatar: 'https://avatars.githubusercontent.com/u/4527292?v=4',
-  });
-  const commitOptions = {
-    timestamp: 0,
-    headline: 'feat(Jest): subject',
-    url: 'https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b6',
-    author,
-  };
+  let config: Config;
+  let context: State;
+  let author: Author;
   let rule: MarkRule;
 
   beforeAll(async () => {
-    await config.init();
+    config = new Config();
+    context = new State('MIT');
+    author = new Author({ ...AUTHOR });
 
+    await config.init();
     rule = config.rules.find(item => item instanceof MarkRule) as MarkRule;
   });
 
@@ -41,7 +46,7 @@ describe('Mark rule', () => {
   describe('Parse', () => {
     it('!deprecated marker', () => {
       const section = context.findSection('DEPRECATIONS');
-      const commit = new Commit({ ...commitOptions, hash, body: '!deprecated' });
+      const commit = new Commit({ ...COMMIT, author, body: '!deprecated' });
 
       expect(section).toBeDefined();
       expect(commit.is(CommitChangeType.Deprecated)).toBeFalsy();
@@ -54,7 +59,7 @@ describe('Mark rule', () => {
 
     it('!break marker', () => {
       const section = context.findSection('BREAKING CHANGES');
-      const commit = new Commit({ ...commitOptions, hash, body: '!break' });
+      const commit = new Commit({ ...COMMIT, author, body: '!break' });
 
       expect(section).toBeDefined();
       expect(commit.is(CommitChangeType.BreakingChanges)).toBeFalsy();
@@ -66,7 +71,7 @@ describe('Mark rule', () => {
     });
 
     it('!ignore marker', () => {
-      const commit = new Commit({ ...commitOptions, hash, body: '!ignore' });
+      const commit = new Commit({ ...COMMIT, author, body: '!ignore' });
 
       expect(commit.isIgnored).toBeFalsy();
 
@@ -76,7 +81,7 @@ describe('Mark rule', () => {
     });
 
     it('!group marker', () => {
-      const commit = new Commit({ ...commitOptions, hash, body: '!group(Jest markers test)' });
+      const commit = new Commit({ ...COMMIT, author, body: '!group(Jest markers test)' });
       const count = context.sections.length;
 
       rule.parse({ commit, context });
@@ -87,7 +92,7 @@ describe('Mark rule', () => {
 
     it('!important marker', () => {
       const section = context.findSection('Important Internal Changes');
-      const commit = new Commit({ ...commitOptions, hash, body: '!important' });
+      const commit = new Commit({ ...COMMIT, author, body: '!important' });
 
       expect(section).toBeDefined();
       expect(commit.is(CommitChangeType.Important)).toBeFalsy();

@@ -6,7 +6,7 @@ export interface IHighlightRuleConfig extends IRuleConfig {
 }
 
 export default class HighlightRule extends BaseRule<IHighlightRuleConfig> implements IRule {
-  #masks: RegExp[] = [];
+  readonly #masks: RegExp[] = [];
 
   constructor(config: IHighlightRuleConfig) {
     super(config);

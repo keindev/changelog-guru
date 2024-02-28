@@ -11,8 +11,8 @@ export interface IScopeRenameRuleConfig extends IRuleConfig {
 }
 
 export default class ScopeRenameRule extends BaseRule<IScopeRenameRuleConfig> implements IRule {
-  #names = new Map<string, string>();
-  #onlyPresented = false;
+  readonly #names = new Map<string, string>();
+  readonly #onlyPresented: boolean = false;
 
   constructor(config: IScopeRenameRuleConfig) {
     super(config);

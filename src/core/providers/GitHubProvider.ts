@@ -8,8 +8,8 @@ import Commit, { ICommit } from '../entities/Commit.js';
 import GitProvider, { IGitProviderOptions } from './GitProvider.js';
 
 export default class GitHubProvider extends GitProvider {
-  #authors = new Map<string, Author>();
-  #provider: Provider;
+  readonly #authors = new Map<string, Author>();
+  readonly #provider: Provider;
 
   constructor(url: string, branch?: IGitProviderOptions['branch']) {
     super({ type: GitServiceProvider.GitHub, url, branch });

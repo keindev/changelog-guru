@@ -43,8 +43,8 @@ export interface ISectionOptions {
 }
 
 export default class Section extends Entity implements ISection {
-  #emoji: string | undefined;
-  #entities = new Map<string, IEntity>();
+  readonly #emoji: string | undefined;
+  readonly #entities = new Map<string, IEntity>();
   #order: number;
   #position: SectionPosition;
 

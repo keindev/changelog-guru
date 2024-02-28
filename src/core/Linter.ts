@@ -14,8 +14,8 @@ const GIT_PARAMETERS = ['HUSKY_GIT_PARAMS', 'GIT_PARAMS'];
 const GIT_MESSAGES_PATHS = ['.git/COMMIT_EDITMSG', '.git/MERGE_MSG', '.git/SQUASH_MSG'];
 
 export class Linter {
-  #config: Config;
-  #length: number;
+  readonly #config: Config;
+  readonly #length: number;
 
   constructor(config: Config, length = 100) {
     this.#config = config;
