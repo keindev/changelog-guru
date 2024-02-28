@@ -7,9 +7,10 @@ import ScopeRenameRule from '../../core/rules/ScopeRenameRule.js';
 import State from '../../core/State.js';
 
 describe('Scope rename rule', () => {
-  const config = new Config();
+  let config: Config;
 
   beforeAll(async () => {
+    config = new Config();
     await config.init();
   });
 

@@ -4,45 +4,48 @@ import { Config } from '../core/Config.js';
 import { Linter } from '../core/Linter.js';
 
 describe('Linter', () => {
-  const config = new Config();
-  const linter = new Linter(config, 100);
+  let config: Config;
+  let linter: Linter;
 
-  describe('Lint commit messages', () => {
-    it('Correct commit messages', async () => {
-      const task = new Task('Lint');
+  beforeAll(() => {
+    config = new Config();
+    linter = new Linter(config, 100);
+  });
 
-      try {
-        await linter.lint('test(core): some subject message 1');
-        await linter.lint('test: some subject message 2');
-        await linter.lint('improve: move to ESM\n!break');
-      } finally {
-        expect(task.haveErrors).toBeFalsy();
-        task.complete();
-      }
-    });
+  it('Correct commit messages', async () => {
+    const task = new Task('Lint');
 
-    it('Incorrect commit messages', async () => {
-      const results = [];
+    try {
+      await linter.lint('test(core): some subject message 1');
+      await linter.lint('test: some subject message 2');
+      await linter.lint('improve: move to ESM\n!break');
+    } finally {
+      expect(task.haveErrors).toBeFalsy();
+      task.complete();
+    }
+  });
 
-      try {
-        await linter.lint('');
-      } catch (error) {
-        results.push(error);
-      }
+  it('Incorrect commit messages', async () => {
+    const results = [];
 
-      try {
-        await linter.lint('Test:');
-      } catch (error) {
-        results.push(error);
-      }
+    try {
+      await linter.lint('');
+    } catch (error) {
+      results.push(error);
+    }
 
-      try {
-        await linter.lint('wow: some subject message');
-      } catch (error) {
-        results.push(error);
-      }
+    try {
+      await linter.lint('Test:');
+    } catch (error) {
+      results.push(error);
+    }
 
-      expect(results).toStrictEqual(new Array(results.length).fill(new Error('Incorrect commit message:')));
-    });
+    try {
+      await linter.lint('wow: some subject message');
+    } catch (error) {
+      results.push(error);
+    }
+
+    expect(results).toStrictEqual(new Array(results.length).fill(new Error('Incorrect commit message:')));
   });
 });

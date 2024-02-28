@@ -5,20 +5,22 @@ import { ChangeLevel } from '../core/entities/Entity.js';
 import { ISection, SectionPosition } from '../core/entities/Section.js';
 import State from '../core/State.js';
 
-describe('State', () => {
-  const config = new Config();
-  const getCommitBase = ((): ((timestamp?: number) => { hash: string; timestamp: number; url: string }) => {
-    let i = 0;
+const getCommitBase = ((): ((timestamp?: number) => { hash: string; timestamp: number; url: string }) => {
+  let i = 0;
 
-    return (timestamp = i) => ({
-      hash: `779ed9b4803da533c1d55f26e5cc7d58ff3d47b${i}`,
-      url: `https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b${i++}`,
-      timestamp,
-    });
-  })();
+  return (timestamp = i) => ({
+    hash: `779ed9b4803da533c1d55f26e5cc7d58ff3d47b${i}`,
+    url: `https://github.com/keindev/changelog-guru/commit/779ed9b4803da533c1d55f26e5cc7d58ff3d47b${i++}`,
+    timestamp,
+  });
+})();
+
+describe('State', () => {
+  let config: Config;
   let state: State;
 
   beforeAll(async () => {
+    config = new Config();
     await config.init();
   });
 

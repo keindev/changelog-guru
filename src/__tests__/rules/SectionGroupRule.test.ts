@@ -7,13 +7,14 @@ import SectionGroupRule from '../../core/rules/SectionGroupRule.js';
 import State from '../../core/State.js';
 
 describe('Section group rule', () => {
-  const config = new Config();
-  const context = new State('MIT');
+  let config: Config;
+  let context: State;
   let rule: SectionGroupRule;
 
   beforeAll(async () => {
+    config = new Config();
+    context = new State('MIT');
     await config.init();
-
     rule = config.rules.find(item => item instanceof SectionGroupRule) as SectionGroupRule;
   });
 
