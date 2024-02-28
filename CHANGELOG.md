@@ -32,6 +32,7 @@
 # :memo: Internal changes
 
 - Fix lint warnings [`17378ce`](https://github.com/keindev/changelog-guru/commit/17378ce3ebc16fe32a966c9fb7d26fb0256e683e)
+- Fix Builder test errors, refactor tests ``beforeAll`` [`f6180e7`](https://github.com/keindev/changelog-guru/commit/f6180e73ef9e46aa48b3c3000f052ec7aaf86ccc)
 
 ---
 
