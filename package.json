@@ -59,7 +59,7 @@
     "string-lookup-manager": "^4.0.2",
     "tasktree-cli": "^8.1.0",
     "universal-user-agent": "^7.0.2",
-    "yargs": "^17.7.2"
+    "yargs": "^18.2.0"
   },
   "devDependencies": {
     "@tagproject/ts-package-shared-config": "^11.0.4",
